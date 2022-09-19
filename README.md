@@ -7,6 +7,11 @@
   [![Discord](https://img.shields.io/discord/363647798949969922?color=5865F2&label=discord&style=for-the-badge)](https://discord.com/invite/pbsPkpUjG4)
 </div>
 
+## Features
+
+- Fork of **[Mirai](https://github.com/etil2jz/Mirai)** for the best performance.
+- Patches from **[EmpireCraft](https://github.com/starlis/empirecraft)** improving performance, gameplay and fixing inconsistencies.
+
 ## Building
 
 You can clone this repository and build it yourself.
