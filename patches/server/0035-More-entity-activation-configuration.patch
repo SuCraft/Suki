@@ -1,0 +1,295 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Fri, 28 Jan 2022 16:58:29 +0100
+Subject: [PATCH] More entity activation configuration
+
+
+diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+index a3d715d9b90b5b1ca4a3c3308a4f3c04b0260711..931db53ebde71ebe9398f1a1ea72178c1ced8ec0 100644
+--- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
++++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+@@ -218,6 +218,23 @@ public class GlobalConfiguration extends ConfigurationPart {
+ 
+     // Martijn end - survival debug stick
+ 
++    // Martijn start - configurable proportion of skipped active entities
++
++    public SkippedActiveEntityRatio skippedActiveEntityRatio;
++
++    public class SkippedActiveEntityRatio extends ConfigurationPart {
++
++        /**
++         * 0 disables this feature
++         */
++        public int numerator = 1;
++
++        public int denominator = 4;
++
++    }
++
++    // Martijn end - configurable proportion of skipped active entities
++
+     public Messages messages;
+ 
+     public class Messages extends ConfigurationPart {
+diff --git a/src/main/java/org/spigotmc/ActivationRange.java b/src/main/java/org/spigotmc/ActivationRange.java
+index 70b5b307193dc288a6257d90ca96762cb4a8345a..af2ac1ae5039dc664b9b01d7852598f894d0c0bb 100644
+--- a/src/main/java/org/spigotmc/ActivationRange.java
++++ b/src/main/java/org/spigotmc/ActivationRange.java
+@@ -1,5 +1,7 @@
+ package org.spigotmc;
+ 
++import com.destroystokyo.paper.PaperConfig;
++import io.papermc.paper.configuration.GlobalConfiguration;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.server.MinecraftServer;
+ import net.minecraft.server.level.ServerChunkCache;
+@@ -10,12 +12,25 @@ import net.minecraft.world.entity.LightningBolt;
+ import net.minecraft.world.entity.LivingEntity;
+ import net.minecraft.world.entity.Mob;
+ import net.minecraft.world.entity.PathfinderMob;
++import net.minecraft.world.entity.TamableAnimal;
+ import net.minecraft.world.entity.ai.Brain;
+ import net.minecraft.world.entity.ambient.AmbientCreature;
+ import net.minecraft.world.entity.animal.Animal;
+ import net.minecraft.world.entity.animal.Bee;
++import net.minecraft.world.entity.animal.Cat;
++import net.minecraft.world.entity.animal.Chicken;
++import net.minecraft.world.entity.animal.Fox;
++import net.minecraft.world.entity.animal.IronGolem;
++import net.minecraft.world.entity.animal.Ocelot;
++import net.minecraft.world.entity.animal.PolarBear;
++import net.minecraft.world.entity.animal.Rabbit;
+ import net.minecraft.world.entity.animal.Sheep;
++import net.minecraft.world.entity.animal.SnowGolem;
++import net.minecraft.world.entity.animal.Squid;
++import net.minecraft.world.entity.animal.Turtle;
+ import net.minecraft.world.entity.animal.WaterAnimal;
++import net.minecraft.world.entity.animal.Wolf;
++import net.minecraft.world.entity.animal.axolotl.Axolotl;
+ import net.minecraft.world.entity.animal.horse.Llama;
+ import net.minecraft.world.entity.boss.EnderDragonPart;
+ import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
+@@ -23,8 +38,16 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+ import net.minecraft.world.entity.boss.wither.WitherBoss;
+ import net.minecraft.world.entity.item.PrimedTnt;
+ import net.minecraft.world.entity.monster.Creeper;
++import net.minecraft.world.entity.monster.Endermite;
+ import net.minecraft.world.entity.monster.Enemy;
++import net.minecraft.world.entity.monster.Guardian;
+ import net.minecraft.world.entity.monster.Pillager;
++import net.minecraft.world.entity.monster.Witch;
++import net.minecraft.world.entity.monster.WitherSkeleton;
++import net.minecraft.world.entity.monster.Zoglin;
++import net.minecraft.world.entity.monster.hoglin.Hoglin;
++import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
++import net.minecraft.world.entity.monster.piglin.Piglin;
+ import net.minecraft.world.entity.npc.Villager;
+ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.entity.projectile.AbstractArrow;
+@@ -42,6 +65,8 @@ import net.minecraft.world.phys.AABB;
+ import net.minecraft.world.phys.Vec3;
+ import java.util.List;
+ // Pufferfish end
++import org.bukkit.entity.Enderman;
++import org.bukkit.entity.Fish;
+ 
+ public class ActivationRange
+ {
+@@ -316,7 +341,67 @@ public class ActivationRange
+             }
+             if ( entity instanceof Mob && ((Mob) entity ).getTarget() != null) // Paper
+             {
+-                return 20; // Paper
++                // Martijn start - configurable mob target inactivity immunity
++                int hunterImmunityFor = config.defaultMobTargetingMobImmunityFor;
++                LivingEntity target = ((Mob) entity ).getTarget();
++                if (entity instanceof Wolf) {
++                    if (target instanceof Sheep) {
++                        hunterImmunityFor = config.wolfTargetingSheepImmunityFor;
++                    } else if (target instanceof Fox) {
++                        hunterImmunityFor = config.wolfTargetingFoxImmunityFor;
++                    }
++                } else if (entity instanceof Guardian && target instanceof Squid) {
++                    hunterImmunityFor = config.guardianTargetingSquidImmunityFor;
++                } else if (entity instanceof Llama && target instanceof Wolf) {
++                    hunterImmunityFor = config.llamaTargetingWolfImmunityFor;
++                } else if (entity instanceof PolarBear && target instanceof Fox) {
++                    hunterImmunityFor = config.polarBearTargetingFoxImmunityFor;
++                } else if (entity instanceof Fox && target instanceof Chicken) {
++                    hunterImmunityFor = config.foxTargetingChickenImmunityFor;
++                } else if (entity instanceof Ocelot && target instanceof Chicken) {
++                    hunterImmunityFor = config.ocelotTargetingChickenImmunityFor;
++                } else if (entity instanceof Cat && target instanceof Rabbit) {
++                    hunterImmunityFor = config.catTargetingRabbitImmunityFor;
++                } else if (entity instanceof Enderman && target instanceof Endermite) {
++                    hunterImmunityFor = config.endermanTargetingEndermiteImmunityFor;
++                } else if (entity instanceof AbstractPiglin) {
++                    if (target instanceof Hoglin) {
++                        hunterImmunityFor = config.piglinTargetingHoglinImmunityFor;
++                    } else if (target instanceof WitherSkeleton) {
++                        hunterImmunityFor = config.piglinTargetingWitherSkeletonImmunityFor;
++                    }
++                } else if (entity instanceof WitherSkeleton) {
++                    if (target instanceof AbstractPiglin) {
++                        hunterImmunityFor = config.witherSkeletonTargetingPiglinImmunityFor;
++                    } else if (target instanceof IronGolem) {
++                        hunterImmunityFor = config.witherSkeletonTargetingIronGolemImmunityFor;
++                    } else if (target instanceof SnowGolem) {
++                        hunterImmunityFor = config.witherSkeletonTargetingSnowGolemImmunityFor;
++                    }
++                } else if (entity instanceof SnowGolem) {
++                    if (!(target instanceof Player)) {
++                        hunterImmunityFor = config.snowGolemTargetingNonPlayerImmunityFor;
++                    }
++                } else if (entity instanceof Zoglin) {
++                    if (!(target instanceof Player)) {
++                        hunterImmunityFor = config.zoglinTargetingNonPlayerImmunityFor;
++                    }
++                } else if (entity instanceof Axolotl) {
++                    if (target instanceof Fish) {
++                        hunterImmunityFor = config.axolotlTargetingFishImmunityFor;
++                    } else if (target instanceof Squid) {
++                        hunterImmunityFor = config.axolotlTargetingSquidImmunityFor;
++                    }
++                } else if (entity instanceof Witch && target instanceof Witch) {
++                    hunterImmunityFor = config.witchTargetingWitchImmunityFor;
++                }
++                if (target instanceof Turtle) {
++                    hunterImmunityFor = config.mobTargetingTurtleImmunityFor;
++                }
++                if (hunterImmunityFor > 0) {
++                    return hunterImmunityFor;
++                }
++                // Martijn end - configurable mob target inactivity immunity
+             }
+             // Paper start
+             if (entity instanceof Bee) {
+@@ -354,14 +439,27 @@ public class ActivationRange
+             if ( entity instanceof Animal )
+             {
+                 Animal animal = (Animal) entity;
+-                if ( animal.isBaby() || animal.isInLove() )
++                // Martijn start - configurable baby inactivity immunity
++                if ( config.babyImmunityFor > 0 && animal.isBaby() ) {
++                    return config.babyImmunityFor;
++                }
++                if ( animal.isInLove() )
++                // Martijn end - configurable baby inactivity immunity
+                 {
+                     return 5; // Paper
+                 }
+-                if ( entity instanceof Sheep && ( (Sheep) entity ).isSheared() )
++                if ( config.areShearedSheepImmune && entity instanceof Sheep && ( (Sheep) entity ).isSheared() ) // Martijn - configurable sheared sheep immunity
+                 {
+                     return 1; // Paper
+                 }
++                // Martijn start - configurable non-sitting pet immunity
++                if ( config.areNonSittingPetsImmune && animal instanceof TamableAnimal ) {
++                    TamableAnimal tamableAnimal = (TamableAnimal) animal;
++                    if (tamableAnimal.getOwnerUUID() != null && !tamableAnimal.isOrderedToSit()) {
++                        return 20;
++                    }
++                }
++                // Martijn end - configurable non-sitting pet immunity
+             }
+             if (entity instanceof Creeper && ((Creeper) entity).isIgnited()) { // isExplosive
+                 return 20; // Paper
+@@ -426,11 +524,17 @@ public class ActivationRange
+                 isActive = true;
+ 
+             }
+-            // Add a little performance juice to active entities. Skip 1/4 if not immune.
+-        } else if ( entity.tickCount + entity.getId() + 1 % 4 == 0 && ActivationRange.checkEntityImmunities( entity ) < 0 ) // Paper
+-        {
+-            isActive = false;
++            // Martijn start - configurable proportion of skipped active entities
++            // Add a little performance juice to active entities. Skip skippedActiveEntityRatioNumerator / skippedActiveEntityRatioDenominator 'th of active entities if not immune.
++        } else if (GlobalConfiguration.get().skippedActiveEntityRatio.numerator > 0) {
++            long someMeaninglessValueBasedOnTickCountAndEntityId = entity.level.getGameTime() + entity.getId() + 1;
++            someMeaninglessValueBasedOnTickCountAndEntityId = 31 * someMeaninglessValueBasedOnTickCountAndEntityId * someMeaninglessValueBasedOnTickCountAndEntityId + 1009 * someMeaninglessValueBasedOnTickCountAndEntityId + 171719;
++            if ( Math.floorMod( someMeaninglessValueBasedOnTickCountAndEntityId , GlobalConfiguration.get().skippedActiveEntityRatio.denominator) < GlobalConfiguration.get().skippedActiveEntityRatio.numerator && ActivationRange.checkEntityImmunities( entity ) < 0 ) // Paper
++            {
++                isActive = false;
++            }
+         }
++        // Martijn end - configurable proportion of skipped active entities
+         return isActive;
+     }
+ }
+diff --git a/src/main/java/org/spigotmc/SpigotWorldConfig.java b/src/main/java/org/spigotmc/SpigotWorldConfig.java
+index 1d65012e4d305df6736b148d4345682da6437267..fcf2a49f5e09ccfecc3bb9f78df014f6018806bb 100644
+--- a/src/main/java/org/spigotmc/SpigotWorldConfig.java
++++ b/src/main/java/org/spigotmc/SpigotWorldConfig.java
+@@ -233,6 +233,37 @@ public class SpigotWorldConfig
+     // Paper end
+     public boolean tickInactiveVillagers = false; // Mirai - optimize default values for configs
+     public boolean ignoreSpectatorActivation = false;
++    // Martijn start - configurable baby inactivity immunity
++    /**
++     * A nonpositive value disables this feature
++     */
++    public int babyImmunityFor = 5;
++    // Martijn end - configurable baby inactivity immunity
++    public boolean areShearedSheepImmune = true; // Martijn - configurable sheared sheep immunity
++    public boolean areNonSittingPetsImmune = false; // Martijn - configurable non-sitting pet immunity
++    // Martijn start - configurable mob target inactivity immunity
++    public int defaultMobTargetingMobImmunityFor = 20;
++    public int wolfTargetingSheepImmunityFor = 20;
++    public int wolfTargetingFoxImmunityFor = 20;
++    public int guardianTargetingSquidImmunityFor = 20;
++    public int llamaTargetingWolfImmunityFor = 20;
++    public int polarBearTargetingFoxImmunityFor = 20;
++    public int foxTargetingChickenImmunityFor = 20;
++    public int ocelotTargetingChickenImmunityFor = 20;
++    public int catTargetingRabbitImmunityFor = 20;
++    public int endermanTargetingEndermiteImmunityFor = 20;
++    public int piglinTargetingHoglinImmunityFor = 20;
++    public int piglinTargetingWitherSkeletonImmunityFor = 20;
++    public int witherSkeletonTargetingPiglinImmunityFor = 20;
++    public int witherSkeletonTargetingIronGolemImmunityFor = 20;
++    public int witherSkeletonTargetingSnowGolemImmunityFor = 20;
++    public int snowGolemTargetingNonPlayerImmunityFor = 20;
++    public int zoglinTargetingNonPlayerImmunityFor = 20;
++    public int axolotlTargetingFishImmunityFor = 20;
++    public int axolotlTargetingSquidImmunityFor = 20;
++    public int witchTargetingWitchImmunityFor = 20;
++    public int mobTargetingTurtleImmunityFor = 20;
++    // Martijn end - configurable mob target inactivity immunity
+     private void activationRange()
+     {
+         boolean hasAnimalsConfig = config.getInt("entity-activation-range.animals", this.animalActivationRange) != this.animalActivationRange; // Paper
+@@ -268,6 +299,33 @@ public class SpigotWorldConfig
+         this.tickInactiveVillagers = this.getBoolean( "entity-activation-range.tick-inactive-villagers", this.tickInactiveVillagers );
+         this.ignoreSpectatorActivation = this.getBoolean( "entity-activation-range.ignore-spectators", this.ignoreSpectatorActivation );
+         this.log( "Entity Activation Range: An " + this.animalActivationRange + " / Mo " + this.monsterActivationRange + " / Ra " + this.raiderActivationRange + " / Mi " + this.miscActivationRange + " / Tiv " + this.tickInactiveVillagers + " / Isa " + this.ignoreSpectatorActivation );
++
++        this.babyImmunityFor = this.getInt("entity-activation-range.baby-immunity-for", this.babyImmunityFor); // Martijn - configurable baby inactivity immunity
++        this.areShearedSheepImmune = this.getBoolean("entity-activation-range.sheared-sheep-immunity", this.areShearedSheepImmune); // Martijn - configurable sheared sheep immunity
++        this.areNonSittingPetsImmune = this.getBoolean("entity-activation-range.non-sitting-pet-immunity", this.areNonSittingPetsImmune); // Martijn - configurable non-sitting pet immunity
++        // Martijn start - configurable mob target inactivity immunity
++        this.defaultMobTargetingMobImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.default", this.defaultMobTargetingMobImmunityFor);
++        this.wolfTargetingSheepImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.wolf-target-sheep", this.wolfTargetingSheepImmunityFor);
++        this.wolfTargetingFoxImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.wolf-target-fox", this.wolfTargetingFoxImmunityFor);
++        this.guardianTargetingSquidImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.guardian-target-squid", this.guardianTargetingSquidImmunityFor);
++        this.llamaTargetingWolfImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.llama-target-wolf", this.llamaTargetingWolfImmunityFor);
++        this.polarBearTargetingFoxImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.polar-bear-target-fox", this.polarBearTargetingFoxImmunityFor);
++        this.foxTargetingChickenImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.fox-target-chicken", this.foxTargetingChickenImmunityFor);
++        this.ocelotTargetingChickenImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.ocelot-target-chicken", this.ocelotTargetingChickenImmunityFor);
++        this.catTargetingRabbitImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.cat-target-rabbit", this.catTargetingRabbitImmunityFor);
++        this.endermanTargetingEndermiteImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.enderman-target-endermite", this.endermanTargetingEndermiteImmunityFor);
++        this.piglinTargetingHoglinImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.piglin-target-hoglin", this.piglinTargetingHoglinImmunityFor);
++        this.piglinTargetingWitherSkeletonImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.piglin-target-wither-skeleton", this.piglinTargetingWitherSkeletonImmunityFor);
++        this.witherSkeletonTargetingPiglinImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.wither-skeleton-target-piglin", this.witherSkeletonTargetingPiglinImmunityFor);
++        this.witherSkeletonTargetingIronGolemImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.wither-skeleton-target-iron-golem", this.witherSkeletonTargetingIronGolemImmunityFor);
++        this.witherSkeletonTargetingSnowGolemImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.wither-skeleton-target-snow-golem", this.witherSkeletonTargetingSnowGolemImmunityFor);
++        this.snowGolemTargetingNonPlayerImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.snow-golem-target-non-player", this.snowGolemTargetingNonPlayerImmunityFor);
++        this.zoglinTargetingNonPlayerImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.zoglin-target-non-player", this.zoglinTargetingNonPlayerImmunityFor);
++        this.axolotlTargetingFishImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.axolotl-target-fish", this.axolotlTargetingFishImmunityFor);
++        this.axolotlTargetingSquidImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.axolotl-target-squid", this.axolotlTargetingSquidImmunityFor);
++        this.witchTargetingWitchImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.witch-target-witch", this.witchTargetingWitchImmunityFor);
++        this.mobTargetingTurtleImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.mob-target-turtle", this.mobTargetingTurtleImmunityFor);
++        // Martijn end - configurable mob target inactivity immunity
+     }
+ 
+     public int playerTrackingRange = 48;

@@ -1,0 +1,48 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Mon, 17 Jan 2022 12:37:38 +0100
+Subject: [PATCH] Utility methods for getting the distance between an entity
+ and a chunk
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index 2331ed3bdf11df468b8c39eaa076ca5ccba0540e..f00132a16e7ab8d6af42e2b3c43ef97e3138066b 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -636,6 +636,36 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {
+ 
+     // Martijn end - utility functions for getting the entity's chunk
+ 
++    // Martijn start - utility functions for getting distance to chunks
++
++    public int getChessboardDistanceToChunk(ChunkPos chunk) {
++        return Math.max(Math.abs(this.getChunkX() - chunk.x), Math.abs(this.getChunkZ() - chunk.z));
++    }
++
++    public int getChessboardDistanceToChunk(long chunkKey) {
++        return this.getChessboardDistanceToChunk(new ChunkPos(chunkKey));
++    };
++
++    public long getSquaredPythagoreanDistanceToChunk(ChunkPos chunk) {
++        long dx = this.getChunkX() - chunk.x;
++        long dz = this.getChunkZ() - chunk.z;
++        return dx * dx + dz * dz;
++    }
++
++    public long getSquaredPythagoreanDistanceToChunk(long chunkKey) {
++        return this.getSquaredPythagoreanDistanceToChunk(new ChunkPos(chunkKey));
++    };
++
++    public double getPythagoreanDistanceToChunk(ChunkPos chunkPos) {
++        return Math.sqrt(this.getSquaredPythagoreanDistanceToChunk(chunkPos));
++    }
++
++    public double getPythagoreanDistanceToChunk(long chunkKey) {
++        return this.getPythagoreanDistanceToChunk(new ChunkPos(chunkKey));
++    };
++
++    // Martijn end - utility functions for getting distance to chunks
++
+     public boolean isColliding(BlockPos pos, BlockState state) {
+         VoxelShape voxelshape = state.getCollisionShape(this.level, pos, CollisionContext.of(this));
+         VoxelShape voxelshape1 = voxelshape.move((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
