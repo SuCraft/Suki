@@ -17,7 +17,7 @@ index 177306cc9c6092a9da9c4889ff9e7ca620a5ec8f..974896bfddb8dbb9be2459deb6e4303f
 +
      public static final int MAX_LANGUAGE_LENGTH = 16;
  
-+    // Martijn start - do not use invalid client view distance
++    // Suki start - do not use invalid client view distance
 +    public static final int MAX_USED_VIEW_DISTANCE = 127;
 +
 +    public int getAcceptableViewDistance() {
@@ -27,7 +27,7 @@ index 177306cc9c6092a9da9c4889ff9e7ca620a5ec8f..974896bfddb8dbb9be2459deb6e4303f
 +        }
 +        return Math.min(viewDistance, MAX_USED_VIEW_DISTANCE);
 +    }
-+    // Martijn end - do not use invalid client view distance
++    // Suki end - do not use invalid client view distance
 +
      public ServerboundClientInformationPacket(FriendlyByteBuf buf) {
          this(buf.readUtf(16), buf.readByte(), buf.readEnum(ChatVisiblity.class), buf.readBoolean(), buf.readUnsignedByte(), buf.readEnum(HumanoidArm.class), buf.readBoolean(), buf.readBoolean());
@@ -41,7 +41,7 @@ index ac64ed3d6c64caa5c548f350f141e2fee5c2e736..712cdc009ceea543f9e430398affe09e
      public java.util.Locale adventure$locale = java.util.Locale.US; // Paper
      public void updateOptions(ServerboundClientInformationPacket packet) {
 -        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), packet.language, packet.viewDistance, com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT).callEvent(); // Paper - settings event
-+        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), packet.language(), packet.getAcceptableViewDistance(), com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT).callEvent(); // Paper - settings event // Martijn - do not use invalid client view distance
++        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), packet.language(), packet.getAcceptableViewDistance(), com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT).callEvent(); // Paper - settings event // Suki - do not use invalid client view distance
          // CraftBukkit start
          if (getMainArm() != packet.mainHand()) {
              PlayerChangedMainHandEvent event = new PlayerChangedMainHandEvent(this.getBukkitEntity(), getMainArm() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT);
@@ -49,20 +49,20 @@ index ac64ed3d6c64caa5c548f350f141e2fee5c2e736..712cdc009ceea543f9e430398affe09e
          }
 -        if (this.locale == null || !this.locale.equals(packet.language)) { // Paper - check for null
 -            PlayerLocaleChangeEvent event = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packet.language);
-+        if (this.locale == null || !this.locale.equals(packet.language())) { // Paper - check for null // Martijn - do not use invalid client view distance
-+            PlayerLocaleChangeEvent event = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packet.language()); // Martijn - do not use invalid client view distance
++        if (this.locale == null || !this.locale.equals(packet.language())) { // Paper - check for null // Suki - do not use invalid client view distance
++            PlayerLocaleChangeEvent event = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packet.language()); // Suki - do not use invalid client view distance
              this.server.server.getPluginManager().callEvent(event);
 -            this.server.server.getPluginManager().callEvent(new com.destroystokyo.paper.event.player.PlayerLocaleChangeEvent(this.getBukkitEntity(), this.locale, packet.language)); // Paper
-+            this.server.server.getPluginManager().callEvent(new com.destroystokyo.paper.event.player.PlayerLocaleChangeEvent(this.getBukkitEntity(), this.locale, packet.language())); // Paper // Martijn - do not use invalid client view distance
++            this.server.server.getPluginManager().callEvent(new com.destroystokyo.paper.event.player.PlayerLocaleChangeEvent(this.getBukkitEntity(), this.locale, packet.language())); // Paper // Suki - do not use invalid client view distance
          }
 -        this.locale = packet.language;
-+        this.locale = packet.language(); // Martijn - do not use invalid client view distance
++        this.locale = packet.language(); // Suki - do not use invalid client view distance
          // Paper start
          this.adventure$locale = net.kyori.adventure.translation.Translator.parseLocale(this.locale);
          this.connection.connection.channel.attr(PaperAdventure.LOCALE_ATTRIBUTE).set(this.adventure$locale);
          // Paper end
 -        this.clientViewDistance = packet.viewDistance;
-+        this.clientViewDistance = packet.getAcceptableViewDistance(); // Martijn - do not use invalid client view distance
++        this.clientViewDistance = packet.getAcceptableViewDistance(); // Suki - do not use invalid client view distance
          // CraftBukkit end
          this.chatVisibility = packet.chatVisibility();
          this.canChatColor = packet.chatColors();
@@ -77,9 +77,9 @@ index 508ccef19a5f7a23be9c941ea34ddc26257af6f8..b30e68dfe8ec6e11ec638daa42618563
 -            LOGGER.warn("Disconnecting " + this.player.getScoreboardName() + " for invalid view distance: " + packet.viewDistance());
 -            this.disconnect("Invalid client settings", PlayerKickEvent.Cause.ILLEGAL_ACTION);
 -            return;
-+            // Martijn start - do not use invalid client view distance
++            // Suki start - do not use invalid client view distance
 +            LOGGER.warn(this.player.getScoreboardName() + " sent an invalid view distance: " + packet.viewDistance());
-+            // Martijn end - do not use invalid client view distance
++            // Suki end - do not use invalid client view distance
          }
          // Paper end - do not accept invalid information
          this.player.updateOptions(packet);

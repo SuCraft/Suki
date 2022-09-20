@@ -26,7 +26,7 @@ index f822ad0e8f676863c486ebed008e40d57cde3bfa..807008fdec2fde0e62bcf076269f5fa0
 -        if (p1 == p2) {
 -            return 0;
 -        }
-+    // Martijn start - network-constrained chunk sending
++    // Suki start - network-constrained chunk sending
  
 -        final int timeCompare = Long.compare(p1.nextChunkSendTarget, p2.nextChunkSendTarget);
 -        if (timeCompare != 0) {
@@ -65,7 +65,7 @@ index f822ad0e8f676863c486ebed008e40d57cde3bfa..807008fdec2fde0e62bcf076269f5fa0
 +
 +    protected final TreeSet<PlayerLoaderData> chunkSendWaitQueue = createSendWaitQueue();
 +
-+    // Martijn end - network-constrained chunk sending
++    // Suki end - network-constrained chunk sending
  
      // no throttling is applied below this VD for loading
  
@@ -81,7 +81,7 @@ index f822ad0e8f676863c486ebed008e40d57cde3bfa..807008fdec2fde0e62bcf076269f5fa0
          if (time < nextChunkSend) {
              return;
          }
-+        // Martijn start - network-constrained chunk sending
++        // Suki start - network-constrained chunk sending
 +        // drain entries from busy transmitting wait queue
 +        Iterator<PlayerLoaderData> transmittingWaitQueueIterator = this.transmittingWaitQueue.iterator();
 +        while (transmittingWaitQueueIterator.hasNext()) {
@@ -106,14 +106,14 @@ index f822ad0e8f676863c486ebed008e40d57cde3bfa..807008fdec2fde0e62bcf076269f5fa0
 +                }
 +            }
 +        }
-+        // Martijn end - network-constrained chunk sending
++        // Suki end - network-constrained chunk sending
          // drain entries from wait queue
          while (!this.chunkSendWaitQueue.isEmpty()) {
              final PlayerLoaderData data = this.chunkSendWaitQueue.first();
 @@ -599,13 +637,25 @@ public final class PlayerChunkLoader {
              final PlayerLoaderData data = this.chunkSendQueue.removeFirst();
  
-             // Martijn start - per-player track and see view distance
+             // Suki start - per-player track and see view distance
 -            ChunkPriorityHolder queuedSend = data.getSendQueue(true).pollFirst();
 +
 +            ChunkPriorityHolder queuedSend;
@@ -133,7 +133,7 @@ index f822ad0e8f676863c486ebed008e40d57cde3bfa..807008fdec2fde0e62bcf076269f5fa0
                  concernsTracking = false;
              }
 +
-             // Martijn end - per-player track and see view distance
+             // Suki end - per-player track and see view distance
 +
              if (queuedSend == null) {
                  concurrentChunkSends.getAndDecrement(); // we never sent, so decrease
@@ -151,8 +151,8 @@ index f822ad0e8f676863c486ebed008e40d57cde3bfa..807008fdec2fde0e62bcf076269f5fa0
          }
  
          public void update() {
-+            this.player.removeOverdueChunkInitializationPacketsInTransit(); // Martijn - network-constrained chunk sending
-             // Martijn start - per-player view distance
++            this.player.removeOverdueChunkInitializationPacketsInTransit(); // Suki - network-constrained chunk sending
+             // Suki start - per-player view distance
              this.player.level.timings.playerChunkLoaderUpdate.startTiming();
              final int loadViewDistance = this.player.getLoadViewDistance();
 @@ -1041,7 +1092,7 @@ public final class PlayerChunkLoader {
@@ -170,9 +170,9 @@ index 55c249dea72d05ad75102a031c18b70a150b7c4f..1915058a26b536a786c356256ce971e6
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -310,6 +310,33 @@ public class GlobalConfiguration extends ConfigurationPart {
  
-     // Martijn end - per-player track and see view distance
+     // Suki end - per-player track and see view distance
  
-+    // Martijn start - network-constrained chunk sending
++    // Suki start - network-constrained chunk sending
 +
 +    public NetworkConstrainedChunkSending networkConstrainedChunkSending;
 +
@@ -197,7 +197,7 @@ index 55c249dea72d05ad75102a031c18b70a150b7c4f..1915058a26b536a786c356256ce971e6
 +
 +    }
 +
-+    // Martijn end - network-constrained chunk sending
++    // Suki end - network-constrained chunk sending
 +
      public Messages messages;
  
@@ -208,9 +208,9 @@ index 6405158e50332138cbc047107d0d4db06f1aa56a..517baa6c18ba13c06fbbedac4ddbc644
 +++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 @@ -236,6 +236,28 @@ public class WorldConfiguration extends ConfigurationPart {
  
-     // Martijn end - per-player view distance
+     // Suki end - per-player view distance
  
-+    // Martijn start - network-constrained chunk sending
++    // Suki start - network-constrained chunk sending
 +
 +    public NetworkConstrainedChunkSending networkConstrainedChunkSending;
 +
@@ -230,7 +230,7 @@ index 6405158e50332138cbc047107d0d4db06f1aa56a..517baa6c18ba13c06fbbedac4ddbc644
 +
 +    }
 +
-+    // Martijn end - network-constrained chunk sending
++    // Suki end - network-constrained chunk sending
 +
      public Anticheat anticheat;
  
@@ -243,7 +243,7 @@ index 61335b87c2325ff1512bd5b2f40b9a21a59cc866..bd1df088043427cb8d2d3e1fb60b32a0
      public final com.destroystokyo.paper.util.PooledHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> cachedSingleMobDistanceMap;
      // Paper end
  
-+    // Martijn start - network-constrained chunk sending
++    // Suki start - network-constrained chunk sending
 +
 +    private static class ChunkPacketInTransit {
 +
@@ -335,7 +335,7 @@ index 61335b87c2325ff1512bd5b2f40b9a21a59cc866..bd1df088043427cb8d2d3e1fb60b32a0
 +
 +    }
 +
-+    // Martijn end - network-constrained chunk sending
++    // Suki end - network-constrained chunk sending
 +
      // CraftBukkit start
      public String displayName;
@@ -344,7 +344,7 @@ index 61335b87c2325ff1512bd5b2f40b9a21a59cc866..bd1df088043427cb8d2d3e1fb60b32a0
              }
              // Paper end
          }
-+        this.sendKeepaliveForChunkInTransit(); // Martijn - network-constrained chunk sending
++        this.sendKeepaliveForChunkInTransit(); // Suki - network-constrained chunk sending
      }
  
      public void untrackChunk(ChunkPos chunkPos, boolean concernsTracking) {
@@ -356,14 +356,14 @@ index 464311b63a01487baab2fed78ea9e9ad886b961a..136c81ebb956f360d8828341164abf00
  
      @Override
      public void handleKeepAlive(ServerboundKeepAlivePacket packet) {
-+        if (player.removePacketsInTransitUpToKeepaliveId(packet.getId())) return; // Martijn - network-constrained chunk sending
++        if (player.removePacketsInTransitUpToKeepaliveId(packet.getId())) return; // Suki - network-constrained chunk sending
          // Purpur start
          if (wtf.etil.mirai.MiraiConfig.useAlternateKeepAlive) {
              long id = packet.getId();
              if (keepAlives.size() > 0 && keepAlives.contains(id)) {
                  int ping = (int) (Util.getMillis() - id);
                  player.latency = (player.latency * 3 + ping) / 4;
-+                this.updateMaxNumberOfPacketsInTransitAfterLatencyUpdate(); // Martijn - network-constrained chunk sending
++                this.updateMaxNumberOfPacketsInTransitAfterLatencyUpdate(); // Suki - network-constrained chunk sending
                  keepAlives.clear(); // we got a valid response, lets roll with it and forget the rest
              }
          } else
@@ -371,15 +371,15 @@ index 464311b63a01487baab2fed78ea9e9ad886b961a..136c81ebb956f360d8828341164abf00
              int i = (int) (Util.getMillis() - this.keepAliveTime);
  
              this.player.latency = (this.player.latency * 3 + i) / 4;
-+            this.updateMaxNumberOfPacketsInTransitAfterLatencyUpdate(); // Martijn - network-constrained chunk sending
++            this.updateMaxNumberOfPacketsInTransitAfterLatencyUpdate(); // Suki - network-constrained chunk sending
              this.keepAlivePending = false;
          } else if (!this.isSingleplayerOwner()) {
-             // Martijn start - no disconnect on late or wrong keepalive
+             // Suki start - no disconnect on late or wrong keepalive
 @@ -3666,6 +3669,71 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
  
      }
  
-+    // Martijn start - network-constrained chunk sending
++    // Suki start - network-constrained chunk sending
 +    private void updateMaxNumberOfPacketsInTransitAfterLatencyUpdate() {
 +//            // Player ping was updated: if it is too high we update the max number of chunk packets in transit
 +//            // TODO turn into configuration options
@@ -442,7 +442,7 @@ index 464311b63a01487baab2fed78ea9e9ad886b961a..136c81ebb956f360d8828341164abf00
 +            }
 +        }
 +    }
-+    // Martijn end - network-constrained chunk sending
++    // Suki end - network-constrained chunk sending
 +
      @Override
      public void handlePlayerAbilities(ServerboundPlayerAbilitiesPacket packet) {

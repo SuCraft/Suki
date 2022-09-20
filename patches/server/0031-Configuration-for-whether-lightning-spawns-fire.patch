@@ -9,13 +9,13 @@ index 1eb8de139237a9b09a51355bb85d141a47a77ea3..e219265fbab61e40028d784920b917fd
 --- a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 @@ -73,6 +73,7 @@ public class WorldConfiguration extends ConfigurationPart {
-         public boolean raidsAreAlwaysHard = false; // Martijn - raids are always hard
-         public boolean caveSpidersHavePoisonOnEasyDifficulty = false; // Martijn - cave spiders have poison on easy difficulty
-         public boolean witherEffectFromWitherSkullsOnEasyDifficulty = false; // Martijn - wither effect from wither skulls on easy difficulty
-+        public boolean lightningSpawnsFire = true; // Martijn - configurable lightning fire
+         public boolean raidsAreAlwaysHard = false; // Suki - raids are always hard
+         public boolean caveSpidersHavePoisonOnEasyDifficulty = false; // Suki - cave spiders have poison on easy difficulty
+         public boolean witherEffectFromWitherSkullsOnEasyDifficulty = false; // Suki - wither effect from wither skulls on easy difficulty
++        public boolean lightningSpawnsFire = true; // Suki - configurable lightning fire
      }
  
-     // Martijn end - difficulty changes
+     // Suki end - difficulty changes
 diff --git a/src/main/java/net/minecraft/world/entity/LightningBolt.java b/src/main/java/net/minecraft/world/entity/LightningBolt.java
 index 359c78b4f98c38c81af27a2c4cf0939da51e5a0b..8aa48e7fd10f856d8f27b4d252cfc75c68e08792 100644
 --- a/src/main/java/net/minecraft/world/entity/LightningBolt.java
@@ -25,7 +25,7 @@ index 359c78b4f98c38c81af27a2c4cf0939da51e5a0b..8aa48e7fd10f856d8f27b4d252cfc75c
  
      private void spawnFire(int spreadAttempts) {
 -        if (!this.visualOnly && !this.level.isClientSide && this.level.getGameRules().getBoolean(GameRules.RULE_DOFIRETICK)) {
-+        if (this.level.paperConfig().difficultyChanges.lightningSpawnsFire && !this.visualOnly && !this.level.isClientSide && this.level.getGameRules().getBoolean(GameRules.RULE_DOFIRETICK)) { // Martijn - configurable lightning fire
++        if (this.level.paperConfig().difficultyChanges.lightningSpawnsFire && !this.visualOnly && !this.level.isClientSide && this.level.getGameRules().getBoolean(GameRules.RULE_DOFIRETICK)) { // Suki - configurable lightning fire
              BlockPos blockposition = this.blockPosition();
              BlockState iblockdata = BaseFireBlock.getState(this.level, blockposition);
  

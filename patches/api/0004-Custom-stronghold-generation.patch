@@ -12,7 +12,7 @@ index 5a43e40b7311ed2acb51f6ba8b12d1f34569ff2e..97810cbff0c4e8219a2d53823f40119a
      public static final Reference<ConfiguredStructure> SHIPWRECK_BEACHED = create("shipwreck_beached");
      public static final Reference<ConfiguredStructure> SWAMP_HUT = create("swamp_hut");
      public static final Reference<ConfiguredStructure> STRONGHOLD = create("stronghold");
-+    public static final Reference<ConfiguredStructure> STRONGHOLD_SURFACE = create("stronghold_surface"); // Martijn - custom strongholds - surface strongholds
++    public static final Reference<ConfiguredStructure> STRONGHOLD_SURFACE = create("stronghold_surface"); // Suki - custom strongholds - surface strongholds
      public static final Reference<ConfiguredStructure> OCEAN_MONUMENT = create("monument");
      public static final Reference<ConfiguredStructure> OCEAN_RUIN_COLD = create("ocean_ruin_cold");
      public static final Reference<ConfiguredStructure> OCEAN_RUIN_WARM = create("ocean_ruin_warm");

@@ -10,9 +10,9 @@ index 51ab2c492e68a7d3b5ecc63838a6233950ad0ce6..a3d715d9b90b5b1ca4a3c3308a4f3c04
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -203,6 +203,21 @@ public class GlobalConfiguration extends ConfigurationPart {
  
-     // Martijn end - configurable keepalive
+     // Suki end - configurable keepalive
  
-+    // Martijn start - survival debug stick
++    // Suki start - survival debug stick
 +
 +    public SurvivallikeDebugStick survivallikeDebugStick;
 +
@@ -25,7 +25,7 @@ index 51ab2c492e68a7d3b5ecc63838a6233950ad0ce6..a3d715d9b90b5b1ca4a3c3308a4f3c04
 +
 +    }
 +
-+    // Martijn end - survival debug stick
++    // Suki end - survival debug stick
 +
      public Messages messages;
  
@@ -39,7 +39,7 @@ index 445f21c3764d148de937f558e3f087ae2006733d..a22f59bec9e070464e60c01d5daeb5e5
          VERTICAL(new Direction[]{Direction.UP, Direction.DOWN}, new Direction.Axis[]{Direction.Axis.Y});
  
 -        private final Direction[] faces;
-+        public final Direction[] faces; // Martijn - survival debug stick
++        public final Direction[] faces; // Suki - survival debug stick
          private final Direction.Axis[] axis;
  
          private Plane(Direction[] facingArray, Direction.Axis[] axisArray) {
@@ -67,7 +67,7 @@ index 5a60f5dc202c44b06ca34e9a19d45cb715f74fd3..280d28257ff2c28775f8a236a324d8c6
                  }
                  // CraftBukkit end
  
-+                // Martijn start - survival debug stick, survival barrier blocks, survival light blocks
++                // Suki start - survival debug stick, survival barrier blocks, survival light blocks
 +                boolean canCreativeDestroy = false;
 +                // Check for creative
                  if (this.isCreative()) {
@@ -97,7 +97,7 @@ index 5a60f5dc202c44b06ca34e9a19d45cb715f74fd3..280d28257ff2c28775f8a236a324d8c6
 +                    }
 +                }
 +                if (canCreativeDestroy) {
-+                    // Martijn end - survival debug stick, survival barrier blocks, survival light blocks
++                    // Suki end - survival debug stick, survival barrier blocks, survival light blocks
                      this.destroyAndAck(pos, sequence, "creative destroy");
                      return;
                  }
@@ -214,7 +214,7 @@ index 09124f20d00d5631fa52e84cc0e8645caaa80e35..146cf10455214e62773bc1b8670674c9
          return InteractionResult.sidedSuccess(world.isClientSide);
      }
  
-+    // Martijn start - survival debug stick
++    // Suki start - survival debug stick
 +    private final Object2LongMap<UUID> lastSwitchPropertyTimestamp = new Object2LongOpenHashMap<>();
 +
      private boolean handleInteraction(Player player, BlockState state, LevelAccessor world, BlockPos pos, boolean update, ItemStack stack) {
@@ -298,7 +298,7 @@ index 09124f20d00d5631fa52e84cc0e8645caaa80e35..146cf10455214e62773bc1b8670674c9
 +    private static <T extends Comparable<T>> BlockState cycleState(BlockState state, Property<T> property, @Nullable Collection<?> possibleValues, boolean inverse) {
 +        return (BlockState) state.setValue(property, DebugStickItem.getRelative(possibleValues == null ? property.getPossibleValues() : (Collection<T>) possibleValues, state.getValue(property), inverse)); // CraftBukkit - decompile error
      }
-+    // Martijn end - survival debug stick
++    // Suki end - survival debug stick
  
      private static <T> T getRelative(Iterable<T> elements, @Nullable T current, boolean inverse) {
          return inverse ? Util.findPreviousInIterable(elements, current) : Util.findNextInIterable(elements, current);
@@ -307,7 +307,7 @@ index 09124f20d00d5631fa52e84cc0e8645caaa80e35..146cf10455214e62773bc1b8670674c9
          return property.getName(state.getValue(property));
      }
 +
-+    // Martijn start - survival debug stick
++    // Suki start - survival debug stick
 +    private static final Map<Block, Map<Property<?>, Set<Object>>> changeablePropertyValues;
 +    private static <T extends Comparable<T>> void registerChangeablePropertyValues(Block[] blocks, Property<T> property, Collection<T> values) {
 +        if (blocks.length == 0) return;
@@ -423,7 +423,7 @@ index 09124f20d00d5631fa52e84cc0e8645caaa80e35..146cf10455214e62773bc1b8670674c9
 +        }
 +        return !values.isEmpty();
 +    }
-+    // Martijn end - survival debug stick
++    // Suki end - survival debug stick
 +
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
@@ -462,11 +462,11 @@ index 8e06bc11fb28baee3407bbfe9d7b3689d6f85ff2..843e04d58c7aca4bd11ab84cf42120cd
  public final class CraftDefaultPermissions {
      private static final String ROOT = "minecraft";
  
-+    // Martijn start - survival debug stick
++    // Suki start - survival debug stick
 +    public static Permission debugStick;
 +    public static Permission alwaysDebugStick;
 +    public static Permission survivallikeDebugStick;
-+    // Martijn end - survival debug stick
++    // Suki end - survival debug stick
 +
      private CraftDefaultPermissions() {}
  
@@ -477,11 +477,11 @@ index 8e06bc11fb28baee3407bbfe9d7b3689d6f85ff2..843e04d58c7aca4bd11ab84cf42120cd
          DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".nbt.copy", "Gives the user the ability to copy NBT in creative", org.bukkit.permissions.PermissionDefault.TRUE, parent);
 -        DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".debugstick", "Gives the user the ability to use the debug stick in creative", org.bukkit.permissions.PermissionDefault.OP, parent);
 -        DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".debugstick.always", "Gives the user the ability to use the debug stick in all game modes", org.bukkit.permissions.PermissionDefault.FALSE/* , parent */); // Paper - should not have this parent, as it's not a "vanilla" utility
-+        // Martijn start - survival debug stick
++        // Suki start - survival debug stick
 +        debugStick = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".debugstick", "Gives the user the ability to use the debug stick in creative", org.bukkit.permissions.PermissionDefault.OP, parent);
 +        alwaysDebugStick = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".debugstick.always", "Gives the user the ability to use the debug stick in all game modes", org.bukkit.permissions.PermissionDefault.FALSE, parent);
 +        survivallikeDebugStick = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".debugstick.survivallike", "Gives the user the ability to partially use the debug stick in all game modes, with the only usages allowed being those compatible with survival mode gameplay", org.bukkit.permissions.PermissionDefault.FALSE, parent);
-+        // Martijn end - survival debug stick
++        // Suki end - survival debug stick
          DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".commandblock", "Gives the user the ability to use command blocks.", org.bukkit.permissions.PermissionDefault.OP, parent); // Paper
          // Spigot end
          parent.recalculatePermissibles();

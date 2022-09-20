@@ -10,9 +10,9 @@ index 1915058a26b536a786c356256ce971e6f190663a..90f506c167fb57a96c58359fa6d4949e
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -337,6 +337,21 @@ public class GlobalConfiguration extends ConfigurationPart {
  
-     // Martijn end - network-constrained chunk sending
+     // Suki end - network-constrained chunk sending
  
-+    // Martijn start - configurable TPS catch-up time
++    // Suki start - configurable TPS catch-up time
 +
 +    public TpsCatchup tpsCatchup;
 +
@@ -25,7 +25,7 @@ index 1915058a26b536a786c356256ce971e6f190663a..90f506c167fb57a96c58359fa6d4949e
 +
 +    }
 +
-+    // Martijn end - configurable TPS catch-up time
++    // Suki end - configurable TPS catch-up time
 +
      public Messages messages;
  
@@ -47,7 +47,7 @@ index b175ce7da568026476a95456bbedfc5307e394a1..cb027555e5f31e0cf2c58af070529784
                  this.profiler.popPush("nextTickWait");
                  this.mayHaveDelayedTasks = true;
 -                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + 50L, this.nextTickTime);
-+                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + GlobalConfiguration.get().tpsCatchup.millisFromNow, this.nextTickTime); // Martijn - configurable TPS catch-up time
++                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + GlobalConfiguration.get().tpsCatchup.millisFromNow, this.nextTickTime); // Suki - configurable TPS catch-up time
                  this.waitUntilNextTick();
                  this.profiler.pop();
                  this.endMetricsRecordingTick();

@@ -13,14 +13,14 @@ index 37d4773e0404a0fceb484760883a767c3133ad7e..8f3dfda2483885dad01edb444021ba34
          this.packetWrites.getAndIncrement(); // must be befeore using canFlush
          boolean effectiveFlush = flushConditional == null ? this.canFlush : flushConditional.booleanValue();
 -        final boolean flush = effectiveFlush || packet instanceof net.minecraft.network.protocol.game.ClientboundKeepAlivePacket || packet instanceof ClientboundDisconnectPacket; // no delay for certain packets
-+        // Martijn start - more packets without delay
++        // Suki start - more packets without delay
 +        final boolean flush = effectiveFlush || packet instanceof net.minecraft.network.protocol.game.ClientboundKeepAlivePacket || packet instanceof ClientboundDisconnectPacket
 +            || packet instanceof net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket
 +            || packet instanceof net.minecraft.network.protocol.game.ClientboundForgetLevelChunkPacket
 +            || packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket
 +            || packet instanceof net.minecraft.network.protocol.game.ClientboundMapItemDataPacket
 +            ; // no delay for certain packets
-+        // Martijn end - more packets without delay
++        // Suki end - more packets without delay
          // Paper end - add flush parameter
          ConnectionProtocol enumprotocol = ConnectionProtocol.getProtocolForPacket(packet);
          ConnectionProtocol enumprotocol1 = this.getCurrentProtocol();

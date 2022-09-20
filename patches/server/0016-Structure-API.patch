@@ -27,7 +27,7 @@ index 4947f9a00015b3dba1c829287defce71659ec908..606556f22fb002e46ffb6be80a9c1228
      private int maxY;
      private int maxZ;
  
-+    // Martijn start - structure API
++    // Suki start - structure API
 +
 +    private @Nullable CraftWorldStructureBoundingBox bukkit = null;
 +
@@ -38,7 +38,7 @@ index 4947f9a00015b3dba1c829287defce71659ec908..606556f22fb002e46ffb6be80a9c1228
 +        return this.bukkit;
 +    }
 +
-+    // Martijn end - structure API
++    // Suki end - structure API
 +
      public BoundingBox(BlockPos pos) {
          this(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
@@ -65,7 +65,7 @@ index 048e03bd416fc3b905df1d06117a99b2b47135da..ea31b02a817ce8b3b9e986e788e3d1cc
      private final StructurePieceType type;
      private static final Set<Block> SHAPE_CHECK_BLOCKS = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).build();
  
-+    // Martijn start - structure API
++    // Suki start - structure API
 +
 +    private @Nullable CraftWorldStructurePiece bukkit = null;
 +
@@ -76,7 +76,7 @@ index 048e03bd416fc3b905df1d06117a99b2b47135da..ea31b02a817ce8b3b9e986e788e3d1cc
 +        return this.bukkit;
 +    }
 +
-+    // Martijn end - structure API
++    // Suki end - structure API
 +
      protected StructurePiece(StructurePieceType type, int length, BoundingBox boundingBox) {
          this.type = type;
@@ -113,7 +113,7 @@ index 902a35b63c0b1c87eff3d850589ba1d272d0cace..57f1fd35cb32e50dbc94792fa97c12f8
      @Nullable
      private volatile BoundingBox cachedBoundingBox;
  
-+    // Martijn start - structure API
++    // Suki start - structure API
 +
 +    private @Nullable CraftWorldStructure bukkit = null;
 +
@@ -124,7 +124,7 @@ index 902a35b63c0b1c87eff3d850589ba1d272d0cace..57f1fd35cb32e50dbc94792fa97c12f8
 +        return this.bukkit;
 +    }
 +
-+    // Martijn end - structure API
++    // Suki end - structure API
 +
      public StructureStart(Structure structure, ChunkPos pos, int references, PiecesContainer children) {
          this.structure = structure;
@@ -135,7 +135,7 @@ index 0000000000000000000000000000000000000000..04e7bb1b09df74c2b23c3b34a572ff00
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructure.java
 @@ -0,0 +1,77 @@
-+// Martijn - structure API
++// Suki - structure API
 +
 +package nl.martijnmuijsers.paper.structure;
 +
@@ -218,7 +218,7 @@ index 0000000000000000000000000000000000000000..e9c6c62f7d9b62e531b1c64e823f2f1d
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructureBoundingBox.java
 @@ -0,0 +1,32 @@
-+// Martijn - structure API
++// Suki - structure API
 +
 +package nl.martijnmuijsers.paper.structure;
 +
@@ -256,7 +256,7 @@ index 0000000000000000000000000000000000000000..c5e428bbb05f801da88449307e7c75b0
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePiece.java
 @@ -0,0 +1,164 @@
-+// Martijn - structure API
++// Suki - structure API
 +
 +package nl.martijnmuijsers.paper.structure;
 +
@@ -426,7 +426,7 @@ index 0000000000000000000000000000000000000000..1c239af1b0d542665014f11101e33991
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePieceType.java
 @@ -0,0 +1,32 @@
-+// Martijn - structure API
++// Suki - structure API
 +
 +package nl.martijnmuijsers.paper.structure;
 +
@@ -509,7 +509,7 @@ index c4c98a3ab24aac7fe0db11662af726db49930f03..176df5b16876e2c5b718fe797078da64
      }
      // Paper end
  
-+    // Martijn start - structure API
++    // Suki start - structure API
 +
 +    @Override
 +    public @NotNull List<@NotNull WorldStructure> getWorldStructuresAt(@NotNull Block block, @Nullable ConfiguredStructure structureType) {
@@ -546,7 +546,7 @@ index c4c98a3ab24aac7fe0db11662af726db49930f03..176df5b16876e2c5b718fe797078da64
 +        return this.getWorldStructuresAt(block, null);
 +    }
 +
-+    // Martijn end - structure API
++    // Suki end - structure API
 +
      private static final Random rand = new Random();
  

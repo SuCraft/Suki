@@ -20,7 +20,7 @@ index 969968cfcf2c2ed019fab3407b22d4974926bdd2..37d4773e0404a0fceb484760883a767c
          }
          // Paper start
          private static boolean canSendImmediate(Connection networkManager, Packet<?> packet) {
-+            // Martijn start - more packets that can also be sent immediately
++            // Suki start - more packets that can also be sent immediately
              return networkManager.isPending || networkManager.protocol != ConnectionProtocol.PLAY ||
                  packet instanceof net.minecraft.network.protocol.game.ClientboundKeepAlivePacket ||
                  packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerChatPacket ||
@@ -32,7 +32,7 @@ index 969968cfcf2c2ed019fab3407b22d4974926bdd2..37d4773e0404a0fceb484760883a767c
 +                packet instanceof net.minecraft.network.protocol.game.ClientboundBossEventPacket ||
 +                packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket ||
 +                packet instanceof net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
-+            // Martijn end - more packets that can be sent immediately
++            // Suki end - more packets that can be sent immediately
          }
          // Paper end
      }

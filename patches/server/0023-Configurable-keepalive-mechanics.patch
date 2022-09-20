@@ -10,9 +10,9 @@ index 2be6a210e276d5cf02dc487c721e7da1ac061419..51ab2c492e68a7d3b5ecc63838a62339
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -180,6 +180,29 @@ public class GlobalConfiguration extends ConfigurationPart {
  
-     // Martijn end - hide plugins
+     // Suki end - hide plugins
  
-+    // Martijn start - configurable keepalive
++    // Suki start - configurable keepalive
 +
 +    public Keepalive keepalive;
 +
@@ -33,7 +33,7 @@ index 2be6a210e276d5cf02dc487c721e7da1ac061419..51ab2c492e68a7d3b5ecc63838a62339
 +
 +    }
 +
-+    // Martijn end - configurable keepalive
++    // Suki end - configurable keepalive
 +
      public Messages messages;
  
@@ -64,7 +64,7 @@ index f34e0b05b8bf279e423b6fffa3b9f999eb6c1969..747e1fd98e4b0e9350ed6e75fa3c0e60
          if (wtf.etil.mirai.MiraiConfig.useAlternateKeepAlive) {
              if (elapsedTime >= 1000L) { // 1 second
 -                if (!processedDisconnect && keepAlives.size() > KEEPALIVE_LIMIT) {
-+                if (!processedDisconnect && keepAlives.size() > KEEPALIVE_LIMIT && GlobalConfiguration.get().keepalive.kick.lateResponse) { // Martijn - no disconnect on late or wrong keepalive
++                if (!processedDisconnect && keepAlives.size() > KEEPALIVE_LIMIT && GlobalConfiguration.get().keepalive.kick.lateResponse) { // Suki - no disconnect on late or wrong keepalive
                      LOGGER.warn("{} was kicked due to keepalive timeout!", player.getName());
                      disconnect(Component.translatable("disconnect.timeout"));
                  } else {
@@ -73,7 +73,7 @@ index f34e0b05b8bf279e423b6fffa3b9f999eb6c1969..747e1fd98e4b0e9350ed6e75fa3c0e60
          // Purpur end
  
 -        if (this.keepAlivePending) {
-+        if (this.keepAlivePending && GlobalConfiguration.get().keepalive.kick.lateResponse) { // Martijn - no disconnect on late or wrong keepalive
++        if (this.keepAlivePending && GlobalConfiguration.get().keepalive.kick.lateResponse) { // Suki - no disconnect on late or wrong keepalive
              if (!this.processedDisconnect && elapsedTime >= KEEPALIVE_LIMIT) { // check keepalive limit, don't fire if already disconnected
                  ServerGamePacketListenerImpl.LOGGER.warn("{} was kicked due to keepalive timeout!", this.player.getScoreboardName()); // more info
 -                this.disconnect(Component.translatable("disconnect.timeout", me.titaniumtown.Constants.EMPTY_object_arr), org.bukkit.event.player.PlayerKickEvent.Cause.TIMEOUT); // Paper - kick event cause // JettPack
@@ -81,7 +81,7 @@ index f34e0b05b8bf279e423b6fffa3b9f999eb6c1969..747e1fd98e4b0e9350ed6e75fa3c0e60
              }
          } else {
 -            if (elapsedTime >= 15000L) { // 15 seconds
-+            if (elapsedTime >= GlobalConfiguration.get().keepalive.sendInterval) { // Martijn - configurable keepalive
++            if (elapsedTime >= GlobalConfiguration.get().keepalive.sendInterval) { // Suki - configurable keepalive
                  this.keepAlivePending = true;
                  this.keepAliveTime = currentTime;
                  this.keepAliveChallenge = currentTime;
@@ -94,7 +94,7 @@ index f34e0b05b8bf279e423b6fffa3b9f999eb6c1969..747e1fd98e4b0e9350ed6e75fa3c0e60
 -            this.disconnect(Component.translatable("disconnect.timeout"), org.bukkit.event.player.PlayerKickEvent.Cause.TIMEOUT); // Paper - kick event cause
 -            });
 -            // Paper end
-+            // Martijn start - no disconnect on late or wrong keepalive
++            // Suki start - no disconnect on late or wrong keepalive
 +            // Do not disconnect when keepalive challenge is wrong
 +            if (!((packet.getId() == this.keepAliveChallenge || !GlobalConfiguration.get().keepalive.kick.wrongResponseId) && (this.keepAlivePending || !GlobalConfiguration.get().keepalive.kick.unexpectedResponse))) {
 +                // Paper start - This needs to be handled on the main thread for plugins
@@ -103,7 +103,7 @@ index f34e0b05b8bf279e423b6fffa3b9f999eb6c1969..747e1fd98e4b0e9350ed6e75fa3c0e60
 +                });
 +                // Paper end
 +            }
-+            // Martijn end - no disconnect on late or wrong keepalive
++            // Suki end - no disconnect on late or wrong keepalive
          }
  
      }

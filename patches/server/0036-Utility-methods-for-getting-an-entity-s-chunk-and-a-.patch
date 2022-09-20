@@ -80,7 +80,7 @@ index 712cdc009ceea543f9e430398affe09e5957af8a..9c8a931c456c411952a636708c752dac
      }
      // Paper end
  
-+    // Martijn start - utility functions for getting the player's level UUID
++    // Suki start - utility functions for getting the player's level UUID
 +
 +    public @Nullable UUID getLevelUUID() {
 +        ServerLevel level = this.getLevel();
@@ -88,7 +88,7 @@ index 712cdc009ceea543f9e430398affe09e5957af8a..9c8a931c456c411952a636708c752dac
 +        return level.uuid;
 +    }
 +
-+    // Martijn end - utility functions for getting the player's level UUID
++    // Suki end - utility functions for getting the player's level UUID
 +
      // Yes, this doesn't match Vanilla, but it's the best we can do for now.
      // If this is an issue, PRs are welcome
@@ -101,7 +101,7 @@ index a21f7de5331fc31a291fe177e6e1e843c7895cee..2331ed3bdf11df468b8c39eaa076ca5c
          this.eyeHeight = this.getEyeHeight(net.minecraft.world.entity.Pose.STANDING, this.dimensions);
      }
  
-+    // Martijn start - utility functions for getting the entity's chunk
++    // Suki start - utility functions for getting the entity's chunk
 +
 +    public int getChunkX() {
 +        return this.getBlockX() >> 4;
@@ -119,7 +119,7 @@ index a21f7de5331fc31a291fe177e6e1e843c7895cee..2331ed3bdf11df468b8c39eaa076ca5c
 +        return this.getChunkPos().longKey;
 +    }
 +
-+    // Martijn end - utility functions for getting the entity's chunk
++    // Suki end - utility functions for getting the entity's chunk
 +
      public boolean isColliding(BlockPos pos, BlockState state) {
          VoxelShape voxelshape = state.getCollisionShape(this.level, pos, CollisionContext.of(this));

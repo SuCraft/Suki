@@ -10,9 +10,9 @@ index 517baa6c18ba13c06fbbedac4ddbc644e6d0fe0e..3182b83f16d324b9f40d0920f29af6b1
 +++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 @@ -258,6 +258,20 @@ public class WorldConfiguration extends ConfigurationPart {
  
-     // Martijn end - network-constrained chunk sending
+     // Suki end - network-constrained chunk sending
  
-+    // Martijn start - bone meal regrows bark
++    // Suki start - bone meal regrows bark
 +
 +    public BoneMealRegrowsBark boneMealRegrowsBark;
 +
@@ -24,7 +24,7 @@ index 517baa6c18ba13c06fbbedac4ddbc644e6d0fe0e..3182b83f16d324b9f40d0920f29af6b1
 +
 +    }
 +
-+    // Martijn end - bone meal regrows bark
++    // Suki end - bone meal regrows bark
 +
      public Anticheat anticheat;
  
@@ -51,7 +51,7 @@ index ad0af20dc32a518110c5e74a7ac54ea1c3b93bcb..fa6c00abfc9d28aaac8387a6874c5a2f
          BlockPos blockposition1 = blockposition.relative(itemactioncontext.getClickedFace());
  
 -        if (BoneMealItem.growCrop(itemactioncontext.getItemInHand(), world, blockposition)) {
-+        if (BoneMealItem.growCrop(itemactioncontext.getPlayer(), itemactioncontext.getItemInHand(), world, blockposition)) { // Martijn - bone meal regrows bark
++        if (BoneMealItem.growCrop(itemactioncontext.getPlayer(), itemactioncontext.getItemInHand(), world, blockposition)) { // Suki - bone meal regrows bark
              if (!world.isClientSide) {
                  world.levelEvent(1505, blockposition, 0);
              }
@@ -59,12 +59,12 @@ index ad0af20dc32a518110c5e74a7ac54ea1c3b93bcb..fa6c00abfc9d28aaac8387a6874c5a2f
      }
  
      public static boolean growCrop(ItemStack stack, Level world, BlockPos pos) {
-+        // Martijn start - bone meal regrows bark
++        // Suki start - bone meal regrows bark
 +        return growCrop(null, stack, world, pos);
 +    }
 +
 +    public static boolean growCrop(@Nullable Player player, ItemStack stack, Level world, BlockPos pos) {
-+        // Martijn end - bone meal regrows bark
++        // Suki end - bone meal regrows bark
          BlockState iblockdata = world.getBlockState(pos);
  
          if (iblockdata.getBlock() instanceof BonemealableBlock) {
@@ -74,7 +74,7 @@ index ad0af20dc32a518110c5e74a7ac54ea1c3b93bcb..fa6c00abfc9d28aaac8387a6874c5a2f
                  if (world instanceof ServerLevel) {
 -                    if (iblockfragileplantelement.isBonemealSuccess(world, world.random, pos, iblockdata)) {
 -                        iblockfragileplantelement.performBonemeal((ServerLevel) world, world.random, pos, iblockdata);
-+                    // Martijn start - bone meal regrows bark
++                    // Suki start - bone meal regrows bark
 +                    boolean success = iblockfragileplantelement.isBonemealSuccess(world, world.random, pos, iblockdata);
 +                    if (success) {
 +                        iblockfragileplantelement.performBonemeal(player, (ServerLevel) world, world.random, pos, iblockdata);
@@ -84,7 +84,7 @@ index ad0af20dc32a518110c5e74a7ac54ea1c3b93bcb..fa6c00abfc9d28aaac8387a6874c5a2f
 +                    if (iblockfragileplantelement.isBonemealUsedUp(world, world.random, pos, iblockdata, success)) {
 +                        stack.shrink(1);
 +                    }
-+                    // Martijn end - bone meal regrows bark
++                    // Suki end - bone meal regrows bark
                  }
  
                  return true;
@@ -111,7 +111,7 @@ index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..5b5086f4016fc9015ac53bafd2c80bc7
 -    public static final Block STRIPPED_DARK_OAK_LOG = register("stripped_dark_oak_log", log(MaterialColor.COLOR_BROWN, MaterialColor.COLOR_BROWN));
 -    public static final Block STRIPPED_OAK_LOG = register("stripped_oak_log", log(MaterialColor.WOOD, MaterialColor.WOOD));
 -    public static final Block STRIPPED_MANGROVE_LOG = register("stripped_mangrove_log", log(MaterialColor.COLOR_RED, MaterialColor.COLOR_RED));
-+    // Martijn start - bone meal regrows bark
++    // Suki start - bone meal regrows bark
 +    public static final Block STRIPPED_SPRUCE_LOG = register("stripped_spruce_log", strippedLog(SPRUCE_LOG, MaterialColor.PODZOL, MaterialColor.PODZOL));
 +    public static final Block STRIPPED_BIRCH_LOG = register("stripped_birch_log", strippedLog(BIRCH_LOG, MaterialColor.SAND, MaterialColor.SAND));
 +    public static final Block STRIPPED_JUNGLE_LOG = register("stripped_jungle_log", strippedLog(JUNGLE_LOG, MaterialColor.DIRT, MaterialColor.DIRT));
@@ -119,7 +119,7 @@ index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..5b5086f4016fc9015ac53bafd2c80bc7
 +    public static final Block STRIPPED_DARK_OAK_LOG = register("stripped_dark_oak_log", strippedLog(DARK_OAK_LOG, MaterialColor.COLOR_BROWN, MaterialColor.COLOR_BROWN));
 +    public static final Block STRIPPED_OAK_LOG = register("stripped_oak_log", strippedLog(OAK_LOG, MaterialColor.WOOD, MaterialColor.WOOD));
 +    public static final Block STRIPPED_MANGROVE_LOG = register("stripped_mangrove_log", strippedLog(MANGROVE_LOG, MaterialColor.COLOR_RED, MaterialColor.COLOR_RED));
-+    // Martijn end - bone meal regrows bark
++    // Suki end - bone meal regrows bark
      public static final Block OAK_WOOD = register("oak_wood", new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(2.0F).sound(SoundType.WOOD)));
      public static final Block SPRUCE_WOOD = register("spruce_wood", new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.PODZOL).strength(2.0F).sound(SoundType.WOOD)));
      public static final Block BIRCH_WOOD = register("birch_wood", new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.SAND).strength(2.0F).sound(SoundType.WOOD)));
@@ -134,7 +134,7 @@ index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..5b5086f4016fc9015ac53bafd2c80bc7
 -    public static final Block STRIPPED_ACACIA_WOOD = register("stripped_acacia_wood", new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.COLOR_ORANGE).strength(2.0F).sound(SoundType.WOOD)));
 -    public static final Block STRIPPED_DARK_OAK_WOOD = register("stripped_dark_oak_wood", new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.COLOR_BROWN).strength(2.0F).sound(SoundType.WOOD)));
 -    public static final Block STRIPPED_MANGROVE_WOOD = register("stripped_mangrove_wood", log(MaterialColor.COLOR_RED, MaterialColor.COLOR_RED));
-+    // Martijn start - bone meal regrows bark
++    // Suki start - bone meal regrows bark
 +    public static final Block STRIPPED_OAK_WOOD = register("stripped_oak_wood", strippedWood(OAK_WOOD, MaterialColor.WOOD));
 +    public static final Block STRIPPED_SPRUCE_WOOD = register("stripped_spruce_wood", strippedWood(SPRUCE_WOOD, MaterialColor.PODZOL));
 +    public static final Block STRIPPED_BIRCH_WOOD = register("stripped_birch_wood", strippedWood(BIRCH_WOOD, MaterialColor.SAND));
@@ -142,7 +142,7 @@ index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..5b5086f4016fc9015ac53bafd2c80bc7
 +    public static final Block STRIPPED_ACACIA_WOOD = register("stripped_acacia_wood", strippedWood(ACACIA_WOOD, MaterialColor.COLOR_ORANGE));
 +    public static final Block STRIPPED_DARK_OAK_WOOD = register("stripped_dark_oak_wood", strippedWood(DARK_OAK_WOOD, MaterialColor.COLOR_BROWN));
 +    public static final Block STRIPPED_MANGROVE_WOOD = register("stripped_mangrove_wood", strippedWood(MANGROVE_WOOD, MaterialColor.COLOR_RED));
-+    // Martijn end - bone meal regrows bark
++    // Suki end - bone meal regrows bark
      public static final Block OAK_LEAVES = register("oak_leaves", leaves(SoundType.GRASS));
      public static final Block SPRUCE_LEAVES = register("spruce_leaves", leaves(SoundType.GRASS));
      public static final Block BIRCH_LEAVES = register("birch_leaves", leaves(SoundType.GRASS));
@@ -151,10 +151,10 @@ index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..5b5086f4016fc9015ac53bafd2c80bc7
      public static final Block SWEET_BERRY_BUSH = register("sweet_berry_bush", new SweetBerryBushBlock(BlockBehaviour.Properties.of(Material.PLANT).randomTicks().noCollission().sound(SoundType.SWEET_BERRY_BUSH)));
      public static final Block WARPED_STEM = register("warped_stem", netherStem(MaterialColor.WARPED_STEM));
 -    public static final Block STRIPPED_WARPED_STEM = register("stripped_warped_stem", netherStem(MaterialColor.WARPED_STEM));
-+    public static final Block STRIPPED_WARPED_STEM = register("stripped_warped_stem", strippedStem(WARPED_STEM, MaterialColor.WARPED_STEM)); // Martijn - bone meal regrows bark
++    public static final Block STRIPPED_WARPED_STEM = register("stripped_warped_stem", strippedStem(WARPED_STEM, MaterialColor.WARPED_STEM)); // Suki - bone meal regrows bark
      public static final Block WARPED_HYPHAE = register("warped_hyphae", new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.NETHER_WOOD, MaterialColor.WARPED_HYPHAE).strength(2.0F).sound(SoundType.STEM)));
 -    public static final Block STRIPPED_WARPED_HYPHAE = register("stripped_warped_hyphae", new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.NETHER_WOOD, MaterialColor.WARPED_HYPHAE).strength(2.0F).sound(SoundType.STEM)));
-+    public static final Block STRIPPED_WARPED_HYPHAE = register("stripped_warped_hyphae", strippedHyphae(WARPED_HYPHAE, MaterialColor.WARPED_HYPHAE)); // Martijn - bone meal regrows bark
++    public static final Block STRIPPED_WARPED_HYPHAE = register("stripped_warped_hyphae", strippedHyphae(WARPED_HYPHAE, MaterialColor.WARPED_HYPHAE)); // Suki - bone meal regrows bark
      public static final Block WARPED_NYLIUM = register("warped_nylium", new NyliumBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.WARPED_NYLIUM).requiresCorrectToolForDrops().strength(0.4F).sound(SoundType.NYLIUM).randomTicks()));
      public static final Block WARPED_FUNGUS = register("warped_fungus", new FungusBlock(BlockBehaviour.Properties.of(Material.PLANT, MaterialColor.COLOR_CYAN).instabreak().noCollission().sound(SoundType.FUNGUS), () -> {
          return TreeFeatures.WARPED_FUNGUS_PLANTED;
@@ -163,10 +163,10 @@ index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..5b5086f4016fc9015ac53bafd2c80bc7
      public static final Block NETHER_SPROUTS = register("nether_sprouts", new NetherSproutsBlock(BlockBehaviour.Properties.of(Material.REPLACEABLE_FIREPROOF_PLANT, MaterialColor.COLOR_CYAN).noCollission().instabreak().sound(SoundType.NETHER_SPROUTS).offsetType(BlockBehaviour.OffsetType.XZ)));
      public static final Block CRIMSON_STEM = register("crimson_stem", netherStem(MaterialColor.CRIMSON_STEM));
 -    public static final Block STRIPPED_CRIMSON_STEM = register("stripped_crimson_stem", netherStem(MaterialColor.CRIMSON_STEM));
-+    public static final Block STRIPPED_CRIMSON_STEM = register("stripped_crimson_stem", strippedStem(CRIMSON_STEM, MaterialColor.CRIMSON_STEM)); // Martijn - bone meal regrows bark
++    public static final Block STRIPPED_CRIMSON_STEM = register("stripped_crimson_stem", strippedStem(CRIMSON_STEM, MaterialColor.CRIMSON_STEM)); // Suki - bone meal regrows bark
      public static final Block CRIMSON_HYPHAE = register("crimson_hyphae", new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.NETHER_WOOD, MaterialColor.CRIMSON_HYPHAE).strength(2.0F).sound(SoundType.STEM)));
 -    public static final Block STRIPPED_CRIMSON_HYPHAE = register("stripped_crimson_hyphae", new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.NETHER_WOOD, MaterialColor.CRIMSON_HYPHAE).strength(2.0F).sound(SoundType.STEM)));
-+    public static final Block STRIPPED_CRIMSON_HYPHAE = register("stripped_crimson_hyphae", strippedHyphae(CRIMSON_HYPHAE, MaterialColor.CRIMSON_HYPHAE)); // Martijn - bone meal regrows bark
++    public static final Block STRIPPED_CRIMSON_HYPHAE = register("stripped_crimson_hyphae", strippedHyphae(CRIMSON_HYPHAE, MaterialColor.CRIMSON_HYPHAE)); // Suki - bone meal regrows bark
      public static final Block CRIMSON_NYLIUM = register("crimson_nylium", new NyliumBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.CRIMSON_NYLIUM).requiresCorrectToolForDrops().strength(0.4F).sound(SoundType.NYLIUM).randomTicks()));
      public static final Block CRIMSON_FUNGUS = register("crimson_fungus", new FungusBlock(BlockBehaviour.Properties.of(Material.PLANT, MaterialColor.NETHER).instabreak().noCollission().sound(SoundType.FUNGUS), () -> {
          return TreeFeatures.CRIMSON_FUNGUS_PLANTED;
@@ -184,7 +184,7 @@ index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..5b5086f4016fc9015ac53bafd2c80bc7
      }
  
 +
-+    // Martijn start - bone meal regrows bark
++    // Suki start - bone meal regrows bark
 +
 +    private static StrippedLogBlock strippedLog(@NotNull Block unstrippedBlock, MaterialColor topMapColor, MaterialColor sideMapColor) {
 +        return new StrippedLogBlock(unstrippedBlock, topMapColor, sideMapColor);
@@ -202,7 +202,7 @@ index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..5b5086f4016fc9015ac53bafd2c80bc7
 +        return new StrippedHyphaeBlock(unstrippedBlock, mapColor);
 +    }
 +
-+    // Martijn end - bone meal regrows bark
++    // Suki end - bone meal regrows bark
 +
      private static Block netherStem(MaterialColor mapColor) {
          return new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.NETHER_WOOD, (state) -> {
@@ -230,7 +230,7 @@ index 7ee556bed7009292331158ed51d97714ab5b777b..aa3de72d28f34624935fee4daa109f64
  
      void performBonemeal(ServerLevel world, RandomSource random, BlockPos pos, BlockState state);
 +
-+    // Martijn start - bone meal regrows bark
++    // Suki start - bone meal regrows bark
 +
 +    default void performBonemeal(@Nullable Player player, ServerLevel world, RandomSource random, BlockPos pos, BlockState state) {
 +        performBonemeal(world, random, pos, state);
@@ -240,7 +240,7 @@ index 7ee556bed7009292331158ed51d97714ab5b777b..aa3de72d28f34624935fee4daa109f64
 +        return true;
 +    }
 +
-+    // Martijn end - bone meal regrows bark
++    // Suki end - bone meal regrows bark
 +
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/StrippedBlock.java b/src/main/java/net/minecraft/world/level/block/StrippedBlock.java
@@ -249,7 +249,7 @@ index 0000000000000000000000000000000000000000..86f2705b9a943a8aa599d2354d1270e5
 --- /dev/null
 +++ b/src/main/java/net/minecraft/world/level/block/StrippedBlock.java
 @@ -0,0 +1,72 @@
-+// Martijn - bone meal regrows bark
++// Suki - bone meal regrows bark
 +
 +package net.minecraft.world.level.block;
 +
@@ -327,7 +327,7 @@ index 0000000000000000000000000000000000000000..67c3945e2c396cb2cb6dbf01771cc723
 --- /dev/null
 +++ b/src/main/java/net/minecraft/world/level/block/StrippedHyphaeBlock.java
 @@ -0,0 +1,20 @@
-+// Martijn - bone meal regrows bark
++// Suki - bone meal regrows bark
 +
 +package net.minecraft.world.level.block;
 +
@@ -353,7 +353,7 @@ index 0000000000000000000000000000000000000000..00e7ba6762e9dd3201db59f43dadd6d3
 --- /dev/null
 +++ b/src/main/java/net/minecraft/world/level/block/StrippedLogBlock.java
 @@ -0,0 +1,24 @@
-+// Martijn - bone meal regrows bark
++// Suki - bone meal regrows bark
 +
 +package net.minecraft.world.level.block;
 +
@@ -383,7 +383,7 @@ index 0000000000000000000000000000000000000000..e88632f8005dee66908c773fd4e37c0a
 --- /dev/null
 +++ b/src/main/java/net/minecraft/world/level/block/StrippedStemBlock.java
 @@ -0,0 +1,20 @@
-+// Martijn - bone meal regrows bark
++// Suki - bone meal regrows bark
 +
 +package net.minecraft.world.level.block;
 +
@@ -409,7 +409,7 @@ index 0000000000000000000000000000000000000000..4d99b2911919e486f368faad86b4e47f
 --- /dev/null
 +++ b/src/main/java/net/minecraft/world/level/block/StrippedWoodBlock.java
 @@ -0,0 +1,20 @@
-+// Martijn - bone meal regrows bark
++// Suki - bone meal regrows bark
 +
 +package net.minecraft.world.level.block;
 +

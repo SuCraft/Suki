@@ -13,7 +13,7 @@ index b30e68dfe8ec6e11ec638daa4261856324822d7b..f34e0b05b8bf279e423b6fffa3b9f999
                  // Paper end
  
 -                if (d10 - d9 > Math.max(100.0D, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && !this.isSingleplayerOwner()) {
-+                if (org.spigotmc.SpigotConfig.checkMovedTooQuickly && d10 - d9 > Math.max(100.0D, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && !this.isSingleplayerOwner()) { // Martijn - configurable move checks
++                if (org.spigotmc.SpigotConfig.checkMovedTooQuickly && d10 - d9 > Math.max(100.0D, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && !this.isSingleplayerOwner()) { // Suki - configurable move checks
                  // CraftBukkit end
                      ServerGamePacketListenerImpl.LOGGER.warn("{} (vehicle of {}) moved too quickly! {},{},{}", new Object[]{entity.getName().getString(), this.player.getName().getString(), d6, d7, d8});
                      this.connection.send(new ClientboundMoveVehiclePacket(entity));
@@ -22,7 +22,7 @@ index b30e68dfe8ec6e11ec638daa4261856324822d7b..f34e0b05b8bf279e423b6fffa3b9f999
                  boolean flag2 = false;
  
 -                if (d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold) { // Spigot
-+                if (org.spigotmc.SpigotConfig.checkMovedWrongly && d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold) { // Spigot // Martijn - configurable move checks
++                if (org.spigotmc.SpigotConfig.checkMovedWrongly && d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold) { // Spigot // Suki - configurable move checks
                      flag2 = true; // Paper - diff on change, this should be moved wrongly
                      ServerGamePacketListenerImpl.LOGGER.warn("{} (vehicle of {}) moved wrongly! {}", new Object[]{entity.getName().getString(), this.player.getName().getString(), Math.sqrt(d10)});
                  }
@@ -31,7 +31,7 @@ index b30e68dfe8ec6e11ec638daa4261856324822d7b..f34e0b05b8bf279e423b6fffa3b9f999
                                  float f2 = this.player.isFallFlying() ? 300.0F : 100.0F;
  
 -                                if (d11 - d10 > Math.max(f2, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && !this.isSingleplayerOwner()) {
-+                                if (org.spigotmc.SpigotConfig.checkMovedTooQuickly && d11 - d10 > Math.max(f2, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && !this.isSingleplayerOwner()) { // Martijn - configurable move checks
++                                if (org.spigotmc.SpigotConfig.checkMovedTooQuickly && d11 - d10 > Math.max(f2, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && !this.isSingleplayerOwner()) { // Suki - configurable move checks
                                  // CraftBukkit end
                                      ServerGamePacketListenerImpl.LOGGER.warn("{} moved too quickly! {},{},{}", new Object[]{this.player.getName().getString(), d7, d8, d9});
                                      this.teleport(this.player.getX(), this.player.getY(), this.player.getZ(), this.player.getYRot(), this.player.getXRot());
@@ -40,7 +40,7 @@ index b30e68dfe8ec6e11ec638daa4261856324822d7b..f34e0b05b8bf279e423b6fffa3b9f999
                              boolean flag2 = false;
  
 -                            if (!this.player.isChangingDimension() && d11 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !this.player.isSleeping() && !this.player.gameMode.isCreative() && this.player.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) { // Spigot
-+                            if (!this.player.isChangingDimension() && org.spigotmc.SpigotConfig.checkMovedWrongly && d11 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !this.player.isSleeping() && !this.player.gameMode.isCreative() && this.player.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) { // Spigot // Martijn - configurable move checks
++                            if (!this.player.isChangingDimension() && org.spigotmc.SpigotConfig.checkMovedWrongly && d11 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !this.player.isSleeping() && !this.player.gameMode.isCreative() && this.player.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) { // Spigot // Suki - configurable move checks
                                  flag2 = true; // Paper - diff on change, this should be moved wrongly
                                  ServerGamePacketListenerImpl.LOGGER.warn("{} moved wrongly!", this.player.getName().getString());
                              }
@@ -52,20 +52,20 @@ index 5d162f59fc5ef9adf7fa762b137bbcfca745d9c5..9a661eeea83e9954ff972f555301a60c
      }
  
      public static double movedWronglyThreshold;
-+    public static boolean checkMovedWrongly; // Martijn - configurable move checks
++    public static boolean checkMovedWrongly; // Suki - configurable move checks
      private static void movedWronglyThreshold()
      {
 -        SpigotConfig.movedWronglyThreshold = SpigotConfig.getDouble( "settings.moved-wrongly-threshold", 0.0625D );
 +        SpigotConfig.movedWronglyThreshold = SpigotConfig.getDouble("settings.moved-wrongly-threshold", 0.0625D);
-+        SpigotConfig.checkMovedWrongly = SpigotConfig.getBoolean( "settings.check-moved-wrongly", true ); // Martijn end - configurable move checks
++        SpigotConfig.checkMovedWrongly = SpigotConfig.getBoolean( "settings.check-moved-wrongly", true ); // Suki end - configurable move checks
      }
  
      public static double movedTooQuicklyMultiplier;
-+    public static boolean checkMovedTooQuickly; // Martijn - configurable move checks
++    public static boolean checkMovedTooQuickly; // Suki - configurable move checks
      private static void movedTooQuicklyMultiplier()
      {
          SpigotConfig.movedTooQuicklyMultiplier = SpigotConfig.getDouble( "settings.moved-too-quickly-multiplier", 10.0D );
-+        SpigotConfig.checkMovedTooQuickly = SpigotConfig.getBoolean( "settings.check-moved-too-quickly", true ); // Martijn end - configurable move checks
++        SpigotConfig.checkMovedTooQuickly = SpigotConfig.getBoolean( "settings.check-moved-too-quickly", true ); // Suki end - configurable move checks
      }
  
      public static double maxHealth = 2048;

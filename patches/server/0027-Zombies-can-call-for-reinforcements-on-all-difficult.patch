@@ -23,15 +23,15 @@ index 503ec4de23cecc7f2d813a59703ea8165fa84c76..6cff7953d18f36728274d0c98ee1cfa2
      @Setting(Configuration.VERSION_FIELD)
      public int version = CURRENT_VERSION;
  
-+    // Martijn start - difficulty changes
++    // Suki start - difficulty changes
 +
 +    public DifficultyChanges difficultyChanges;
 +
 +    public class DifficultyChanges extends ConfigurationPart {
-+        public boolean zombieReinforcementsOnAllDifficulties = false; // Martijn - zombies can call for reinforcements on all difficulties
++        public boolean zombieReinforcementsOnAllDifficulties = false; // Suki - zombies can call for reinforcements on all difficulties
 +    }
 +
-+    // Martijn end - difficulty changes
++    // Suki end - difficulty changes
 +
      public Anticheat anticheat;
  
@@ -45,7 +45,7 @@ index a9756c298348a0f1551841540bbe826732ae386a..1845cae0fabfe2bd3dff2453d936a463
              }
  
 -            if (entityliving != null && this.level.getDifficulty() == Difficulty.HARD && (double) this.random.nextFloat() < this.getAttributeValue(Attributes.SPAWN_REINFORCEMENTS_CHANCE) && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
-+            if (entityliving != null && (this.level.getDifficulty() == Difficulty.HARD || (this.level.getDifficulty() != Difficulty.PEACEFUL && this.level.paperConfig().difficultyChanges.zombieReinforcementsOnAllDifficulties)) && (double) this.random.nextFloat() < this.getAttributeValue(Attributes.SPAWN_REINFORCEMENTS_CHANCE) && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) { // Martijn - zombies can call for reinforcements on all difficulties
++            if (entityliving != null && (this.level.getDifficulty() == Difficulty.HARD || (this.level.getDifficulty() != Difficulty.PEACEFUL && this.level.paperConfig().difficultyChanges.zombieReinforcementsOnAllDifficulties)) && (double) this.random.nextFloat() < this.getAttributeValue(Attributes.SPAWN_REINFORCEMENTS_CHANCE) && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) { // Suki - zombies can call for reinforcements on all difficulties
                  int i = Mth.floor(this.getX());
                  int j = Mth.floor(this.getY());
                  int k = Mth.floor(this.getZ());

@@ -12,7 +12,7 @@ index 0130e2c3c047055fbea9c3d893a9b4593fa10ed2..cb79203603f5083a585b514115566dda
      @Setting(Configuration.VERSION_FIELD)
      public int version = CURRENT_VERSION;
  
-+    // Martijn start - custom strongholds
++    // Suki start - custom strongholds
 +
 +    public CustomStrongholds customStrongholds;
 +
@@ -145,7 +145,7 @@ index 0130e2c3c047055fbea9c3d893a9b4593fa10ed2..cb79203603f5083a585b514115566dda
 +
 +    }
 +
-+    // Martijn end - custom strongholds
++    // Suki end - custom strongholds
 +
      public Messages messages;
  
@@ -167,7 +167,7 @@ index 712e249ebe86d9adabf2bb816eea45543061efd3..de8a9a5fae3cfe9941481f1500a9a807
          Advancement advancement10 = Advancement.Builder.advancement().parent(advancement9).display(Items.FLINT_AND_STEEL, Component.translatable("advancements.story.enter_the_nether.title"), Component.translatable("advancements.story.enter_the_nether.description"), (ResourceLocation)null, FrameType.TASK, true, true, false).addCriterion("entered_nether", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(Level.NETHER)).save(consumer, "story/enter_the_nether");
          Advancement.Builder.advancement().parent(advancement10).display(Items.GOLDEN_APPLE, Component.translatable("advancements.story.cure_zombie_villager.title"), Component.translatable("advancements.story.cure_zombie_villager.description"), (ResourceLocation)null, FrameType.GOAL, true, true, false).addCriterion("cured_zombie", CuredZombieVillagerTrigger.TriggerInstance.curedZombieVillager()).save(consumer, "story/cure_zombie_villager");
 -        Advancement advancement11 = Advancement.Builder.advancement().parent(advancement10).display(Items.ENDER_EYE, Component.translatable("advancements.story.follow_ender_eye.title"), Component.translatable("advancements.story.follow_ender_eye.description"), (ResourceLocation)null, FrameType.TASK, true, true, false).addCriterion("in_stronghold", PlayerTrigger.TriggerInstance.located(LocationPredicate.inStructure(BuiltinStructures.STRONGHOLD))).save(consumer, "story/follow_ender_eye");
-+        Advancement advancement11 = Advancement.Builder.advancement().parent(advancement10).display(Items.ENDER_EYE, Component.translatable("advancements.story.follow_ender_eye.title"), Component.translatable("advancements.story.follow_ender_eye.description"), (ResourceLocation)null, FrameType.TASK, true, true, false).requirements(RequirementsStrategy.OR).addCriterion("in_stronghold", PlayerTrigger.TriggerInstance.located(LocationPredicate.inStructure(BuiltinStructures.STRONGHOLD))).addCriterion("in_stronghold_surface", PlayerTrigger.TriggerInstance.located(LocationPredicate.inStructure(SuCraftBuiltinStructures.STRONGHOLD_SURFACE))).save(consumer, "story/follow_ender_eye"); // Martijn - custom strongholds - surface strongholds
++        Advancement advancement11 = Advancement.Builder.advancement().parent(advancement10).display(Items.ENDER_EYE, Component.translatable("advancements.story.follow_ender_eye.title"), Component.translatable("advancements.story.follow_ender_eye.description"), (ResourceLocation)null, FrameType.TASK, true, true, false).requirements(RequirementsStrategy.OR).addCriterion("in_stronghold", PlayerTrigger.TriggerInstance.located(LocationPredicate.inStructure(BuiltinStructures.STRONGHOLD))).addCriterion("in_stronghold_surface", PlayerTrigger.TriggerInstance.located(LocationPredicate.inStructure(SuCraftBuiltinStructures.STRONGHOLD_SURFACE))).save(consumer, "story/follow_ender_eye"); // Suki - custom strongholds - surface strongholds
          Advancement.Builder.advancement().parent(advancement11).display(Blocks.END_STONE, Component.translatable("advancements.story.enter_the_end.title"), Component.translatable("advancements.story.enter_the_end.description"), (ResourceLocation)null, FrameType.TASK, true, true, false).addCriterion("entered_end", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(Level.END)).save(consumer, "story/enter_the_end");
      }
  }
@@ -197,7 +197,7 @@ index ef50bc6a61c074c9b9f6a12dc465d407aec95d19..e497632891b5534b76943d9a4a24bf2d
      Holder<StructureSet> NETHER_FOSSILS = register(BuiltinStructureSets.NETHER_FOSSILS, Structures.NETHER_FOSSIL, new RandomSpreadStructurePlacement(2, 1, RandomSpreadType.LINEAR, 14357921));
      Holder<StructureSet> END_CITIES = register(BuiltinStructureSets.END_CITIES, Structures.END_CITY, new RandomSpreadStructurePlacement(20, 11, RandomSpreadType.TRIANGULAR, 10387313));
 -    Holder<StructureSet> STRONGHOLDS = register(BuiltinStructureSets.STRONGHOLDS, Structures.STRONGHOLD, new ConcentricRingsStructurePlacement(32, 3, 128, BuiltinRegistries.BIOME.getOrCreateTag(BiomeTags.STRONGHOLD_BIASED_TO)));
-+    Holder<StructureSet> STRONGHOLDS = register(BuiltinStructureSets.STRONGHOLDS, new StructureSet(List.of(StructureSet.entry(Structures.STRONGHOLD, 1), StructureSet.entry(SuCraftStructures.STRONGHOLD_SURFACE, 100)), new ConcentricRingsStructurePlacement(32, 3, 128, BuiltinRegistries.BIOME.getOrCreateTag(BiomeTags.STRONGHOLD_BIASED_TO)))); // Martijn - custom strongholds - surface strongholds
++    Holder<StructureSet> STRONGHOLDS = register(BuiltinStructureSets.STRONGHOLDS, new StructureSet(List.of(StructureSet.entry(Structures.STRONGHOLD, 1), StructureSet.entry(SuCraftStructures.STRONGHOLD_SURFACE, 100)), new ConcentricRingsStructurePlacement(32, 3, 128, BuiltinRegistries.BIOME.getOrCreateTag(BiomeTags.STRONGHOLD_BIASED_TO)))); // Suki - custom strongholds - surface strongholds
  
      static Holder<StructureSet> bootstrap(Registry<StructureSet> registry) {
          return registry.holders().iterator().next();
@@ -210,7 +210,7 @@ index c063227cdf647897e8cbd6aea9a1465405e612d9..6783ae575dcc711a44ab61f7588d7e31
      public static final Holder<Structure> SHIPWRECK_BEACHED = register(BuiltinStructures.SHIPWRECK_BEACHED, new ShipwreckStructure(structure(BiomeTags.HAS_SHIPWRECK_BEACHED, TerrainAdjustment.NONE), true));
      public static final Holder<Structure> SWAMP_HUT = register(BuiltinStructures.SWAMP_HUT, new SwampHutStructure(structure(BiomeTags.HAS_SWAMP_HUT, Map.of(MobCategory.MONSTER, new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.PIECE, WeightedRandomList.create(new MobSpawnSettings.SpawnerData(EntityType.WITCH, 1, 1, 1))), MobCategory.CREATURE, new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.PIECE, WeightedRandomList.create(new MobSpawnSettings.SpawnerData(EntityType.CAT, 1, 1, 1)))), GenerationStep.Decoration.SURFACE_STRUCTURES, TerrainAdjustment.NONE)));
 -    public static final Holder<Structure> STRONGHOLD = register(BuiltinStructures.STRONGHOLD, new StrongholdStructure(structure(BiomeTags.HAS_STRONGHOLD, TerrainAdjustment.BURY)));
-+    public static final Holder<Structure> STRONGHOLD = register(BuiltinStructures.STRONGHOLD, new StrongholdStructure(structure(BiomeTags.HAS_STRONGHOLD, TerrainAdjustment.BURY), false)); // Martijn - custom strongholds - surface strongholds
++    public static final Holder<Structure> STRONGHOLD = register(BuiltinStructures.STRONGHOLD, new StrongholdStructure(structure(BiomeTags.HAS_STRONGHOLD, TerrainAdjustment.BURY), false)); // Suki - custom strongholds - surface strongholds
      public static final Holder<Structure> OCEAN_MONUMENT = register(BuiltinStructures.OCEAN_MONUMENT, new OceanMonumentStructure(structure(BiomeTags.HAS_OCEAN_MONUMENT, Map.of(MobCategory.MONSTER, new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, WeightedRandomList.create(new MobSpawnSettings.SpawnerData(EntityType.GUARDIAN, 1, 2, 4))), MobCategory.UNDERGROUND_WATER_CREATURE, new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, MobSpawnSettings.EMPTY_MOB_LIST), MobCategory.AXOLOTLS, new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, MobSpawnSettings.EMPTY_MOB_LIST)), GenerationStep.Decoration.SURFACE_STRUCTURES, TerrainAdjustment.NONE)));
      public static final Holder<Structure> OCEAN_RUIN_COLD = register(BuiltinStructures.OCEAN_RUIN_COLD, new OceanRuinStructure(structure(BiomeTags.HAS_OCEAN_RUIN_COLD, TerrainAdjustment.NONE), OceanRuinStructure.Type.COLD, 0.3F, 0.9F));
      public static final Holder<Structure> OCEAN_RUIN_WARM = register(BuiltinStructures.OCEAN_RUIN_WARM, new OceanRuinStructure(structure(BiomeTags.HAS_OCEAN_RUIN_WARM, TerrainAdjustment.NONE), OceanRuinStructure.Type.WARM, 0.3F, 0.9F));
@@ -243,7 +243,7 @@ index 902f179e4e997829d9f2143ba358dd16d2303829..3e86f9d07a6c252558138ef26175ff6e
                  JsonObject jsonobject = GsonHelper.convertToJsonObject(jsonelement, "advancement");
                  Advancement.Builder advancement_serializedadvancement = Advancement.Builder.fromJson(jsonobject, new DeserializationContext(minecraftkey, this.predicateManager));
  
-+                // Martijn start - custom strongholds - surface strongholds
++                // Suki start - custom strongholds - surface strongholds
 +                if (minecraftkey.toString().equals("minecraft:story/follow_ender_eye")) {
 +                    advancement_serializedadvancement.getCriteria().clear(); // A bit hacky, but hey, if it works
 +                    advancement_serializedadvancement = advancement_serializedadvancement
@@ -252,7 +252,7 @@ index 902f179e4e997829d9f2143ba358dd16d2303829..3e86f9d07a6c252558138ef26175ff6e
 +                        .addCriterion("in_stronghold_surface", PlayerTrigger.TriggerInstance.located(LocationPredicate.inStructure(SuCraftBuiltinStructures.STRONGHOLD_SURFACE)))
 +                        .requirements(new String[][] {{"in_stronghold", "in_stronghold_surface"}});
 +                }
-+                // Martijn end - custom strongholds - surface strongholds
++                // Suki end - custom strongholds - surface strongholds
 +
                  map1.put(minecraftkey, advancement_serializedadvancement);
              } catch (Exception exception) {
@@ -266,7 +266,7 @@ index 33f07595a99a94984f221fdf8e436dd3c3b094f5..fef031dbf8abf23c3aa2adb7214888e0
              // Paper start
              if (!hasSetFarWarned && !wtf.etil.mirai.MiraiConfig.loggerSuppressSetBlockFarChunk) { // Purpur
 -            Util.logAndPauseIfInIde("Detected setBlock in a far chunk [" + i + ", " + j + "], pos: " + pos + ", status: " + this.generatingStatus + (this.currentlyGenerating == null ? "" : ", currently generating: " + (String) this.currentlyGenerating.get()));
-+            Util.logAndPauseIfInIde("Detected setBlock in a far chunk [" + i + ", " + j + "], pos: " + pos + ", intended center chunk: [" + chunkcoordintpair.x + ", " + chunkcoordintpair.z + "], writeRadiusCutoff: " + this.writeRadiusCutoff + ", status: " + this.generatingStatus + (this.currentlyGenerating == null ? "" : ", currently generating: " + (String) this.currentlyGenerating.get())); // Martijn - custom strongholds - debug errors
++            Util.logAndPauseIfInIde("Detected setBlock in a far chunk [" + i + ", " + j + "], pos: " + pos + ", intended center chunk: [" + chunkcoordintpair.x + ", " + chunkcoordintpair.z + "], writeRadiusCutoff: " + this.writeRadiusCutoff + ", status: " + this.generatingStatus + (this.currentlyGenerating == null ? "" : ", currently generating: " + (String) this.currentlyGenerating.get())); // Suki - custom strongholds - debug errors
              hasSetFarWarned = true;
              if (this.getServer() != null && this.getServer().isDebugging()) {
                  io.papermc.paper.util.TraceUtil.dumpTraceForThread("far setBlock call");
@@ -278,7 +278,7 @@ index e6240f891e396d91e31b02fdf3084be77e9d6697..a25908423b187aaeca19300b677bd328
  public class ChunkStatus {
  
      public static final int MAX_STRUCTURE_DISTANCE = 8;
-+    public static final int CHUNK_STATUS_TASK_MARGIN = 8; // Vanilla is 8 // Martijn - custom strongholds - bigger strongholds
++    public static final int CHUNK_STATUS_TASK_MARGIN = 8; // Vanilla is 8 // Suki - custom strongholds - bigger strongholds
      private static final EnumSet<Heightmap.Types> PRE_FEATURES = EnumSet.of(Heightmap.Types.OCEAN_FLOOR_WG, Heightmap.Types.WORLD_SURFACE_WG);
      public static final EnumSet<Heightmap.Types> POST_FEATURES = EnumSet.of(Heightmap.Types.OCEAN_FLOOR, Heightmap.Types.WORLD_SURFACE, Heightmap.Types.MOTION_BLOCKING, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES);
      private static final ChunkStatus.LoadingTask PASSTHROUGH_LOAD_TASK = (chunkstatus, worldserver, structuretemplatemanager, lightenginethreaded, function, ichunkaccess) -> {
@@ -287,13 +287,13 @@ index e6240f891e396d91e31b02fdf3084be77e9d6697..a25908423b187aaeca19300b677bd328
          return CompletableFuture.completedFuture(Either.left(ichunkaccess));
      });
 -    public static final ChunkStatus STRUCTURE_REFERENCES = ChunkStatus.registerSimple("structure_references", ChunkStatus.STRUCTURE_STARTS, 8, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> {
-+    public static final ChunkStatus STRUCTURE_REFERENCES = ChunkStatus.registerSimple("structure_references", ChunkStatus.STRUCTURE_STARTS, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> { // Martijn - custom strongholds - bigger strongholds
++    public static final ChunkStatus STRUCTURE_REFERENCES = ChunkStatus.registerSimple("structure_references", ChunkStatus.STRUCTURE_STARTS, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> { // Suki - custom strongholds - bigger strongholds
          WorldGenRegion regionlimitedworldaccess = new WorldGenRegion(worldserver, list, chunkstatus, -1);
  
          chunkgenerator.createReferences(regionlimitedworldaccess, worldserver.structureManager().forWorldGenRegion(regionlimitedworldaccess), ichunkaccess);
      });
 -    public static final ChunkStatus BIOMES = ChunkStatus.register("biomes", ChunkStatus.STRUCTURE_REFERENCES, 8, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, executor, worldserver, chunkgenerator, structuretemplatemanager, lightenginethreaded, function, list, ichunkaccess, flag) -> {
-+    public static final ChunkStatus BIOMES = ChunkStatus.register("biomes", ChunkStatus.STRUCTURE_REFERENCES, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, executor, worldserver, chunkgenerator, structuretemplatemanager, lightenginethreaded, function, list, ichunkaccess, flag) -> { // Martijn - custom strongholds - bigger strongholds
++    public static final ChunkStatus BIOMES = ChunkStatus.register("biomes", ChunkStatus.STRUCTURE_REFERENCES, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, executor, worldserver, chunkgenerator, structuretemplatemanager, lightenginethreaded, function, list, ichunkaccess, flag) -> { // Suki - custom strongholds - bigger strongholds
          if (!flag && ichunkaccess.getStatus().isOrAfter(chunkstatus)) {
              return CompletableFuture.completedFuture(Either.left(ichunkaccess));
          } else {
@@ -302,7 +302,7 @@ index e6240f891e396d91e31b02fdf3084be77e9d6697..a25908423b187aaeca19300b677bd328
          }
      });
 -    public static final ChunkStatus NOISE = ChunkStatus.register("noise", ChunkStatus.BIOMES, 8, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, executor, worldserver, chunkgenerator, structuretemplatemanager, lightenginethreaded, function, list, ichunkaccess, flag) -> {
-+    public static final ChunkStatus NOISE = ChunkStatus.register("noise", ChunkStatus.BIOMES, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, executor, worldserver, chunkgenerator, structuretemplatemanager, lightenginethreaded, function, list, ichunkaccess, flag) -> { // Martijn - custom strongholds - bigger strongholds
++    public static final ChunkStatus NOISE = ChunkStatus.register("noise", ChunkStatus.BIOMES, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, executor, worldserver, chunkgenerator, structuretemplatemanager, lightenginethreaded, function, list, ichunkaccess, flag) -> { // Suki - custom strongholds - bigger strongholds
          if (!flag && ichunkaccess.getStatus().isOrAfter(chunkstatus)) {
              return CompletableFuture.completedFuture(Either.left(ichunkaccess));
          } else {
@@ -311,13 +311,13 @@ index e6240f891e396d91e31b02fdf3084be77e9d6697..a25908423b187aaeca19300b677bd328
          }
      });
 -    public static final ChunkStatus SURFACE = ChunkStatus.registerSimple("surface", ChunkStatus.NOISE, 8, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> {
-+    public static final ChunkStatus SURFACE = ChunkStatus.registerSimple("surface", ChunkStatus.NOISE, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> { // Martijn - custom strongholds - bigger strongholds
++    public static final ChunkStatus SURFACE = ChunkStatus.registerSimple("surface", ChunkStatus.NOISE, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> { // Suki - custom strongholds - bigger strongholds
          WorldGenRegion regionlimitedworldaccess = new WorldGenRegion(worldserver, list, chunkstatus, 0);
  
          chunkgenerator.buildSurface(regionlimitedworldaccess, worldserver.structureManager().forWorldGenRegion(regionlimitedworldaccess), worldserver.getChunkSource().randomState(), ichunkaccess);
      });
 -    public static final ChunkStatus CARVERS = ChunkStatus.registerSimple("carvers", ChunkStatus.SURFACE, 8, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> {
-+    public static final ChunkStatus CARVERS = ChunkStatus.registerSimple("carvers", ChunkStatus.SURFACE, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> { // Martijn - custom strongholds - bigger strongholds
++    public static final ChunkStatus CARVERS = ChunkStatus.registerSimple("carvers", ChunkStatus.SURFACE, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.PRE_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> { // Suki - custom strongholds - bigger strongholds
          WorldGenRegion regionlimitedworldaccess = new WorldGenRegion(worldserver, list, chunkstatus, 0);
  
          if (ichunkaccess instanceof ProtoChunk) {
@@ -326,17 +326,17 @@ index e6240f891e396d91e31b02fdf3084be77e9d6697..a25908423b187aaeca19300b677bd328
          chunkgenerator.applyCarvers(regionlimitedworldaccess, worldserver.getSeed(), worldserver.getChunkSource().randomState(), worldserver.getBiomeManager(), worldserver.structureManager().forWorldGenRegion(regionlimitedworldaccess), ichunkaccess, GenerationStep.Carving.AIR);
      });
 -    public static final ChunkStatus LIQUID_CARVERS = ChunkStatus.registerSimple("liquid_carvers", ChunkStatus.CARVERS, 8, ChunkStatus.POST_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> {
-+    public static final ChunkStatus LIQUID_CARVERS = ChunkStatus.registerSimple("liquid_carvers", ChunkStatus.CARVERS, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.POST_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> { // Martijn - custom strongholds - bigger strongholds
++    public static final ChunkStatus LIQUID_CARVERS = ChunkStatus.registerSimple("liquid_carvers", ChunkStatus.CARVERS, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.POST_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, worldserver, chunkgenerator, list, ichunkaccess) -> { // Suki - custom strongholds - bigger strongholds
      });
 -    public static final ChunkStatus FEATURES = ChunkStatus.register("features", ChunkStatus.LIQUID_CARVERS, 8, ChunkStatus.POST_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, executor, worldserver, chunkgenerator, structuretemplatemanager, lightenginethreaded, function, list, ichunkaccess, flag) -> {
-+    public static final ChunkStatus FEATURES = ChunkStatus.register("features", ChunkStatus.LIQUID_CARVERS, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.POST_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, executor, worldserver, chunkgenerator, structuretemplatemanager, lightenginethreaded, function, list, ichunkaccess, flag) -> { // Martijn start - custom strongholds - bigger strongholds
++    public static final ChunkStatus FEATURES = ChunkStatus.register("features", ChunkStatus.LIQUID_CARVERS, CHUNK_STATUS_TASK_MARGIN, ChunkStatus.POST_FEATURES, ChunkStatus.ChunkType.PROTOCHUNK, (chunkstatus, executor, worldserver, chunkgenerator, structuretemplatemanager, lightenginethreaded, function, list, ichunkaccess, flag) -> { // Suki start - custom strongholds - bigger strongholds
          ProtoChunk protochunk = (ProtoChunk) ichunkaccess;
  
          protochunk.setLightEngine(lightenginethreaded);
          if (flag || !ichunkaccess.getStatus().isOrAfter(chunkstatus)) {
              Heightmap.primeHeightmaps(ichunkaccess, EnumSet.of(Heightmap.Types.MOTION_BLOCKING, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Heightmap.Types.OCEAN_FLOOR, Heightmap.Types.WORLD_SURFACE));
 -            WorldGenRegion regionlimitedworldaccess = new WorldGenRegion(worldserver, list, chunkstatus, 1);
-+            WorldGenRegion regionlimitedworldaccess = new WorldGenRegion(worldserver, list, chunkstatus, 1); // Default placementRadius is 1 // Martijn - custom strongholds - bigger strongholds
++            WorldGenRegion regionlimitedworldaccess = new WorldGenRegion(worldserver, list, chunkstatus, 1); // Default placementRadius is 1 // Suki - custom strongholds - bigger strongholds
  
              chunkgenerator.applyBiomeDecoration(regionlimitedworldaccess, ichunkaccess, worldserver.structureManager().forWorldGenRegion(regionlimitedworldaccess));
              Blender.generateBorderTicks(regionlimitedworldaccess, ichunkaccess);
@@ -381,15 +381,15 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
      protected int genDepth;
      private final StructurePieceType type;
 -    private static final Set<Block> SHAPE_CHECK_BLOCKS = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).build();
-+    public static final Set<Block> SHAPE_CHECK_BLOCKS = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).build(); // Martijn - custom strongholds - surface strongholds
++    public static final Set<Block> SHAPE_CHECK_BLOCKS = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).build(); // Suki - custom strongholds - surface strongholds
  
-     // Martijn start - structure API
+     // Suki start - structure API
  
 @@ -178,31 +187,300 @@ public abstract class StructurePiece {
          }
      }
  
-+    // Martijn start - custom strongholds - conditional placements
++    // Suki start - custom strongholds - conditional placements
 +
 +    public static final Direction[] besideOrAboveDirections = { Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH, Direction.UP };
 +
@@ -594,9 +594,9 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
 +                    for (int k = minZ; k <= maxZ; ++k) {
 +                        if ((!cantReplaceAir || !this.getBlock(world, j, i, k, box).isAir()) && (!cantReplaceLiquid || !this.getBlock(world, j, i, k, box).getMaterial().isLiquid())) {
 +                            if (i != minY && i != maxY && j != minX && j != maxX && k != minZ && k != maxZ) {
-+                                changesThisCycle |= this.placeBlockConditionally(world, inside, j, i, k, box, cantReplaceAir, cantReplaceLiquid, requireSolidBelow, requireSolidBelowOrBeside, requireSolidAdjacent); // Martijn - custom strongholds - surface strongholds
++                                changesThisCycle |= this.placeBlockConditionally(world, inside, j, i, k, box, cantReplaceAir, cantReplaceLiquid, requireSolidBelow, requireSolidBelowOrBeside, requireSolidAdjacent); // Suki - custom strongholds - surface strongholds
 +                            } else {
-+                                changesThisCycle |= this.placeBlockConditionally(world, outline, j, i, k, box, cantReplaceAir, cantReplaceLiquid, requireSolidBelow, requireSolidBelowOrBeside, requireSolidAdjacent); // Martijn - custom strongholds - surface strongholds
++                                changesThisCycle |= this.placeBlockConditionally(world, outline, j, i, k, box, cantReplaceAir, cantReplaceLiquid, requireSolidBelow, requireSolidBelowOrBeside, requireSolidAdjacent); // Suki - custom strongholds - surface strongholds
 +                            }
 +                        }
 +                    }
@@ -644,7 +644,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
      protected void placeBlock(WorldGenLevel world, BlockState block, int x, int y, int z, BoundingBox box) {
 +        this.placeBlockUnconditionally(world, block, x, y, z, box);
 +    }
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +    protected boolean placeBlockUnconditionally(WorldGenLevel world, BlockState block, int x, int y, int z, BoundingBox box) {
          BlockPos blockPos = this.getWorldPos(x, y, z);
          if (box.isInside(blockPos)) {
@@ -658,7 +658,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
 +        return false;
 +    }
 +    protected boolean placeBlockUnconditionallyWorldCoordinates(WorldGenLevel world, BlockState block, BlockPos blockPos, BoundingBox box) {
-+        // Martijn end - custom strongholds - conditional placements
++        // Suki end - custom strongholds - conditional placements
 +        if (box.isInside(blockPos)) {
 +            if (this.mirror != Mirror.NONE) {
 +                block = block.mirror(this.mirror);
@@ -696,7 +696,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
          }
 +        return false;
      }
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
  
      protected boolean canBeReplaced(LevelReader world, int x, int y, int z, BoundingBox box) {
          return true;
@@ -704,7 +704,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
          }
      }
  
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
 +    protected void generateAirBox(WorldGenLevel world, BoundingBox bounds, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, boolean cantReplaceLiquid) {
 +        for(int i = minY; i <= maxY; ++i) {
@@ -718,7 +718,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
 +        }
 +    }
 +
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
      protected void generateAirBox(WorldGenLevel world, BoundingBox bounds, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
          for(int i = minY; i <= maxY; ++i) {
@@ -727,7 +727,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
  
      }
  
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
 +    protected void generateBox(WorldGenLevel world, BoundingBox box, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, BlockState outline, BlockState inside, boolean cantReplaceAir, boolean cantReplaceLiquid) {
 +        for(int i = minY; i <= maxY; ++i) {
@@ -735,9 +735,9 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
 +                for(int k = minZ; k <= maxZ; ++k) {
 +                    if ((!cantReplaceAir || !this.getBlock(world, j, i, k, box).isAir()) && (!cantReplaceLiquid || !this.getBlock(world, j, i, k, box).getMaterial().isLiquid())) {
 +                        if (i != minY && i != maxY && j != minX && j != maxX && k != minZ && k != maxZ) {
-+                            this.placeBlockUnconditionally(world, inside, j, i, k, box); // Martijn - custom strongholds - surface strongholds
++                            this.placeBlockUnconditionally(world, inside, j, i, k, box); // Suki - custom strongholds - surface strongholds
 +                        } else {
-+                            this.placeBlockUnconditionally(world, outline, j, i, k, box); // Martijn - custom strongholds - surface strongholds
++                            this.placeBlockUnconditionally(world, outline, j, i, k, box); // Suki - custom strongholds - surface strongholds
 +                        }
 +                    }
 +                }
@@ -745,7 +745,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
 +        }
 +    }
 +
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
      protected void generateBox(WorldGenLevel world, BoundingBox box, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, BlockState outline, BlockState inside, boolean cantReplaceAir) {
          for(int i = minY; i <= maxY; ++i) {
@@ -754,10 +754,10 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
                      if (!cantReplaceAir || !this.getBlock(world, j, i, k, box).isAir()) {
                          if (i != minY && i != maxY && j != minX && j != maxX && k != minZ && k != maxZ) {
 -                            this.placeBlock(world, inside, j, i, k, box);
-+                            this.placeBlockUnconditionally(world, inside, j, i, k, box); // Martijn - custom strongholds - surface strongholds
++                            this.placeBlockUnconditionally(world, inside, j, i, k, box); // Suki - custom strongholds - surface strongholds
                          } else {
 -                            this.placeBlock(world, outline, j, i, k, box);
-+                            this.placeBlockUnconditionally(world, outline, j, i, k, box); // Martijn - custom strongholds - surface strongholds
++                            this.placeBlockUnconditionally(world, outline, j, i, k, box); // Suki - custom strongholds - surface strongholds
                          }
                      }
                  }
@@ -765,19 +765,19 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
  
      }
  
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
 +    protected void generateBox(WorldGenLevel world, BoundingBox box, BoundingBox fillBox, BlockState outline, BlockState inside, boolean cantReplaceAir, boolean cantReplaceLiquid) {
 +        this.generateBox(world, box, fillBox.minX(), fillBox.minY(), fillBox.minZ(), fillBox.maxX(), fillBox.maxY(), fillBox.maxZ(), outline, inside, cantReplaceAir, cantReplaceLiquid);
 +    }
 +
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
      protected void generateBox(WorldGenLevel world, BoundingBox box, BoundingBox fillBox, BlockState outline, BlockState inside, boolean cantReplaceAir) {
          this.generateBox(world, box, fillBox.minX(), fillBox.minY(), fillBox.minZ(), fillBox.maxX(), fillBox.maxY(), fillBox.maxZ(), outline, inside, cantReplaceAir);
      }
  
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
 +    protected void generateBox(WorldGenLevel world, BoundingBox box, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, boolean cantReplaceAir, boolean cantReplaceLiquid, RandomSource random, StructurePiece.BlockSelector randomizer) {
 +        for(int i = minY; i <= maxY; ++i) {
@@ -792,7 +792,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
 +        }
 +    }
 +
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
      protected void generateBox(WorldGenLevel world, BoundingBox box, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, boolean cantReplaceAir, RandomSource random, StructurePiece.BlockSelector randomizer) {
          for(int i = minY; i <= maxY; ++i) {
@@ -801,21 +801,21 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
  
      }
  
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
 +    protected void generateBox(WorldGenLevel world, BoundingBox box, BoundingBox fillBox, boolean cantReplaceAir, boolean cantReplaceLiquid, RandomSource random, StructurePiece.BlockSelector randomizer) {
 +        this.generateBox(world, box, fillBox.minX(), fillBox.minY(), fillBox.minZ(), fillBox.maxX(), fillBox.maxY(), fillBox.maxZ(), cantReplaceAir, cantReplaceLiquid, random, randomizer);
 +    }
 +
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
      protected void generateBox(WorldGenLevel world, BoundingBox box, BoundingBox fillBox, boolean cantReplaceAir, RandomSource random, StructurePiece.BlockSelector randomizer) {
          this.generateBox(world, box, fillBox.minX(), fillBox.minY(), fillBox.minZ(), fillBox.maxX(), fillBox.maxY(), fillBox.maxZ(), cantReplaceAir, random, randomizer);
      }
  
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
-+    // Martijn start - custom strongholds - holes in stronghold parts
++    // Suki start - custom strongholds - holes in stronghold parts
 +
 +    protected void generateBoxWithPartiallyOpenCeiling(WorldGenLevel world, BoundingBox box, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, boolean cantReplaceAir, boolean cantReplaceLiquid, RandomSource random, StructurePiece.BlockSelector randomizer, BlockState newAir) {
 +        for(int i = minY; i <= maxY; ++i) {
@@ -879,7 +879,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
 +        this.generateBoxWithPartiallyOpenCeiling(world, box, fillBox, cantReplaceAir, random, randomizer, Blocks.CAVE_AIR.defaultBlockState());
 +    }
 +
-+    // Martijn end - custom strongholds - holes in stronghold parts
++    // Suki end - custom strongholds - holes in stronghold parts
 +
 +    protected void generateMaybeBox(WorldGenLevel world, BoundingBox box, RandomSource random, float blockChance, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, BlockState outline, BlockState inside, boolean cantReplaceAir, boolean cantReplaceLiquid, boolean stayBelowSeaLevel) {
 +        for(int i = minY; i <= maxY; ++i) {
@@ -897,7 +897,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
 +        }
 +    }
 +
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
      protected void generateMaybeBox(WorldGenLevel world, BoundingBox box, RandomSource random, float blockChance, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, BlockState outline, BlockState inside, boolean cantReplaceAir, boolean stayBelowSeaLevel) {
          for(int i = minY; i <= maxY; ++i) {
@@ -907,7 +907,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
      }
  
 -    protected void generateUpperHalfSphere(WorldGenLevel world, BoundingBox bounds, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, BlockState block, boolean cantReplaceAir) {
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
 +    protected void generateUpperHalfSphere(WorldGenLevel world, BoundingBox bounds, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, BlockState block, boolean cantReplaceAir, boolean cantReplaceLiquid) {
          float f = (float)(maxX - minX + 1);
@@ -930,7 +930,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
 +        generateUpperHalfSphere(world, bounds, minX, minY, minZ, maxX, maxY, maxZ, block, cantReplaceAir, false);
 +    }
 +
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
      protected void fillColumnDown(WorldGenLevel world, BlockState state, int x, int y, int z, BoundingBox box) {
          BlockPos.MutableBlockPos mutableBlockPos = this.getWorldPos(x, y, z);
@@ -939,13 +939,13 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
          return this.createChest(world, boundingBox, random, this.getWorldPos(x, y, z), lootTableId, (BlockState)null);
      }
  
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
 +    protected boolean createChest(WorldGenLevel world, BoundingBox boundingBox, RandomSource random, int x, int y, int z, ResourceLocation lootTableId, boolean requireSolidBelow) {
 +        return this.createChest(world, boundingBox, random, this.getWorldPos(x, y, z), lootTableId, (BlockState)null, requireSolidBelow);
 +    }
 +
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
      public static BlockState reorient(BlockGetter world, BlockPos pos, BlockState state) {
          Direction direction = null;
@@ -955,13 +955,13 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
  
      protected boolean createChest(ServerLevelAccessor world, BoundingBox boundingBox, RandomSource random, BlockPos pos, ResourceLocation lootTableId, @Nullable BlockState block) {
 -        if (boundingBox.isInside(pos) && !world.getBlockState(pos).is(Blocks.CHEST)) {
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        return this.createChest(world, boundingBox, random, pos, lootTableId, block, false);
 +    }
 +
 +    protected boolean createChest(ServerLevelAccessor world, BoundingBox boundingBox, RandomSource random, BlockPos pos, ResourceLocation lootTableId, @Nullable BlockState block, boolean requireSolidBelow) {
 +        if (boundingBox.isInside(pos) && !world.getBlockState(pos).is(Blocks.CHEST) && (!requireSolidBelow || hasRelativeSolid(world, pos, Direction.DOWN))) {
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              if (block == null) {
                  block = reorient(world, pos, Blocks.CHEST.defaultBlockState());
              }
@@ -969,7 +969,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
          this.boundingBox.move(x, y, z);
      }
  
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
 +    public void replace(WorldGenLevel world, BoundingBox boundingBox, Block oldBlock, BlockState newBlock) {
 +        this.replace(world, boundingBox, oldBlock, newBlock, null);
@@ -1026,7 +1026,7 @@ index ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad..4ebbfad8a8d83eecdda2a5c7ade98889
 +        }
 +    }
 +
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
      public static BoundingBox createBoundingBox(Stream<StructurePiece> pieces) {
          return BoundingBox.encapsulatingBoxes(pieces.map(StructurePiece::getBoundingBox)::iterator).orElseThrow(() -> {
@@ -1087,54 +1087,54 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
      private static final int SMALL_DOOR_WIDTH = 3;
      private static final int SMALL_DOOR_HEIGHT = 3;
 -    private static final int MAX_DEPTH = 50;
-+    // Martijn - custom strongholds - strongholds can reach lower
++    // Suki - custom strongholds - strongholds can reach lower
 +    private static final int MAX_DEPTH = 60;
 +    private static final int MAX_DEPTH_SURFACE = 100;
-+    // Martijn - custom strongholds - strongholds can reach lower
++    // Suki - custom strongholds - strongholds can reach lower
      private static final int LOWEST_Y_POSITION = 10;
      private static final boolean CHECK_AIR = true;
      public static final int MAGIC_START_Y = 64;
 -    private static final StrongholdPieces.PieceWeight[] STRONGHOLD_PIECE_WEIGHTS = new StrongholdPieces.PieceWeight[]{new StrongholdPieces.PieceWeight(StrongholdPieces.Straight.class, 40, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.PrisonHall.class, 5, 5), new StrongholdPieces.PieceWeight(StrongholdPieces.LeftTurn.class, 20, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.RightTurn.class, 20, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.RoomCrossing.class, 10, 6), new StrongholdPieces.PieceWeight(StrongholdPieces.StraightStairsDown.class, 5, 5), new StrongholdPieces.PieceWeight(StrongholdPieces.StairsDown.class, 5, 5), new StrongholdPieces.PieceWeight(StrongholdPieces.FiveCrossing.class, 5, 4), new StrongholdPieces.PieceWeight(StrongholdPieces.ChestCorridor.class, 5, 4), new StrongholdPieces.PieceWeight(StrongholdPieces.Library.class, 10, 2) {
-+    // Martijn start - custom strongholds - bigger strongholds
++    // Suki start - custom strongholds - bigger strongholds
 +    public static final int MAX_CHAIN_LENGTH = 50; // Default is 50
 +    public static final int MAX_PLANAR_DISTANCE = 112; // Default is 112
 +    public static final int MINIMUM_LIBRARY_CHAIN_LENGTH = 5; // Default is 4
 +    public static final int MINIMUM_PORTAL_ROOM_CHAIN_LENGTH = 6; // Default is 5
 +    public static final int MAX_LIBRARY_AMOUNT = 2; // Default is 2
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +    public static final int MAX_CHAIN_LENGTH_SURFACE = 115;
 +    public static final int MAX_PLANAR_DISTANCE_SURFACE = 112;
 +    public static final int MINIMUM_LIBRARY_CHAIN_LENGTH_SURFACE = 8;
 +    public static final int MINIMUM_PORTAL_ROOM_CHAIN_LENGTH_SURFACE = 14;
 +    public static final int MAX_LIBRARY_AMOUNT_SURFACE = 3;
 +    public static final double DEFAULT_MAX_PLACE_COUNT_SURFACE_FACTOR = 2.5; // 1.0 would mean: no difference between surface and non-surface
-+    // Martijn end - custom strongholds - surface strongholds
-+    // Martijn end - custom strongholds - bigger strongholds
-+    private static final StrongholdPieces.PieceWeight[] STRONGHOLD_PIECE_WEIGHTS = new StrongholdPieces.PieceWeight[]{new StrongholdPieces.PieceWeight(StrongholdPieces.Straight.class, 40, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.PrisonHall.class, 5, 5), new StrongholdPieces.PieceWeight(StrongholdPieces.LeftTurn.class, 20, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.RightTurn.class, 20, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.RoomCrossing.class, 10, 10, 6, 20), new StrongholdPieces.PieceWeight(StrongholdPieces.StraightStairsDown.class, 5, 10, 5, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.StairsDown.class, 5, 8, 5, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.FiveCrossing.class, 5, 4), new StrongholdPieces.PieceWeight(StrongholdPieces.ChestCorridor.class, 5, 5, 4, 6), new StrongholdPieces.PieceWeight(StrongholdPieces.Library.class, 10, 10, MAX_LIBRARY_AMOUNT, MAX_LIBRARY_AMOUNT_SURFACE) { // Martijn - custom strongholds - bigger strongholds, surface strongholds
++    // Suki end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - bigger strongholds
++    private static final StrongholdPieces.PieceWeight[] STRONGHOLD_PIECE_WEIGHTS = new StrongholdPieces.PieceWeight[]{new StrongholdPieces.PieceWeight(StrongholdPieces.Straight.class, 40, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.PrisonHall.class, 5, 5), new StrongholdPieces.PieceWeight(StrongholdPieces.LeftTurn.class, 20, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.RightTurn.class, 20, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.RoomCrossing.class, 10, 10, 6, 20), new StrongholdPieces.PieceWeight(StrongholdPieces.StraightStairsDown.class, 5, 10, 5, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.StairsDown.class, 5, 8, 5, 0), new StrongholdPieces.PieceWeight(StrongholdPieces.FiveCrossing.class, 5, 4), new StrongholdPieces.PieceWeight(StrongholdPieces.ChestCorridor.class, 5, 5, 4, 6), new StrongholdPieces.PieceWeight(StrongholdPieces.Library.class, 10, 10, MAX_LIBRARY_AMOUNT, MAX_LIBRARY_AMOUNT_SURFACE) { // Suki - custom strongholds - bigger strongholds, surface strongholds
          @Override
 -        public boolean doPlace(int chainLength) {
 -            return super.doPlace(chainLength) && chainLength > 4;
-+        // Martijn start - custom strongholds - surface strongholds, bigger strongholds
++        // Suki start - custom strongholds - surface strongholds, bigger strongholds
 +        public boolean doPlace(int chainLength, boolean isSurface) {
 +            return super.doPlace(chainLength, isSurface) && chainLength > (isSurface ? MINIMUM_LIBRARY_CHAIN_LENGTH_SURFACE : MINIMUM_LIBRARY_CHAIN_LENGTH);
-+            // Martijn end - custom strongholds - surface strongholds, bigger strongholds
++            // Suki end - custom strongholds - surface strongholds, bigger strongholds
          }
 -    }, new StrongholdPieces.PieceWeight(StrongholdPieces.PortalRoom.class, 20, 1) {
 +    }, new StrongholdPieces.PieceWeight(StrongholdPieces.PortalRoom.class, 20, 20, 1, 1) {
          @Override
 -        public boolean doPlace(int chainLength) {
 -            return super.doPlace(chainLength) && chainLength > 5;
-+        // Martijn start - custom strongholds - surface strongholds, bigger strongholds
++        // Suki start - custom strongholds - surface strongholds, bigger strongholds
 +        public boolean doPlace(int chainLength, boolean isSurface) {
 +            return super.doPlace(chainLength, isSurface) && chainLength > (isSurface ? MINIMUM_PORTAL_ROOM_CHAIN_LENGTH_SURFACE : MINIMUM_PORTAL_ROOM_CHAIN_LENGTH);
-+            // Martijn end - custom strongholds - surface strongholds, bigger strongholds
++            // Suki end - custom strongholds - surface strongholds, bigger strongholds
          }
      }};
      private static List<StrongholdPieces.PieceWeight> currentPieces;
      static Class<? extends StrongholdPieces.StrongholdPiece> imposedPiece;
      private static int totalWeight;
      static final StrongholdPieces.SmoothStoneSelector SMOOTH_STONE_SELECTOR = new StrongholdPieces.SmoothStoneSelector();
-+    static final StrongholdPieces.SmoothStoneSelectorOrTemporary SMOOTH_STONE_SELECTOR_OR_TEMPORARY = new StrongholdPieces.SmoothStoneSelectorOrTemporary(); // Martijn - custom strongholds - surface strongholds
++    static final StrongholdPieces.SmoothStoneSelectorOrTemporary SMOOTH_STONE_SELECTOR_OR_TEMPORARY = new StrongholdPieces.SmoothStoneSelectorOrTemporary(); // Suki - custom strongholds - surface strongholds
  
      public static void resetPieces() {
          currentPieces = Lists.newArrayList();
@@ -1143,25 +1143,25 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
      }
  
 -    private static boolean updatePieceWeight() {
-+    private static boolean updatePieceWeight(boolean isSurface) { // Martijn - custom strongholds - bigger strongholds, surface strongholds
++    private static boolean updatePieceWeight(boolean isSurface) { // Suki - custom strongholds - bigger strongholds, surface strongholds
          boolean bl = false;
          totalWeight = 0;
  
          for(StrongholdPieces.PieceWeight pieceWeight : currentPieces) {
 -            if (pieceWeight.maxPlaceCount > 0 && pieceWeight.placeCount < pieceWeight.maxPlaceCount) {
-+            if (pieceWeight.getEffectiveMaxPlaceCount(isSurface) > 0 && pieceWeight.placeCount < pieceWeight.getEffectiveMaxPlaceCount(isSurface)) { // Martijn - custom strongholds - bigger strongholds, surface strongholds
++            if (pieceWeight.getEffectiveMaxPlaceCount(isSurface) > 0 && pieceWeight.placeCount < pieceWeight.getEffectiveMaxPlaceCount(isSurface)) { // Suki - custom strongholds - bigger strongholds, surface strongholds
                  bl = true;
              }
  
 -            totalWeight += pieceWeight.weight;
-+            totalWeight += pieceWeight.getEffectiveWeight(isSurface); // Martijn - custom strongholds - bigger strongholds, surface strongholds
++            totalWeight += pieceWeight.getEffectiveWeight(isSurface); // Suki - custom strongholds - bigger strongholds, surface strongholds
          }
  
          return bl;
      }
  
 -    private static StrongholdPieces.StrongholdPiece findAndCreatePieceFactory(Class<? extends StrongholdPieces.StrongholdPiece> pieceType, StructurePieceAccessor holder, RandomSource random, int x, int y, int z, @Nullable Direction orientation, int chainLength) {
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +    private static StrongholdPieces.StrongholdPiece findAndCreatePieceFactory(Class<? extends StrongholdPieces.StrongholdPiece> pieceType, StructurePieceAccessor holder, RandomSource random, int x, int y, int z, @Nullable Direction orientation, int chainLength, boolean isSurface) {
          StrongholdPieces.StrongholdPiece strongholdPiece = null;
          if (pieceType == StrongholdPieces.Straight.class) {
@@ -1198,22 +1198,22 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 -            strongholdPiece = StrongholdPieces.PortalRoom.createPiece(holder, x, y, z, orientation, chainLength);
 +            strongholdPiece = StrongholdPieces.PortalRoom.createPiece(holder, x, y, z, orientation, chainLength, isSurface);
          }
-+        // Martijn end - custom strongholds - surface strongholds
++        // Suki end - custom strongholds - surface strongholds
  
          return strongholdPiece;
      }
  
 -    private static StrongholdPieces.StrongholdPiece generatePieceFromSmallDoor(StrongholdPieces.StartPiece start, StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength) {
 -        if (!updatePieceWeight()) {
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +    private static StrongholdPieces.StrongholdPiece generatePieceFromSmallDoor(StrongholdPieces.StartPiece start, StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) {
-+        if (!updatePieceWeight(isSurface)) { // Martijn - custom strongholds - bigger strongholds
-+            // Martijn end - custom strongholds - surface strongholds
++        if (!updatePieceWeight(isSurface)) { // Suki - custom strongholds - bigger strongholds
++            // Suki end - custom strongholds - surface strongholds
              return null;
          } else {
              if (imposedPiece != null) {
 -                StrongholdPieces.StrongholdPiece strongholdPiece = findAndCreatePieceFactory(imposedPiece, holder, random, x, y, z, orientation, chainLength);
-+                StrongholdPieces.StrongholdPiece strongholdPiece = findAndCreatePieceFactory(imposedPiece, holder, random, x, y, z, orientation, chainLength, isSurface); // Martijn - custom strongholds - surface strongholds
++                StrongholdPieces.StrongholdPiece strongholdPiece = findAndCreatePieceFactory(imposedPiece, holder, random, x, y, z, orientation, chainLength, isSurface); // Suki - custom strongholds - surface strongholds
                  imposedPiece = null;
                  if (strongholdPiece != null) {
                      return strongholdPiece;
@@ -1222,20 +1222,20 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
                  for(StrongholdPieces.PieceWeight pieceWeight : currentPieces) {
 -                    j -= pieceWeight.weight;
-+                    j -= pieceWeight.getEffectiveWeight(isSurface); // Martijn - custom strongholds - bigger strongholds, surface strongholds
++                    j -= pieceWeight.getEffectiveWeight(isSurface); // Suki - custom strongholds - bigger strongholds, surface strongholds
                      if (j < 0) {
 -                        if (!pieceWeight.doPlace(chainLength) || pieceWeight == start.previousPiece) {
-+                        if (!pieceWeight.doPlace(chainLength, isSurface) || pieceWeight == start.previousPiece) { // Martijn - custom strongholds - surface strongholds, bigger strongholds
++                        if (!pieceWeight.doPlace(chainLength, isSurface) || pieceWeight == start.previousPiece) { // Suki - custom strongholds - surface strongholds, bigger strongholds
                              break;
                          }
  
 -                        StrongholdPieces.StrongholdPiece strongholdPiece2 = findAndCreatePieceFactory(pieceWeight.pieceClass, holder, random, x, y, z, orientation, chainLength);
-+                        StrongholdPieces.StrongholdPiece strongholdPiece2 = findAndCreatePieceFactory(pieceWeight.pieceClass, holder, random, x, y, z, orientation, chainLength, isSurface); // Martijn - custom strongholds - surface strongholds
++                        StrongholdPieces.StrongholdPiece strongholdPiece2 = findAndCreatePieceFactory(pieceWeight.pieceClass, holder, random, x, y, z, orientation, chainLength, isSurface); // Suki - custom strongholds - surface strongholds
                          if (strongholdPiece2 != null) {
                              ++pieceWeight.placeCount;
                              start.previousPiece = pieceWeight;
 -                            if (!pieceWeight.isValid()) {
-+                            if (!pieceWeight.isValid(isSurface)) { // Martijn - custom strongholds - surface strongholds, bigger strongholds
++                            if (!pieceWeight.isValid(isSurface)) { // Suki - custom strongholds - surface strongholds, bigger strongholds
                                  currentPieces.remove(pieceWeight);
                              }
  
@@ -1244,19 +1244,19 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
              BoundingBox boundingBox = StrongholdPieces.FillerCorridor.findPieceBox(holder, random, x, y, z, orientation);
 -            return boundingBox != null && boundingBox.minY() > 1 ? new StrongholdPieces.FillerCorridor(chainLength, boundingBox, orientation) : null;
-+            return boundingBox != null && boundingBox.minY() > 1 ? new StrongholdPieces.FillerCorridor(chainLength, boundingBox, orientation, isSurface) : null; // Martijn - custom strongholds - surface strongholds
++            return boundingBox != null && boundingBox.minY() > 1 ? new StrongholdPieces.FillerCorridor(chainLength, boundingBox, orientation, isSurface) : null; // Suki - custom strongholds - surface strongholds
          }
      }
  
 -    static StructurePiece generateAndAddPiece(StrongholdPieces.StartPiece start, StructurePieceAccessor holder, RandomSource random, int x, int y, int z, @Nullable Direction orientation, int chainLength) {
 -        if (chainLength > 50) {
-+    static StructurePiece generateAndAddPiece(StrongholdPieces.StartPiece start, StructurePieceAccessor holder, RandomSource random, int x, int y, int z, @Nullable Direction orientation, int chainLength, boolean isSurface) { // Martijn - custom strongholds - surface strongholds
-+        if (chainLength > (isSurface ? MAX_CHAIN_LENGTH_SURFACE : MAX_CHAIN_LENGTH)) { // Martijn - custom strongholds - bigger strongholds
++    static StructurePiece generateAndAddPiece(StrongholdPieces.StartPiece start, StructurePieceAccessor holder, RandomSource random, int x, int y, int z, @Nullable Direction orientation, int chainLength, boolean isSurface) { // Suki - custom strongholds - surface strongholds
++        if (chainLength > (isSurface ? MAX_CHAIN_LENGTH_SURFACE : MAX_CHAIN_LENGTH)) { // Suki - custom strongholds - bigger strongholds
              return null;
 -        } else if (Math.abs(x - start.getBoundingBox().minX()) <= 112 && Math.abs(z - start.getBoundingBox().minZ()) <= 112) {
 -            StructurePiece structurePiece = generatePieceFromSmallDoor(start, holder, random, x, y, z, orientation, chainLength + 1);
-+        } else if (Math.abs(x - start.getBoundingBox().minX()) <= (isSurface ? MAX_PLANAR_DISTANCE_SURFACE : MAX_PLANAR_DISTANCE) && Math.abs(z - start.getBoundingBox().minZ()) <= (isSurface ? MAX_PLANAR_DISTANCE_SURFACE : MAX_PLANAR_DISTANCE)) { // Martijn - custom strongholds - bigger strongholds
-+            StructurePiece structurePiece = generatePieceFromSmallDoor(start, holder, random, x, y, z, orientation, chainLength + 1, isSurface); // Martijn - custom strongholds - surface strongholds
++        } else if (Math.abs(x - start.getBoundingBox().minX()) <= (isSurface ? MAX_PLANAR_DISTANCE_SURFACE : MAX_PLANAR_DISTANCE) && Math.abs(z - start.getBoundingBox().minZ()) <= (isSurface ? MAX_PLANAR_DISTANCE_SURFACE : MAX_PLANAR_DISTANCE)) { // Suki - custom strongholds - bigger strongholds
++            StructurePiece structurePiece = generatePieceFromSmallDoor(start, holder, random, x, y, z, orientation, chainLength + 1, isSurface); // Suki - custom strongholds - surface strongholds
              if (structurePiece != null) {
                  holder.addPiece(structurePiece);
                  start.pendingChildren.add(structurePiece);
@@ -1266,10 +1266,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public ChestCorridor(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_CHEST_CORRIDOR, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public ChestCorridor(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_CHEST_CORRIDOR, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.setOrientation(orientation);
              this.entryDoor = this.randomSmallDoor(random);
          }
@@ -1278,24 +1278,24 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          }
  
 -        public static StrongholdPieces.ChestCorridor createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainlength) {
-+        public static StrongholdPieces.ChestCorridor createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainlength, boolean isSurface) {// Martijn - custom strongholds - surface strongholds
++        public static StrongholdPieces.ChestCorridor createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainlength, boolean isSurface) {// Suki - custom strongholds - surface strongholds
              BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -1, -1, 0, 5, 5, 7, orientation);
 -            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.ChestCorridor(chainlength, random, boundingBox, orientation) : null;
-+            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.ChestCorridor(chainlength, random, boundingBox, orientation, isSurface) : null; // Martijn - custom strongholds - surface strongholds
++            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.ChestCorridor(chainlength, random, boundingBox, orientation, isSurface) : null; // Suki - custom strongholds - surface strongholds
          }
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 -            this.generateBox(world, chunkBox, 0, 0, 0, 4, 4, 6, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
-+            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 4, 6, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Martijn - custom strongholds - holes in stronghold parts
++            // Suki end - custom strongholds - surface strongholds
++            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 4, 6, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Suki - custom strongholds - holes in stronghold parts
              this.generateSmallDoor(world, random, chunkBox, this.entryDoor, 1, 1, 0);
              this.generateSmallDoor(world, random, chunkBox, StrongholdPieces.StrongholdPiece.SmallDoorType.OPENING, 1, 1, 6);
 -            this.generateBox(world, chunkBox, 3, 1, 2, 3, 1, 4, Blocks.STONE_BRICKS.defaultBlockState(), Blocks.STONE_BRICKS.defaultBlockState(), false);
-+            this.generateBox(world, chunkBox, 3, 1, 2, 3, 1, 4, Blocks.STONE_BRICKS.defaultBlockState(), Blocks.STONE_BRICKS.defaultBlockState(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++            this.generateBox(world, chunkBox, 3, 1, 2, 3, 1, 4, Blocks.STONE_BRICKS.defaultBlockState(), Blocks.STONE_BRICKS.defaultBlockState(), this.isSurface); // Suki - custom strongholds - surface strongholds
              this.placeBlock(world, Blocks.STONE_BRICK_SLAB.defaultBlockState(), 3, 1, 1, chunkBox);
              this.placeBlock(world, Blocks.STONE_BRICK_SLAB.defaultBlockState(), 3, 1, 5, chunkBox);
              this.placeBlock(world, Blocks.STONE_BRICK_SLAB.defaultBlockState(), 3, 2, 2, chunkBox);
@@ -1305,10 +1305,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public FillerCorridor(int chainLength, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_FILLER_CORRIDOR, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public FillerCorridor(int chainLength, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_FILLER_CORRIDOR, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.setOrientation(orientation);
              this.steps = orientation != Direction.NORTH && orientation != Direction.SOUTH ? boundingBox.getXSpan() : boundingBox.getZSpan();
          }
@@ -1317,10 +1317,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              for(int i = 0; i < this.steps; ++i) {
                  this.placeBlock(world, Blocks.STONE_BRICKS.defaultBlockState(), 0, 0, i, chunkBox);
                  this.placeBlock(world, Blocks.STONE_BRICKS.defaultBlockState(), 1, 0, i, chunkBox);
@@ -1330,10 +1330,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public FiveCrossing(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_FIVE_CROSSING, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public FiveCrossing(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_FIVE_CROSSING, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.setOrientation(orientation);
              this.entryDoor = this.randomSmallDoor(random);
              this.leftLow = random.nextBoolean();
@@ -1342,39 +1342,39 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          }
  
 -        public static StrongholdPieces.FiveCrossing createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength) {
-+        public static StrongholdPieces.FiveCrossing createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Martijn - custom strongholds - surface strongholds
++        public static StrongholdPieces.FiveCrossing createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Suki - custom strongholds - surface strongholds
              BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -4, -3, 0, 10, 9, 11, orientation);
 -            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.FiveCrossing(chainLength, random, boundingBox, orientation) : null;
-+            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.FiveCrossing(chainLength, random, boundingBox, orientation, isSurface) : null; // Martijn - custom strongholds - surface strongholds
++            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.FiveCrossing(chainLength, random, boundingBox, orientation, isSurface) : null; // Suki - custom strongholds - surface strongholds
          }
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 -            this.generateBox(world, chunkBox, 0, 0, 0, 9, 8, 10, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
-+            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 9, 8, 10, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR_OR_TEMPORARY); // Martijn - custom strongholds - holes in stronghold parts
++            // Suki end - custom strongholds - surface strongholds
++            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 9, 8, 10, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR_OR_TEMPORARY); // Suki - custom strongholds - holes in stronghold parts
              this.generateSmallDoor(world, random, chunkBox, this.entryDoor, 4, 3, 0);
              if (this.leftLow) {
 -                this.generateBox(world, chunkBox, 0, 3, 1, 0, 5, 3, CAVE_AIR, CAVE_AIR, false);
-+                this.generateBox(world, chunkBox, 0, 3, 1, 0, 5, 3, SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                this.generateBox(world, chunkBox, 0, 3, 1, 0, 5, 3, SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), this.isSurface); // Suki - custom strongholds - surface strongholds
              }
  
              if (this.rightLow) {
 -                this.generateBox(world, chunkBox, 9, 3, 1, 9, 5, 3, CAVE_AIR, CAVE_AIR, false);
-+                this.generateBox(world, chunkBox, 9, 3, 1, 9, 5, 3, SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                this.generateBox(world, chunkBox, 9, 3, 1, 9, 5, 3, SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), this.isSurface); // Suki - custom strongholds - surface strongholds
              }
  
              if (this.leftHigh) {
 -                this.generateBox(world, chunkBox, 0, 5, 7, 0, 7, 9, CAVE_AIR, CAVE_AIR, false);
-+                this.generateBox(world, chunkBox, 0, 5, 7, 0, 7, 9, SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                this.generateBox(world, chunkBox, 0, 5, 7, 0, 7, 9, SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), this.isSurface); // Suki - custom strongholds - surface strongholds
              }
  
              if (this.rightHigh) {
 -                this.generateBox(world, chunkBox, 9, 5, 7, 9, 7, 9, CAVE_AIR, CAVE_AIR, false);
-+                this.generateBox(world, chunkBox, 9, 5, 7, 9, 7, 9, SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                this.generateBox(world, chunkBox, 9, 5, 7, 9, 7, 9, SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), SmoothStoneSelectorOrTemporary.TEMPORARY.defaultBlockState(), this.isSurface); // Suki - custom strongholds - surface strongholds
              }
  
 -            this.generateBox(world, chunkBox, 5, 1, 10, 7, 3, 10, CAVE_AIR, CAVE_AIR, false);
@@ -1406,7 +1406,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +            this.generateBoxConditionally(world, chunkBox, 4, 5, 7, 4, 5, 9, Blocks.SMOOTH_STONE_SLAB.defaultBlockState(), Blocks.SMOOTH_STONE_SLAB.defaultBlockState());
 +            this.generateBoxConditionally(world, chunkBox, 8, 5, 7, 8, 5, 9, Blocks.SMOOTH_STONE_SLAB.defaultBlockState(), Blocks.SMOOTH_STONE_SLAB.defaultBlockState());
 +            this.generateBoxConditionally(world, chunkBox, 5, 5, 7, 7, 5, 9, Blocks.SMOOTH_STONE_SLAB.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE), Blocks.SMOOTH_STONE_SLAB.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.DOUBLE));
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.placeBlock(world, Blocks.WALL_TORCH.defaultBlockState().setValue(WallTorchBlock.FACING, Direction.SOUTH), 6, 5, 6, chunkBox);
          }
      }
@@ -1414,10 +1414,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
      public static class LeftTurn extends StrongholdPieces.Turn {
 -        public LeftTurn(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_LEFT_TURN, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public LeftTurn(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_LEFT_TURN, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.setOrientation(orientation);
              this.entryDoor = this.randomSmallDoor(random);
          }
@@ -1426,28 +1426,28 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          }
  
 -        public static StrongholdPieces.LeftTurn createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength) {
-+        public static StrongholdPieces.LeftTurn createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Martijn - custom strongholds - surface strongholds
++        public static StrongholdPieces.LeftTurn createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Suki - custom strongholds - surface strongholds
              BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -1, -1, 0, 5, 5, 5, orientation);
 -            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.LeftTurn(chainLength, random, boundingBox, orientation) : null;
-+            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.LeftTurn(chainLength, random, boundingBox, orientation, isSurface) : null; // Martijn - custom strongholds - surface strongholds
++            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.LeftTurn(chainLength, random, boundingBox, orientation, isSurface) : null; // Suki - custom strongholds - surface strongholds
          }
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 -            this.generateBox(world, chunkBox, 0, 0, 0, 4, 4, 4, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
-+            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 4, 4, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Martijn - custom strongholds - holes in stronghold parts
++            // Suki end - custom strongholds - surface strongholds
++            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 4, 4, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Suki - custom strongholds - holes in stronghold parts
              this.generateSmallDoor(world, random, chunkBox, this.entryDoor, 1, 1, 0);
              Direction direction = this.getOrientation();
              if (direction != Direction.NORTH && direction != Direction.EAST) {
 -                this.generateBox(world, chunkBox, 4, 1, 1, 4, 3, 3, CAVE_AIR, CAVE_AIR, false);
-+                this.generateBox(world, chunkBox, 4, 1, 1, 4, 3, 3, CAVE_AIR, CAVE_AIR, this.isSurface); // Martijn - custom strongholds - surface strongholds
++                this.generateBox(world, chunkBox, 4, 1, 1, 4, 3, 3, CAVE_AIR, CAVE_AIR, this.isSurface); // Suki - custom strongholds - surface strongholds
              } else {
 -                this.generateBox(world, chunkBox, 0, 1, 1, 0, 3, 3, CAVE_AIR, CAVE_AIR, false);
-+                this.generateBox(world, chunkBox, 0, 1, 1, 0, 3, 3, CAVE_AIR, CAVE_AIR, this.isSurface); // Martijn - custom strongholds - surface strongholds
++                this.generateBox(world, chunkBox, 0, 1, 1, 0, 3, 3, CAVE_AIR, CAVE_AIR, this.isSurface); // Suki - custom strongholds - surface strongholds
              }
  
          }
@@ -1457,10 +1457,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public Library(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_LIBRARY, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public Library(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_LIBRARY, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.setOrientation(orientation);
              this.entryDoor = this.randomSmallDoor(random);
              this.isTall = boundingBox.getYSpan() > 6;
@@ -1469,7 +1469,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          }
  
 -        public static StrongholdPieces.Library createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength) {
-+        public static StrongholdPieces.Library createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Martijn - custom strongholds - surface strongholds
++        public static StrongholdPieces.Library createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Suki - custom strongholds - surface strongholds
              BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -4, -1, 0, 14, 11, 15, orientation);
              if (!isOkBox(boundingBox) || holder.findCollisionPiece(boundingBox) != null) {
                  boundingBox = BoundingBox.orientBox(x, y, z, -4, -1, 0, 14, 6, 15, orientation);
@@ -1478,25 +1478,25 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
              }
  
 -            return new StrongholdPieces.Library(chainLength, random, boundingBox, orientation);
-+            return new StrongholdPieces.Library(chainLength, random, boundingBox, orientation, isSurface); // Martijn - custom strongholds - surface strongholds
++            return new StrongholdPieces.Library(chainLength, random, boundingBox, orientation, isSurface); // Suki - custom strongholds - surface strongholds
          }
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              int i = 11;
              if (!this.isTall) {
                  i = 6;
              }
  
 -            this.generateBox(world, chunkBox, 0, 0, 0, 13, i - 1, 14, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 13, i - 1, 14, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR_OR_TEMPORARY); // Martijn - custom strongholds - holes in stronghold parts, surface strongholds
++            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 13, i - 1, 14, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR_OR_TEMPORARY); // Suki - custom strongholds - holes in stronghold parts, surface strongholds
              this.generateSmallDoor(world, random, chunkBox, this.entryDoor, 4, 1, 0);
 -            this.generateMaybeBox(world, chunkBox, random, 0.07F, 2, 1, 1, 11, 4, 13, Blocks.COBWEB.defaultBlockState(), Blocks.COBWEB.defaultBlockState(), false, false);
-+            this.generateMaybeBox(world, chunkBox, random, 0.07F, 2, 1, 1, 11, 4, 13, Blocks.COBWEB.defaultBlockState(), Blocks.COBWEB.defaultBlockState(), this.isSurface, false); // Martijn - custom strongholds - surface strongholds
++            this.generateMaybeBox(world, chunkBox, random, 0.07F, 2, 1, 1, 11, 4, 13, Blocks.COBWEB.defaultBlockState(), Blocks.COBWEB.defaultBlockState(), this.isSurface, false); // Suki - custom strongholds - surface strongholds
              int j = 1;
              int k = 12;
  
@@ -1504,10 +1504,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
                  if ((l - 1) % 4 == 0) {
 -                    this.generateBox(world, chunkBox, 1, 1, l, 1, 4, l, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), false);
 -                    this.generateBox(world, chunkBox, 12, 1, l, 12, 4, l, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), false);
-+                    // Martijn start - custom strongholds - surface strongholds
++                    // Suki start - custom strongholds - surface strongholds
 +                    this.generateBox(world, chunkBox, 1, 1, l, 1, 4, l, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), this.isSurface);
 +                    this.generateBox(world, chunkBox, 12, 1, l, 12, 4, l, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), this.isSurface);
-+                    // Martijn end - custom strongholds - surface strongholds
++                    // Suki end - custom strongholds - surface strongholds
                      this.placeBlock(world, Blocks.WALL_TORCH.defaultBlockState().setValue(WallTorchBlock.FACING, Direction.EAST), 2, 3, l, chunkBox);
                      this.placeBlock(world, Blocks.WALL_TORCH.defaultBlockState().setValue(WallTorchBlock.FACING, Direction.WEST), 11, 3, l, chunkBox);
 -                    if (this.isTall) {
@@ -1521,10 +1521,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 -                        this.generateBox(world, chunkBox, 1, 6, l, 1, 9, l, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false);
 -                        this.generateBox(world, chunkBox, 12, 6, l, 12, 9, l, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false);
 -                    }
-+                    // Martijn start - custom strongholds - surface strongholds
++                    // Suki start - custom strongholds - surface strongholds
 +                    this.generateBoxConditionally(world, chunkBox, 1, 1, l, 1, 4, l, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false, false, true, false, false);
 +                    this.generateBoxConditionally(world, chunkBox, 12, 1, l, 12, 4, l, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false, false, true, false, false);
-+                    // Martijn end - custom strongholds - surface strongholds
++                    // Suki end - custom strongholds - surface strongholds
                  }
              }
  
@@ -1532,11 +1532,11 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 -                this.generateBox(world, chunkBox, 3, 1, m, 4, 3, m, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false);
 -                this.generateBox(world, chunkBox, 6, 1, m, 7, 3, m, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false);
 -                this.generateBox(world, chunkBox, 9, 1, m, 10, 3, m, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false);
-+                // Martijn start - custom strongholds - surface strongholds
++                // Suki start - custom strongholds - surface strongholds
 +                this.generateBoxConditionally(world, chunkBox, 3, 1, m, 4, 3, m, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false, false, true, false, false);
 +                this.generateBoxConditionally(world, chunkBox, 6, 1, m, 7, 3, m, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false, false, true, false, false);
 +                this.generateBoxConditionally(world, chunkBox, 9, 1, m, 10, 3, m, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false, false, true, false, false);
-+                // Martijn end - custom strongholds - surface strongholds
++                // Suki end - custom strongholds - surface strongholds
              }
  
              if (this.isTall) {
@@ -1544,12 +1544,12 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 -                this.generateBox(world, chunkBox, 10, 5, 1, 12, 5, 13, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), false);
 -                this.generateBox(world, chunkBox, 4, 5, 1, 9, 5, 2, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), false);
 -                this.generateBox(world, chunkBox, 4, 5, 12, 9, 5, 13, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), false);
-+                // Martijn start - custom strongholds - surface strongholds
++                // Suki start - custom strongholds - surface strongholds
 +                this.generateBox(world, chunkBox, 1, 5, 1, 3, 5, 13, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), this.isSurface);
 +                this.generateBox(world, chunkBox, 10, 5, 1, 12, 5, 13, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), this.isSurface);
 +                this.generateBox(world, chunkBox, 4, 5, 1, 9, 5, 2, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), this.isSurface);
 +                this.generateBox(world, chunkBox, 4, 5, 12, 9, 5, 13, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), this.isSurface);
-+                // Martijn end - custom strongholds - surface strongholds
++                // Suki end - custom strongholds - surface strongholds
                  this.placeBlock(world, Blocks.OAK_PLANKS.defaultBlockState(), 9, 5, 11, chunkBox);
                  this.placeBlock(world, Blocks.OAK_PLANKS.defaultBlockState(), 8, 5, 11, chunkBox);
                  this.placeBlock(world, Blocks.OAK_PLANKS.defaultBlockState(), 9, 5, 10, chunkBox);
@@ -1559,12 +1559,12 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 -                this.generateBox(world, chunkBox, 10, 6, 3, 10, 6, 9, blockState2, blockState2, false);
 -                this.generateBox(world, chunkBox, 4, 6, 2, 9, 6, 2, blockState, blockState, false);
 -                this.generateBox(world, chunkBox, 4, 6, 12, 7, 6, 12, blockState, blockState, false);
-+                // Martijn start - custom strongholds - surface strongholds
++                // Suki start - custom strongholds - surface strongholds
 +                this.generateBox(world, chunkBox, 3, 6, 3, 3, 6, 11, blockState2, blockState2, this.isSurface);
 +                this.generateBox(world, chunkBox, 10, 6, 3, 10, 6, 9, blockState2, blockState2, this.isSurface);
 +                this.generateBox(world, chunkBox, 4, 6, 2, 9, 6, 2, blockState, blockState, this.isSurface);
 +                this.generateBox(world, chunkBox, 4, 6, 12, 7, 6, 12, blockState, blockState, this.isSurface);
-+                // Martijn end - custom strongholds - surface strongholds
++                // Suki end - custom strongholds - surface strongholds
                  this.placeBlock(world, Blocks.OAK_FENCE.defaultBlockState().setValue(FenceBlock.NORTH, Boolean.valueOf(true)).setValue(FenceBlock.EAST, Boolean.valueOf(true)), 3, 6, 2, chunkBox);
                  this.placeBlock(world, Blocks.OAK_FENCE.defaultBlockState().setValue(FenceBlock.SOUTH, Boolean.valueOf(true)).setValue(FenceBlock.EAST, Boolean.valueOf(true)), 3, 6, 12, chunkBox);
                  this.placeBlock(world, Blocks.OAK_FENCE.defaultBlockState().setValue(FenceBlock.NORTH, Boolean.valueOf(true)).setValue(FenceBlock.WEST, Boolean.valueOf(true)), 10, 6, 2, chunkBox);
@@ -1572,18 +1572,18 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
                  this.placeBlock(world, blockState7, 6, 8, 8, chunkBox);
                  this.placeBlock(world, blockState7, 7, 8, 6, chunkBox);
                  this.placeBlock(world, blockState7, 7, 8, 8, chunkBox);
-+                // Martijn start - custom strongholds - surface strongholds
++                // Suki start - custom strongholds - surface strongholds
 +                for(int l = 1; l <= 13; ++l) {
 +                    if ((l - 1) % 4 == 0) {
 +                        this.generateBox(world, chunkBox, 1, 6, l, 1, 9, l, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), this.isSurface);
 +                        this.generateBox(world, chunkBox, 12, 6, l, 12, 9, l, Blocks.OAK_PLANKS.defaultBlockState(), Blocks.OAK_PLANKS.defaultBlockState(), this.isSurface);
 +                    } else {
-+                        // Martijn start - custom strongholds - surface strongholds
++                        // Suki start - custom strongholds - surface strongholds
 +                        this.generateBoxConditionally(world, chunkBox, 1, 6, l, 1, 9, l, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false, false, true, false, false);
 +                        this.generateBoxConditionally(world, chunkBox, 12, 6, l, 12, 9, l, Blocks.BOOKSHELF.defaultBlockState(), Blocks.BOOKSHELF.defaultBlockState(), false, false, true, false, false);
 +                    }
 +                }
-+                // Martijn end - custom strongholds - surface strongholds
++                // Suki end - custom strongholds - surface strongholds
              }
  
              this.createChest(world, chunkBox, random, 3, 3, 5, BuiltInLootTables.STRONGHOLD_LIBRARY);
@@ -1592,14 +1592,14 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
          }
 +
-+        // Martijn start - custom strongholds - more things
++        // Suki start - custom strongholds - more things
 +
 +        @Override
 +        public boolean areAddedCandlesLit() {
 +            return true;
 +        }
 +
-+        // Martijn end - custom strongholds - more things
++        // Suki end - custom strongholds - more things
 +
      }
  
@@ -1608,7 +1608,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          public final int weight;
          public int placeCount;
          public final int maxPlaceCount;
-+        // Martijn start - custom strongholds - surface strongholds, bigger strongholds
++        // Suki start - custom strongholds - surface strongholds, bigger strongholds
 +        public final int weightSurface;
 +        public final int maxPlaceCountSurface;
  
@@ -1622,34 +1622,34 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +        }
 +
 +        public PieceWeight(Class<? extends StrongholdPieces.StrongholdPiece> pieceType, int weight, int weightSurface, int limit, int limitSurface) {
-+            // Martijn end - custom strongholds - surface strongholds, bigger strongholds
++            // Suki end - custom strongholds - surface strongholds, bigger strongholds
              this.pieceClass = pieceType;
              this.weight = weight;
              this.maxPlaceCount = limit;
-+            // Martijn start - custom strongholds - surface strongholds, bigger strongholds
++            // Suki start - custom strongholds - surface strongholds, bigger strongholds
 +            this.weightSurface = weightSurface;
 +            this.maxPlaceCountSurface = limitSurface;
-+            // Martijn end - custom strongholds - surface strongholds, bigger strongholds
++            // Suki end - custom strongholds - surface strongholds, bigger strongholds
          }
  
 -        public boolean doPlace(int chainLength) {
 -            return this.maxPlaceCount == 0 || this.placeCount < this.maxPlaceCount;
 +        public PieceWeight(Class<? extends StrongholdPieces.StrongholdPiece> pieceType, int weight, int limit) {
-+            this(pieceType, weight, weight, limit, limit == 0 ? 0 : (int) Math.ceil(limit * DEFAULT_MAX_PLACE_COUNT_SURFACE_FACTOR)); // Martijn - custom strongholds - surface strongholds, bigger strongholds
++            this(pieceType, weight, weight, limit, limit == 0 ? 0 : (int) Math.ceil(limit * DEFAULT_MAX_PLACE_COUNT_SURFACE_FACTOR)); // Suki - custom strongholds - surface strongholds, bigger strongholds
 +        }
 +
-+        // Martijn start - custom strongholds - surface strongholds, bigger strongholds
++        // Suki start - custom strongholds - surface strongholds, bigger strongholds
 +        public boolean doPlace(int chainLength, boolean isSurface) {
 +            return this.getEffectiveMaxPlaceCount(isSurface) == 0 || this.placeCount < this.getEffectiveMaxPlaceCount(isSurface);
-+            // Martijn end - custom strongholds - surface strongholds, bigger strongholds
++            // Suki end - custom strongholds - surface strongholds, bigger strongholds
          }
  
 -        public boolean isValid() {
 -            return this.maxPlaceCount == 0 || this.placeCount < this.maxPlaceCount;
-+        // Martijn start - custom strongholds - surface strongholds, bigger strongholds
++        // Suki start - custom strongholds - surface strongholds, bigger strongholds
 +        public boolean isValid(boolean isSurface) {
 +            return this.getEffectiveMaxPlaceCount(isSurface) == 0 || this.placeCount < this.getEffectiveMaxPlaceCount(isSurface);
-+            // Martijn end - custom strongholds - surface strongholds, bigger strongholds
++            // Suki end - custom strongholds - surface strongholds, bigger strongholds
          }
      }
  
@@ -1659,10 +1659,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public PortalRoom(int chainLength, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_PORTAL_ROOM, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public PortalRoom(int chainLength, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_PORTAL_ROOM, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.setOrientation(orientation);
          }
  
@@ -1671,20 +1671,20 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          }
  
 -        public static StrongholdPieces.PortalRoom createPiece(StructurePieceAccessor holder, int x, int y, int z, Direction orientation, int chainLength) {
-+        public static StrongholdPieces.PortalRoom createPiece(StructurePieceAccessor holder, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) {// Martijn - custom strongholds - surface strongholds
++        public static StrongholdPieces.PortalRoom createPiece(StructurePieceAccessor holder, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) {// Suki - custom strongholds - surface strongholds
              BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -4, -1, 0, 11, 8, 16, orientation);
 -            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.PortalRoom(chainLength, boundingBox, orientation) : null;
-+            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.PortalRoom(chainLength, boundingBox, orientation, isSurface) : null; // Martijn - custom strongholds - surface strongholds
++            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.PortalRoom(chainLength, boundingBox, orientation, isSurface) : null; // Suki - custom strongholds - surface strongholds
          }
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 -            this.generateBox(world, chunkBox, 0, 0, 0, 10, 7, 15, false, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
-+            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 10, 7, 15, false, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Martijn - custom strongholds - holes in stronghold parts
++            // Suki end - custom strongholds - surface strongholds
++            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 10, 7, 15, false, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Suki - custom strongholds - holes in stronghold parts
              this.generateSmallDoor(world, random, chunkBox, StrongholdPieces.StrongholdPiece.SmallDoorType.GRATES, 4, 1, 0);
              int i = 6;
              this.generateBox(world, chunkBox, 1, i, 1, 1, i, 14, false, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
@@ -1704,7 +1704,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 -            this.placeBlock(world, blockState7.setValue(EndPortalFrameBlock.HAS_EYE, Boolean.valueOf(bls[9])), 7, 3, 9, chunkBox);
 -            this.placeBlock(world, blockState7.setValue(EndPortalFrameBlock.HAS_EYE, Boolean.valueOf(bls[10])), 7, 3, 10, chunkBox);
 -            this.placeBlock(world, blockState7.setValue(EndPortalFrameBlock.HAS_EYE, Boolean.valueOf(bls[11])), 7, 3, 11, chunkBox);
-+            // Martijn start - custom strongholds - conditional placements
++            // Suki start - custom strongholds - conditional placements
 +            this.placeBlockUnconditionally(world, blockState4.setValue(EndPortalFrameBlock.HAS_EYE, Boolean.valueOf(bls[0])), 4, 3, 8, chunkBox);
 +            this.placeBlockUnconditionally(world, blockState4.setValue(EndPortalFrameBlock.HAS_EYE, Boolean.valueOf(bls[1])), 5, 3, 8, chunkBox);
 +            this.placeBlockUnconditionally(world, blockState4.setValue(EndPortalFrameBlock.HAS_EYE, Boolean.valueOf(bls[2])), 6, 3, 8, chunkBox);
@@ -1738,7 +1738,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +                this.placeBlockUnconditionally(world, blockState8, 5, 3, 11, chunkBox);
 +                this.placeBlockUnconditionally(world, blockState8, 6, 3, 11, chunkBox);
              }
-+            // Martijn end - custom strongholds - conditional placements
++            // Suki end - custom strongholds - conditional placements
  
              if (!this.hasPlacedSpawner) {
                  BlockPos blockPos = this.getWorldPos(5, 3, 6);
@@ -1747,14 +1747,14 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
          }
 +
-+        // Martijn start - custom strongholds - more things
++        // Suki start - custom strongholds - more things
 +
 +        @Override
 +        public boolean areAddedCandlesLit() {
 +            return true;
 +        }
 +
-+        // Martijn end - custom strongholds - more things
++        // Suki end - custom strongholds - more things
 +
      }
  
@@ -1765,10 +1765,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public PrisonHall(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_PRISON_HALL, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public PrisonHall(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_PRISON_HALL, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.setOrientation(orientation);
              this.entryDoor = this.randomSmallDoor(random);
          }
@@ -1777,32 +1777,32 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          }
  
 -        public static StrongholdPieces.PrisonHall createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength) {
-+        public static StrongholdPieces.PrisonHall createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) {// Martijn - custom strongholds - surface strongholds
++        public static StrongholdPieces.PrisonHall createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) {// Suki - custom strongholds - surface strongholds
              BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -1, -1, 0, 9, 5, 11, orientation);
 -            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.PrisonHall(chainLength, random, boundingBox, orientation) : null;
-+            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.PrisonHall(chainLength, random, boundingBox, orientation, isSurface) : null; // Martijn - custom strongholds - surface strongholds
++            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.PrisonHall(chainLength, random, boundingBox, orientation, isSurface) : null; // Suki - custom strongholds - surface strongholds
          }
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 -            this.generateBox(world, chunkBox, 0, 0, 0, 8, 4, 10, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
-+            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 8, 4, 10, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR_OR_TEMPORARY); // Martijn - custom strongholds - holes in stronghold parts
++            // Suki end - custom strongholds - surface strongholds
++            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 8, 4, 10, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR_OR_TEMPORARY); // Suki - custom strongholds - holes in stronghold parts
              this.generateSmallDoor(world, random, chunkBox, this.entryDoor, 1, 1, 0);
              this.generateBox(world, chunkBox, 1, 1, 10, 3, 3, 10, CAVE_AIR, CAVE_AIR, false);
 -            this.generateBox(world, chunkBox, 4, 1, 1, 4, 3, 1, false, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
 -            this.generateBox(world, chunkBox, 4, 1, 3, 4, 3, 3, false, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
 -            this.generateBox(world, chunkBox, 4, 1, 7, 4, 3, 7, false, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
 -            this.generateBox(world, chunkBox, 4, 1, 9, 4, 3, 9, false, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+            // Martijn start - custom strongholds - surface strongholds
++            // Suki start - custom strongholds - surface strongholds
 +            this.generateBoxConditionally(world, chunkBox, 4, 1, 1, 4, 3, 1, random, StrongholdPieces.SMOOTH_STONE_SELECTOR_OR_TEMPORARY);
 +            this.generateBoxConditionally(world, chunkBox, 4, 1, 3, 4, 3, 3, random, StrongholdPieces.SMOOTH_STONE_SELECTOR_OR_TEMPORARY);
 +            this.generateBoxConditionally(world, chunkBox, 4, 1, 7, 4, 3, 7, random, StrongholdPieces.SMOOTH_STONE_SELECTOR_OR_TEMPORARY);
 +            this.generateBoxConditionally(world, chunkBox, 4, 1, 9, 4, 3, 9, random, StrongholdPieces.SMOOTH_STONE_SELECTOR_OR_TEMPORARY);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
  
              for(int i = 1; i <= 3; ++i) {
                  this.placeBlock(world, Blocks.IRON_BARS.defaultBlockState().setValue(IronBarsBlock.NORTH, Boolean.valueOf(true)).setValue(IronBarsBlock.SOUTH, Boolean.valueOf(true)), 4, i, 4, chunkBox);
@@ -1812,10 +1812,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
      public static class RightTurn extends StrongholdPieces.Turn {
 -        public RightTurn(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_RIGHT_TURN, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public RightTurn(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_RIGHT_TURN, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.setOrientation(orientation);
              this.entryDoor = this.randomSmallDoor(random);
          }
@@ -1824,28 +1824,28 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          }
  
 -        public static StrongholdPieces.RightTurn createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength) {
-+        public static StrongholdPieces.RightTurn createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Martijn - custom strongholds - surface strongholds
++        public static StrongholdPieces.RightTurn createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Suki - custom strongholds - surface strongholds
              BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -1, -1, 0, 5, 5, 5, orientation);
 -            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.RightTurn(chainLength, random, boundingBox, orientation) : null;
-+            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.RightTurn(chainLength, random, boundingBox, orientation, isSurface) : null; // Martijn - custom strongholds - surface strongholds
++            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.RightTurn(chainLength, random, boundingBox, orientation, isSurface) : null; // Suki - custom strongholds - surface strongholds
          }
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 -            this.generateBox(world, chunkBox, 0, 0, 0, 4, 4, 4, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
-+            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 4, 4, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Martijn - custom strongholds - holes in stronghold parts
++            // Suki end - custom strongholds - surface strongholds
++            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 4, 4, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Suki - custom strongholds - holes in stronghold parts
              this.generateSmallDoor(world, random, chunkBox, this.entryDoor, 1, 1, 0);
              Direction direction = this.getOrientation();
              if (direction != Direction.NORTH && direction != Direction.EAST) {
 -                this.generateBox(world, chunkBox, 0, 1, 1, 0, 3, 3, CAVE_AIR, CAVE_AIR, false);
-+                this.generateBox(world, chunkBox, 0, 1, 1, 0, 3, 3, CAVE_AIR, CAVE_AIR, this.isSurface); // Martijn - custom strongholds - surface strongholds
++                this.generateBox(world, chunkBox, 0, 1, 1, 0, 3, 3, CAVE_AIR, CAVE_AIR, this.isSurface); // Suki - custom strongholds - surface strongholds
              } else {
 -                this.generateBox(world, chunkBox, 4, 1, 1, 4, 3, 3, CAVE_AIR, CAVE_AIR, false);
-+                this.generateBox(world, chunkBox, 4, 1, 1, 4, 3, 3, CAVE_AIR, CAVE_AIR, this.isSurface); // Martijn - custom strongholds - surface strongholds
++                this.generateBox(world, chunkBox, 4, 1, 1, 4, 3, 3, CAVE_AIR, CAVE_AIR, this.isSurface); // Suki - custom strongholds - surface strongholds
              }
  
          }
@@ -1855,10 +1855,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public RoomCrossing(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_ROOM_CROSSING, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public RoomCrossing(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_ROOM_CROSSING, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.setOrientation(orientation);
              this.entryDoor = this.randomSmallDoor(random);
              this.type = random.nextInt(5);
@@ -1867,25 +1867,25 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          }
  
 -        public static StrongholdPieces.RoomCrossing createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength) {
-+        public static StrongholdPieces.RoomCrossing createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Martijn - custom strongholds - surface strongholds
++        public static StrongholdPieces.RoomCrossing createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Suki - custom strongholds - surface strongholds
              BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -4, -1, 0, 11, 7, 11, orientation);
 -            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.RoomCrossing(chainLength, random, boundingBox, orientation) : null;
-+            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.RoomCrossing(chainLength, random, boundingBox, orientation, isSurface) : null; // Martijn - custom strongholds - surface strongholds
++            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.RoomCrossing(chainLength, random, boundingBox, orientation, isSurface) : null; // Suki - custom strongholds - surface strongholds
          }
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 -            this.generateBox(world, chunkBox, 0, 0, 0, 10, 6, 10, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
-+            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 10, 6, 10, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Martijn - custom strongholds - holes in stronghold parts
++            // Suki end - custom strongholds - surface strongholds
++            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 10, 6, 10, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Suki - custom strongholds - holes in stronghold parts
              this.generateSmallDoor(world, random, chunkBox, this.entryDoor, 4, 1, 0);
 -            this.generateBox(world, chunkBox, 4, 1, 10, 6, 3, 10, CAVE_AIR, CAVE_AIR, false);
 -            this.generateBox(world, chunkBox, 0, 1, 4, 0, 3, 6, CAVE_AIR, CAVE_AIR, false);
 -            this.generateBox(world, chunkBox, 10, 1, 4, 10, 3, 6, CAVE_AIR, CAVE_AIR, false);
-+            // Martijn start - custom strongholds - surface strongholds
++            // Suki start - custom strongholds - surface strongholds
 +            this.generateBox(world, chunkBox, 4, 1, 10, 6, 3, 10, CAVE_AIR, CAVE_AIR, this.isSurface);
 +            this.generateBox(world, chunkBox, 0, 1, 4, 0, 3, 6, CAVE_AIR, CAVE_AIR, this.isSurface);
 +            this.generateBox(world, chunkBox, 10, 1, 4, 10, 3, 6, CAVE_AIR, CAVE_AIR, this.isSurface);
@@ -1897,7 +1897,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
                      this.placeBlock(world, Blocks.STONE_BRICKS.defaultBlockState(), 5, 2, 5, chunkBox);
                      this.placeBlock(world, Blocks.STONE_BRICKS.defaultBlockState(), 5, 3, 5, chunkBox);
 -                    this.placeBlock(world, Blocks.WATER.defaultBlockState(), 5, 4, 5, chunkBox);
-+                    this.placeBlock(world, TEMPORARY_WATER.defaultBlockState(), 5, 4, 5, chunkBox); // Martijn - custom strongholds - strongholds in water
++                    this.placeBlock(world, TEMPORARY_WATER.defaultBlockState(), 5, 4, 5, chunkBox); // Suki - custom strongholds - strongholds in water
                      break;
                  case 2:
                      for(int j = 1; j <= 9; ++j) {
@@ -1963,9 +1963,9 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
                      this.createChest(world, chunkBox, random, 3, 4, 8, BuiltInLootTables.STRONGHOLD_CROSSING);
 +                    break;
              }
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
 +
-+            // Martijn start - custom strongholds - more things
++            // Suki start - custom strongholds - more things
  
 +            // Replace some of the floor by water or lava
 +            if (random.nextFloat() < GlobalConfiguration.get().customStrongholds.waterAndLavaInCrossings.chance) {
@@ -1990,11 +1990,11 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +                }
 +            }
 +
-+            // Martijn end - custom strongholds - more things
++            // Suki end - custom strongholds - more things
 +
 +        }
 +
-+        // Martijn start - custom strongholds - strongholds in water
++        // Suki start - custom strongholds - strongholds in water
 +
 +        public static final Block TEMPORARY_WATER = Blocks.WARPED_WART_BLOCK;
 +
@@ -2010,7 +2010,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +            }
          }
 +
-+        // Martijn end - custom strongholds - strongholds in water
++        // Suki end - custom strongholds - strongholds in water
 +
      }
  
@@ -2019,7 +2019,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          }
      }
  
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +    static class SmoothStoneSelectorOrTemporary extends StructurePiece.BlockSelector {
 +        public static final Block TEMPORARY = Blocks.LIGHT;
 +        @Override
@@ -2041,7 +2041,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +
 +        }
 +    }
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
      public static class StairsDown extends StrongholdPieces.StrongholdPiece {
          private static final int WIDTH = 5;
@@ -2051,10 +2051,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public StairsDown(StructurePieceType structurePieceType, int chainLength, int x, int z, Direction orientation) {
 -            super(structurePieceType, chainLength, makeBoundingBox(x, 64, z, orientation, 5, 11, 5));
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public StairsDown(StructurePieceType structurePieceType, int chainLength, int x, int z, Direction orientation, boolean isSurface) {
 +            super(structurePieceType, chainLength, makeBoundingBox(x, 64, z, orientation, 5, 11, 5), isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.isSource = true;
              this.setOrientation(orientation);
              this.entryDoor = StrongholdPieces.StrongholdPiece.SmallDoorType.OPENING;
@@ -2062,10 +2062,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public StairsDown(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_STAIRS_DOWN, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public StairsDown(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_STAIRS_DOWN, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.isSource = false;
              this.setOrientation(orientation);
              this.entryDoor = this.randomSmallDoor(random);
@@ -2074,20 +2074,20 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          }
  
 -        public static StrongholdPieces.StairsDown createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength) {
-+        public static StrongholdPieces.StairsDown createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Martijn - custom strongholds - surface strongholds
++        public static StrongholdPieces.StairsDown createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Suki - custom strongholds - surface strongholds
              BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -1, -7, 0, 5, 11, 5, orientation);
 -            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.StairsDown(chainLength, random, boundingBox, orientation) : null;
-+            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.StairsDown(chainLength, random, boundingBox, orientation, isSurface) : null; // Martijn - custom strongholds - surface strongholds
++            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.StairsDown(chainLength, random, boundingBox, orientation, isSurface) : null; // Suki - custom strongholds - surface strongholds
          }
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 -            this.generateBox(world, chunkBox, 0, 0, 0, 4, 10, 4, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
-+            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 10, 4, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Martijn - custom strongholds - holes in stronghold parts
++            // Suki end - custom strongholds - surface strongholds
++            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 10, 4, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Suki - custom strongholds - holes in stronghold parts
              this.generateSmallDoor(world, random, chunkBox, this.entryDoor, 1, 7, 0);
              this.generateSmallDoor(world, random, chunkBox, StrongholdPieces.StrongholdPiece.SmallDoorType.OPENING, 1, 1, 4);
              this.placeBlock(world, Blocks.STONE_BRICKS.defaultBlockState(), 2, 6, 1, chunkBox);
@@ -2097,10 +2097,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public StartPiece(RandomSource random, int i, int j) {
 -            super(StructurePieceType.STRONGHOLD_START, 0, i, j, getRandomHorizontalDirection(random));
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public StartPiece(RandomSource random, int i, int j, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_START, 0, i, j, getRandomHorizontalDirection(random), isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
          }
  
          public StartPiece(CompoundTag nbt) {
@@ -2110,10 +2110,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public Straight(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_STRAIGHT, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public Straight(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_STRAIGHT, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.setOrientation(orientation);
              this.entryDoor = this.randomSmallDoor(random);
              this.leftChild = random.nextInt(2) == 0;
@@ -2125,17 +2125,17 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +        public static StrongholdPieces.Straight createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) {
              BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -1, -1, 0, 5, 5, 7, orientation);
 -            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.Straight(chainLength, random, boundingBox, orientation) : null;
-+            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.Straight(chainLength, random, boundingBox, orientation, isSurface) : null; // Martijn - custom strongholds - surface strongholds
++            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.Straight(chainLength, random, boundingBox, orientation, isSurface) : null; // Suki - custom strongholds - surface strongholds
          }
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 -            this.generateBox(world, chunkBox, 0, 0, 0, 4, 4, 6, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
-+            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 4, 6, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Martijn - custom strongholds - holes in stronghold parts
++            // Suki end - custom strongholds - surface strongholds
++            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 4, 6, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Suki - custom strongholds - holes in stronghold parts
              this.generateSmallDoor(world, random, chunkBox, this.entryDoor, 1, 1, 0);
              this.generateSmallDoor(world, random, chunkBox, StrongholdPieces.StrongholdPiece.SmallDoorType.OPENING, 1, 1, 6);
              BlockState blockState = Blocks.WALL_TORCH.defaultBlockState().setValue(WallTorchBlock.FACING, Direction.EAST);
@@ -2144,12 +2144,12 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
              this.maybeGenerateBlock(world, chunkBox, random, 0.1F, 3, 2, 5, blockState2);
              if (this.leftChild) {
 -                this.generateBox(world, chunkBox, 0, 1, 2, 0, 3, 4, CAVE_AIR, CAVE_AIR, false);
-+                this.generateBox(world, chunkBox, 0, 1, 2, 0, 3, 4, CAVE_AIR, CAVE_AIR, this.isSurface); // Martijn - custom strongholds - surface strongholds
++                this.generateBox(world, chunkBox, 0, 1, 2, 0, 3, 4, CAVE_AIR, CAVE_AIR, this.isSurface); // Suki - custom strongholds - surface strongholds
              }
  
              if (this.rightChild) {
 -                this.generateBox(world, chunkBox, 4, 1, 2, 4, 3, 4, CAVE_AIR, CAVE_AIR, false);
-+                this.generateBox(world, chunkBox, 4, 1, 2, 4, 3, 4, CAVE_AIR, CAVE_AIR, this.isSurface); // Martijn - custom strongholds - surface strongholds
++                this.generateBox(world, chunkBox, 4, 1, 2, 4, 3, 4, CAVE_AIR, CAVE_AIR, this.isSurface); // Suki - custom strongholds - surface strongholds
              }
  
          }
@@ -2159,10 +2159,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        public StraightStairsDown(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation) {
 -            super(StructurePieceType.STRONGHOLD_STRAIGHT_STAIRS_DOWN, chainLength, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public StraightStairsDown(int chainLength, RandomSource random, BoundingBox boundingBox, Direction orientation, boolean isSurface) {
 +            super(StructurePieceType.STRONGHOLD_STRAIGHT_STAIRS_DOWN, chainLength, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              this.setOrientation(orientation);
              this.entryDoor = this.randomSmallDoor(random);
          }
@@ -2171,37 +2171,37 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
          }
  
 -        public static StrongholdPieces.StraightStairsDown createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength) {
-+        public static StrongholdPieces.StraightStairsDown createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Martijn - custom strongholds - surface strongholds
++        public static StrongholdPieces.StraightStairsDown createPiece(StructurePieceAccessor holder, RandomSource random, int x, int y, int z, Direction orientation, int chainLength, boolean isSurface) { // Suki - custom strongholds - surface strongholds
              BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -1, -7, 0, 5, 11, 8, orientation);
 -            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.StraightStairsDown(chainLength, random, boundingBox, orientation) : null;
-+            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.StraightStairsDown(chainLength, random, boundingBox, orientation, isSurface) : null; // Martijn - custom strongholds - surface strongholds
++            return isOkBox(boundingBox) && holder.findCollisionPiece(boundingBox) == null ? new StrongholdPieces.StraightStairsDown(chainLength, random, boundingBox, orientation, isSurface) : null; // Suki - custom strongholds - surface strongholds
          }
  
          @Override
 -        public void postProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 -            this.generateBox(world, chunkBox, 0, 0, 0, 4, 10, 7, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        public void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            super.strongholdPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
-+            // Martijn end - custom strongholds - surface strongholds
-+            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 10, 7, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Martijn - custom strongholds - holes in stronghold parts
++            // Suki end - custom strongholds - surface strongholds
++            this.generateBoxWithPartiallyOpenCeiling(world, chunkBox, 0, 0, 0, 4, 10, 7, true, random, StrongholdPieces.SMOOTH_STONE_SELECTOR); // Suki - custom strongholds - holes in stronghold parts
              this.generateSmallDoor(world, random, chunkBox, this.entryDoor, 1, 7, 0);
              this.generateSmallDoor(world, random, chunkBox, StrongholdPieces.StrongholdPiece.SmallDoorType.OPENING, 1, 1, 7);
 -            BlockState blockState = Blocks.COBBLESTONE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH);
-+            // Martijn start - custom strongholds - stairs have more types
++            // Suki start - custom strongholds - stairs have more types
 +            BlockState blockStateStairs1 = Blocks.COBBLESTONE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH);
 +            BlockState blockStateStairs2 = Blocks.STONE_BRICK_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH);
 +            BlockState blockStateStairs3 = Blocks.STONE_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH);
 +            BlockState blockStateStairs4 = Blocks.COBBLESTONE_SLAB.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.BOTTOM);
 +            BlockState blockStateStairs5 = Blocks.STONE_BRICK_SLAB.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.BOTTOM);
 +            BlockState blockStateStairs6 = Blocks.STONE_SLAB.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.BOTTOM);
-+            // Martijn end - custom strongholds - stairs have more types
++            // Suki end - custom strongholds - stairs have more types
  
              for(int i = 0; i < 6; ++i) {
 -                this.placeBlock(world, blockState, 1, 6 - i, 1 + i, chunkBox);
 -                this.placeBlock(world, blockState, 2, 6 - i, 1 + i, chunkBox);
 -                this.placeBlock(world, blockState, 3, 6 - i, 1 + i, chunkBox);
-+                // Martijn start - custom strongholds - stairs have more types
++                // Suki start - custom strongholds - stairs have more types
 +                for (int stairsX = 1; stairsX <= 3; stairsX++) {
 +                    float f = random.nextFloat();
 +                    BlockState stairsState;
@@ -2220,7 +2220,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +                    }
 +                    this.placeBlock(world, stairsState, stairsX, 6 - i, 1 + i, chunkBox);
 +                }
-+                // Martijn end - custom strongholds - stairs have more types
++                // Suki end - custom strongholds - stairs have more types
                  if (i < 5) {
                      this.placeBlock(world, Blocks.STONE_BRICKS.defaultBlockState(), 1, 5 - i, 1 + i, chunkBox);
                      this.placeBlock(world, Blocks.STONE_BRICKS.defaultBlockState(), 2, 5 - i, 1 + i, chunkBox);
@@ -2228,31 +2228,31 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
      abstract static class StrongholdPiece extends StructurePiece {
          protected StrongholdPieces.StrongholdPiece.SmallDoorType entryDoor = StrongholdPieces.StrongholdPiece.SmallDoorType.OPENING;
-+        protected boolean isSurface = false; // Martijn - custom strongholds - surface strongholds
++        protected boolean isSurface = false; // Suki - custom strongholds - surface strongholds
  
 -        protected StrongholdPiece(StructurePieceType type, int length, BoundingBox boundingBox) {
-+        protected StrongholdPiece(StructurePieceType type, int length, BoundingBox boundingBox, boolean isSurface) { // Martijn - custom strongholds - surface strongholds
++        protected StrongholdPiece(StructurePieceType type, int length, BoundingBox boundingBox, boolean isSurface) { // Suki - custom strongholds - surface strongholds
              super(type, length, boundingBox);
-+            this.isSurface = isSurface; // Martijn - custom strongholds - surface strongholds
++            this.isSurface = isSurface; // Suki - custom strongholds - surface strongholds
          }
  
          public StrongholdPiece(StructurePieceType type, CompoundTag nbt) {
              super(type, nbt);
              this.entryDoor = StrongholdPieces.StrongholdPiece.SmallDoorType.valueOf(nbt.getString("EntryDoor"));
-+            // Martijn start - custom strongholds - surface strongholds
++            // Suki start - custom strongholds - surface strongholds
 +            if (nbt.contains("IsSurface")) {
 +                this.isSurface = nbt.getBoolean("IsSurface");
 +            }
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
          }
  
          @Override
          protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag nbt) {
              nbt.putString("EntryDoor", this.entryDoor.name());
-+            nbt.putBoolean("IsSurface", this.isSurface); // Martijn - custom strongholds - surface strongholds
++            nbt.putBoolean("IsSurface", this.isSurface); // Suki - custom strongholds - surface strongholds
 +        }
 +
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +
 +        @Override
 +        protected void placeBlock(WorldGenLevel world, BlockState block, int x, int y, int z, BoundingBox box) {
@@ -2314,9 +2314,9 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +            return this.createChest(world, boundingBox, random, pos, lootTableId, block, true);
 +        }
 +
-+        // Martijn end - custom strongholds - surface strongholds
++        // Suki end - custom strongholds - surface strongholds
 +
-+        // Martijn start - custom strongholds - strongholds in water
++        // Suki start - custom strongholds - strongholds in water
 +
 +        @Override
 +        protected void generateBox(WorldGenLevel world, BoundingBox box, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, BlockState outline, BlockState inside, boolean cantReplaceAir) {
@@ -2338,7 +2338,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +            this.generateBox(world, box, fillBox, cantReplaceAir, cantReplaceAir, random, randomizer);
 +        }
 +
-+        // Martijn start - custom strongholds - holes in stronghold parts
++        // Suki start - custom strongholds - holes in stronghold parts
 +
 +        @Override
 +        protected void generateBoxWithPartiallyOpenCeiling(WorldGenLevel world, BoundingBox box, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, boolean cantReplaceAir, RandomSource random, StructurePiece.BlockSelector randomizer, BlockState newAir) {
@@ -2360,7 +2360,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +            this.generateBoxWithPartiallyOpenCeiling(world, box, fillBox, cantReplaceAir, random, randomizer, Blocks.CAVE_AIR.defaultBlockState());
 +        }
 +
-+        // Martijn end - custom strongholds - holes in stronghold parts
++        // Suki end - custom strongholds - holes in stronghold parts
 +
 +        @Override
 +        protected void generateMaybeBox(WorldGenLevel world, BoundingBox box, RandomSource random, float blockChance, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, BlockState outline, BlockState inside, boolean cantReplaceAir, boolean stayBelowSeaLevel) {
@@ -2372,13 +2372,13 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +            this.generateUpperHalfSphere(world, bounds, minX, minY, minZ, maxX, maxY, maxZ, block, cantReplaceAir, cantReplaceAir);
 +        }
 +
-+        // Martijn end - custom strongholds - strongholds in water
++        // Suki end - custom strongholds - strongholds in water
 +
          protected void generateSmallDoor(WorldGenLevel world, RandomSource random, BoundingBox boundingBox, StrongholdPieces.StrongholdPiece.SmallDoorType type, int x, int y, int z) {
              switch (type) {
                  case OPENING:
 -                    this.generateBox(world, boundingBox, x, y, z, x + 3 - 1, y + 3 - 1, z, CAVE_AIR, CAVE_AIR, false);
-+                    this.generateBox(world, boundingBox, x, y, z, x + 3 - 1, y + 3 - 1, z, CAVE_AIR, CAVE_AIR, this.isSurface); // Martijn - custom strongholds - surface strongholds
++                    this.generateBox(world, boundingBox, x, y, z, x + 3 - 1, y + 3 - 1, z, CAVE_AIR, CAVE_AIR, this.isSurface); // Suki - custom strongholds - surface strongholds
                      break;
                  case WOOD_DOOR:
                      this.placeBlock(world, Blocks.STONE_BRICKS.defaultBlockState(), x, y, z, boundingBox);
@@ -2387,16 +2387,16 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
                  switch (direction) {
                      case NORTH:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() - 1, direction, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() - 1, direction, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() - 1, direction, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                      case SOUTH:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.maxZ() + 1, direction, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.maxZ() + 1, direction, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.maxZ() + 1, direction, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                      case WEST:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() - 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, direction, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() - 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, direction, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() - 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, direction, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                      case EAST:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.maxX() + 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, direction, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.maxX() + 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, direction, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.maxX() + 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, direction, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                  }
              }
  
@@ -2405,16 +2405,16 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
                  switch (direction) {
                      case NORTH:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() - 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.WEST, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() - 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.WEST, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() - 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.WEST, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                      case SOUTH:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() - 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.WEST, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() - 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.WEST, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() - 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.WEST, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                      case WEST:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() - 1, Direction.NORTH, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() - 1, Direction.NORTH, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() - 1, Direction.NORTH, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                      case EAST:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() - 1, Direction.NORTH, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() - 1, Direction.NORTH, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() - 1, Direction.NORTH, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                  }
              }
  
@@ -2423,16 +2423,16 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
                  switch (direction) {
                      case NORTH:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.maxX() + 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.EAST, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.maxX() + 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.EAST, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.maxX() + 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.EAST, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                      case SOUTH:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.maxX() + 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.EAST, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.maxX() + 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.EAST, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.maxX() + 1, this.boundingBox.minY() + heightOffset, this.boundingBox.minZ() + leftRightOffset, Direction.EAST, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                      case WEST:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.maxZ() + 1, Direction.SOUTH, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.maxZ() + 1, Direction.SOUTH, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.maxZ() + 1, Direction.SOUTH, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                      case EAST:
 -                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.maxZ() + 1, Direction.SOUTH, this.getGenDepth());
-+                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.maxZ() + 1, Direction.SOUTH, this.getGenDepth(), this.isSurface); // Martijn - custom strongholds - surface strongholds
++                        return StrongholdPieces.generateAndAddPiece(start, holder, random, this.boundingBox.minX() + leftRightOffset, this.boundingBox.minY() + heightOffset, this.boundingBox.maxZ() + 1, Direction.SOUTH, this.getGenDepth(), this.isSurface); // Suki - custom strongholds - surface strongholds
                  }
              }
  
@@ -2441,7 +2441,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
              IRON_DOOR;
          }
 +
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +
 +        protected void strongholdPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {}
 +
@@ -2451,7 +2451,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +            this.postPostProcess(world, structureAccessor, chunkGenerator, random, chunkBox, chunkPos, pivot);
 +        }
 +
-+        // Martijn start - custom strongholds - more things
++        // Suki start - custom strongholds - more things
 +
 +        public boolean areAddedCandlesLit() {
 +            return false;
@@ -2483,7 +2483,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +            return addedCandleStates;
 +        }
 +
-+        // Martijn end - custom strongholds - more things
++        // Suki end - custom strongholds - more things
 +
 +        public final void postPostProcess(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
 +            // Replace temporary air-representing blocks by air
@@ -2567,8 +2567,8 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +                }
 +            }
 +            // Spread water
-+            this.spreadWater(world); // Martijn - custom strongholds - strongholds in water
-+            // Martijn start - custom strongholds - more things
++            this.spreadWater(world); // Suki - custom strongholds - strongholds in water
++            // Suki start - custom strongholds - more things
 +            // Maybe replace some air around the edges with candles
 +            BlockState[] addedCandleStates = getAddedCandleStates();
 +            GlobalConfiguration.CustomStrongholds.AddCandles candlesConfig = GlobalConfiguration.get().customStrongholds.addCandles;
@@ -2586,12 +2586,12 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +                    break;
 +                }
 +            }
-+            // Martijn end - custom strongholds - more things
++            // Suki end - custom strongholds - more things
 +        }
 +
-+        // Martijn end - custom strongholds - surface strongholds
++        // Suki end - custom strongholds - surface strongholds
 +
-+        // Martijn start - custom strongholds - strongholds in water
++        // Suki start - custom strongholds - strongholds in water
 +
 +        public void spreadWater(WorldGenLevel world) {
 +            // Spread water horizontally and downwards
@@ -2628,7 +2628,7 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
 +            }
 +        }
 +
-+        // Martijn start - custom strongholds - strongholds in water
++        // Suki start - custom strongholds - strongholds in water
 +
      }
  
@@ -2639,10 +2639,10 @@ index 0a17765680e28961ac7bf5cb04cf52d8dba86eb0..e083196321f8ecd792951021a47cc236
  
 -        protected Turn(StructurePieceType type, int length, BoundingBox boundingBox) {
 -            super(type, length, boundingBox);
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        protected Turn(StructurePieceType type, int length, BoundingBox boundingBox, boolean isSurface) {
 +            super(type, length, boundingBox, isSurface);
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
          }
  
          public Turn(StructurePieceType type, CompoundTag nbt) {
@@ -2694,7 +2694,7 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
 -    public static final Codec<StrongholdStructure> CODEC = simpleCodec(StrongholdStructure::new);
  
 -    public StrongholdStructure(Structure.StructureSettings config) {
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
 +    public static final Codec<StrongholdStructure> CODEC = RecordCodecBuilder.create(instance ->
 +        instance.group(settingsCodec(instance), Codec.BOOL.optionalFieldOf("is_surface").forGetter(structure ->
@@ -2713,18 +2713,18 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
 +        this.isSurface = isSurface;
      }
  
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
      @Override
      public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
          return Optional.of(new Structure.GenerationStub(context.chunkPos().getWorldPosition(), (collector) -> {
 -            generatePieces(collector, context);
-+            generatePieces(collector, context, this.isSurface); // Martijn - custom strongholds - surface strongholds
++            generatePieces(collector, context, this.isSurface); // Suki - custom strongholds - surface strongholds
          }));
      }
  
 -    private static void generatePieces(StructurePiecesBuilder collector, Structure.GenerationContext context) {
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
 +    public static @Nullable Holder<Biome> getBiomeDuringGeneration(Structure.GenerationContext context, BlockPos blockPos) {
 +        try {
@@ -2741,12 +2741,12 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
 +        return null;
 +    }
 +
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
-+    private static void generatePieces(StructurePiecesBuilder collector, Structure.GenerationContext context, boolean isSurface) { // Martijn - custom strongholds - surface strongholds
++    private static void generatePieces(StructurePiecesBuilder collector, Structure.GenerationContext context, boolean isSurface) { // Suki - custom strongholds - surface strongholds
          int i = 0;
  
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +
 +        // We determine a possible block amount to vertically raise the stronghold by
 +        // (or null if we do not move this stronghold to the surface)
@@ -2778,7 +2778,7 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
 +            }
 +        }
 +
-+        // Martijn end - custom strongholds - surface strongholds
++        // Suki end - custom strongholds - surface strongholds
 +
 +        final int minYDifferenceBetweenPortalRoomAndStartPiece = context.random().nextIntBetweenInclusive(
 +            GlobalConfiguration.get().customStrongholds.minimumPortalRoomYDifference.min,
@@ -2787,11 +2787,11 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
 +
          StrongholdPieces.StartPiece startPiece;
 -        do {
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +        int maxCyclesBeforeAllowEndPortalInWrongBiome = 1000;
 +        int maxCyclesBeforeAllowHighEndPortal = 2000;
 +        for (int cycle = 0;; cycle++) {
-+            // Martijn end - custom strongholds - surface strongholds
++            // Suki end - custom strongholds - surface strongholds
              collector.clear();
              context.random().setLargeFeatureSeed(context.seed() + (long)(i++), context.chunkPos().x, context.chunkPos().z);
              StrongholdPieces.resetPieces();
@@ -2804,14 +2804,14 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
                  structurePiece.addChildren(startPiece, collector, context.random());
              }
  
-+            // Martijn start - custom strongholds - bigger strongholds
++            // Suki start - custom strongholds - bigger strongholds
 +            if (collector.isEmpty()) {
 +                Bukkit.getLogger().info("Failed a stronghold generation (isSurface = " + isSurface + "): pieces empty");
 +                continue;
 +            } else if (startPiece.portalRoomPiece == null) {
 +                Bukkit.getLogger().info("Failed a stronghold generation (isSurface = " + isSurface + "): no end portal");
 +                continue;
-+                // Martijn start - custom strongholds - surface strongholds
++                // Suki start - custom strongholds - surface strongholds
 +            } else if (cycle < maxCyclesBeforeAllowHighEndPortal && isSurface && startPiece.portalRoomPiece.getBoundingBox().getCenter().getY() >= startPiece.getBoundingBox().getCenter().getY() - minYDifferenceBetweenPortalRoomAndStartPiece) {
 +                Bukkit.getLogger().info("Failed a stronghold generation (isSurface = " + isSurface + "): end portal not low enough");
 +                continue;
@@ -2856,9 +2856,9 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
 +            }
 +            break;
 +        }
-+        // Martijn end - custom strongholds - bigger strongholds
++        // Suki end - custom strongholds - bigger strongholds
 +
-+        // Martijn start - custom strongholds - surface strongholds
++        // Suki start - custom strongholds - surface strongholds
 +
 +        if (isSurface && potentialExtraIncreasedY != null) {
 +            int standardDecreasedY = GlobalConfiguration.get().customStrongholds.decreasedY.always;
@@ -2871,11 +2871,11 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
 -        } while(collector.isEmpty() || startPiece.portalRoomPiece == null);
 +        }
 +
-+        // Martijn end - custom strongholds - surface strongholds
++        // Suki end - custom strongholds - surface strongholds
  
      }
  
-+    // Martijn start - custom strongholds - surface strongholds
++    // Suki start - custom strongholds - surface strongholds
 +
      @Override
      public StructureType<?> type() {
@@ -2903,9 +2903,9 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
 +        }
 +    }
 +
-+    // Martijn end - custom strongholds - surface strongholds
++    // Suki end - custom strongholds - surface strongholds
 +
-+    // Martijn start - custom strongholds - strongholds in water
++    // Suki start - custom strongholds - strongholds in water
 +
 +    @Override
 +    public void afterPlace(WorldGenLevel world, StructureManager structureAccessor, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox box, ChunkPos chunkPos, PiecesContainer pieces) {
@@ -2919,7 +2919,7 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
 +        });
 +    }
 +
-+    // Martijn end - custom strongholds - strongholds in water
++    // Suki end - custom strongholds - strongholds in water
 +
  }
 diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTags.java b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTags.java
@@ -2930,7 +2930,7 @@ index bde00c76313a1794edf0f353b93187ce3a3541b5..7f81a0060fa8ab72b71ac60e7f9c4a66
   */
  public class SuCraftBiomeTags {
  
-+    public static final TagKey<Biome> HAS_STRONGHOLD_SURFACE = create("has_structure/stronghold_surface"); // Martijn - custom strongholds - surface strongholds
++    public static final TagKey<Biome> HAS_STRONGHOLD_SURFACE = create("has_structure/stronghold_surface"); // Suki - custom strongholds - surface strongholds
 +
      private static TagKey<Biome> create(String id) {
          return TagKey.create(Registry.BIOME_REGISTRY, ResourceLocation.sucraft(id));
@@ -2957,7 +2957,7 @@ index 9a6b12ce35e8f34b5e58f302a28328dacfd0883a..347f0b29fbe89eaab83692e3991aa197
 -    protected void addTags() {}
 +    protected void addTags() {
 +        MinecraftServer.LOGGER.info("Adding custom biome tags...");
-+        this.tag(SuCraftBiomeTags.HAS_STRONGHOLD_SURFACE).add(Biomes.PLAINS).add(Biomes.SUNFLOWER_PLAINS).add(Biomes.SNOWY_PLAINS).add(Biomes.ICE_SPIKES).add(Biomes.DESERT).add(Biomes.FOREST).add(Biomes.FLOWER_FOREST).add(Biomes.BIRCH_FOREST).add(Biomes.DARK_FOREST).add(Biomes.OLD_GROWTH_BIRCH_FOREST).add(Biomes.OLD_GROWTH_PINE_TAIGA).add(Biomes.OLD_GROWTH_SPRUCE_TAIGA).add(Biomes.TAIGA).add(Biomes.SNOWY_TAIGA).add(Biomes.SAVANNA).add(Biomes.SAVANNA_PLATEAU).add(Biomes.WINDSWEPT_HILLS).add(Biomes.WINDSWEPT_GRAVELLY_HILLS).add(Biomes.WINDSWEPT_FOREST).add(Biomes.WINDSWEPT_SAVANNA).add(Biomes.JUNGLE).add(Biomes.SPARSE_JUNGLE).add(Biomes.BAMBOO_JUNGLE).add(Biomes.BADLANDS).add(Biomes.ERODED_BADLANDS).add(Biomes.WOODED_BADLANDS).add(Biomes.MEADOW).add(Biomes.GROVE).add(Biomes.SNOWY_SLOPES).add(Biomes.FROZEN_PEAKS).add(Biomes.JAGGED_PEAKS).add(Biomes.STONY_PEAKS).add(Biomes.MUSHROOM_FIELDS); // Martijn - custom strongholds - surface strongholds
++        this.tag(SuCraftBiomeTags.HAS_STRONGHOLD_SURFACE).add(Biomes.PLAINS).add(Biomes.SUNFLOWER_PLAINS).add(Biomes.SNOWY_PLAINS).add(Biomes.ICE_SPIKES).add(Biomes.DESERT).add(Biomes.FOREST).add(Biomes.FLOWER_FOREST).add(Biomes.BIRCH_FOREST).add(Biomes.DARK_FOREST).add(Biomes.OLD_GROWTH_BIRCH_FOREST).add(Biomes.OLD_GROWTH_PINE_TAIGA).add(Biomes.OLD_GROWTH_SPRUCE_TAIGA).add(Biomes.TAIGA).add(Biomes.SNOWY_TAIGA).add(Biomes.SAVANNA).add(Biomes.SAVANNA_PLATEAU).add(Biomes.WINDSWEPT_HILLS).add(Biomes.WINDSWEPT_GRAVELLY_HILLS).add(Biomes.WINDSWEPT_FOREST).add(Biomes.WINDSWEPT_SAVANNA).add(Biomes.JUNGLE).add(Biomes.SPARSE_JUNGLE).add(Biomes.BAMBOO_JUNGLE).add(Biomes.BADLANDS).add(Biomes.ERODED_BADLANDS).add(Biomes.WOODED_BADLANDS).add(Biomes.MEADOW).add(Biomes.GROVE).add(Biomes.SNOWY_SLOPES).add(Biomes.FROZEN_PEAKS).add(Biomes.JAGGED_PEAKS).add(Biomes.STONY_PEAKS).add(Biomes.MUSHROOM_FIELDS); // Suki - custom strongholds - surface strongholds
 +    }
  
  }
@@ -2969,7 +2969,7 @@ index d81b5b97f24c4ebb73f10cdab99a07fa2ba9ead0..1b890f788d0e93647424de2671e8c9e1
   */
  public interface SuCraftBuiltinStructures {
  
-+    ResourceKey<Structure> STRONGHOLD_SURFACE = createKey("stronghold_surface"); // Martijn - custom strongholds - surface strongholds
++    ResourceKey<Structure> STRONGHOLD_SURFACE = createKey("stronghold_surface"); // Suki - custom strongholds - surface strongholds
 +
      private static ResourceKey<Structure> createKey(String id) {
          return ResourceKey.create(Registry.STRUCTURE_REGISTRY, ResourceLocation.sucraft(id));

@@ -20,7 +20,7 @@ index 747e1fd98e4b0e9350ed6e75fa3c0e60465ab128..464311b63a01487baab2fed78ea9e9ad
      static final Logger LOGGER = LogUtils.getLogger();
      private static final int LATENCY_CHECK_INTERVAL = 15000;
 -    public static final double MAX_INTERACTION_DISTANCE = Mth.square(6.0D);
-+    public static final double MAX_INTERACTION_DISTANCE = Mth.square(7.5D); // Martijn - increase max interaction distance
++    public static final double MAX_INTERACTION_DISTANCE = Mth.square(7.5D); // Suki - increase max interaction distance
      private static final int NO_BLOCK_UPDATES_TO_ACK = -1;
      private static final int PENDING_MESSAGE_DISCONNECT_THRESHOLD = 4096;
      public final Connection connection;

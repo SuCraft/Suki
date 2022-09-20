@@ -12,11 +12,11 @@ index f25e6808c9ce7276c3e49c6ad03eda5ffa35e5f8..85ccb5f671faca50332b31a7b3f0a558
      String getMinecraftVersion();
      // Paper end
  
-+    // Martijn start - hide plugins
++    // Suki start - hide plugins
 +    public boolean getHidePlugins();
 +
 +    public boolean getHideLegacyPluginAsterisk();
-+    // Martijn end - hide plugins
++    // Suki end - hide plugins
 +
      /**
       * Gets a view of all currently logged in players. This {@linkplain
@@ -30,7 +30,7 @@ index 1aa58c59e1e8738bbdc77752885ff3b18b29de42..51f62d64e566c1673c39dfa8be4e17b4
          if (!testPermission(sender)) return true;
  
 -        sender.sendMessage("Plugins " + getPluginList());
-+        sender.sendMessage("Plugins " + getPluginList(sender)); // Martijn - hide plugins
++        sender.sendMessage("Plugins " + getPluginList(sender)); // Suki - hide plugins
          return true;
      }
  
@@ -39,7 +39,7 @@ index 1aa58c59e1e8738bbdc77752885ff3b18b29de42..51f62d64e566c1673c39dfa8be4e17b4
  
      @NotNull
 -    private String getPluginList() {
-+    private String getPluginList(@NotNull CommandSender sender) { // Martijn - hide plugins
++    private String getPluginList(@NotNull CommandSender sender) { // Suki - hide plugins
          // Paper start
          TreeMap<String, Plugin> plugins = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
  
@@ -47,14 +47,14 @@ index 1aa58c59e1e8738bbdc77752885ff3b18b29de42..51f62d64e566c1673c39dfa8be4e17b4
          }
  
          StringBuilder pluginList = new StringBuilder();
-+        int numberOfListedPlugins = 0; // Martijn - hide plugins
++        int numberOfListedPlugins = 0; // Suki - hide plugins
          for (Map.Entry<String, Plugin> entry : plugins.entrySet()) {
-+            // Martijn start - hide plugins
++            // Suki start - hide plugins
 +            if (!entry.getValue().canBeSeenBy(sender)) {
 +                continue;
 +            }
 +            numberOfListedPlugins++;
-+            // Martijn end - hide plugins
++            // Suki end - hide plugins
              if (pluginList.length() > 0) {
                  pluginList.append(ChatColor.WHITE);
                  pluginList.append(", ");
@@ -63,7 +63,7 @@ index 1aa58c59e1e8738bbdc77752885ff3b18b29de42..51f62d64e566c1673c39dfa8be4e17b4
              // Paper start - Add an asterisk to legacy plugins (so admins are aware)
              String pluginName = plugin.getDescription().getName();
 -            if (org.bukkit.UnsafeValues.isLegacyPlugin(plugin)) {
-+            if (!Bukkit.getServer().getHideLegacyPluginAsterisk() && org.bukkit.UnsafeValues.isLegacyPlugin(plugin)) { // Martijn - hide plugins
++            if (!Bukkit.getServer().getHideLegacyPluginAsterisk() && org.bukkit.UnsafeValues.isLegacyPlugin(plugin)) { // Suki - hide plugins
                  pluginName += "*";
              }
              pluginList.append(pluginName);
@@ -72,7 +72,7 @@ index 1aa58c59e1e8738bbdc77752885ff3b18b29de42..51f62d64e566c1673c39dfa8be4e17b4
          }
  
 -        return "(" + plugins.size() + "): " + pluginList.toString();
-+        return "(" + numberOfListedPlugins + "): " + pluginList.toString(); // Martijn - hide plugins
++        return "(" + numberOfListedPlugins + "): " + pluginList.toString(); // Suki - hide plugins
          // Paper end
      }
  
@@ -85,7 +85,7 @@ index e40f017f87d6b6b4770501b106c76dc69ec69abb..b1b75b21d0bac4da3d912dcabf2702d3
              String pluginName = name.toString();
              Plugin exactPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
 -            if (exactPlugin != null) {
-+            if (exactPlugin != null && exactPlugin.canBeSeenBy(sender)) { // Martijn - hide plugins
++            if (exactPlugin != null && exactPlugin.canBeSeenBy(sender)) { // Suki - hide plugins
                  describeToSender(exactPlugin, sender);
                  return true;
              }
@@ -94,7 +94,7 @@ index e40f017f87d6b6b4770501b106c76dc69ec69abb..b1b75b21d0bac4da3d912dcabf2702d3
              pluginName = pluginName.toLowerCase(java.util.Locale.ENGLISH);
              for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 -                if (plugin.getName().toLowerCase(java.util.Locale.ENGLISH).contains(pluginName)) {
-+                if (plugin.canBeSeenBy(sender) && plugin.getName().toLowerCase(java.util.Locale.ENGLISH).contains(pluginName)) { // Martijn - hide plugins
++                if (plugin.canBeSeenBy(sender) && plugin.getName().toLowerCase(java.util.Locale.ENGLISH).contains(pluginName)) { // Suki - hide plugins
                      describeToSender(plugin, sender);
                      found = true;
                  }
@@ -103,7 +103,7 @@ index e40f017f87d6b6b4770501b106c76dc69ec69abb..b1b75b21d0bac4da3d912dcabf2702d3
              String toComplete = args[0].toLowerCase(java.util.Locale.ENGLISH);
              for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 -                if (StringUtil.startsWithIgnoreCase(plugin.getName(), toComplete)) {
-+                if (plugin.canBeSeenBy(sender) && StringUtil.startsWithIgnoreCase(plugin.getName(), toComplete)) { // Martijn - hide plugins
++                if (plugin.canBeSeenBy(sender) && StringUtil.startsWithIgnoreCase(plugin.getName(), toComplete)) { // Suki - hide plugins
                      completions.add(plugin.getName());
                  }
              }
@@ -129,13 +129,13 @@ index 08aef59d8443038771704d9587e31f299e587307..8683bdf07e8022b682a1c78643a45ae5
      @NotNull
      public String getName();
 +
-+    // Martijn start - hide plugins
++    // Suki start - hide plugins
 +    @NotNull
 +    public Permission getSeePluginPermission();
 +
 +    @NotNull
 +    public boolean canBeSeenBy(@NotNull CommandSender sender);
-+    // Martijn end - hide plugins
++    // Suki end - hide plugins
  }
 diff --git a/src/main/java/org/bukkit/plugin/PluginBase.java b/src/main/java/org/bukkit/plugin/PluginBase.java
 index 94f8ceb965cecb5669a84a0ec61c0f706c2a2673..8089d84496ee1bcfa160c8b7c0454c23afd9c73b 100644
@@ -157,7 +157,7 @@ index 94f8ceb965cecb5669a84a0ec61c0f706c2a2673..8089d84496ee1bcfa160c8b7c0454c23
          return getDescription().getName();
      }
 +
-+    // Martijn start - hide plugins
++    // Suki start - hide plugins
 +    private @Nullable Permission cachedSeePluginPermission = null;
 +
 +    @Override
@@ -210,5 +210,5 @@ index 94f8ceb965cecb5669a84a0ec61c0f706c2a2673..8089d84496ee1bcfa160c8b7c0454c23
 +        }
 +        return "bukkit.seeplugin." + alphanumericPluginName;
 +    }
-+    // Martijn end - hide plugins
++    // Suki end - hide plugins
  }

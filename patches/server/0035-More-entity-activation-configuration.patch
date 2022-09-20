@@ -10,9 +10,9 @@ index a3d715d9b90b5b1ca4a3c3308a4f3c04b0260711..931db53ebde71ebe9398f1a1ea72178c
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -218,6 +218,23 @@ public class GlobalConfiguration extends ConfigurationPart {
  
-     // Martijn end - survival debug stick
+     // Suki end - survival debug stick
  
-+    // Martijn start - configurable proportion of skipped active entities
++    // Suki start - configurable proportion of skipped active entities
 +
 +    public SkippedActiveEntityRatio skippedActiveEntityRatio;
 +
@@ -27,7 +27,7 @@ index a3d715d9b90b5b1ca4a3c3308a4f3c04b0260711..931db53ebde71ebe9398f1a1ea72178c
 +
 +    }
 +
-+    // Martijn end - configurable proportion of skipped active entities
++    // Suki end - configurable proportion of skipped active entities
 +
      public Messages messages;
  
@@ -101,7 +101,7 @@ index 70b5b307193dc288a6257d90ca96762cb4a8345a..af2ac1ae5039dc664b9b01d7852598f8
              if ( entity instanceof Mob && ((Mob) entity ).getTarget() != null) // Paper
              {
 -                return 20; // Paper
-+                // Martijn start - configurable mob target inactivity immunity
++                // Suki start - configurable mob target inactivity immunity
 +                int hunterImmunityFor = config.defaultMobTargetingMobImmunityFor;
 +                LivingEntity target = ((Mob) entity ).getTarget();
 +                if (entity instanceof Wolf) {
@@ -161,7 +161,7 @@ index 70b5b307193dc288a6257d90ca96762cb4a8345a..af2ac1ae5039dc664b9b01d7852598f8
 +                if (hunterImmunityFor > 0) {
 +                    return hunterImmunityFor;
 +                }
-+                // Martijn end - configurable mob target inactivity immunity
++                // Suki end - configurable mob target inactivity immunity
              }
              // Paper start
              if (entity instanceof Bee) {
@@ -170,28 +170,28 @@ index 70b5b307193dc288a6257d90ca96762cb4a8345a..af2ac1ae5039dc664b9b01d7852598f8
              {
                  Animal animal = (Animal) entity;
 -                if ( animal.isBaby() || animal.isInLove() )
-+                // Martijn start - configurable baby inactivity immunity
++                // Suki start - configurable baby inactivity immunity
 +                if ( config.babyImmunityFor > 0 && animal.isBaby() ) {
 +                    return config.babyImmunityFor;
 +                }
 +                if ( animal.isInLove() )
-+                // Martijn end - configurable baby inactivity immunity
++                // Suki end - configurable baby inactivity immunity
                  {
                      return 5; // Paper
                  }
 -                if ( entity instanceof Sheep && ( (Sheep) entity ).isSheared() )
-+                if ( config.areShearedSheepImmune && entity instanceof Sheep && ( (Sheep) entity ).isSheared() ) // Martijn - configurable sheared sheep immunity
++                if ( config.areShearedSheepImmune && entity instanceof Sheep && ( (Sheep) entity ).isSheared() ) // Suki - configurable sheared sheep immunity
                  {
                      return 1; // Paper
                  }
-+                // Martijn start - configurable non-sitting pet immunity
++                // Suki start - configurable non-sitting pet immunity
 +                if ( config.areNonSittingPetsImmune && animal instanceof TamableAnimal ) {
 +                    TamableAnimal tamableAnimal = (TamableAnimal) animal;
 +                    if (tamableAnimal.getOwnerUUID() != null && !tamableAnimal.isOrderedToSit()) {
 +                        return 20;
 +                    }
 +                }
-+                // Martijn end - configurable non-sitting pet immunity
++                // Suki end - configurable non-sitting pet immunity
              }
              if (entity instanceof Creeper && ((Creeper) entity).isIgnited()) { // isExplosive
                  return 20; // Paper
@@ -203,7 +203,7 @@ index 70b5b307193dc288a6257d90ca96762cb4a8345a..af2ac1ae5039dc664b9b01d7852598f8
 -        } else if ( entity.tickCount + entity.getId() + 1 % 4 == 0 && ActivationRange.checkEntityImmunities( entity ) < 0 ) // Paper
 -        {
 -            isActive = false;
-+            // Martijn start - configurable proportion of skipped active entities
++            // Suki start - configurable proportion of skipped active entities
 +            // Add a little performance juice to active entities. Skip skippedActiveEntityRatioNumerator / skippedActiveEntityRatioDenominator 'th of active entities if not immune.
 +        } else if (GlobalConfiguration.get().skippedActiveEntityRatio.numerator > 0) {
 +            long someMeaninglessValueBasedOnTickCountAndEntityId = entity.level.getGameTime() + entity.getId() + 1;
@@ -213,7 +213,7 @@ index 70b5b307193dc288a6257d90ca96762cb4a8345a..af2ac1ae5039dc664b9b01d7852598f8
 +                isActive = false;
 +            }
          }
-+        // Martijn end - configurable proportion of skipped active entities
++        // Suki end - configurable proportion of skipped active entities
          return isActive;
      }
  }
@@ -225,15 +225,15 @@ index 1d65012e4d305df6736b148d4345682da6437267..fcf2a49f5e09ccfecc3bb9f78df014f6
      // Paper end
      public boolean tickInactiveVillagers = false; // Mirai - optimize default values for configs
      public boolean ignoreSpectatorActivation = false;
-+    // Martijn start - configurable baby inactivity immunity
++    // Suki start - configurable baby inactivity immunity
 +    /**
 +     * A nonpositive value disables this feature
 +     */
 +    public int babyImmunityFor = 5;
-+    // Martijn end - configurable baby inactivity immunity
-+    public boolean areShearedSheepImmune = true; // Martijn - configurable sheared sheep immunity
-+    public boolean areNonSittingPetsImmune = false; // Martijn - configurable non-sitting pet immunity
-+    // Martijn start - configurable mob target inactivity immunity
++    // Suki end - configurable baby inactivity immunity
++    public boolean areShearedSheepImmune = true; // Suki - configurable sheared sheep immunity
++    public boolean areNonSittingPetsImmune = false; // Suki - configurable non-sitting pet immunity
++    // Suki start - configurable mob target inactivity immunity
 +    public int defaultMobTargetingMobImmunityFor = 20;
 +    public int wolfTargetingSheepImmunityFor = 20;
 +    public int wolfTargetingFoxImmunityFor = 20;
@@ -255,7 +255,7 @@ index 1d65012e4d305df6736b148d4345682da6437267..fcf2a49f5e09ccfecc3bb9f78df014f6
 +    public int axolotlTargetingSquidImmunityFor = 20;
 +    public int witchTargetingWitchImmunityFor = 20;
 +    public int mobTargetingTurtleImmunityFor = 20;
-+    // Martijn end - configurable mob target inactivity immunity
++    // Suki end - configurable mob target inactivity immunity
      private void activationRange()
      {
          boolean hasAnimalsConfig = config.getInt("entity-activation-range.animals", this.animalActivationRange) != this.animalActivationRange; // Paper
@@ -264,10 +264,10 @@ index 1d65012e4d305df6736b148d4345682da6437267..fcf2a49f5e09ccfecc3bb9f78df014f6
          this.ignoreSpectatorActivation = this.getBoolean( "entity-activation-range.ignore-spectators", this.ignoreSpectatorActivation );
          this.log( "Entity Activation Range: An " + this.animalActivationRange + " / Mo " + this.monsterActivationRange + " / Ra " + this.raiderActivationRange + " / Mi " + this.miscActivationRange + " / Tiv " + this.tickInactiveVillagers + " / Isa " + this.ignoreSpectatorActivation );
 +
-+        this.babyImmunityFor = this.getInt("entity-activation-range.baby-immunity-for", this.babyImmunityFor); // Martijn - configurable baby inactivity immunity
-+        this.areShearedSheepImmune = this.getBoolean("entity-activation-range.sheared-sheep-immunity", this.areShearedSheepImmune); // Martijn - configurable sheared sheep immunity
-+        this.areNonSittingPetsImmune = this.getBoolean("entity-activation-range.non-sitting-pet-immunity", this.areNonSittingPetsImmune); // Martijn - configurable non-sitting pet immunity
-+        // Martijn start - configurable mob target inactivity immunity
++        this.babyImmunityFor = this.getInt("entity-activation-range.baby-immunity-for", this.babyImmunityFor); // Suki - configurable baby inactivity immunity
++        this.areShearedSheepImmune = this.getBoolean("entity-activation-range.sheared-sheep-immunity", this.areShearedSheepImmune); // Suki - configurable sheared sheep immunity
++        this.areNonSittingPetsImmune = this.getBoolean("entity-activation-range.non-sitting-pet-immunity", this.areNonSittingPetsImmune); // Suki - configurable non-sitting pet immunity
++        // Suki start - configurable mob target inactivity immunity
 +        this.defaultMobTargetingMobImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.default", this.defaultMobTargetingMobImmunityFor);
 +        this.wolfTargetingSheepImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.wolf-target-sheep", this.wolfTargetingSheepImmunityFor);
 +        this.wolfTargetingFoxImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.wolf-target-fox", this.wolfTargetingFoxImmunityFor);
@@ -289,7 +289,7 @@ index 1d65012e4d305df6736b148d4345682da6437267..fcf2a49f5e09ccfecc3bb9f78df014f6
 +        this.axolotlTargetingSquidImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.axolotl-target-squid", this.axolotlTargetingSquidImmunityFor);
 +        this.witchTargetingWitchImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.witch-target-witch", this.witchTargetingWitchImmunityFor);
 +        this.mobTargetingTurtleImmunityFor = this.getInt("entity-activation-range.mob-targeting-mob-immunity-for.mob-target-turtle", this.mobTargetingTurtleImmunityFor);
-+        // Martijn end - configurable mob target inactivity immunity
++        // Suki end - configurable mob target inactivity immunity
      }
  
      public int playerTrackingRange = 48;

@@ -10,7 +10,7 @@ index 0000000000000000000000000000000000000000..ddebd9059b00b58e18cdba2d5205200f
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructure.java
 @@ -0,0 +1,54 @@
-+// Martijn - structure API
++// Suki - structure API
 +
 +package nl.martijnmuijsers.paper.structure;
 +
@@ -70,7 +70,7 @@ index 0000000000000000000000000000000000000000..9922316629b8b67f217bbe55e69da205
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructureBoundingBox.java
 @@ -0,0 +1,9 @@
-+// Martijn - structure API
++// Suki - structure API
 +
 +package nl.martijnmuijsers.paper.structure;
 +
@@ -85,7 +85,7 @@ index 0000000000000000000000000000000000000000..68be99d386b9f810d0c3ba20f8b2c7e5
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructurePiece.java
 @@ -0,0 +1,64 @@
-+// Martijn - structure API
++// Suki - structure API
 +
 +package nl.martijnmuijsers.paper.structure;
 +
@@ -155,7 +155,7 @@ index 0000000000000000000000000000000000000000..c85bd9aed69c1865fd7379e261c80c8f
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructurePieceType.java
 @@ -0,0 +1,8 @@
-+// Martijn - structure API
++// Suki - structure API
 +
 +package nl.martijnmuijsers.paper.structure;
 +
@@ -181,7 +181,7 @@ index e8c0c853eb52d1473c20231660355f77b1f7e016..752d9c48d78a6baeb905830b5652f113
      int getPlayerCount();
      // Paper end
  
-+    // Martijn start - structure API
++    // Suki start - structure API
 +
 +    /**
 +     * Gets all structures at the given coordinates,
@@ -201,7 +201,7 @@ index e8c0c853eb52d1473c20231660355f77b1f7e016..752d9c48d78a6baeb905830b5652f113
 +     */
 +    @NotNull List<@NotNull WorldStructure> getWorldStructuresAt(@NotNull Block block);
 +
-+    // Martijn end - structure API
++    // Suki end - structure API
 +
      /**
       * Gets the {@link Block} at the given coordinates

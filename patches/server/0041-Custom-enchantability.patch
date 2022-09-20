@@ -21,7 +21,7 @@ index 7c012f1e37b0085c0939797b0dae8996b4953ab8..6a1ac4a271e97a471b2f9972c18d5a2a
                      ItemStack itemStack = livingEntity.getMainHandItem();
                      if (!itemStack.isEmpty()) {
 -                        if (enchantment.canEnchant(itemStack) && EnchantmentHelper.isEnchantmentCompatible(EnchantmentHelper.getEnchantments(itemStack).keySet(), enchantment)) {
-+                        if (enchantment.canEnchant(itemStack, EnchantmentSource.ENCHANT_COMMAND) && EnchantmentHelper.isEnchantmentCompatible(EnchantmentHelper.getEnchantments(itemStack).keySet(), enchantment)) { // Martijn - custom enchantability
++                        if (enchantment.canEnchant(itemStack, EnchantmentSource.ENCHANT_COMMAND) && EnchantmentHelper.isEnchantmentCompatible(EnchantmentHelper.getEnchantments(itemStack).keySet(), enchantment)) { // Suki - custom enchantability
                              itemStack.enchant(enchantment, level);
                              ++i;
                          } else if (targets.size() == 1) {
@@ -42,7 +42,7 @@ index c59d00c689925cab88f19a02ab3c83dceb14be16..468ecce6121a8a3af13a12712cb14f01
      protected void enchantSpawnedWeapon(RandomSource random, float power) {
          if (!this.getMainHandItem().isEmpty() && random.nextFloat() < 0.25F * power) {
 -            this.setItemSlot(EquipmentSlot.MAINHAND, EnchantmentHelper.enchantItem(random, this.getMainHandItem(), (int) (5.0F + power * (float) random.nextInt(18)), false));
-+            this.setItemSlot(EquipmentSlot.MAINHAND, EnchantmentHelper.enchantItem(random, this.getMainHandItem(), (int) (5.0F + power * (float) random.nextInt(18)), false, EnchantmentSource.SPAWNED_MOB_MAIN_HAND)); // Martijn - custom enchantability
++            this.setItemSlot(EquipmentSlot.MAINHAND, EnchantmentHelper.enchantItem(random, this.getMainHandItem(), (int) (5.0F + power * (float) random.nextInt(18)), false, EnchantmentSource.SPAWNED_MOB_MAIN_HAND)); // Suki - custom enchantability
          }
  
      }
@@ -51,7 +51,7 @@ index c59d00c689925cab88f19a02ab3c83dceb14be16..468ecce6121a8a3af13a12712cb14f01
  
          if (!itemstack.isEmpty() && random.nextFloat() < 0.5F * power) {
 -            this.setItemSlot(slot, EnchantmentHelper.enchantItem(random, itemstack, (int) (5.0F + power * (float) random.nextInt(18)), false));
-+            this.setItemSlot(slot, EnchantmentHelper.enchantItem(random, itemstack, (int) (5.0F + power * (float) random.nextInt(18)), false, EnchantmentSource.SPAWNED_MOB_ARMOR)); // Martijn - custom enchantability
++            this.setItemSlot(slot, EnchantmentHelper.enchantItem(random, itemstack, (int) (5.0F + power * (float) random.nextInt(18)), false, EnchantmentSource.SPAWNED_MOB_ARMOR)); // Suki - custom enchantability
          }
  
      }
@@ -73,10 +73,10 @@ index 68887c1a475c119d061c8325136c5245011cdcbb..a3801d98cd3b36653dd5aa54a4838d61
  
 -        entityskeleton.setItemSlot(EquipmentSlot.MAINHAND, EnchantmentHelper.enchantItem(entityskeleton.getRandom(), this.disenchant(entityskeleton.getMainHandItem()), (int) (5.0F + localDifficulty.getSpecialMultiplier() * (float) entityskeleton.getRandom().nextInt(18)), false));
 -        entityskeleton.setItemSlot(EquipmentSlot.HEAD, EnchantmentHelper.enchantItem(entityskeleton.getRandom(), this.disenchant(entityskeleton.getItemBySlot(EquipmentSlot.HEAD)), (int) (5.0F + localDifficulty.getSpecialMultiplier() * (float) entityskeleton.getRandom().nextInt(18)), false));
-+        // Martijn start - custom enchantability
++        // Suki start - custom enchantability
 +        entityskeleton.setItemSlot(EquipmentSlot.MAINHAND, EnchantmentHelper.enchantItem(entityskeleton.getRandom(), this.disenchant(entityskeleton.getMainHandItem()), (int) (5.0F + localDifficulty.getSpecialMultiplier() * (float) entityskeleton.getRandom().nextInt(18)), false, EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND));
 +        entityskeleton.setItemSlot(EquipmentSlot.HEAD, EnchantmentHelper.enchantItem(entityskeleton.getRandom(), this.disenchant(entityskeleton.getItemBySlot(EquipmentSlot.HEAD)), (int) (5.0F + localDifficulty.getSpecialMultiplier() * (float) entityskeleton.getRandom().nextInt(18)), false, EnchantmentSource.SPAWNED_SKELETON_TRAP_HELMET));
-+        // Martijn end - custom enchantability
++        // Suki end - custom enchantability
          return entityskeleton;
      }
  
@@ -97,7 +97,7 @@ index 770a91fcc351a2d1de4762c0fd9bae2b49c363b5..69d9503f6998c62044f9828734a1e9cb
          public MerchantOffer getOffer(Entity entity, RandomSource random) {
              int i = 5 + random.nextInt(15);
 -            ItemStack itemStack = EnchantmentHelper.enchantItem(random, new ItemStack(this.itemStack.getItem()), i, false);
-+            ItemStack itemStack = EnchantmentHelper.enchantItem(random, new ItemStack(this.itemStack.getItem()), i, false, EnchantmentSource.VILLAGER_TRADE); // Martijn - custom enchantability
++            ItemStack itemStack = EnchantmentHelper.enchantItem(random, new ItemStack(this.itemStack.getItem()), i, false, EnchantmentSource.VILLAGER_TRADE); // Suki - custom enchantability
              int j = Math.min(this.baseEmeraldCost + i, 64);
              ItemStack itemStack2 = new ItemStack(Items.EMERALD, j);
              return new MerchantOffer(itemStack2, itemStack, this.maxUses, this.villagerXp, this.priceMultiplier);
@@ -118,7 +118,7 @@ index 506d758efbf16da9467f120321d2359a8832e477..5a1c2f10c1482d57d23c421c562b19e2
  
                              i2 = l1 == i2 ? i2 + 1 : Math.max(i2, l1);
 -                            boolean flag3 = enchantment.canEnchant(itemstack);
-+                            boolean flag3 = enchantment.canEnchant(itemstack, EnchantmentSource.ANVIL); // Martijn - custom enchantability
++                            boolean flag3 = enchantment.canEnchant(itemstack, EnchantmentSource.ANVIL); // Suki - custom enchantability
  
                              if (this.player.getAbilities().instabuild || itemstack.is(Items.ENCHANTED_BOOK)) {
                                  flag3 = true;
@@ -139,7 +139,7 @@ index f7404f41c2df202a428711e7e09a9a6eb11bf527..e01d30430bb3016500da43035d309cfb
      private List<EnchantmentInstance> getEnchantmentList(ItemStack stack, int slot, int level) {
          this.random.setSeed((long) (this.enchantmentSeed.get() + slot));
 -        List<EnchantmentInstance> list = EnchantmentHelper.selectEnchantment(this.random, stack, level, false);
-+        List<EnchantmentInstance> list = EnchantmentHelper.selectEnchantment(this.random, stack, level, false, EnchantmentSource.ENCHANTING_TABLE); // Martijn - custom enchantability
++        List<EnchantmentInstance> list = EnchantmentHelper.selectEnchantment(this.random, stack, level, false, EnchantmentSource.ENCHANTING_TABLE); // Suki - custom enchantability
  
          if (stack.is(Items.BOOK) && list.size() > 1) {
              list.remove(this.random.nextInt(list.size()));
@@ -151,14 +151,14 @@ index d6c354856c71d9629828e2ddbe316306bfaf6ea6..e0320acf84b08e5e365716ff74e6fd5d
          return !(other instanceof DamageEnchantment);
      }
  
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
      @Override
 -    public boolean canEnchant(ItemStack stack) {
 -        return stack.getItem() instanceof AxeItem ? true : super.canEnchant(stack);
 +    public boolean canEnchantInVanilla(ItemStack stack) {
 +        return stack.getItem() instanceof AxeItem ? true : super.canEnchantInVanilla(stack);
      }
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
  
      @Override
      public void doPostAttack(LivingEntity user, Entity target, int level) {
@@ -170,14 +170,14 @@ index cbd39863b75245f1a5a16ab49f09238c034e09d2..09c04b29019da76bc766d754cb267afb
          return 3;
      }
  
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
      @Override
 -    public boolean canEnchant(ItemStack stack) {
 -        return stack.isDamageableItem() ? true : super.canEnchant(stack);
 +    public boolean canEnchantInVanilla(ItemStack stack) {
 +        return stack.isDamageableItem() ? true : super.canEnchantInVanilla(stack);
      }
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
  
      public static boolean shouldIgnoreDurabilityDrop(ItemStack item, int level, RandomSource random) {
          if (item.getItem() instanceof ArmorItem && random.nextFloat() < 0.6F) {
@@ -189,14 +189,14 @@ index c55b492e9bcf5a9eef1bf86d9a0ada7231c459e9..4b9f284e401d137ae433f261a1aecd8d
          return 5;
      }
  
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
      @Override
 -    public boolean canEnchant(ItemStack stack) {
 -        return stack.is(Items.SHEARS) ? true : super.canEnchant(stack);
 +    public boolean canEnchantInVanilla(ItemStack stack) {
 +        return stack.is(Items.SHEARS) ? true : super.canEnchantInVanilla(stack);
      }
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
 +
  }
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/Enchantment.java b/src/main/java/net/minecraft/world/item/enchantment/Enchantment.java
@@ -217,7 +217,7 @@ index 971179e713944593cdcb6409588619e290d17170..154bfc7e7cbedb277d293af5bb1b9a3d
  
 -    public boolean canEnchant(ItemStack stack) {
 -        return this.category.canEnchant(stack.getItem());
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +
 +    public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
 +        // Enchantment.canEnchantInVanilla and EnchantmentCategory.canEnchant could both be overridden
@@ -228,7 +228,7 @@ index 971179e713944593cdcb6409588619e290d17170..154bfc7e7cbedb277d293af5bb1b9a3d
 +        return this.category.canEnchantInVanilla(stack.getItem());
      }
  
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
 +
      public void doPostAttack(LivingEntity user, Entity target, int level) {
      }
@@ -247,96 +247,96 @@ index 6f6106ca4d74d50a7b74b086adc96c58c7906cb6..99941312687999683d85e7c2f359220c
      ARMOR {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof ArmorItem;
          }
      },
      ARMOR_FEET {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof ArmorItem && ((ArmorItem)item).getSlot() == EquipmentSlot.FEET;
          }
      },
      ARMOR_LEGS {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof ArmorItem && ((ArmorItem)item).getSlot() == EquipmentSlot.LEGS;
          }
      },
      ARMOR_CHEST {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof ArmorItem && ((ArmorItem)item).getSlot() == EquipmentSlot.CHEST;
          }
      },
      ARMOR_HEAD {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof ArmorItem && ((ArmorItem)item).getSlot() == EquipmentSlot.HEAD;
          }
      },
      WEAPON {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof SwordItem;
          }
      },
      DIGGER {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof DiggerItem;
          }
      },
      FISHING_ROD {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof FishingRodItem;
          }
      },
      TRIDENT {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof TridentItem;
          }
      },
      BREAKABLE {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item.canBeDepleted();
          }
      },
      BOW {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof BowItem;
          }
      },
      WEARABLE {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof Wearable || Block.byItem(item) instanceof Wearable;
          }
      },
      CROSSBOW {
          @Override
 -        public boolean canEnchant(Item item) {
-+        public boolean canEnchantInVanilla(Item item) { // Martijn - custom enchantability
++        public boolean canEnchantInVanilla(Item item) { // Suki - custom enchantability
              return item instanceof CrossbowItem;
          }
      },
      VANISHABLE {
-+        // Martijn start - custom enchantability
++        // Suki start - custom enchantability
          @Override
 -        public boolean canEnchant(Item item) {
 -            return item instanceof Vanishable || Block.byItem(item) instanceof Vanishable || BREAKABLE.canEnchant(item);
@@ -347,11 +347,11 @@ index 6f6106ca4d74d50a7b74b086adc96c58c7906cb6..99941312687999683d85e7c2f359220c
 +        public boolean canEnchantInVanilla(Item item) {
 +            return item instanceof Vanishable || Block.byItem(item) instanceof Vanishable || BREAKABLE.canEnchantInVanilla(item);
 +        }
-+        // Martijn end - custom enchantability
++        // Suki end - custom enchantability
      };
  
 -    public abstract boolean canEnchant(Item item);
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +
 +    public boolean canEnchant(Item item, EnchantmentSource source) {
 +        return this.canEnchantInVanilla(item);
@@ -359,7 +359,7 @@ index 6f6106ca4d74d50a7b74b086adc96c58c7906cb6..99941312687999683d85e7c2f359220c
 +
 +    public abstract boolean canEnchantInVanilla(Item item);
 +
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
 +
  }
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/EnchantmentHelper.java b/src/main/java/net/minecraft/world/item/enchantment/EnchantmentHelper.java
@@ -380,10 +380,10 @@ index e694a256a72479cff28b65a86ce31a8ca0b1eba6..fd089dc65c395dacd82d357ddeb89c2e
  
 -    public static ItemStack enchantItem(RandomSource random, ItemStack target, int level, boolean treasureAllowed) {
 -        List<EnchantmentInstance> list = selectEnchantment(random, target, level, treasureAllowed);
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +    public static ItemStack enchantItem(RandomSource random, ItemStack target, int level, boolean treasureAllowed, EnchantmentSource source) {
 +        List<EnchantmentInstance> list = selectEnchantment(random, target, level, treasureAllowed, source);
-+        // Martijn end - custom enchantability
++        // Suki end - custom enchantability
          boolean bl = target.is(Items.BOOK);
          if (bl) {
              target = new ItemStack(Items.ENCHANTED_BOOK);
@@ -392,7 +392,7 @@ index e694a256a72479cff28b65a86ce31a8ca0b1eba6..fd089dc65c395dacd82d357ddeb89c2e
      }
  
 -    public static List<EnchantmentInstance> selectEnchantment(RandomSource random, ItemStack stack, int level, boolean treasureAllowed) {
-+    public static List<EnchantmentInstance> selectEnchantment(RandomSource random, ItemStack stack, int level, boolean treasureAllowed, EnchantmentSource source) { // Martijn - custom enchantability
++    public static List<EnchantmentInstance> selectEnchantment(RandomSource random, ItemStack stack, int level, boolean treasureAllowed, EnchantmentSource source) { // Suki - custom enchantability
          List<EnchantmentInstance> list = Lists.newArrayList();
          Item item = stack.getItem();
          int i = item.getEnchantmentValue();
@@ -410,14 +410,14 @@ index e694a256a72479cff28b65a86ce31a8ca0b1eba6..fd089dc65c395dacd82d357ddeb89c2e
      }
  
 -    public static List<EnchantmentInstance> getAvailableEnchantmentResults(int power, ItemStack stack, boolean treasureAllowed) {
-+    public static List<EnchantmentInstance> getAvailableEnchantmentResults(int power, ItemStack stack, boolean treasureAllowed, EnchantmentSource source) { // Martijn - custom enchantability
++    public static List<EnchantmentInstance> getAvailableEnchantmentResults(int power, ItemStack stack, boolean treasureAllowed, EnchantmentSource source) { // Suki - custom enchantability
          List<EnchantmentInstance> list = Lists.newArrayList();
          Item item = stack.getItem();
          boolean bl = stack.is(Items.BOOK);
  
          for(Enchantment enchantment : Registry.ENCHANTMENT) {
 -            if ((!enchantment.isTreasureOnly() || treasureAllowed) && enchantment.isDiscoverable() && (enchantment.category.canEnchant(item) || bl)) {
-+            if ((!enchantment.isTreasureOnly() || treasureAllowed) && enchantment.isDiscoverable() && (enchantment.category.canEnchant(item, source) || bl)) { // Martijn - custom enchantability
++            if ((!enchantment.isTreasureOnly() || treasureAllowed) && enchantment.isDiscoverable() && (enchantment.category.canEnchant(item, source) || bl)) { // Suki - custom enchantability
                  for(int i = enchantment.getMaxLevel(); i > enchantment.getMinLevel() - 1; --i) {
                      if (power >= enchantment.getMinCost(i) && power <= enchantment.getMaxCost(i)) {
                          list.add(new EnchantmentInstance(enchantment, i));
@@ -440,7 +440,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
      private static final EquipmentSlot[] ARMOR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 -    public static final Enchantment ALL_DAMAGE_PROTECTION = Enchantments.register("protection", new ProtectionEnchantment(Enchantment.Rarity.COMMON, ProtectionEnchantment.Type.ALL, Enchantments.ARMOR_SLOTS));
 -    public static final Enchantment FIRE_PROTECTION = Enchantments.register("fire_protection", new ProtectionEnchantment(Enchantment.Rarity.UNCOMMON, ProtectionEnchantment.Type.FIRE, Enchantments.ARMOR_SLOTS));
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +    private static final EquipmentSlot[] ARMOR_AND_OFFHAND_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.OFFHAND};
 +    public static final Enchantment ALL_DAMAGE_PROTECTION = Enchantments.register("protection", new ProtectionEnchantment(Enchantment.Rarity.COMMON, ProtectionEnchantment.Type.ALL, Enchantments.ARMOR_AND_OFFHAND_SLOTS) {
 +        @Override
@@ -458,11 +458,11 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
 +                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(Items.ELYTRA) || stack.is(Items.SHIELD)));
 +        }
 +    });
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
      public static final Enchantment FALL_PROTECTION = Enchantments.register("feather_falling", new ProtectionEnchantment(Enchantment.Rarity.UNCOMMON, ProtectionEnchantment.Type.FALL, Enchantments.ARMOR_SLOTS));
 -    public static final Enchantment BLAST_PROTECTION = Enchantments.register("blast_protection", new ProtectionEnchantment(Enchantment.Rarity.RARE, ProtectionEnchantment.Type.EXPLOSION, Enchantments.ARMOR_SLOTS));
 -    public static final Enchantment PROJECTILE_PROTECTION = Enchantments.register("projectile_protection", new ProtectionEnchantment(Enchantment.Rarity.UNCOMMON, ProtectionEnchantment.Type.PROJECTILE, Enchantments.ARMOR_SLOTS));
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +    public static final Enchantment BLAST_PROTECTION = Enchantments.register("blast_protection", new ProtectionEnchantment(Enchantment.Rarity.RARE, ProtectionEnchantment.Type.EXPLOSION, Enchantments.ARMOR_AND_OFFHAND_SLOTS) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
@@ -479,11 +479,11 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
 +                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(Items.ELYTRA) || stack.is(Items.SHIELD)));
 +        }
 +    });
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
      public static final Enchantment RESPIRATION = Enchantments.register("respiration", new OxygenEnchantment(Enchantment.Rarity.RARE, Enchantments.ARMOR_SLOTS));
      public static final Enchantment AQUA_AFFINITY = Enchantments.register("aqua_affinity", new WaterWorkerEnchantment(Enchantment.Rarity.RARE, Enchantments.ARMOR_SLOTS));
 -    public static final Enchantment THORNS = Enchantments.register("thorns", new ThornsEnchantment(Enchantment.Rarity.VERY_RARE, Enchantments.ARMOR_SLOTS));
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +    public static final Enchantment THORNS = Enchantments.register("thorns", new ThornsEnchantment(Enchantment.Rarity.VERY_RARE, Enchantments.ARMOR_AND_OFFHAND_SLOTS) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
@@ -492,7 +492,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
 +                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(Items.ELYTRA) || stack.is(Items.SHIELD)));
 +        }
 +    });
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
      public static final Enchantment DEPTH_STRIDER = Enchantments.register("depth_strider", new WaterWalkerEnchantment(Enchantment.Rarity.RARE, Enchantments.ARMOR_SLOTS));
      public static final Enchantment FROST_WALKER = Enchantments.register("frost_walker", new FrostWalkerEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.FEET}));
      public static final Enchantment BINDING_CURSE = Enchantments.register("binding_curse", new BindingCurseEnchantment(Enchantment.Rarity.VERY_RARE, Enchantments.ARMOR_SLOTS));
@@ -504,7 +504,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
 -    public static final Enchantment KNOCKBACK = Enchantments.register("knockback", new KnockbackEnchantment(Enchantment.Rarity.UNCOMMON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
 -    public static final Enchantment FIRE_ASPECT = Enchantments.register("fire_aspect", new FireAspectEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
 -    public static final Enchantment MOB_LOOTING = Enchantments.register("looting", new LootBonusEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +    public static final Enchantment SHARPNESS = Enchantments.register("sharpness", new DamageEnchantment(Enchantment.Rarity.COMMON, 0, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
@@ -591,11 +591,11 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
 +            return super.checkCompatibility(other);
 +        }
 +    });
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
      public static final Enchantment SWEEPING_EDGE = Enchantments.register("sweeping", new SweepingEdgeEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
 -    public static final Enchantment BLOCK_EFFICIENCY = Enchantments.register("efficiency", new DiggingEnchantment(Enchantment.Rarity.COMMON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
 -    public static final Enchantment SILK_TOUCH = Enchantments.register("silk_touch", new UntouchingEnchantment(Enchantment.Rarity.VERY_RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +    public static final Enchantment BLOCK_EFFICIENCY = Enchantments.register("efficiency", new DiggingEnchantment(Enchantment.Rarity.COMMON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
@@ -620,10 +620,10 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
 +            return super.checkCompatibility(other);
 +        }
 +    });
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
      public static final Enchantment UNBREAKING = Enchantments.register("unbreaking", new DigDurabilityEnchantment(Enchantment.Rarity.UNCOMMON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
 -    public static final Enchantment BLOCK_FORTUNE = Enchantments.register("fortune", new LootBonusEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +    public static final Enchantment BLOCK_FORTUNE = Enchantments.register("fortune", new LootBonusEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
@@ -640,13 +640,13 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
 +            return super.checkCompatibility(other);
 +        }
 +    });
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
      public static final Enchantment POWER_ARROWS = Enchantments.register("power", new ArrowDamageEnchantment(Enchantment.Rarity.COMMON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
      public static final Enchantment PUNCH_ARROWS = Enchantments.register("punch", new ArrowKnockbackEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
      public static final Enchantment FLAMING_ARROWS = Enchantments.register("flame", new ArrowFireEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
      public static final Enchantment INFINITY_ARROWS = Enchantments.register("infinity", new ArrowInfiniteEnchantment(Enchantment.Rarity.VERY_RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
 -    public static final Enchantment FISHING_LUCK = Enchantments.register("luck_of_the_sea", new LootBonusEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.FISHING_ROD, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +    public static final Enchantment FISHING_LUCK = Enchantments.register("luck_of_the_sea", new LootBonusEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.FISHING_ROD, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean checkCompatibility(Enchantment other) {
@@ -657,11 +657,11 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
 +            return super.checkCompatibility(other);
 +        }
 +    });
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
      public static final Enchantment FISHING_SPEED = Enchantments.register("lure", new FishingSpeedEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.FISHING_ROD, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
      public static final Enchantment LOYALTY = Enchantments.register("loyalty", new TridentLoyaltyEnchantment(Enchantment.Rarity.UNCOMMON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
 -    public static final Enchantment IMPALING = Enchantments.register("impaling", new TridentImpalerEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +    public static final Enchantment IMPALING = Enchantments.register("impaling", new TridentImpalerEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean checkCompatibility(Enchantment other) {
@@ -672,7 +672,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
 +            return super.checkCompatibility(other);
 +        }
 +    });
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
      public static final Enchantment RIPTIDE = Enchantments.register("riptide", new TridentRiptideEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
      public static final Enchantment CHANNELING = Enchantments.register("channeling", new TridentChannelingEnchantment(Enchantment.Rarity.VERY_RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
      public static final Enchantment MULTISHOT = Enchantments.register("multishot", new MultiShotEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
@@ -684,14 +684,14 @@ index 97f61bfdf39def907d7d3686914189f7545937ef..38c15510fe81df10eb4718f43f808465
          return 3;
      }
  
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
      @Override
 -    public boolean canEnchant(ItemStack stack) {
 -        return stack.getItem() instanceof ArmorItem ? true : super.canEnchant(stack);
 +    public boolean canEnchantInVanilla(ItemStack stack) {
 +        return stack.getItem() instanceof ArmorItem ? true : super.canEnchantInVanilla(stack);
      }
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
  
      @Override
      public void doPostHurt(LivingEntity user, Entity attacker, int level) {
@@ -713,11 +713,11 @@ index 2bfb9ff77839e9ed91c9c48ad34abb46361c04b7..cfade5bc50500a30f159cc9d5c058e1a
              boolean bl = stack.is(Items.BOOK);
 -            List<Enchantment> list = Registry.ENCHANTMENT.stream().filter(Enchantment::isDiscoverable).filter((enchantment) -> {
 -                return bl || enchantment.canEnchant(stack);
-+            // Martijn start - custom enchantability
++            // Suki start - custom enchantability
 +            List<Enchantment> list = Registry.ENCHANTMENT.stream().filter(Enchantment::isDiscoverable).filter((consideredEnchantment) -> {
 +                return bl || consideredEnchantment.canEnchant(stack, EnchantmentSource.GENERATED_LOOT);
              }).collect(Collectors.toList());
-+            // Martijn end - custom enchantability
++            // Suki end - custom enchantability
              if (list.isEmpty()) {
                  LOGGER.warn("Couldn't find a compatible enchantment for {}", (Object)stack);
                  return stack;
@@ -738,7 +738,7 @@ index acaeecd0abb972c461c2302c9c011b3c2052e497..54709e72fa8a7fb1ed14b695d19f4249
      public ItemStack run(ItemStack stack, LootContext context) {
          RandomSource randomSource = context.getRandom();
 -        return EnchantmentHelper.enchantItem(randomSource, stack, this.levels.getInt(context), this.treasure);
-+        return EnchantmentHelper.enchantItem(randomSource, stack, this.levels.getInt(context), this.treasure, EnchantmentSource.GENERATED_LOOT); // Martijn - custom enchantability
++        return EnchantmentHelper.enchantItem(randomSource, stack, this.levels.getInt(context), this.treasure, EnchantmentSource.GENERATED_LOOT); // Suki - custom enchantability
      }
  
      public static EnchantWithLevelsFunction.Builder enchantWithLevels(NumberProvider range) {
@@ -758,7 +758,7 @@ index 873185fd4d4c994130f2e7c271b3e03cefb2278c..d8ad0bd6d9432afa0cec82974e032b25
          return this.target.isCurse(); // Paper
      }
  
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +
      @Override
 -    public boolean canEnchantItem(ItemStack item) {
@@ -772,7 +772,7 @@ index 873185fd4d4c994130f2e7c271b3e03cefb2278c..d8ad0bd6d9432afa0cec82974e032b25
 +        return this.target.canEnchantInVanilla(CraftItemStack.asNMSCopy(item));
 +    }
 +
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
 +
      @Override
      public String getName() {
@@ -794,7 +794,7 @@ index 09b6475b77ebc7f43c13861aa2af26e2f6e6a8b5..a1348c8702820b1a867235c8a3bbb6a9
  
      // Paper start
 +
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +
      @Override
      public ItemStack enchantWithLevels(ItemStack itemStack, int levels, boolean allowTreasure, java.util.Random random) {
@@ -818,7 +818,7 @@ index 09b6475b77ebc7f43c13861aa2af26e2f6e6a8b5..a1348c8702820b1a867235c8a3bbb6a9
          return CraftItemStack.asCraftMirror(enchanted);
      }
  
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
 +
      @Override
      public net.kyori.adventure.text.event.HoverEvent<net.kyori.adventure.text.event.HoverEvent.ShowItem> asHoverEvent(final ItemStack item, final java.util.function.UnaryOperator<net.kyori.adventure.text.event.HoverEvent.ShowItem> op) {

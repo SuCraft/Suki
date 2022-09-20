@@ -12,7 +12,7 @@ index 807008fdec2fde0e62bcf076269f5fa0896e95cb..ee5bb11b11d2705b982eed677e022f38
              return concernsTracking ? this.sendQueueForTracking : this.sendQueueForSeeing;
          }
  
-+        // Martijn start - limit packets per tick
++        // Suki start - limit packets per tick
 +
 +        public int getChunksInSendQueueWithinDistance(final boolean concernsTracking, final int maxManhattanDistance) {
 +            int count = 0;
@@ -24,7 +24,7 @@ index 807008fdec2fde0e62bcf076269f5fa0896e95cb..ee5bb11b11d2705b982eed677e022f38
 +            return count;
 +        }
 +
-+        // Martijn end - limit packets per tick
++        // Suki end - limit packets per tick
 +
  //        protected int sendViewDistance = -1;
  //        protected int loadViewDistance = -1;
@@ -158,7 +158,7 @@ index 4ce2c89cfe7d9255ade257c2a1e6507f28ab2acc..7130173b0d1fd5f96efa9beeee01757b
      }
      // Paper end
  
-+    // Martijn start - limit packets per tick
++    // Suki start - limit packets per tick
 +
 +    private final ReentrantLock queuedPacketsLock = new ReentrantLock();
 +    private @org.jetbrains.annotations.Nullable Thread extraThreadExecutorThread = null;
@@ -920,7 +920,7 @@ index 4ce2c89cfe7d9255ade257c2a1e6507f28ab2acc..7130173b0d1fd5f96efa9beeee01757b
 +
 +    }
 +
-+    // Martijn end - limit packets per tick
++    // Suki end - limit packets per tick
 +
      public void send(Packet<?> packet) {
          this.send(packet, (PacketSendListener) null);
@@ -940,7 +940,7 @@ index 4ce2c89cfe7d9255ade257c2a1e6507f28ab2acc..7130173b0d1fd5f96efa9beeee01757b
 +        this.sendPacket(packet, callbacks, flushConditional, 0);
 +    }
 +    private void sendPacket(Packet<?> packet, @Nullable PacketSendListener callbacks, Boolean flushConditional, int immune) {
-+        // Martijn start - limit packets per tick
++        // Suki start - limit packets per tick
 +        if (immune == 0 && !isImmuneOtherwiseQueue(packet, callbacks)) {
 +            return;
 +        }
@@ -961,15 +961,15 @@ index 4ce2c89cfe7d9255ade257c2a1e6507f28ab2acc..7130173b0d1fd5f96efa9beeee01757b
 +//                return;
 +//            }
 +//        }
-+        // Martijn end - limit packets per tick
++        // Suki end - limit packets per tick
          this.packetWrites.getAndIncrement(); // must be befeore using canFlush
          boolean effectiveFlush = flushConditional == null ? this.canFlush : flushConditional.booleanValue();
-         // Martijn start - more packets without delay
+         // Suki start - more packets without delay
 @@ -572,6 +1427,7 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
      private static int joinAttemptsThisTick; // Paper
      private static int currTick; // Paper
      public void tick() {
-+        this.tickQueuedPackets(); // Martijn - limit packets per tick
++        this.tickQueuedPackets(); // Suki - limit packets per tick
          this.flushQueue();
          // Paper start
          if (currTick != net.minecraft.server.MinecraftServer.currentTick) {
@@ -977,13 +977,13 @@ index 4ce2c89cfe7d9255ade257c2a1e6507f28ab2acc..7130173b0d1fd5f96efa9beeee01757b
              }
          });
          queue.clear();
-+        // Martijn start - limit packets per tick
++        // Suki start - limit packets per tick
 +        if (extraThreadExecutor != null) {
 +            extraThreadExecutor.shutdownNow();
 +            extraThreadExecutor = null;
 +            extraThreadExecutorThread = null;
 +        }
-+        // Martijn end - limit packets per tick
++        // Suki end - limit packets per tick
      }
      // Paper end
      public void disconnect(Component disconnectReason) {
@@ -998,11 +998,11 @@ index 652bea6868a03a5315965f79c76172fb9dbb93fb..62ced75ae96b0b97b87ea9960282f1b3
 -    private final SectionPos sectionPos;
 -    private final short[] positions;
 -    private final BlockState[] states;
-+    // Martijn start - limit packets per tick
++    // Suki start - limit packets per tick
 +    public final SectionPos sectionPos;
 +    public final short[] positions;
 +    public final BlockState[] states;
-+    // Martijn end - limit packets per tick
++    // Suki end - limit packets per tick
      private final boolean suppressLightUpdates;
  
      public ClientboundSectionBlocksUpdatePacket(SectionPos sectionPos, ShortSet positions, LevelChunkSection section, boolean noLightingUpdates) {
@@ -1040,7 +1040,7 @@ index 4caf8cddea835c17c31ebe9cfbeb3813e2ee7e4d..a621cf75f800a2c05b6c2a0f4b95220c
  
      }
  
-+    // Martijn start - limit packets per tick
++    // Suki start - limit packets per tick
 +
 +    public @Nullable Long getLastChunkInitializationPacketInTransitKeepaliveId() {
 +        synchronized (this.networkConstrainedSendingLock) {
@@ -1062,9 +1062,9 @@ index 4caf8cddea835c17c31ebe9cfbeb3813e2ee7e4d..a621cf75f800a2c05b6c2a0f4b95220c
 +        }
 +    }
 +
-+    // Martijn end - limit packets per tick
++    // Suki end - limit packets per tick
 +
-     // Martijn end - network-constrained chunk sending
+     // Suki end - network-constrained chunk sending
  
      // CraftBukkit start
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
@@ -1101,7 +1101,7 @@ index 83fd5b26174f08c771ca1320cf8b0d3f6759938a..4f5b857226dbdf2b0abee7fb510e46f1
  
      public void broadcast(@Nullable net.minecraft.world.entity.player.Player player, double x, double y, double z, double distance, ResourceKey<Level> worldKey, Packet<?> packet) {
 -        for (int i = 0; i < this.players.size(); ++i) {
-+        forEachPlayer: for (int i = 0; i < this.players.size(); ++i) { // Martijn - limit packets per tick
++        forEachPlayer: for (int i = 0; i < this.players.size(); ++i) { // Suki - limit packets per tick
              ServerPlayer entityplayer = (ServerPlayer) this.players.get(i);
  
              // CraftBukkit start - Test if player receiving packet can see the source of the packet
@@ -1109,7 +1109,7 @@ index 83fd5b26174f08c771ca1320cf8b0d3f6759938a..4f5b857226dbdf2b0abee7fb510e46f1
              // CraftBukkit end
  
              if (entityplayer != player && entityplayer.level.dimension() == worldKey) {
-+                // Martijn start - limit packets per tick
++                // Suki start - limit packets per tick
 +                if (packet instanceof ClientboundBlockEventPacket blockEventPacket) {
 +                    var block = blockEventPacket;
 +                    if (block.equals(Blocks.PISTON) || block.equals(Blocks.STICKY_PISTON)) {
@@ -1123,7 +1123,7 @@ index 83fd5b26174f08c771ca1320cf8b0d3f6759938a..4f5b857226dbdf2b0abee7fb510e46f1
 +                        }
 +                    }
 +                }
-+                // Martijn end - limit packets per tick
++                // Suki end - limit packets per tick
                  double d4 = x - entityplayer.getX();
                  double d5 = y - entityplayer.getY();
                  double d6 = z - entityplayer.getZ();
@@ -1135,7 +1135,7 @@ index f456ad8a74464414f69b616a48ee9a2c1cee4d90..1be8276594db09231f97767878ed4751
                      world.removeBlock(headPos, false);
                  } else {
                      ((ServerLevel)world).getChunkSource().blockChanged(headPos); // ... fix client desync
-+                    ((ServerLevel)world).getChunkSource().blockChanged(headPos.relative(enumdirection)); // Martijn - limit packets per tick
++                    ((ServerLevel)world).getChunkSource().blockChanged(headPos.relative(enumdirection)); // Suki - limit packets per tick
                  }
                  // Paper end - fix headless pistons breaking blocks
              }

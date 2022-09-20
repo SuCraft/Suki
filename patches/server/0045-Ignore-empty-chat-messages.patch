@@ -13,7 +13,7 @@ index f31cc2bc3051f7bb0dcdc6fa1e582875a684690f..2c25a82f3db795893f90056c2f9a5909
          String s = message.signedContent().plain();
          if (s.isEmpty()) {
 -            ServerGamePacketListenerImpl.LOGGER.warn(this.player.getScoreboardName() + " tried to send an empty message");
-+            // ServerGamePacketListenerImpl.LOGGER.warn(this.player.getScoreboardName() + " tried to send an empty message"); // Martijn - ignore empty chat messages
++            // ServerGamePacketListenerImpl.LOGGER.warn(this.player.getScoreboardName() + " tried to send an empty message"); // Suki - ignore empty chat messages
          } else if (this.getCraftPlayer().isConversing()) {
              final String conversationInput = s;
              this.server.processQueue.add(new Runnable() {

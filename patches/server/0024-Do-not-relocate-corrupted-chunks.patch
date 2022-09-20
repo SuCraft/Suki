@@ -13,10 +13,10 @@ index 3367c75b1c132b42465d4c355a6b5fd00c3efe23..d11e94f198d38b007595460109152f3e
  
          if (!Objects.equals(chunkPos, chunkcoordintpair1)) {
 -            ChunkSerializer.LOGGER.error("Chunk file at {} is in the wrong location; relocating. (Expected {}, got {})", new Object[]{chunkPos, chunkPos, chunkcoordintpair1});
-+            // Martijn start - do not relocate corrupted chunks
++            // Suki start - do not relocate corrupted chunks
 +            ChunkSerializer.LOGGER.error("Chunk file at {} is in the wrong location; stopping the server. (Expected {}, got {})", new Object[]{chunkPos, chunkPos, chunkcoordintpair1});
 +            System.exit(1);
-+            // Martijn end - do not relocate corrupted chunks
++            // Suki end - do not relocate corrupted chunks
          }
  
          UpgradeData chunkconverter = nbt.contains("UpgradeData", 10) ? new UpgradeData(nbt.getCompound("UpgradeData"), world) : UpgradeData.EMPTY;

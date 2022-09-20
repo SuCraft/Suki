@@ -12,7 +12,7 @@ index 4749d4c01069f0e0cbe948ede1dd043baceaa97b..0db922d56468f6ab9c76277c8a4c42e1
      Tag<GameEvent> GAME_EVENT_IGNORE_VIBRATIONS_SNEAKING = Bukkit.getTag(REGISTRY_GAME_EVENTS, NamespacedKey.minecraft("ignore_vibrations_sneaking"), GameEvent.class);
      // Paper end
  
-+    // Martijn start - more vanilla tags
++    // Suki start - more vanilla tags
 +
 +    /**
 +     * Vanilla item tag representing all swords.
@@ -35,7 +35,7 @@ index 4749d4c01069f0e0cbe948ede1dd043baceaa97b..0db922d56468f6ab9c76277c8a4c42e1
 +     */
 +    Tag<Material> ITEMS_SHOVELS = Bukkit.getTag(REGISTRY_ITEMS, NamespacedKey.minecraft("shovels"), Material.class);
 +
-+    // Martijn end - more vanilla tags
++    // Suki end - more vanilla tags
 +
      /**
       * Returns whether or not this tag has an entry for the specified item.

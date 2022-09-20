@@ -12,13 +12,13 @@ index 98664c95331cee4139711c402dfaf406ee672c22..2e2c199a4f43196758b228b72421f707
          return this.dispatcher;
      }
  
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +
 +    public com.mojang.brigadier.CommandDispatcher<CommandSourceStack> _getDispatcher() {
 +        return this.getDispatcher();
 +    }
 +
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
 +
      @Nullable
      public static <S> CommandSyntaxException getParseException(ParseResults<S> parse) {
@@ -31,13 +31,13 @@ index 2452fb49ebe5ec791cc7151e3b73b5c572ff2eda..c83e69a4a50dd69c16a7c08923170afb
          return (new StringTagVisitor()).visit(this);
      }
  
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +
 +    default String _getAsString() {
 +        return this.getAsString();
 +    }
 +
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
 +
      void accept(TagVisitor visitor);
  
@@ -50,11 +50,11 @@ index 8f3dfda2483885dad01edb444021ba3407e4896e..4ce2c89cfe7d9255ade257c2a1e6507f
      private final PacketFlow receiving;
      private final Queue<Connection.PacketHolder> queue = Queues.newConcurrentLinkedQueue();
      public Channel channel;
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +    public Channel _channel() {
 +        return this.channel;
 +    }
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
      public SocketAddress address;
      // Spigot Start
      public java.util.UUID spoofedUUID;
@@ -66,11 +66,11 @@ index 7a225421d54f9b30f0c62036888e09379ee28bd2..fe5d0bdf4c2e7efe3d4974ae106e091a
      public static final ClientboundGameEventPacket.Type START_RAINING = new ClientboundGameEventPacket.Type(1);
      public static final ClientboundGameEventPacket.Type STOP_RAINING = new ClientboundGameEventPacket.Type(2);
      public static final ClientboundGameEventPacket.Type CHANGE_GAME_MODE = new ClientboundGameEventPacket.Type(3);
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +    public static ClientboundGameEventPacket.Type _CHANGE_GAME_MODE() {
 +        return ClientboundGameEventPacket.CHANGE_GAME_MODE;
 +    }
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
      public static final ClientboundGameEventPacket.Type WIN_GAME = new ClientboundGameEventPacket.Type(4);
      public static final ClientboundGameEventPacket.Type DEMO_EVENT = new ClientboundGameEventPacket.Type(5);
      public static final ClientboundGameEventPacket.Type ARROW_HIT_PLAYER = new ClientboundGameEventPacket.Type(6);
@@ -82,13 +82,13 @@ index db0b69f227ab388fa1335471313200f072cca2f3..cd33f495c9fa98f106ff391ae2b0a134
          return (DedicatedServer)super.getServer();
      }
  
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +
 +    public DedicatedServer _getServer() {
 +        return this.getServer();
 +    }
 +
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
 +
      @Override
      public boolean canBypassPlayerLimit(GameProfile profile) {
@@ -101,14 +101,14 @@ index 2d149e79ad180c12544de81f850fe713adfc8155..a7a7ad04e0ca9a9119075df7afe2ad5b
      // Martijn start- per-player view distance
      // This value is the intended world send view distance + 1
      private int vanillaWorldViewDistancePlusOne;
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +    // This isn't actually obfuscated but we normally would want it to be private,
 +    // but this opens the value up for plugins to use more readily when this is really the value that is needed
 +    public int _vanillaWorldViewDistancePlusOne() {
 +        return this.vanillaWorldViewDistancePlusOne;
 +    }
-+    // Martijn end - OBFHELPER
-     // Martijn end - per-player view distance
++    // Suki end - OBFHELPER
+     // Suki end - per-player view distance
      public final com.destroystokyo.paper.util.misc.PlayerAreaMap playerMobDistanceMap; // Paper
      public final ReferenceOpenHashSet<ChunkHolder> needsChangeBroadcasting = new ReferenceOpenHashSet<>();
 diff --git a/src/main/java/net/minecraft/server/level/DistanceManager.java b/src/main/java/net/minecraft/server/level/DistanceManager.java
@@ -119,11 +119,11 @@ index 7922ced4e86d49df02169ac820fc5cbde974a18b..67e0257b98d0075b51171376eb2716af
      final Executor mainThreadExecutor;
      private long ticketTickCounter;
      private int simulationDistance = 10;
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +    public int _simulationDistance() {
 +        return this.simulationDistance;
 +    }
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
      private final ChunkMap chunkMap; // Paper
  
      protected DistanceManager(Executor workerExecutor, Executor mainThreadExecutor, ChunkMap chunkMap) {
@@ -135,21 +135,21 @@ index 99b9d4951fadb8f6da800f948a841c9daa8e11c5..90cba9df54f9d5ac7f5e0f3a19e80a89
      public static final org.slf4j.Logger LOGGER = com.mojang.logging.LogUtils.getLogger(); // Paper
      public static final List<ChunkStatus> CHUNK_STATUSES = ChunkStatus.getStatusList();
      private final DistanceManager distanceManager;
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +    public DistanceManager _distanceManager() {
 +        return this.distanceManager;
 +    }
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
      final ServerLevel level;
      public final Thread mainThread;
      final ThreadedLevelLightEngine lightEngine;
      public final ServerChunkCache.MainThreadExecutor mainThreadProcessor;
      public final ChunkMap chunkMap;
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +    public ChunkMap _chunkMap() {
 +        return this.chunkMap;
 +    }
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
      private final DimensionDataStorage dataStorage;
      private long lastInhabitedUpdate;
      public boolean spawnEnemies = true;
@@ -157,13 +157,13 @@ index 99b9d4951fadb8f6da800f948a841c9daa8e11c5..90cba9df54f9d5ac7f5e0f3a19e80a89
          this.distanceManager.updateSimulationDistance(simulationDistance);
      }
  
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +
 +    public void _setSimulationDistance(int simulationDistance) {
 +        this.setSimulationDistance(simulationDistance);
 +    }
 +
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
 +
      @Override
      public void setSpawnSettings(boolean spawnMonsters, boolean spawnAnimals) {
@@ -184,11 +184,11 @@ index 3f749f33f9168455cfe14a6e6120f36b412205f3..92901a6210296f97fd60248356a21960
      private static final int MAX_SCHEDULED_TICKS_PER_TICK = 65536;
      public final List<ServerPlayer> players;
      public final ServerChunkCache chunkSource;
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +    public ServerChunkCache _chunkSource() {
 +        return this.chunkSource;
 +    }
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
      private final MinecraftServer server;
      public final PrimaryLevelData serverLevelData; // CraftBukkit - type
      final EntityTickList entityTickList;
@@ -200,11 +200,11 @@ index bd1df088043427cb8d2d3e1fb60b32a007d9ca96..684c4bef872f416bf80fea01b680a6d8
      private static final int NEUTRAL_MOB_DEATH_NOTIFICATION_RADII_XZ = 32;
      private static final int NEUTRAL_MOB_DEATH_NOTIFICATION_RADII_Y = 10;
      public ServerGamePacketListenerImpl connection;
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +    public ServerGamePacketListenerImpl _connection() {
 +        return this.connection;
 +    }
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
      public net.minecraft.network.Connection networkManager; // Paper
      public final MinecraftServer server;
      public final ServerPlayerGameMode gameMode;
@@ -216,11 +216,11 @@ index 136c81ebb956f360d8828341164abf00dfcc212d..f31cc2bc3051f7bb0dcdc6fa1e582875
      private static final int NO_BLOCK_UPDATES_TO_ACK = -1;
      private static final int PENDING_MESSAGE_DISCONNECT_THRESHOLD = 4096;
      public final Connection connection;
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +    public Connection _connection() {
 +        return this.connection;
 +    }
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
      private final MinecraftServer server;
      public ServerPlayer player;
      private int tickCount;
@@ -228,13 +228,13 @@ index 136c81ebb956f360d8828341164abf00dfcc212d..f31cc2bc3051f7bb0dcdc6fa1e582875
          }
      }
  
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +
 +    public void _send(Packet<?> packet, @Nullable PacketSendListener listener) {
 +        this.send(packet, listener);
 +    }
 +
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
 +
      @Override
      public void handleSetCarriedItem(ServerboundSetCarriedItemPacket packet) {
@@ -255,11 +255,11 @@ index ec0319dd4b115e18b368027cc5dbe4d4d9c64840..fc2cb8713093610d48ad9cc191b70df6
      public static final EntityType<Turtle> TURTLE = EntityType.register("turtle", EntityType.Builder.of(Turtle::new, MobCategory.CREATURE).sized(1.2F, 0.4F).clientTrackingRange(10));
      public static final EntityType<Vex> VEX = EntityType.register("vex", EntityType.Builder.of(Vex::new, MobCategory.MONSTER).fireImmune().sized(0.4F, 0.8F).clientTrackingRange(8));
      public static final EntityType<Villager> VILLAGER = EntityType.register("villager", EntityType.Builder.of(Villager::new, MobCategory.MISC).sized(0.6F, 1.95F).clientTrackingRange(10));
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +    public static EntityType<Villager> _VILLAGER() {
 +        return VILLAGER;
 +    }
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
      public static final EntityType<Vindicator> VINDICATOR = EntityType.register("vindicator", EntityType.Builder.of(Vindicator::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(8));
      public static final EntityType<WanderingTrader> WANDERING_TRADER = EntityType.register("wandering_trader", EntityType.Builder.of(WanderingTrader::new, MobCategory.CREATURE).sized(0.6F, 1.95F).clientTrackingRange(10));
      public static final EntityType<Warden> WARDEN = EntityType.register("warden", EntityType.Builder.of(Warden::new, MobCategory.MONSTER).sized(0.9F, 2.9F).clientTrackingRange(16).fireImmune());
@@ -271,11 +271,11 @@ index cd47b6882509888f7d34e95b4687ca7a9eab6caf..5a07f5e3119d82f8055e9d925f3f728b
      private Item item;
      @Nullable
      public CompoundTag tag;
-+    // Martijn start - OBFHELPER
++    // Suki start - OBFHELPER
 +    public @Nullable CompoundTag _tag() {
 +        return this.tag;
 +    }
-+    // Martijn end - OBFHELPER
++    // Suki end - OBFHELPER
      private boolean emptyCacheFlag;
      @Nullable
      private Entity entityRepresentation;

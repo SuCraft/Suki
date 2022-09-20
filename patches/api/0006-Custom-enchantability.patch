@@ -10,7 +10,7 @@ index 0000000000000000000000000000000000000000..3ac20f6f39b1dde7e8dad01d1537f3b2
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/enchantments/EnchantmentSource.java
 @@ -0,0 +1,21 @@
-+// Martijn - custom enchantability
++// Suki - custom enchantability
 +
 +package nl.martijnmuijsers.paper.enchantments;
 +
@@ -48,7 +48,7 @@ index 69a048eb4e48c92db70c3d6b6aa4ae96326b9705..52f655dc8fe1cc173ad6a25855f98164
       */
      public abstract boolean conflictsWith(@NotNull Enchantment other);
  
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +
      /**
       * Checks if this Enchantment may be applied to the given {@link
@@ -79,7 +79,7 @@ index 69a048eb4e48c92db70c3d6b6aa4ae96326b9705..52f655dc8fe1cc173ad6a25855f98164
 +     */
 +    public abstract boolean canEnchantItemInVanilla(@NotNull ItemStack item);
 +
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
 +
      // Paper start
      /**
@@ -99,7 +99,7 @@ index 5f42a9c0c43ced10b754170d7c83793a99fce81b..699a2125157e4fcb12b9c59c25291192
          return getEnchantment().getItemTarget();
      }
  
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +
      @Override
 -    public boolean canEnchantItem(@NotNull ItemStack item) {
@@ -113,7 +113,7 @@ index 5f42a9c0c43ced10b754170d7c83793a99fce81b..699a2125157e4fcb12b9c59c25291192
 +        return getEnchantment().canEnchantItemInVanilla(item);
 +    }
 +
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
 +
      @NotNull
      @Override
@@ -134,7 +134,7 @@ index 40edff7c93b6bf75de81102326667135b9344666..8d2b3d936d684a38e39342e8a35a14b3
  
      // Paper start
 +
-+    // Martijn start - custom enchantability
++    // Suki start - custom enchantability
 +
      /**
 -     * Randomly enchants a copy of the provided {@link ItemStack} using the given experience levels.
@@ -163,7 +163,7 @@ index 40edff7c93b6bf75de81102326667135b9344666..8d2b3d936d684a38e39342e8a35a14b3
 +     */
 +    @NotNull ItemStack enchantWithLevels(@NotNull ItemStack itemStack, @org.jetbrains.annotations.Range(from = 1, to = 30) int levels, boolean allowTreasure, @NotNull java.util.Random random, @NotNull EnchantmentSource source);
 +
-+    // Martijn end - custom enchantability
++    // Suki end - custom enchantability
 +
      /**
       * Creates a hover event for the given item.
@@ -186,7 +186,7 @@ index b8a344fd900dcbd4b28085a54b85b16c742e9c6f..a4f9cfd2ea05e24c0c051b8dd0483300
          if ((level < ench.getStartLevel()) || (level > ench.getMaxLevel())) {
              throw new IllegalArgumentException("Enchantment level is either too low or too high (given " + level + ", bounds are " + ench.getStartLevel() + " to " + ench.getMaxLevel() + ")");
 -        } else if (!ench.canEnchantItem(this)) {
-+        } else if (!ench.canEnchantItem(this, EnchantmentSource.BUKKIT_API)) { // Martijn - custom enchantability
++        } else if (!ench.canEnchantItem(this, EnchantmentSource.BUKKIT_API)) { // Suki - custom enchantability
              throw new IllegalArgumentException("Specified enchantment cannot be applied to this itemstack");
          }
  

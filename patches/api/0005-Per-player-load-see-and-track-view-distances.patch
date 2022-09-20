@@ -53,7 +53,7 @@ index 752d9c48d78a6baeb905830b5652f1131f3be638..4d2f3e7e3a37e53ebf155ef455238cf4
 -     * @param viewDistance view distance in [2, 32] or -1
 -     */
 -    void setSendViewDistance(int viewDistance);
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +//    /**
 +//     * Returns the no-tick view distance for this world.
 +//     * <p>
@@ -95,7 +95,7 @@ index 752d9c48d78a6baeb905830b5652f1131f3be638..4d2f3e7e3a37e53ebf155ef455238cf4
 +//     * @param viewDistance view distance in [2, 32] or -1
 +//     */
 +//    void setSendViewDistance(int viewDistance);
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
      // Paper end - view distance api
  
      // Spigot start
@@ -178,7 +178,7 @@ index fedd1c0f93946f08a395413b68bf959ed4e6b3f4..c72ac209bb46b08ebb3c262aad23af9a
 -     * @param viewDistance view distance in [2, 32] or -1
 -     */
 -    public void setSendViewDistance(int viewDistance);
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +//    /**
 +//     * Gets the view distance for this player
 +//     *
@@ -250,7 +250,7 @@ index fedd1c0f93946f08a395413b68bf959ed4e6b3f4..c72ac209bb46b08ebb3c262aad23af9a
 +//     * @param viewDistance view distance in [2, 32] or -1
 +//     */
 +//    public void setSendViewDistance(int viewDistance);
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
      // Paper end
  
      /**

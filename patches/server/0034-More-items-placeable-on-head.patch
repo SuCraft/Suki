@@ -22,7 +22,7 @@ index 2b909d159bea6892a5666179b53abe63c70981d7..30425e1d3ea874a798e8473caa3664aa
      }
  
 -    public static EquipmentSlot getEquipmentSlotForItem(ItemStack stack) {
-+    // Martijn start - more items placeable on head
++    // Suki start - more items placeable on head
 +    public static EquipmentSlot getEquipmentSlotForItem(ItemStack stack, @Nullable Permissible target) {
          Item item = stack.getItem();
 -
@@ -30,14 +30,14 @@ index 2b909d159bea6892a5666179b53abe63c70981d7..30425e1d3ea874a798e8473caa3664aa
 +        if (target != null && target.hasPermission(CraftDefaultPermissions.putBannersOnHead) && stack.is(ItemTags.BANNERS)) {
 +            return EquipmentSlot.HEAD;
 +        }
-+        // Martijn end - more items placeable on head
++        // Suki end - more items placeable on head
          return !stack.is(Items.CARVED_PUMPKIN) && (!(item instanceof BlockItem) || !(((BlockItem) item).getBlock() instanceof AbstractSkullBlock)) ? (item instanceof ArmorItem ? ((ArmorItem) item).getSlot() : (stack.is(Items.ELYTRA) ? EquipmentSlot.CHEST : (stack.is(Items.SHIELD) ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND))) : EquipmentSlot.HEAD;
      }
  
      private static SlotAccess createEquipmentSlotAccess(LivingEntity entity, EquipmentSlot slot) {
          return slot != EquipmentSlot.HEAD && slot != EquipmentSlot.MAINHAND && slot != EquipmentSlot.OFFHAND ? SlotAccess.forEquipmentSlot(entity, slot, (itemstack) -> {
 -            return itemstack.isEmpty() || Mob.getEquipmentSlotForItem(itemstack) == slot;
-+            return itemstack.isEmpty() || Mob.getEquipmentSlotForItem(itemstack, entity.getBukkitEntity()) == slot; // Martijn - more items placeable on head
++            return itemstack.isEmpty() || Mob.getEquipmentSlotForItem(itemstack, entity.getBukkitEntity()) == slot; // Suki - more items placeable on head
          }) : SlotAccess.forEquipmentSlot(entity, slot);
      }
  
@@ -58,7 +58,7 @@ index c39ceda8e9314dd8338ade29d92baa0c8173d2c9..c59d00c689925cab88f19a02ab3c83dc
      public boolean equipItemIfPossible(ItemStack itemstack, ItemEntity entityitem) {
          // CraftBukkit end
 -        EquipmentSlot enumitemslot = getEquipmentSlotForItem(itemstack);
-+        EquipmentSlot enumitemslot = getEquipmentSlotForItem(itemstack, getBukkitEntity()); // Martijn - more items placeable on head
++        EquipmentSlot enumitemslot = getEquipmentSlotForItem(itemstack, getBukkitEntity()); // Suki - more items placeable on head
          ItemStack itemstack1 = this.getItemBySlot(enumitemslot);
          boolean flag = this.canReplaceCurrentItem(itemstack, itemstack1);
  
@@ -67,7 +67,7 @@ index c39ceda8e9314dd8338ade29d92baa0c8173d2c9..c59d00c689925cab88f19a02ab3c83dc
      @Override
      public boolean canTakeItem(ItemStack stack) {
 -        EquipmentSlot enumitemslot = getEquipmentSlotForItem(stack);
-+        EquipmentSlot enumitemslot = getEquipmentSlotForItem(stack, getBukkitEntity()); // Martijn - more items placeable on head
++        EquipmentSlot enumitemslot = getEquipmentSlotForItem(stack, getBukkitEntity()); // Suki - more items placeable on head
  
          return this.getItemBySlot(enumitemslot).isEmpty() && this.canPickUpLoot();
      }
@@ -80,7 +80,7 @@ index 3f100d847fbce6db5b625e99c4f3694576237372..7984af5dee0e746e3e66c1c60d7a23fb
      @Override
      public boolean canTakeItem(ItemStack stack) {
 -        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
-+        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Martijn - more items placeable on head
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Suki - more items placeable on head
  
          return !this.getItemBySlot(enumitemslot).isEmpty() ? false : enumitemslot == EquipmentSlot.MAINHAND && super.canTakeItem(stack);
      }
@@ -93,7 +93,7 @@ index 6a66b5d1a3d8615dcc15057f03476e9ccbf4b4f2..3fb2a332f580f2f5e847416c206355a1
      @Override
      public boolean canTakeItem(ItemStack stack) {
 -        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
-+        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Martijn - more items placeable on head
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Suki - more items placeable on head
  
          return !this.getItemBySlot(enumitemslot).isEmpty() ? false : enumitemslot == EquipmentSlot.MAINHAND && super.canTakeItem(stack);
      }
@@ -106,7 +106,7 @@ index 39c26f486d6392eb0a9b623cdb2161846357174b..fbd597bffb1188b643be95354dd877d5
      @Override
      public boolean canTakeItem(ItemStack stack) {
 -        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
-+        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Martijn - more items placeable on head
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Suki - more items placeable on head
  
          return !this.getItemBySlot(enumitemslot).isEmpty() ? false : enumitemslot == EquipmentSlot.MAINHAND && super.canTakeItem(stack);
      }
@@ -119,7 +119,7 @@ index 150afceb491cfd254c0f1b84800e6df14cf26676..3e09092bfdd0a42bb90f286ed92f8e14
      @Override
      public boolean canTakeItem(ItemStack stack) {
 -        net.minecraft.world.entity.EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
-+        net.minecraft.world.entity.EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Martijn - more items placeable on head
++        net.minecraft.world.entity.EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Suki - more items placeable on head
  
          return this.getItemBySlot(enumitemslot).isEmpty() && !this.isDisabled(enumitemslot);
      }
@@ -128,7 +128,7 @@ index 150afceb491cfd254c0f1b84800e6df14cf26676..3e09092bfdd0a42bb90f286ed92f8e14
                  return InteractionResult.CONSUME;
              } else {
 -                net.minecraft.world.entity.EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack);
-+                net.minecraft.world.entity.EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack, getBukkitEntity()); // Martijn - more items placeable on head
++                net.minecraft.world.entity.EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack, getBukkitEntity()); // Suki - more items placeable on head
  
                  if (itemstack.isEmpty()) {
                      net.minecraft.world.entity.EquipmentSlot enumitemslot1 = this.getClickedSlot(hitPos);
@@ -141,7 +141,7 @@ index 9bde52b723237b1f0f945bc564009e3507993508..0857d6147411cfb2faef11bd5320dd06
  
      protected boolean canReplaceCurrentItem(ItemStack stack) {
 -        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
-+        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Martijn - more items placeable on head
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Suki - more items placeable on head
          ItemStack itemstack1 = this.getItemBySlot(enumitemslot);
  
          return this.canReplaceCurrentItem(stack, itemstack1);
@@ -154,7 +154,7 @@ index 30b08814aa91d1e73b0dc96b82206edefe86f0a8..fea6fcffbc511156886fd0b410877a12
      @Override
      public boolean canTakeItem(ItemStack stack) {
 -        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
-+        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Martijn - more items placeable on head
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, getBukkitEntity()); // Suki - more items placeable on head
  
          return this.getItemBySlot(enumitemslot).isEmpty();
      }
@@ -175,13 +175,13 @@ index 12643d60f4bfa8e07901aa0a556a1a245b0a7fb4..65a5a604ea1f1d4c13378a6bbd6c5478
                  @Override
                  public boolean mayPlace(ItemStack stack) {
 -                    return enumitemslot == Mob.getEquipmentSlotForItem(stack);
-+                    // Martijn start - more items placeable on head
++                    // Suki start - more items placeable on head
 +                    // Makes it so some players can place banners into the head slot, and will place banners into the head slot instantly when shift-clicking
 +                    if (enumitemslot == EquipmentSlot.HEAD && owner.getBukkitEntity().hasPermission(CraftDefaultPermissions.putAllBlocksAndItemsOnHead)) {
 +                        return true;
 +                    }
 +                    return enumitemslot == Mob.getEquipmentSlotForItem(stack, owner.getBukkitEntity());
-+                    // Martijn end - more items placeable on head
++                    // Suki end - more items placeable on head
                  }
  
                  @Override
@@ -190,7 +190,7 @@ index 12643d60f4bfa8e07901aa0a556a1a245b0a7fb4..65a5a604ea1f1d4c13378a6bbd6c5478
  
              itemstack = itemstack1.copy();
 -            EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack);
-+            EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack, player.getBukkitEntity()); // Martijn - more items placeable on head
++            EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack, player.getBukkitEntity()); // Suki - more items placeable on head
  
              if (index == 0) {
                  if (!this.moveItemStackTo(itemstack1, 9, 45, true)) {
@@ -203,7 +203,7 @@ index baa7e055d8ee4a153842128b07984b9f6deac6ca..b7eb0a425750f72fdc0efa1a95b4a550
          } else {
              LivingEntity entityliving = (LivingEntity) list.get(0);
 -            EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(armor);
-+            EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(armor, entityliving.getBukkitEntity()); // Martijn - more items placeable on head
++            EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(armor, entityliving.getBukkitEntity()); // Suki - more items placeable on head
              ItemStack itemstack1 = armor.split(1);
              // CraftBukkit start
              Level world = pointer.getLevel();
@@ -212,7 +212,7 @@ index baa7e055d8ee4a153842128b07984b9f6deac6ca..b7eb0a425750f72fdc0efa1a95b4a550
      public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
          ItemStack itemstack = user.getItemInHand(hand);
 -        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack);
-+        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack, user.getBukkitEntity()); // Martijn - more items placeable on head
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack, user.getBukkitEntity()); // Suki - more items placeable on head
          ItemStack itemstack1 = user.getItemBySlot(enumitemslot);
  
          if (itemstack1.isEmpty()) {
@@ -225,7 +225,7 @@ index 42f79d418ec4e2dbeac9a217d9dc144cda2ef714..1d3e45d805b7d8aabf53d38566e095fe
      public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
          ItemStack itemStack = user.getItemInHand(hand);
 -        EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(itemStack);
-+        EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(itemStack, user.getBukkitEntity()); // Martijn - more items placeable on head
++        EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(itemStack, user.getBukkitEntity()); // Suki - more items placeable on head
          ItemStack itemStack2 = user.getItemBySlot(equipmentSlot);
          if (itemStack2.isEmpty()) {
              user.setItemSlot(equipmentSlot, itemStack.copy());
@@ -235,24 +235,24 @@ index 843e04d58c7aca4bd11ab84cf42120cda6a3f4ee..406ffa40e1a44d0c1762136efcdad48d
 +++ b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
 @@ -12,6 +12,11 @@ public final class CraftDefaultPermissions {
      public static Permission survivallikeDebugStick;
-     // Martijn end - survival debug stick
+     // Suki end - survival debug stick
  
-+    // Martijn start - more items placeable on head
++    // Suki start - more items placeable on head
 +    public static Permission putBannersOnHead;
 +    public static Permission putAllBlocksAndItemsOnHead;
-+    // Martijn end - more items placeable on head
++    // Suki end - more items placeable on head
 +
      private CraftDefaultPermissions() {}
  
      public static void registerCorePermissions() {
 @@ -26,6 +31,10 @@ public final class CraftDefaultPermissions {
          survivallikeDebugStick = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".debugstick.survivallike", "Gives the user the ability to partially use the debug stick in all game modes, with the only usages allowed being those compatible with survival mode gameplay", org.bukkit.permissions.PermissionDefault.FALSE, parent);
-         // Martijn end - survival debug stick
+         // Suki end - survival debug stick
          DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".commandblock", "Gives the user the ability to use command blocks.", org.bukkit.permissions.PermissionDefault.OP, parent); // Paper
-+        // Martijn start - more items placeable on head
++        // Suki start - more items placeable on head
 +        putBannersOnHead = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".moreitemsonhead.banner", "Gives the user the ability to put banners into their head armor slot");
 +        putAllBlocksAndItemsOnHead = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".moreitemsonhead.all", "Gives the user the ability to put any block or item into their head armor slot");
-+        // Martijn end - more items placeable on head
++        // Suki end - more items placeable on head
          // Spigot end
          parent.recalculatePermissibles();
      }

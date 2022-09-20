@@ -13,7 +13,7 @@ index 28ddab1121e314e82bf764fd89f36714bd7445f8..6f739de85e0f70e9119baae955dc7170
          private void sendToServer(final ChatType.Bound chatType, final @Nullable Function<Audience, net.minecraft.network.chat.Component> msgFunction) {
              final PlayerChatMessage toConsoleMessage = msgFunction == null ? ChatProcessor.this.message : ChatProcessor.this.message.withUnsignedContent(msgFunction.apply(ChatProcessor.this.server.console));
 -            ChatProcessor.this.server.logChatMessage(toConsoleMessage.serverContent(), chatType, ChatProcessor.this.server.getPlayerList().verifyChatTrusted(toConsoleMessage, ChatProcessor.this.player.asChatSender()) ? null : "Not Secure");
-+            ChatProcessor.this.server.logChatMessage(toConsoleMessage.serverContent(), chatType, null); // Martijn - no signed chat
++            ChatProcessor.this.server.logChatMessage(toConsoleMessage.serverContent(), chatType, null); // Suki - no signed chat
          }
  
          record ConstantFunction(net.minecraft.network.chat.Component component) implements Function<Audience, net.minecraft.network.chat.Component> {
@@ -26,7 +26,7 @@ index bd82f0316df85b621c1970ff30bbbec0d2712ccd..85d1a6b2cd21d9c456c37c6025c0fa03
                  RegistryAccess registryAccess = sender.level.registryAccess();
                  ChatType.BoundNetwork boundNetwork = params.toNetwork(registryAccess);
 -                sender.connection.send(new ClientboundPlayerChatPacket(playerChatMessage, boundNetwork));
-+                sender.connection.send(ClientboundPlayerChatPacket.createUnsigned(sender, playerChatMessage, boundNetwork)); // Martijn - no signed chat
++                sender.connection.send(ClientboundPlayerChatPacket.createUnsigned(sender, playerChatMessage, boundNetwork)); // Suki - no signed chat
                  sender.connection.addPendingMessage(playerChatMessage);
              }
  
@@ -37,7 +37,7 @@ index bd82f0316df85b621c1970ff30bbbec0d2712ccd..85d1a6b2cd21d9c456c37c6025c0fa03
 -                sender.connection.send(new ClientboundPlayerChatPacket(playerChatMessage, boundNetwork), PacketSendListener.exceptionallySend(() -> {
 -                    return new ClientboundPlayerChatHeaderPacket(this.message);
 -                }));
-+                sender.connection.send(ClientboundPlayerChatPacket.createUnsigned(sender, playerChatMessage, boundNetwork)); // Martijn - no signed chat
++                sender.connection.send(ClientboundPlayerChatPacket.createUnsigned(sender, playerChatMessage, boundNetwork)); // Suki - no signed chat
                  sender.connection.addPendingMessage(playerChatMessage);
              }
  
@@ -62,7 +62,7 @@ index 0b818969d74eae05e2d2adfdbc38e513972c61a1..80e1bbe1c8da3271aa1acfd51203f1f9
          return this.chatType.resolve(dynamicRegistryManager);
      }
 +
-+    // Martijn start - no signed chat
++    // Suki start - no signed chat
 +
 +    public static Packet<ClientGamePacketListener> createUnsigned(ServerPlayer player, PlayerChatMessage message, ChatType.BoundNetwork chatType) {
 +        // Based on FreedomChat: ru.bk.oharass.freedomchat.FreedomChat.on(PlayerJoinEvent)
@@ -77,7 +77,7 @@ index 0b818969d74eae05e2d2adfdbc38e513972c61a1..80e1bbe1c8da3271aa1acfd51203f1f9
 +        return new ClientboundSystemChatPacket(decoratedContent, false);
 +    }
 +
-+    // Martijn end - no signed chat
++    // Suki end - no signed chat
 +
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
@@ -92,11 +92,11 @@ index 684c4bef872f416bf80fea01b680a6d86f3bf90d..4caf8cddea835c17c31ebe9cfbeb3813
 -            this.connection.send(new ClientboundPlayerChatHeaderPacket(header, headerSignature, bodyDigest));
 -        }
 -
-+        // Martijn start - no signed chat
++        // Suki start - no signed chat
 +//        if (this.acceptsChatMessages()) {
 +//            this.connection.send(new ClientboundPlayerChatHeaderPacket(header, headerSignature, bodyDigest));
 +//        }
-+        // Martijn end - no signed chat
++        // Suki end - no signed chat
      }
  
      public String getIpAddress() {
@@ -105,7 +105,7 @@ index 684c4bef872f416bf80fea01b680a6d86f3bf90d..4caf8cddea835c17c31ebe9cfbeb3813
  
      public void sendServerStatus(ServerStatus metadata) {
 -        this.connection.send(new ClientboundServerDataPacket(metadata.getDescription(), metadata.getFavicon(), metadata.previewsChat(), metadata.enforcesSecureChat()));
-+        this.connection.send(new ClientboundServerDataPacket(metadata.getDescription(), metadata.getFavicon(), false/*metadata.previewsChat()*/, true/*metadata.enforcesSecureChat()*/)); // Martijn - no signed chat
++        this.connection.send(new ClientboundServerDataPacket(metadata.getDescription(), metadata.getFavicon(), false/*metadata.previewsChat()*/, true/*metadata.enforcesSecureChat()*/)); // Suki - no signed chat
      }
  
      @Override
@@ -118,7 +118,7 @@ index 7440a6686b064d17fdd8ae4afe91aad38f6797f9..83fd5b26174f08c771ca1320cf8b0d3f
          boolean flag = this.verifyChatTrusted(message, sourceProfile);
  
 -        this.server.logChatMessage((unsignedFunction == null ? message : message.withUnsignedContent(unsignedFunction.apply(this.server.console))).serverContent(), params, flag ? null : "Not Secure"); // Paper
-+        this.server.logChatMessage((unsignedFunction == null ? message : message.withUnsignedContent(unsignedFunction.apply(this.server.console))).serverContent(), params, null); // Paper // Martijn - no signed chat
++        this.server.logChatMessage((unsignedFunction == null ? message : message.withUnsignedContent(unsignedFunction.apply(this.server.console))).serverContent(), params, null); // Paper // Suki - no signed chat
          OutgoingPlayerChatMessage outgoingplayerchatmessage = OutgoingPlayerChatMessage.create(message);
          boolean flag1 = message.isFullyFiltered();
          boolean flag2 = false;

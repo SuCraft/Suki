@@ -27,7 +27,7 @@ index af2ac1ae5039dc664b9b01d7852598f894d0c0bb..c4c687a58ed3d1679e514ea8cba4da79
          Activity.PANIC
      };
  
-+    // Martijn start - variable entity wake-up duration
++    // Suki start - variable entity wake-up duration
 +
 +    private static Random wakeUpDurationRandom = new Random();
 +
@@ -39,7 +39,7 @@ index af2ac1ae5039dc664b9b01d7852598f894d0c0bb..c4c687a58ed3d1679e514ea8cba4da79
 +        return (int) Math.min(Integer.MAX_VALUE, Math.max(1, Math.round(wakeUpDuration * wakeUpDurationRandom.nextGaussian(1, config.wakeUpDurationStandardDeviationRatio))));
 +    }
 +
-+    // Martijn end - variable entity wake-up duration
++    // Suki end - variable entity wake-up duration
 +
      private static int checkInactiveWakeup(Entity entity) {
          Level world = entity.level;
@@ -49,25 +49,25 @@ index af2ac1ae5039dc664b9b01d7852598f894d0c0bb..c4c687a58ed3d1679e514ea8cba4da79
              if (inactiveFor > config.wakeUpInactiveVillagersEvery && world.wakeupInactiveRemainingVillagers > 0) {
                  world.wakeupInactiveRemainingVillagers--;
 -                return config.wakeUpInactiveVillagersFor;
-+                return getWakeUpDurationWithVariance(entity, config.wakeUpInactiveVillagersFor); // Martijn - variable entity wake-up duration
++                return getWakeUpDurationWithVariance(entity, config.wakeUpInactiveVillagersFor); // Suki - variable entity wake-up duration
              }
          } else if (entity.activationType == ActivationType.ANIMAL) {
              if (inactiveFor > config.wakeUpInactiveAnimalsEvery && world.wakeupInactiveRemainingAnimals > 0) {
                  world.wakeupInactiveRemainingAnimals--;
 -                return config.wakeUpInactiveAnimalsFor;
-+                return getWakeUpDurationWithVariance(entity, config.wakeUpInactiveAnimalsFor); // Martijn - variable entity wake-up duration
++                return getWakeUpDurationWithVariance(entity, config.wakeUpInactiveAnimalsFor); // Suki - variable entity wake-up duration
              }
          } else if (entity.activationType == ActivationType.FLYING_MONSTER) {
              if (inactiveFor > config.wakeUpInactiveFlyingEvery && world.wakeupInactiveRemainingFlying > 0) {
                  world.wakeupInactiveRemainingFlying--;
 -                return config.wakeUpInactiveFlyingFor;
-+                return getWakeUpDurationWithVariance(entity, config.wakeUpInactiveFlyingFor); // Martijn - variable entity wake-up duration
++                return getWakeUpDurationWithVariance(entity, config.wakeUpInactiveFlyingFor); // Suki - variable entity wake-up duration
              }
          } else if (entity.activationType == ActivationType.MONSTER || entity.activationType == ActivationType.RAIDER) {
              if (inactiveFor > config.wakeUpInactiveMonstersEvery && world.wakeupInactiveRemainingMonsters > 0) {
                  world.wakeupInactiveRemainingMonsters--;
 -                return config.wakeUpInactiveMonstersFor;
-+                return getWakeUpDurationWithVariance(entity, config.wakeUpInactiveMonstersFor); // Martijn - variable entity wake-up duration
++                return getWakeUpDurationWithVariance(entity, config.wakeUpInactiveMonstersFor); // Suki - variable entity wake-up duration
              }
          }
          return -1;
@@ -79,7 +79,7 @@ index fcf2a49f5e09ccfecc3bb9f78df014f6018806bb..5a69c8e2da524f25b6c69534faa9a9b6
      public int wakeUpInactiveFlying = 8;
      public int wakeUpInactiveFlyingEvery = 10*20;
      public int wakeUpInactiveFlyingFor = 5*20;
-+    // Martijn start - variable entity wake-up duration
++    // Suki start - variable entity wake-up duration
 +    /**
 +     * This value is sigma,
 +     * where the normal wake-up time will be multiplied by normal(mu = 1, sigma)
@@ -87,7 +87,7 @@ index fcf2a49f5e09ccfecc3bb9f78df014f6018806bb..5a69c8e2da524f25b6c69534faa9a9b6
 +     * If this value is nonpositive, this feature will be disabled
 +     */
 +    public double wakeUpDurationStandardDeviationRatio = 0;
-+    // Martijn end - variable entity wake-up duration
++    // Suki end - variable entity wake-up duration
      public int villagersWorkImmunityAfter = 5*20;
      public int villagersWorkImmunityFor = 20;
      public boolean villagersActiveForPanic = true;
@@ -95,7 +95,7 @@ index fcf2a49f5e09ccfecc3bb9f78df014f6018806bb..5a69c8e2da524f25b6c69534faa9a9b6
          this.wakeUpInactiveFlyingEvery = this.getInt("entity-activation-range.wake-up-inactive.flying-monsters-every", this.wakeUpInactiveFlyingEvery);
          this.wakeUpInactiveFlyingFor = this.getInt("entity-activation-range.wake-up-inactive.flying-monsters-for", this.wakeUpInactiveFlyingFor);
  
-+        this.wakeUpDurationStandardDeviationRatio = this.getDouble("entity-activation-range.wake-up-inactive.duration-standard-deviation-ratio", this.wakeUpDurationStandardDeviationRatio); // Martijn - variable entity wake-up duration
++        this.wakeUpDurationStandardDeviationRatio = this.getDouble("entity-activation-range.wake-up-inactive.duration-standard-deviation-ratio", this.wakeUpDurationStandardDeviationRatio); // Suki - variable entity wake-up duration
 +
          this.villagersWorkImmunityAfter = this.getInt( "entity-activation-range.villagers-work-immunity-after", this.villagersWorkImmunityAfter );
          this.villagersWorkImmunityFor = this.getInt( "entity-activation-range.villagers-work-immunity-for", this.villagersWorkImmunityFor );

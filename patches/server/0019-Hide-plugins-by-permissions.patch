@@ -10,9 +10,9 @@ index cb79203603f5083a585b514115566ddad8a12668..2be6a210e276d5cf02dc487c721e7da1
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -169,6 +169,17 @@ public class GlobalConfiguration extends ConfigurationPart {
  
-     // Martijn end - custom strongholds
+     // Suki end - custom strongholds
  
-+    // Martijn start - hide plugins
++    // Suki start - hide plugins
 +
 +    public HidePlugins hidePlugins;
 +
@@ -21,7 +21,7 @@ index cb79203603f5083a585b514115566ddad8a12668..2be6a210e276d5cf02dc487c721e7da1
 +        public boolean hideLegacyAsterisk = false;
 +    }
 +
-+    // Martijn end - hide plugins
++    // Suki end - hide plugins
 +
      public Messages messages;
  
@@ -42,7 +42,7 @@ index eefba0a6f2ed7bac0cba3463929b289d01cafc96..554da445f1827cb68022b5fdfe8ad697
      }
      // Paper end
  
-+    // Martijn start - hide plugins
++    // Suki start - hide plugins
 +    @Override
 +    public boolean getHidePlugins() {
 +        return GlobalConfiguration.get().hidePlugins.enabled;
@@ -52,7 +52,7 @@ index eefba0a6f2ed7bac0cba3463929b289d01cafc96..554da445f1827cb68022b5fdfe8ad697
 +    public boolean getHideLegacyPluginAsterisk() {
 +        return GlobalConfiguration.get().hidePlugins.hideLegacyAsterisk;
 +    }
-+    // Martijn end - hide plugins
++    // Suki end - hide plugins
 +
      @Override
      public List<CraftPlayer> getOnlinePlayers() {
@@ -83,7 +83,7 @@ index 40b66adcb5aac64212b1937dc506ebb60f2eed83..631d204bb9a320d757b04782154e2427
  
          for (Map.Entry<String, Set<HelpTopic>> entry : pluginIndexes.entrySet()) {
 -            this.addTopic(new IndexHelpTopic(entry.getKey(), "All commands for " + entry.getKey(), null, entry.getValue(), "Below is a list of all " + entry.getKey() + " commands:"));
-+            this.addTopic(new IndexHelpTopic(entry.getKey(), "All commands for " + entry.getKey(), Bukkit.getServer().getHidePlugins() ? PluginBase.getSeePluginPermissionName(entry.getKey()) : null, entry.getValue(), "Below is a list of all " + entry.getKey() + " commands:")); // Martijn - hide plugins
++            this.addTopic(new IndexHelpTopic(entry.getKey(), "All commands for " + entry.getKey(), Bukkit.getServer().getHidePlugins() ? PluginBase.getSeePluginPermissionName(entry.getKey()) : null, entry.getValue(), "Below is a list of all " + entry.getKey() + " commands:")); // Suki - hide plugins
          }
  
          // Amend help topics from the help.yml file

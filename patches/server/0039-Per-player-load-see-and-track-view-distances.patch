@@ -14,11 +14,11 @@ index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..29696cb9a68e8b2d9b5f5a6787c8862f
                  pair("ticking-distance", world.getChunkSource().chunkMap.playerChunkManager.getTargetTickViewDistance()),
 -                pair("no-ticking-distance", world.getChunkSource().chunkMap.playerChunkManager.getTargetNoTickViewDistance()),
 -                pair("sending-distance", world.getChunkSource().chunkMap.playerChunkManager.getTargetSendDistance())
-+                // Martijn start - per-player track and see view distance
++                // Suki start - per-player track and see view distance
 +                pair("max-track-distance", world.paperConfig().viewDistances.track.getMax()),
 +                pair("max-see-distance", world.paperConfig().viewDistances.see.getMax()),
 +                pair("max-load-distance", world.paperConfig().viewDistances.load.getMax())
-+                // Martijn end - per-player track and see view distance
++                // Suki end - per-player track and see view distance
                  // Paper end - replace chunk loader system
              ));
          }));
@@ -30,7 +30,7 @@ index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..dc4f52c99466302345f2818c12d07607
      public final Timing broadcastChunkUpdates;
      public final Timing countNaturalMobs;
  
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +//    public final Timing getPlayersNearChunkForSending;
 +    public final Timing chunkMapPlayerMove;
 +//    public final Timing chunkMapPlayerMoveUpdatePos;
@@ -46,7 +46,7 @@ index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..dc4f52c99466302345f2818c12d07607
 +    public final Timing trackViewDistanceMayHaveChanged;
 +    public final Timing seeViewDistanceMayHaveChanged;
 +    public final Timing loadViewDistanceMayHaveChanged;
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
 +
      public final Timing chunkLoad;
      public final Timing chunkLoadPopulate;
@@ -55,7 +55,7 @@ index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..dc4f52c99466302345f2818c12d07607
          broadcastChunkUpdates = Timings.ofSafe(name + "Broadcast chunk updates");
          countNaturalMobs = Timings.ofSafe(name + "Count natural mobs");
  
-+        // Martijn start - per-player view distance
++        // Suki start - per-player view distance
 +//        getPlayersNearChunkForSending = Timings.ofSafe("Get players near chunk for sending");
 +        chunkMapPlayerMove = Timings.ofSafe("Chunk map player move");
 +//        chunkMapPlayerMoveUpdatePos = Timings.ofSafe("Chunk map player move - update pos");
@@ -71,7 +71,7 @@ index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..dc4f52c99466302345f2818c12d07607
 +        trackViewDistanceMayHaveChanged = Timings.ofSafe("Track view distance may have changed");
 +        seeViewDistanceMayHaveChanged = Timings.ofSafe("See view distance may have changed");
 +        loadViewDistanceMayHaveChanged = Timings.ofSafe("Load view distance may have changed");
-+        // Martijn end - per-player view distance
++        // Suki end - per-player view distance
  
          miscMobSpawning = Timings.ofSafe(name + "Mob spawning - Misc");
  
@@ -116,7 +116,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 -        }
 -        return data.getTargetSendViewDistance();
 -    }
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +//    public static int getLoadViewDistance(final Player player) {
 +//        return getLoadViewDistance(((CraftPlayer)player).getHandle());
 +//    }
@@ -142,7 +142,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 +//        }
 +//        return data.getTargetSendViewDistance();
 +//    }
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
  
      protected final ChunkMap chunkMap;
      protected final Reference2ObjectLinkedOpenHashMap<ServerPlayer, PlayerLoaderData> playerMap = new Reference2ObjectLinkedOpenHashMap<>(512, 0.7f);
@@ -151,7 +151,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
       * The chunks to be sent to players, provided they're send-ready. Send-ready means the chunk and its 1 radius neighbours are loaded.
       */
 -    public final PlayerAreaMap broadcastMap;
-+    // Martijn start - per-player track and see view distance
++    // Suki start - per-player track and see view distance
 +    public final PlayerAreaMap broadcastMapForTracking;
 +    public final PlayerAreaMap broadcastMapForSeeing;
 +
@@ -159,7 +159,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 +        return concernsTracking ? this.broadcastMapForTracking : this.broadcastMapForSeeing;
 +    }
 +
-+    // Martijn end - per-player track and see view distance
++    // Suki end - per-player track and see view distance
  
      /**
       * The chunks to be brought up to send-ready status. Send-ready means the chunk and its 1 radius neighbours are loaded.
@@ -176,7 +176,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 -     * -1 if defaulting to [tick view distance + 1], else always in [tick view distance + 1, 32 + 1]
 -     */
 -    protected int rawLoadDistance = -1;
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +//    /**
 +//     * -1 if defaulting to [load distance], else always in [2, load distance]
 +//     */
@@ -186,7 +186,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 +//     * -1 if defaulting to [tick view distance + 1], else always in [tick view distance + 1, 32 + 1]
 +//     */
 +//    protected int rawLoadDistance = -1;
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
  
      /**
       * Never -1, always in [2, 32]
@@ -235,7 +235,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 -        }
 -        this.rawLoadDistance = distance;
 -    }
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +//    public int getTargetNoTickViewDistance() {
 +//        return this.getLoadDistance() - 1;
 +//    }
@@ -277,7 +277,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 +//        }
 +//        this.rawLoadDistance = distance;
 +//    }
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
  
      public int getTickDistance() {
          return this.rawTickDistance;
@@ -286,7 +286,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
      public PlayerChunkLoader(final ChunkMap chunkMap, final PooledLinkedHashSets<ServerPlayer> pooledHashSets) {
          this.chunkMap = chunkMap;
 -        this.broadcastMap = new PlayerAreaMap(pooledHashSets,
-+        // Martijn start - player track and see view distance
++        // Suki start - player track and see view distance
 +        this.broadcastMapForTracking = new PlayerAreaMap(pooledHashSets,
 +                null,
 +                (ServerPlayer player, int rangeX, int rangeZ, int currPosX, int currPosZ, int prevPosX, int prevPosZ,
@@ -300,7 +300,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 -                    PlayerChunkLoader.this.onChunkLeave(player, rangeX, rangeZ);
 +                    PlayerChunkLoader.this.onChunkLeave(player, rangeX, rangeZ, false);
                  });
-+        // Martijn end - player track and see view distance
++        // Suki end - player track and see view distance
          this.loadMap = new PlayerAreaMap(pooledHashSets,
                  null,
                  (ServerPlayer player, int rangeX, int rangeZ, int currPosX, int currPosZ, int prevPosX, int prevPosZ,
@@ -310,7 +310,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
  
 -    public boolean isChunkNearPlayers(final int chunkX, final int chunkZ) {
 -        final PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> playersInSendRange = this.broadcastMap.getObjectsInRange(chunkX, chunkZ);
-+    // Martijn start - per-player track and see view distance
++    // Suki start - per-player track and see view distance
 +
 +    public boolean isChunkNearPlayers(final int chunkX, final int chunkZ, boolean concernsTracking) {
 +        final PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> playersInSendRange = this.getBroadcastMap(concernsTracking).getObjectsInRange(chunkX, chunkZ);
@@ -318,7 +318,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
          return playersInSendRange != null;
      }
  
-+    // Martijn end - per-player track and see view distance
++    // Suki end - per-player track and see view distance
 +
      public void onChunkPostProcessing(final int chunkX, final int chunkZ) {
          this.onChunkSendReady(chunkX, chunkZ);
@@ -329,7 +329,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
  
 -    public boolean isChunkSent(final ServerPlayer player, final int chunkX, final int chunkZ, final boolean borderOnly) {
 -        return borderOnly ? this.isChunkSentBorderOnly(player, chunkX, chunkZ) : this.isChunkSent(player, chunkX, chunkZ);
-+    // Martijn start - per-player track and see view distance
++    // Suki start - per-player track and see view distance
 +
 +    public boolean isChunkSent(final ServerPlayer player, final int chunkX, final int chunkZ, final boolean borderOnly, final boolean concernsTracking) {
 +        return borderOnly ? this.isChunkSentBorderOnly(player, chunkX, chunkZ, concernsTracking) : this.isChunkSent(player, chunkX, chunkZ, concernsTracking);
@@ -365,7 +365,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 +            data.hasSentChunk(chunkX, chunkZ - 1, concernsTracking) && data.hasSentChunk(chunkX, chunkZ + 1, concernsTracking));
      }
  
-+    // Martijn end - per-player track and see view distance
++    // Suki end - per-player track and see view distance
 +
      protected int getMaxConcurrentChunkSends() {
          return GlobalConfiguration.get().chunkLoading.maxConcurrentSends;
@@ -379,7 +379,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 -        if (playersInSendRange == null) {
 -            return;
 -        }
-+        // Martijn start - per-player track and see view distance
++        // Suki start - per-player track and see view distance
  
 -        final Object[] rawData = playersInSendRange.getBackingSet();
 -        for (int i = 0, len = rawData.length; i < len; ++i) {
@@ -405,12 +405,12 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 -            this.onChunkSendReady((ServerPlayer)raw, chunkX, chunkZ);
          }
 +
-+        // Martijn end - per-player track and see view distance
++        // Suki end - per-player track and see view distance
 +
      }
  
 -    public void onChunkSendReady(final ServerPlayer player, final int chunkX, final int chunkZ) {
-+    public void onChunkSendReady(final ServerPlayer player, final int chunkX, final int chunkZ, final boolean concernsTracking) { // Martijn - per-player track and see view distance
++    public void onChunkSendReady(final ServerPlayer player, final int chunkX, final int chunkZ, final boolean concernsTracking) { // Suki - per-player track and see view distance
          final PlayerLoaderData data = this.playerMap.get(player);
  
          if (data == null) {
@@ -418,26 +418,26 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
          }
  
 -        if (data.hasSentChunk(chunkX, chunkZ) || !this.isChunkPlayerLoaded(chunkX, chunkZ)) {
-+        if (data.hasSentChunk(chunkX, chunkZ, concernsTracking) || !this.isChunkPlayerLoaded(chunkX, chunkZ)) { // Martijn - per-player track and see view distance
++        if (data.hasSentChunk(chunkX, chunkZ, concernsTracking) || !this.isChunkPlayerLoaded(chunkX, chunkZ)) { // Suki - per-player track and see view distance
              // if we don't have player tickets, then the load logic will pick this up and queue to send
              return;
          }
  
 -        if (!data.chunksToBeSent.remove(CoordinateUtils.getChunkKey(chunkX, chunkZ))) {
-+        if (!data.getChunksToBeSent(concernsTracking).remove(CoordinateUtils.getChunkKey(chunkX, chunkZ))) { // Martijn - per-player track and see view distance
++        if (!data.getChunksToBeSent(concernsTracking).remove(CoordinateUtils.getChunkKey(chunkX, chunkZ))) { // Suki - per-player track and see view distance
              // don't queue to send, we don't want the chunk
              return;
          }
  
 -        final long playerPos = this.broadcastMap.getLastCoordinate(player);
-+        final long playerPos = this.broadcastMapForSeeing.getLastCoordinate(player); // Martijn - per-player track and see view distance
++        final long playerPos = this.broadcastMapForSeeing.getLastCoordinate(player); // Suki - per-player track and see view distance
          final int playerChunkX = CoordinateUtils.getChunkX(playerPos);
          final int playerChunkZ = CoordinateUtils.getChunkZ(playerPos);
          final int manhattanDistance = Math.abs(playerChunkX - chunkX) + Math.abs(playerChunkZ - chunkZ);
  
          final ChunkPriorityHolder holder = new ChunkPriorityHolder(chunkX, chunkZ, manhattanDistance, 0.0);
 -        data.sendQueue.add(holder);
-+        data.getSendQueue(concernsTracking).add(holder); // Martijn - per-player track and see view distance
++        data.getSendQueue(concernsTracking).add(holder); // Suki - per-player track and see view distance
      }
  
      public void onChunkLoad(final int chunkX, final int chunkZ) {
@@ -446,7 +446,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
      }
  
 -    public void onChunkLeave(final ServerPlayer player, final int chunkX, final int chunkZ) {
-+    public void onChunkLeave(final ServerPlayer player, final int chunkX, final int chunkZ, final boolean concernsTracking) { // Martijn - per-player track and see view distance
++    public void onChunkLeave(final ServerPlayer player, final int chunkX, final int chunkZ, final boolean concernsTracking) { // Suki - per-player track and see view distance
          final PlayerLoaderData data = this.playerMap.get(player);
  
          if (data == null) {
@@ -454,7 +454,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
          }
  
 -        data.unloadChunk(chunkX, chunkZ);
-+        data.unloadChunk(chunkX, chunkZ, concernsTracking); // Martijn - per-player track and see view distance
++        data.unloadChunk(chunkX, chunkZ, concernsTracking); // Suki - per-player track and see view distance
      }
  
      public void addPlayer(final ServerPlayer player) {
@@ -463,14 +463,14 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
              final PlayerLoaderData data = this.chunkSendQueue.removeFirst();
  
 -            final ChunkPriorityHolder queuedSend = data.sendQueue.pollFirst();
-+            // Martijn start - per-player track and see view distance
++            // Suki start - per-player track and see view distance
 +            ChunkPriorityHolder queuedSend = data.getSendQueue(true).pollFirst();
 +            boolean concernsTracking = true;
 +            if (queuedSend == null) {
 +                queuedSend = data.getSendQueue(false).pollFirst();
 +                concernsTracking = false;
 +            }
-+            // Martijn end - per-player track and see view distance
++            // Suki end - per-player track and see view distance
              if (queuedSend == null) {
                  concurrentChunkSends.getAndDecrement(); // we never sent, so decrease
                  // stop iterating over players who have nothing to send
@@ -488,10 +488,10 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
          protected float lastYaw = Float.NEGATIVE_INFINITY;
  
 -        protected int lastSendDistance = Integer.MIN_VALUE;
-+        // Martijn start - per-player track and see view distance
++        // Suki start - per-player track and see view distance
 +        protected int lastTrackDistance = Integer.MIN_VALUE;
 +        protected int lastSeeDistance = Integer.MIN_VALUE;
-+        // Martijn end - per-player track and see view distance
++        // Suki end - per-player track and see view distance
          protected int lastLoadDistance = Integer.MIN_VALUE;
          protected int lastTickDistance = Integer.MIN_VALUE;
          protected boolean usingLookingPriority;
@@ -507,7 +507,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 -            if (distanceCompare != 0) {
 -                return distanceCompare;
 -            }
-+        // Martijn start - per-player view distance
++        // Suki start - per-player view distance
  
 -            final int coordinateXCompare = Integer.compare(p1.chunkX, p2.chunkX);
 -            if (coordinateXCompare != 0) {
@@ -585,7 +585,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 +//        protected int loadViewDistance = -1;
 +        public int tickViewDistance = -1;
 +
-+        // Martijn end - per-player view distance
++        // Suki end - per-player view distance
 +
 +        protected long nextChunkSendTarget;
 +
@@ -618,9 +618,9 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 +
          public int getTargetTickViewDistance() {
 -            return this.tickViewDistance == -1 ? this.loader.getTickDistance() : this.tickViewDistance;
-+            // Martijn start - per-player load distance
++            // Suki start - per-player load distance
 +            return player.getTickingViewDistance();
-+            // Martijn end - per-player load distance
++            // Suki end - per-player load distance
          }
  
          public void setTargetTickViewDistance(final int distance) {
@@ -638,7 +638,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
  
 -            return Math.max(tickViewDistance + 1, this.loadViewDistance == -1 ? this.loader.getLoadDistance() : this.loadViewDistance);
 -        }
-+        // Martijn start - per-player view distance
++        // Suki start - per-player view distance
  
 -        public boolean hasSentChunk(final int chunkX, final int chunkZ) {
 -            return this.sentChunks.contains(CoordinateUtils.getChunkKey(chunkX, chunkZ));
@@ -669,7 +669,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
              }
          }
  
-+        // Martijn end - per-player view distance
++        // Suki end - per-player view distance
 +
          protected static boolean wantChunkLoaded(final int centerX, final int centerZ, final int chunkX, final int chunkZ,
                                                   final int sendRadius) {
@@ -679,10 +679,10 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
  
          public void remove() {
 -            this.loader.broadcastMap.remove(this.player);
-+            // Martijn start - per-player track and see view distance
++            // Suki start - per-player track and see view distance
 +            this.loader.getBroadcastMap(false).remove(this.player);
 +            this.loader.getBroadcastMap(true).remove(this.player);
-+            // Martijn end - per-player track and see view distance
++            // Suki end - per-player track and see view distance
              this.loader.loadMap.remove(this.player);
              this.loader.loadTicketCleanup.remove(this.player);
              this.loader.tickMap.remove(this.player);
@@ -691,7 +691,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
  
          public void update() {
 -            final int tickViewDistance = this.tickViewDistance == -1 ? this.loader.getTickDistance() : this.tickViewDistance;
-+            // Martijn start - per-player view distance
++            // Suki start - per-player view distance
 +            this.player.level.timings.playerChunkLoaderUpdate.startTiming();
 +            final int loadViewDistance = this.player.getLoadViewDistance();
              // load view cannot be less-than tick view + 1
@@ -703,7 +703,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
 +//            final int sendViewDistance = Math.min(loadViewDistance, this.sendViewDistance == -1 ? (!GlobalConfiguration.get().chunkLoading.autoconfigSendDistance || clientViewDistance == -1 ? this.loader.getSendDistance() : clientViewDistance + 1) : this.sendViewDistance);
 +            final int trackViewDistance = this.player.getTrackViewDistance();
 +            final int seeViewDistance = this.player.getSeeViewDistance();
-+            // Martijn end - per-player view distance
++            // Suki end - per-player view distance
  
              final double posX = this.player.getX();
              final double posZ = this.player.getZ();
@@ -712,7 +712,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
              if (
                  // has view distance stayed the same?
 -                    sendViewDistance == this.lastSendDistance
-+                    trackViewDistance == this.lastTrackDistance && seeViewDistance == this.lastSeeDistance // Martijn - per-player track and see view distance
++                    trackViewDistance == this.lastTrackDistance && seeViewDistance == this.lastSeeDistance // Suki - per-player track and see view distance
                              && loadViewDistance == this.lastLoadDistance
                              && tickViewDistance == this.lastTickDistance
  
@@ -720,7 +720,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
                              && (!this.usingLookingPriority || Math.abs(yaw - this.lastYaw) <= LOOK_PRIORITY_YAW_DELTA_RECALC_THRESHOLD)
              ) {
                  // nothing we care about changed, so we're not re-calculating
-+                this.player.level.timings.playerChunkLoaderUpdate.stopTiming(); // Martijn - per-player view distance
++                this.player.level.timings.playerChunkLoaderUpdate.stopTiming(); // Suki - per-player view distance
                  return;
              }
  
@@ -730,21 +730,21 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
              final boolean needsChunkCenterUpdate = (centerChunkX != this.lastChunkX) || (centerChunkZ != this.lastChunkZ);
 -            this.loader.broadcastMap.addOrUpdate(this.player, centerChunkX, centerChunkZ, sendViewDistance);
 +
-+            // Martijn start - per-player track and see view distance
++            // Suki start - per-player track and see view distance
 +            this.loader.getBroadcastMap(false).addOrUpdate(this.player, centerChunkX, centerChunkZ, seeViewDistance);
 +            this.loader.getBroadcastMap(true).addOrUpdate(this.player, centerChunkX, centerChunkZ, trackViewDistance);
-+            // Martijn end - per-player track and see view distance
++            // Suki end - per-player track and see view distance
              this.loader.loadMap.addOrUpdate(this.player, centerChunkX, centerChunkZ, loadViewDistance);
              this.loader.loadTicketCleanup.addOrUpdate(this.player, centerChunkX, centerChunkZ, loadViewDistance + 1);
              this.loader.tickMap.addOrUpdate(this.player, centerChunkX, centerChunkZ, tickViewDistance);
  
 -            if (sendViewDistance != this.lastSendDistance) {
-+            if (seeViewDistance != this.lastSeeDistance) { // Martijn - per-player track and see view distance
++            if (seeViewDistance != this.lastSeeDistance) { // Suki - per-player track and see view distance
                  // update the view radius for client
                  // note that this should be after the map calls because the client wont expect unload calls not in its VD
                  // and it's possible we decreased VD here
 -                this.player.connection.send(new ClientboundSetChunkCacheRadiusPacket(sendViewDistance));
-+                this.player.connection.send(new ClientboundSetChunkCacheRadiusPacket(seeViewDistance)); // Martijn - per-player track and see view distance
++                this.player.connection.send(new ClientboundSetChunkCacheRadiusPacket(seeViewDistance)); // Suki - per-player track and see view distance
              }
              if (tickViewDistance != this.lastTickDistance) {
                  this.player.connection.send(new ClientboundSetSimulationDistancePacket(tickViewDistance));
@@ -753,10 +753,10 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
              this.lastLocZ = posZ;
              this.lastYaw = yaw;
 -            this.lastSendDistance = sendViewDistance;
-+            // Martijn start - per-player track and see view distance
++            // Suki start - per-player track and see view distance
 +            this.lastTrackDistance = trackViewDistance;
 +            this.lastSeeDistance = seeViewDistance;
-+            // Martijn start - per-player track and see view distance
++            // Suki start - per-player track and see view distance
              this.lastLoadDistance = loadViewDistance;
              this.lastTickDistance = tickViewDistance;
              this.usingLookingPriority = useLookPriority;
@@ -764,7 +764,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
  
              final List<ChunkPriorityHolder> loadQueue = new ArrayList<>();
  
-+            // Martijn start - per-player track and see view distance
++            // Suki start - per-player track and see view distance
 +
              // clear send queue, we are re-sorting
 -            this.sendQueue.clear();
@@ -890,7 +890,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
                  }
              }
  
-+            // Martijn end - per-player track and see view distance
++            // Suki end - per-player track and see view distance
 +
              loadQueue.sort((final ChunkPriorityHolder p1, final ChunkPriorityHolder p2) -> {
                  return Double.compare(p1.priority, p2.priority);
@@ -900,7 +900,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
                  this.player.connection.send(new ClientboundSetChunkCacheCenterPacket(centerChunkX, centerChunkZ));
              }
 +
-+            this.player.level.timings.playerChunkLoaderUpdate.stopTiming(); // Martijn - per-player view distance
++            this.player.level.timings.playerChunkLoaderUpdate.stopTiming(); // Suki - per-player view distance
 +
          }
      }
@@ -921,9 +921,9 @@ index 931db53ebde71ebe9398f1a1ea72178c1ced8ec0..55c249dea72d05ad75102a031c18b70a
  import org.spongepowered.configurate.objectmapping.meta.Comment;
 @@ -235,6 +237,79 @@ public class GlobalConfiguration extends ConfigurationPart {
  
-     // Martijn end - configurable proportion of skipped active entities
+     // Suki end - configurable proportion of skipped active entities
  
-+    // Martijn start - per-player track and see view distance
++    // Suki start - per-player track and see view distance
 +
 +    public ViewDistances viewDistances;
 +
@@ -994,7 +994,7 @@ index 931db53ebde71ebe9398f1a1ea72178c1ced8ec0..55c249dea72d05ad75102a031c18b70a
 +
 +    }
 +
-+    // Martijn end - per-player track and see view distance
++    // Suki end - per-player track and see view distance
 +
      public Messages messages;
  
@@ -1022,9 +1022,9 @@ index 62b5b528535b1032aa7007b383895dbc2a228063..6405158e50332138cbc047107d0d4db0
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 @@ -91,6 +94,148 @@ public class WorldConfiguration extends ConfigurationPart {
  
-     // Martijn end - difficulty changes
+     // Suki end - difficulty changes
  
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +
 +    public ViewDistances viewDistances;
 +
@@ -1164,7 +1164,7 @@ index 62b5b528535b1032aa7007b383895dbc2a228063..6405158e50332138cbc047107d0d4db0
 +
 +    }
 +
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
 +
      public Anticheat anticheat;
  
@@ -1178,12 +1178,12 @@ index cae99d217f40f6bc8337619b6e26153ccf261fc2..45c29b842b97b6e829150cf3f8672991
  
              worldData.addProperty("name", world.getWorld().getName());
 -            worldData.addProperty("view-distance", world.getChunkSource().chunkMap.playerChunkManager.getTargetNoTickViewDistance()); // Paper - replace chunk loader system
-+            // Martijn start - per-player view distance
++            // Suki start - per-player view distance
 +            worldData.addProperty("view-distance", world.getChunkSource().chunkMap.getVanillaWorldViewDistance()); // Paper - replace chunk loader system
 +            worldData.addProperty("max-track-view-distance", world.paperConfig().viewDistances.track.getMax());
 +            worldData.addProperty("max-see-view-distance", world.paperConfig().viewDistances.see.getMax());
 +            worldData.addProperty("max-load-view-distance", world.paperConfig().viewDistances.load.getMax());
-+            // Martijn end - per-player view distance
++            // Suki end - per-player view distance
              worldData.addProperty("tick-view-distance", world.getChunkSource().chunkMap.playerChunkManager.getTargetTickViewDistance()); // Paper - replace chunk loader system
              worldData.addProperty("keep-spawn-loaded", world.keepSpawnInMemory);
              worldData.addProperty("keep-spawn-loaded-range", world.paperConfig().spawn.keepSpawnLoadedRange * 16);
@@ -1196,7 +1196,7 @@ index a041161dee9a857d43c83fb677dba7e90a6a5d24..c9a363d467bbb9dca962ce511a086397
          // there can be potential desync with player's last mapped section and the view distance map, so use the
          // view distance map here.
 -        com.destroystokyo.paper.util.misc.PlayerAreaMap viewDistanceMap = this.chunkMap.playerChunkManager.broadcastMap; // Paper - replace old player chunk manager
-+        com.destroystokyo.paper.util.misc.PlayerAreaMap viewDistanceMap = this.chunkMap.playerChunkManager.broadcastMapForTracking; // Paper - replace old player chunk manager // Martijn - per-player track and see view distance
++        com.destroystokyo.paper.util.misc.PlayerAreaMap viewDistanceMap = this.chunkMap.playerChunkManager.broadcastMapForTracking; // Paper - replace old player chunk manager // Suki - per-player track and see view distance
          com.destroystokyo.paper.util.misc.PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> players = viewDistanceMap.getObjectsInRange(this.pos);
          if (players == null) {
              return;
@@ -1205,7 +1205,7 @@ index a041161dee9a857d43c83fb677dba7e90a6a5d24..c9a363d467bbb9dca962ce511a086397
              }
              ServerPlayer player = (ServerPlayer)temp;
 -            if (!this.chunkMap.playerChunkManager.isChunkSent(player, this.pos.x, this.pos.z, onlyOnWatchDistanceEdge)) {
-+            if (!this.chunkMap.playerChunkManager.isChunkSent(player, this.pos.x, this.pos.z, onlyOnWatchDistanceEdge, true)) { // Martijn - per-player track and see view distance
++            if (!this.chunkMap.playerChunkManager.isChunkSent(player, this.pos.x, this.pos.z, onlyOnWatchDistanceEdge, true)) { // Suki - per-player track and see view distance
                  continue;
              }
              player.connection.send(packet);
@@ -1214,7 +1214,7 @@ index a041161dee9a857d43c83fb677dba7e90a6a5d24..c9a363d467bbb9dca962ce511a086397
      public interface PlayerProvider {
  
 -        List<ServerPlayer> getPlayers(ChunkPos chunkPos, boolean onlyOnWatchDistanceEdge);
-+        List<ServerPlayer> getPlayers(ChunkPos chunkPos, boolean onlyOnWatchDistanceEdge, boolean concernsTracking); // Martijn - per-player track and see view distance
++        List<ServerPlayer> getPlayers(ChunkPos chunkPos, boolean onlyOnWatchDistanceEdge, boolean concernsTracking); // Suki - per-player track and see view distance
 +
      }
  
@@ -1231,7 +1231,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
 +    // Martijn start- per-player view distance
 +    // This value is the intended world send view distance + 1
 +    private int vanillaWorldViewDistancePlusOne;
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
      public final com.destroystokyo.paper.util.misc.PlayerAreaMap playerMobDistanceMap; // Paper
      public final ReferenceOpenHashSet<ChunkHolder> needsChangeBroadcasting = new ReferenceOpenHashSet<>();
  
@@ -1240,7 +1240,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
              int trackRange = this.entityTrackerTrackRanges[i];
  
 -            trackMap.add(player, chunkX, chunkZ, Math.min(trackRange, io.papermc.paper.chunk.PlayerChunkLoader.getSendViewDistance(player))); // Paper - per player view distances
-+            trackMap.add(player, chunkX, chunkZ, Math.min(trackRange, player.getTrackViewDistance())); // Paper - per player view distances // Martijn - per-player track view distance
++            trackMap.add(player, chunkX, chunkZ, Math.min(trackRange, player.getTrackViewDistance())); // Paper - per player view distances // Suki - per-player track view distance
          }
          // Paper end - use distance map to optimise entity tracker
          // Note: players need to be explicitly added to distance maps before they can be updated
@@ -1249,16 +1249,16 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
              int trackRange = this.entityTrackerTrackRanges[i];
  
 -            trackMap.update(player, chunkX, chunkZ, Math.min(trackRange, io.papermc.paper.chunk.PlayerChunkLoader.getSendViewDistance(player))); // Paper - per player view distances
-+            trackMap.update(player, chunkX, chunkZ, Math.min(trackRange, player.getTrackViewDistance())); // Paper - per player view distances // Martijn - per-player track view distance
++            trackMap.update(player, chunkX, chunkZ, Math.min(trackRange, player.getTrackViewDistance())); // Paper - per player view distances // Suki - per-player track view distance
          }
          // Paper end - use distance map to optimise entity tracker
          this.playerChunkTickRangeMap.update(player, chunkX, chunkZ, DistanceManager.MOB_SPAWN_RANGE); // Paper - optimise ChunkMap#anyPlayerCloseEnoughForSpawning
 @@ -474,7 +477,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
-     // Martijn end - sort chunks by distance
+     // Suki end - sort chunks by distance
  
      boolean unloadingPlayerChunk = false; // Paper - do not allow ticket level changes while unloading chunks
 -    public ChunkMap(ServerLevel world, LevelStorageSource.LevelStorageAccess session, DataFixer dataFixer, StructureTemplateManager structureTemplateManager, Executor executor, BlockableEventLoop<Runnable> mainThreadExecutor, LightChunkGetter chunkProvider, ChunkGenerator chunkGenerator, ChunkProgressListener worldGenerationProgressListener, ChunkStatusUpdateListener chunkStatusChangeListener, Supplier<DimensionDataStorage> persistentStateManagerFactory, int viewDistance, boolean dsync) {
-+    public ChunkMap(ServerLevel world, LevelStorageSource.LevelStorageAccess session, DataFixer dataFixer, StructureTemplateManager structureTemplateManager, Executor executor, BlockableEventLoop<Runnable> mainThreadExecutor, LightChunkGetter chunkProvider, ChunkGenerator chunkGenerator, ChunkProgressListener worldGenerationProgressListener, ChunkStatusUpdateListener chunkStatusChangeListener, Supplier<DimensionDataStorage> persistentStateManagerFactory, int vanillaWorldViewDistance, boolean dsync) { // Martijn - per-player view distance
++    public ChunkMap(ServerLevel world, LevelStorageSource.LevelStorageAccess session, DataFixer dataFixer, StructureTemplateManager structureTemplateManager, Executor executor, BlockableEventLoop<Runnable> mainThreadExecutor, LightChunkGetter chunkProvider, ChunkGenerator chunkGenerator, ChunkProgressListener worldGenerationProgressListener, ChunkStatusUpdateListener chunkStatusChangeListener, Supplier<DimensionDataStorage> persistentStateManagerFactory, int vanillaWorldViewDistance, boolean dsync) { // Suki - per-player view distance
          super(session.getDimensionPath(world.dimension()).resolve("region"), dataFixer, dsync);
          // Paper - don't copy
          this.pendingUnloads = new Long2ObjectLinkedOpenHashMap();
@@ -1267,7 +1267,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
          this.overworldDataStorage = persistentStateManagerFactory;
          this.poiManager = new PoiManager(path.resolve("poi"), dataFixer, dsync, world.registryAccess(), world);
 -        this.setViewDistance(viewDistance);
-+        this.setVanillaWorldViewDistance(vanillaWorldViewDistance); // Martijn - per-player view distance
++        this.setVanillaWorldViewDistance(vanillaWorldViewDistance); // Suki - per-player view distance
          // Paper start
          this.dataRegionManager = new io.papermc.paper.chunk.SingleThreadChunkRegionManager(this.level, 2, (1.0 / 3.0), 1, 6, "Data", DataRegionData::new, DataRegionSectionData::new);
          this.regionManagers.add(this.dataRegionManager);
@@ -1275,7 +1275,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
          }
      }
  
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
      // Paper start
 -    public final int getEffectiveViewDistance() {
 +    public final int getVanillaWorldViewDistance() {
@@ -1285,7 +1285,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
 +        return this.vanillaWorldViewDistancePlusOne - 1;
      }
      // Paper end
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
  
      private CompletableFuture<Either<List<ChunkAccess>, ChunkHolder.ChunkLoadingFailure>> getChunkRangeFuture(ChunkPos centerChunk, int margin, IntFunction<ChunkStatus> distanceToStatus) {
          List<CompletableFuture<Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>>> list = new ArrayList();
@@ -1295,7 +1295,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
  
 -    public void setViewDistance(int watchDistance) {
 -        int j = Mth.clamp(watchDistance + 1, (int) 3, (int) 33);
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +    public void setVanillaWorldViewDistance(int vanillaWorldViewDistance) {
 +        int newVanillaWorldViewDistancePlusOne = Mth.clamp(vanillaWorldViewDistance + 1, (int) 3, (int) 33);
  
@@ -1312,7 +1312,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
          }
  
      }
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
  
      // Paper start - replace player loader system
      public void setTickViewDistance(int distance) {
@@ -1321,7 +1321,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
      // Paper end - replace player loader system
  
 -    public void updateChunkTracking(ServerPlayer player, ChunkPos pos, MutableObject<java.util.Map<Object, ClientboundLevelChunkWithLightPacket>> packet, boolean oldWithinViewDistance, boolean newWithinViewDistance) { // Paper - Anti-Xray - Bypass // Paper - public
-+    public void updateChunkTracking(ServerPlayer player, ChunkPos pos, MutableObject<java.util.Map<Object, ClientboundLevelChunkWithLightPacket>> packet, boolean oldWithinViewDistance, boolean newWithinViewDistance, boolean concernsTracking) { // Paper - Anti-Xray - Bypass // Paper - public // Martijn - per-player track and see view distance
++    public void updateChunkTracking(ServerPlayer player, ChunkPos pos, MutableObject<java.util.Map<Object, ClientboundLevelChunkWithLightPacket>> packet, boolean oldWithinViewDistance, boolean newWithinViewDistance, boolean concernsTracking) { // Paper - Anti-Xray - Bypass // Paper - public // Suki - per-player track and see view distance
          if (player.level == this.level) {
              if (newWithinViewDistance && !oldWithinViewDistance) {
                  ChunkHolder playerchunk = this.getVisibleChunkIfPresent(pos.toLong());
@@ -1330,7 +1330,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
  
                      if (chunk != null) {
 -                        this.playerLoadedChunk(player, packet, chunk);
-+                        this.playerLoadedChunk(player, packet, chunk, concernsTracking); // Martijn - per-player track and see view distance
++                        this.playerLoadedChunk(player, packet, chunk, concernsTracking); // Suki - per-player track and see view distance
                      }
  
                      DebugPackets.sendPoiPacketsForChunk(this.level, pos);
@@ -1339,7 +1339,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
  
              if (!newWithinViewDistance && oldWithinViewDistance) {
 -                player.untrackChunk(pos);
-+                player.untrackChunk(pos, concernsTracking); // Martijn - per-player track and see view distance
++                player.untrackChunk(pos, concernsTracking); // Suki - per-player track and see view distance
              }
  
          }
@@ -1347,7 +1347,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
      public void move(ServerPlayer player) {
          // Paper - delay this logic for the entity tracker tick, no need to duplicate it
  
-+        this.level.timings.chunkMapPlayerMove.startTiming(); // Martijn - per-player view distance
++        this.level.timings.chunkMapPlayerMove.startTiming(); // Suki - per-player view distance
 +
          int i = SectionPos.blockToSectionCoord(player.getBlockX());
          int j = SectionPos.blockToSectionCoord(player.getBlockZ());
@@ -1356,20 +1356,20 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
          this.updateMaps(player); // Paper - distance maps
          this.playerChunkManager.updatePlayer(player); // Paper - respond to movement immediately
  
-+        this.level.timings.chunkMapPlayerMove.stopTiming(); // Martijn - per-player view distance
++        this.level.timings.chunkMapPlayerMove.stopTiming(); // Suki - per-player view distance
 +
      }
  
      @Override
 -    public List<ServerPlayer> getPlayers(ChunkPos chunkPos, boolean onlyOnWatchDistanceEdge) {
-+    public List<ServerPlayer> getPlayers(ChunkPos chunkPos, boolean onlyOnWatchDistanceEdge, boolean concernsTracking) { // Martijn - per-player track and see view distance
++    public List<ServerPlayer> getPlayers(ChunkPos chunkPos, boolean onlyOnWatchDistanceEdge, boolean concernsTracking) { // Suki - per-player track and see view distance
          // Paper start - per player view distance
          // there can be potential desync with player's last mapped section and the view distance map, so use the
          // view distance map here.
          List<ServerPlayer> ret = new java.util.ArrayList<>(4);
  
 -        com.destroystokyo.paper.util.misc.PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> players = this.playerChunkManager.broadcastMap.getObjectsInRange(chunkPos);
-+        com.destroystokyo.paper.util.misc.PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> players = this.playerChunkManager.getBroadcastMap(concernsTracking).getObjectsInRange(chunkPos); // Martijn - per-player track and see view distance
++        com.destroystokyo.paper.util.misc.PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> players = this.playerChunkManager.getBroadcastMap(concernsTracking).getObjectsInRange(chunkPos); // Suki - per-player track and see view distance
          if (players == null) {
              return ret;
          }
@@ -1378,11 +1378,11 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
  
      protected void tick() {
 +
-+        // Martijn start - temporary debug message containing the number of loaded chunks
++        // Suki start - temporary debug message containing the number of loaded chunks
 +        if (this.level.paperConfig().viewDistances.load.printLoadedChunksInterval > 0 && Math.random() < 1.0 / this.level.paperConfig().viewDistances.load.printLoadedChunksInterval) {
 +            org.bukkit.Bukkit.getLogger().info("Number of loaded chunks in " + this.level.getWorld().getName() + ": " + this.level.getWorld().getLoadedChunks().length);
 +        }
-+        // Martijn end - temporary debug message containing the number of loaded chunks
++        // Suki end - temporary debug message containing the number of loaded chunks
 +
          // Paper start - optimized tracker
          if (true) {
@@ -1392,7 +1392,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
  
      // Paper start - Anti-Xray - Bypass
 -    private void playerLoadedChunk(ServerPlayer player, MutableObject<java.util.Map<Object, ClientboundLevelChunkWithLightPacket>> cachedDataPackets, LevelChunk chunk) {
-+    private void playerLoadedChunk(ServerPlayer player, MutableObject<java.util.Map<Object, ClientboundLevelChunkWithLightPacket>> cachedDataPackets, LevelChunk chunk, boolean concernsTracking) { // Martijn - per-player track and see view distance
++    private void playerLoadedChunk(ServerPlayer player, MutableObject<java.util.Map<Object, ClientboundLevelChunkWithLightPacket>> cachedDataPackets, LevelChunk chunk, boolean concernsTracking) { // Suki - per-player track and see view distance
          if (cachedDataPackets.getValue() == null) {
              cachedDataPackets.setValue(new java.util.HashMap<>());
          }
@@ -1401,7 +1401,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
          player.trackChunk(chunk.getPos(), (Packet) cachedDataPackets.getValue().computeIfAbsent(shouldModify, (s) -> {
              // Paper start - Fix MC-162253
 -            final int viewDistance = getEffectiveViewDistance();
-+            final int viewDistance = getVanillaWorldViewDistance(); // Martijn - per-player view distance
++            final int viewDistance = getVanillaWorldViewDistance(); // Suki - per-player view distance
              final int playerChunkX = player.getBlockX() >> 4;
              final int playerChunkZ = player.getBlockZ() >> 4;
  
@@ -1430,7 +1430,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
  
 -            // keep the vanilla logic here - this is REQUIRED or else passengers and their vehicles disappear!
 -            // (and god knows what the leash thing is)
-+        // Martijn start - per-player track and see view distance
++        // Suki start - per-player track and see view distance
  
 -            if (entity instanceof Mob && ((Mob)entity).getLeashHolder() != null) {
 -                list.add(entity);
@@ -1505,7 +1505,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
 +
          }
  
-+        // Martijn end - per-player track and see view distance
++        // Suki end - per-player track and see view distance
 +
      }
  
@@ -1515,7 +1515,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
                  double vec3d_dz = player.getZ() - this.entity.getZ();
                  // Paper end - remove allocation of Vec3D here
 -                double d0 = (double) Math.min(this.getEffectiveRange(), io.papermc.paper.chunk.PlayerChunkLoader.getSendViewDistance(player) * 16); // Paper - per player view distance
-+                double d0 = (double) Math.min(this.getEffectiveRange(), player.getTrackViewDistance() * 16); // Paper - per player view distance // Martijn - per-player track view distance
++                double d0 = (double) Math.min(this.getEffectiveRange(), player.getTrackViewDistance() * 16); // Paper - per player view distance // Suki - per-player track view distance
                  double d1 = vec3d_dx * vec3d_dx + vec3d_dz * vec3d_dz; // Paper
                  double d2 = d0 * d0;
                  boolean flag = d1 <= d2 && this.entity.broadcastToPlayer(player);
@@ -1530,12 +1530,12 @@ index d1b5c25b7455174e908cd6ed66789fa700190604..7922ced4e86d49df02169ac820fc5cbd
 -    protected void updatePlayerTickets(int viewDistance) {
 -        this.chunkMap.playerChunkManager.setTargetNoTickViewDistance(viewDistance); // Paper - route to player chunk manager
 -    }
-+    // Martijn start - per-player load view distance
++    // Suki start - per-player load view distance
 +    // No longer needed since PlayerChunkLoader.update() will pull the most current load view distance when it executes
 +//    protected void updatePlayerTickets(int viewDistance) {
 +//        this.chunkMap.playerChunkManager.setTargetNoTickViewDistance(viewDistance); // Paper - route to player chunk manager
 +//    }
-+    // Martijn end - per-player load view distance
++    // Suki end - per-player load view distance
  
      public void updateSimulationDistance(int simulationDistance) {
          this.chunkMap.playerChunkManager.setTargetTickViewDistance(simulationDistance); // Paper - route to player chunk manager
@@ -1548,7 +1548,7 @@ index 2bb545b505aa726b7ed7c757caed84bf0538782e..99b9d4951fadb8f6da800f948a841c9d
                  }
  
 -                int viewDistance = this.chunkMap.getEffectiveViewDistance();
-+                int viewDistance = this.chunkMap.getVanillaWorldViewDistance(); // Martijn - per-player view distance
++                int viewDistance = this.chunkMap.getVanillaWorldViewDistance(); // Suki - per-player view distance
  
                  // copied and modified from isOutisdeRange
                  int chunkRange = level.spigotConfig.mobSpawnRange;
@@ -1558,11 +1558,11 @@ index 2bb545b505aa726b7ed7c757caed84bf0538782e..99b9d4951fadb8f6da800f948a841c9d
  
 -    public void setViewDistance(int watchDistance) {
 -        this.chunkMap.setViewDistance(watchDistance);
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +    public void setVanillaWorldViewDistance(int vanillaWorldViewDistance) {
 +        this.chunkMap.setVanillaWorldViewDistance(vanillaWorldViewDistance);
      }
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
  
      public void setSimulationDistance(int simulationDistance) {
          this.distanceManager.updateSimulationDistance(simulationDistance);
@@ -1590,7 +1590,7 @@ index 7f93ba15b4a0b2788f3118841232a8ffa1e64afe..61335b87c2325ff1512bd5b2f40b9a21
  
      private static final Logger LOGGER = LogUtils.getLogger();
 +
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +
 +    private static int[] maxViewDistanceDueToTotalViewedChunks = {32, 32};
 +
@@ -1855,7 +1855,7 @@ index 7f93ba15b4a0b2788f3118841232a8ffa1e64afe..61335b87c2325ff1512bd5b2f40b9a21
 +        this.processViewDistanceChange(oldViewDistance, type);
 +    }
 +
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
 +
      public long lastSave = MinecraftServer.currentTick; // Paper
      private static final int NEUTRAL_MOB_DEATH_NOTIFICATION_RADII_XZ = 32;
@@ -1863,12 +1863,12 @@ index 7f93ba15b4a0b2788f3118841232a8ffa1e64afe..61335b87c2325ff1512bd5b2f40b9a21
 @@ -1982,6 +2253,11 @@ public class ServerPlayer extends Player {
          this.connection.connection.channel.attr(PaperAdventure.LOCALE_ATTRIBUTE).set(this.adventure$locale);
          // Paper end
-         this.clientViewDistance = packet.getAcceptableViewDistance(); // Martijn - do not use invalid client view distance
-+        // Martijn start - per-player view distance
+         this.clientViewDistance = packet.getAcceptableViewDistance(); // Suki - do not use invalid client view distance
++        // Suki start - per-player view distance
 +        this.trackViewDistanceMayHaveChanged();
 +        this.seeViewDistanceMayHaveChanged();
 +        this.loadViewDistanceMayHaveChanged();
-+        // Martijn end - per-player view distance
++        // Suki end - per-player view distance
          // CraftBukkit end
          this.chatVisibility = packet.chatVisibility();
          this.canChatColor = packet.chatColors();
@@ -1877,7 +1877,7 @@ index 7f93ba15b4a0b2788f3118841232a8ffa1e64afe..61335b87c2325ff1512bd5b2f40b9a21
      }
  
 -    public void trackChunk(ChunkPos chunkPos, Packet<?> chunkDataPacket) {
-+    // Martijn start - per-player track and see view distance
++    // Suki start - per-player track and see view distance
 +
 +    public void trackChunk(ChunkPos chunkPos, Packet<?> chunkDataPacket, boolean concernsTracking) {
          this.connection.send(chunkDataPacket);
@@ -1916,7 +1916,7 @@ index 7f93ba15b4a0b2788f3118841232a8ffa1e64afe..61335b87c2325ff1512bd5b2f40b9a21
  
      }
  
-+    // Martijn end - per-player track and see view distance
++    // Suki end - per-player track and see view distance
 +
      public SectionPos getLastSectionPos() {
          return this.lastSectionPos;
@@ -1954,7 +1954,7 @@ index bded25d3d87ee8c6e90874275e9d1ab3fd65a26b..7440a6686b064d17fdd8ae4afe91aad3
  
          // Spigot - view distance
 -        playerconnection.send(new ClientboundLoginPacket(player.getId(), worlddata.isHardcore(), player.gameMode.getGameModeForPlayer(), player.gameMode.getPreviousGameModeForPlayer(), this.server.levelKeys(), this.registryHolder, worldserver1.dimensionTypeId(), worldserver1.dimension(), BiomeManager.obfuscateSeed(worldserver1.getSeed()), this.getMaxPlayers(), worldserver1.getChunkSource().chunkMap.playerChunkManager.getTargetSendDistance(), worldserver1.getChunkSource().chunkMap.playerChunkManager.getTargetTickViewDistance(), flag1, !flag, worldserver1.isDebug(), worldserver1.isFlat(), player.getLastDeathLocation())); // Paper - replace old player chunk management
-+        playerconnection.send(new ClientboundLoginPacket(player.getId(), worlddata.isHardcore(), player.gameMode.getGameModeForPlayer(), player.gameMode.getPreviousGameModeForPlayer(), this.server.levelKeys(), this.registryHolder, worldserver1.dimensionTypeId(), worldserver1.dimension(), BiomeManager.obfuscateSeed(worldserver1.getSeed()), this.getMaxPlayers(), player.getSeeViewDistance(), worldserver1.getChunkSource().chunkMap.playerChunkManager.getTargetTickViewDistance(), flag1, !flag, worldserver1.isDebug(), worldserver1.isFlat(), player.getLastDeathLocation())); // Paper - replace old player chunk management // Martijn - per-player view distance
++        playerconnection.send(new ClientboundLoginPacket(player.getId(), worlddata.isHardcore(), player.gameMode.getGameModeForPlayer(), player.gameMode.getPreviousGameModeForPlayer(), this.server.levelKeys(), this.registryHolder, worldserver1.dimensionTypeId(), worldserver1.dimension(), BiomeManager.obfuscateSeed(worldserver1.getSeed()), this.getMaxPlayers(), player.getSeeViewDistance(), worldserver1.getChunkSource().chunkMap.playerChunkManager.getTargetTickViewDistance(), flag1, !flag, worldserver1.isDebug(), worldserver1.isFlat(), player.getLastDeathLocation())); // Paper - replace old player chunk management // Suki - per-player view distance
 +
          player.getBukkitEntity().sendSupportedChannels(); // CraftBukkit
          playerconnection.send(new ClientboundCustomPayloadPacket(ClientboundCustomPayloadPacket.BRAND, (new FriendlyByteBuf(Unpooled.buffer())).writeUtf(this.getServer().getServerModName())));
@@ -1964,7 +1964,7 @@ index bded25d3d87ee8c6e90874275e9d1ab3fd65a26b..7440a6686b064d17fdd8ae4afe91aad3
          LevelData worlddata = worldserver1.getLevelData();
          if (!entityplayer.smoothWorldTeleport) entityplayer1.connection.send(new ClientboundRespawnPacket(worldserver1.dimensionTypeId(), worldserver1.dimension(), BiomeManager.obfuscateSeed(worldserver1.getSeed()), entityplayer1.gameMode.getGameModeForPlayer(), entityplayer1.gameMode.getPreviousGameModeForPlayer(), worldserver1.isDebug(), worldserver1.isFlat(), flag, entityplayer1.getLastDeathLocation())); // Slice
 -        entityplayer1.connection.send(new ClientboundSetChunkCacheRadiusPacket(worldserver1.getChunkSource().chunkMap.playerChunkManager.getTargetSendDistance())); // Spigot // Paper - replace old player chunk management
-+        entityplayer1.connection.send(new ClientboundSetChunkCacheRadiusPacket(entityplayer1.getSeeViewDistance())); // Spigot // Paper - replace old player chunk management // Martijn - per-player see view distance
++        entityplayer1.connection.send(new ClientboundSetChunkCacheRadiusPacket(entityplayer1.getSeeViewDistance())); // Spigot // Paper - replace old player chunk management // Suki - per-player see view distance
          entityplayer1.connection.send(new ClientboundSetSimulationDistancePacket(worldserver1.getChunkSource().chunkMap.playerChunkManager.getTargetTickViewDistance())); // Spigot // Paper - replace old player chunk management
          entityplayer1.spawnIn(worldserver1);
          entityplayer1.unsetRemoved();
@@ -1973,7 +1973,7 @@ index bded25d3d87ee8c6e90874275e9d1ab3fd65a26b..7440a6686b064d17fdd8ae4afe91aad3
  
              if (worldserver != null) {
 -                worldserver.getChunkSource().setViewDistance(viewDistance);
-+                worldserver.getChunkSource().setVanillaWorldViewDistance(viewDistance); // Martijn - per-player view distance
++                worldserver.getChunkSource().setVanillaWorldViewDistance(viewDistance); // Suki - per-player view distance
              }
          }
  
@@ -1995,7 +1995,7 @@ index 47d6236daca806878399890a8d08e55233f19fd9..1b8d70f06d00b78137a697186e839f6a
                  //int viewDistance = ((WorldServer) this.world).getServer().getViewDistance() * 16; // Paper - updated to use worlds actual view distance incase we have to uncomment this due to removal of player view distance API
                  for (net.minecraft.server.level.ServerPlayer player : (List<net.minecraft.server.level.ServerPlayer>) ((ServerLevel)level).players()) {
 -                    final int viewDistance = io.papermc.paper.chunk.PlayerChunkLoader.getSendViewDistance(player); // Paper - route to player chunk loader
-+                    final int viewDistance = GlobalConfiguration.get().viewDistances.trackAndSee.ifCanSeeButNotTracking.sendEnderDragonSpawnSound ? player.getSeeViewDistance() : player.getTrackViewDistance(); // Paper - route to player chunk loader // Martijn - per-player track and see view distance
++                    final int viewDistance = GlobalConfiguration.get().viewDistances.trackAndSee.ifCanSeeButNotTracking.sendEnderDragonSpawnSound ? player.getSeeViewDistance() : player.getTrackViewDistance(); // Paper - route to player chunk loader // Suki - per-player track and see view distance
                      double deltaX = this.getX() - player.getX();
                      double deltaZ = this.getZ() - player.getZ();
                      double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
@@ -2027,7 +2027,7 @@ index 3a3c2211585278b236fad7cc0d809a5e25e0fc58..88816bb1df4ef16b0d463719729ed95e
                      //int viewDistance = ((ServerLevel) this.level).getCraftServer().getViewDistance() * 16; // Paper - updated to use worlds actual view distance incase we have to uncomment this due to removal of player view distance API
                      for (ServerPlayer player : (List<ServerPlayer>)this.level.players()) { // Paper
 -                        final int viewDistance = io.papermc.paper.chunk.PlayerChunkLoader.getSendViewDistance(player); // Paper - route to player chunk loader
-+                        final int viewDistance = GlobalConfiguration.get().viewDistances.trackAndSee.ifCanSeeButNotTracking.sendWitherSpawnSound ? player.getSeeViewDistance() : player.getTrackViewDistance(); // Paper - route to player chunk loader // Martijn - per-player track and see view distance
++                        final int viewDistance = GlobalConfiguration.get().viewDistances.trackAndSee.ifCanSeeButNotTracking.sendWitherSpawnSound ? player.getSeeViewDistance() : player.getTrackViewDistance(); // Paper - route to player chunk loader // Suki - per-player track and see view distance
                          double deltaX = this.getX() - player.getX();
                          double deltaZ = this.getZ() - player.getZ();
                          double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
@@ -2047,7 +2047,7 @@ index fa1ff2e79954089552974cefedfcbff2225738ec..eca3c9beb026c30174caaf38fa9e9641
                      BlockPos soundPos = blockposition1.offset(1, 0, 1);
                      for (ServerPlayer player : world.getServer().getPlayerList().players) {
 -                        final int viewDistance = io.papermc.paper.chunk.PlayerChunkLoader.getSendViewDistance(player); // Paper - apply view distance patch
-+                        final int viewDistance = GlobalConfiguration.get().viewDistances.trackAndSee.ifCanSeeButNotTracking.sendEndPortalFillSound ? player.getSeeViewDistance() : player.getTrackViewDistance(); // Paper - apply view distance patch // Martijn - per-player track and see view distance
++                        final int viewDistance = GlobalConfiguration.get().viewDistances.trackAndSee.ifCanSeeButNotTracking.sendEndPortalFillSound ? player.getSeeViewDistance() : player.getTrackViewDistance(); // Paper - apply view distance patch // Suki - per-player track and see view distance
                          double deltaX = soundPos.getX() - player.getX();
                          double deltaZ = soundPos.getZ() - player.getZ();
                          double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
@@ -2060,7 +2060,7 @@ index 4f79fb616d594c1d1456cf7efc938c6621fbee68..641317a593b9b2442cdf6ad77432b3a6
                  // Paper start - per player view distance - allow block updates for non-ticking chunks in player view distance
                  // if copied from above
 -            } else if ((i & 2) != 0 && (!this.isClientSide || (i & 4) == 0) && (this.isClientSide || chunk == null || ((ServerLevel)this).getChunkSource().chunkMap.playerChunkManager.broadcastMap.getObjectsInRange(MCUtil.getCoordinateKey(blockposition)) != null)) { // Paper - replace old player chunk management
-+            } else if ((i & 2) != 0 && (!this.isClientSide || (i & 4) == 0) && (this.isClientSide || chunk == null || ((ServerLevel)this).getChunkSource().chunkMap.playerChunkManager.getBroadcastMap(true).getObjectsInRange(MCUtil.getCoordinateKey(blockposition)) != null)) { // Paper - replace old player chunk management // Martijn - per-player track and see view distance
++            } else if ((i & 2) != 0 && (!this.isClientSide || (i & 4) == 0) && (this.isClientSide || chunk == null || ((ServerLevel)this).getChunkSource().chunkMap.playerChunkManager.getBroadcastMap(true).getObjectsInRange(MCUtil.getCoordinateKey(blockposition)) != null)) { // Paper - replace old player chunk management // Suki - per-player track and see view distance
                  ((ServerLevel)this).getChunkSource().blockChanged(blockposition);
                  // Paper end - per player view distance
              }
@@ -2073,7 +2073,7 @@ index b3f8de20eb09547672218c62817759d03461922d..4f7f5a9346ebbb254c3ef5d7c6f3dd00
          if (!areNeighboursLoaded(bitsetBefore, 1) && areNeighboursLoaded(bitsetAfter, 1)) {
              // Paper start - replace old player chunk loading system
 -            if (chunkMap.playerChunkManager.isChunkNearPlayers(this.chunkPos.x, this.chunkPos.z)) {
-+            if (chunkMap.playerChunkManager.isChunkNearPlayers(this.chunkPos.x, this.chunkPos.z, false)) { // Martijn - per-player track and see view distance
++            if (chunkMap.playerChunkManager.isChunkNearPlayers(this.chunkPos.x, this.chunkPos.z, false)) { // Suki - per-player track and see view distance
                  // the post processing is expensive, so we don't want to run it unless we're actually near
                  // a player.
                  chunkProviderServer.mainThreadProcessor.execute(() -> {
@@ -2146,7 +2146,7 @@ index 176df5b16876e2c5b718fe797078da641fe4330d..702ee8aeac939dacc9c47c2ed8194cf7
 -                    }));
 -                    // Paper end
 -                }
-+        List<ServerPlayer> playersInRange = playerChunk.playerProvider.getPlayers(playerChunk.getPos(), false, !GlobalConfiguration.get().viewDistances.trackAndSee.ifCanSeeButNotTracking.sendChunkRefresh); // Martijn - per-player track and see view distance
++        List<ServerPlayer> playersInRange = playerChunk.playerProvider.getPlayers(playerChunk.getPos(), false, !GlobalConfiguration.get().viewDistances.trackAndSee.ifCanSeeButNotTracking.sendChunkRefresh); // Suki - per-player track and see view distance
 +        if (playersInRange.isEmpty()) return true;
 +
 +        // Paper start - Anti-Xray - Bypass
@@ -2168,7 +2168,7 @@ index 176df5b16876e2c5b718fe797078da641fe4330d..702ee8aeac939dacc9c47c2ed8194cf7
      @Override
      public int getViewDistance() {
 -        return getHandle().getChunkSource().chunkMap.playerChunkManager.getTargetNoTickViewDistance(); // Paper - replace old player chunk management
-+        return getHandle().getChunkSource().chunkMap.getVanillaWorldViewDistance(); // Paper - replace old player chunk management // Martijn - per-player view distance
++        return getHandle().getChunkSource().chunkMap.getVanillaWorldViewDistance(); // Paper - replace old player chunk management // Suki - per-player view distance
      }
  
      @Override
@@ -2177,7 +2177,7 @@ index 176df5b16876e2c5b718fe797078da641fe4330d..702ee8aeac939dacc9c47c2ed8194cf7
          }
          net.minecraft.server.level.ChunkMap chunkMap = getHandle().getChunkSource().chunkMap;
 -        chunkMap.setViewDistance(viewDistance);
-+        chunkMap.setVanillaWorldViewDistance(viewDistance); // Martijn - per-player view distance
++        chunkMap.setVanillaWorldViewDistance(viewDistance); // Suki - per-player view distance
          // Paper end - replace old player chunk management
      }
  
@@ -2204,7 +2204,7 @@ index 176df5b16876e2c5b718fe797078da641fe4330d..702ee8aeac939dacc9c47c2ed8194cf7
 -    public void setSendViewDistance(int viewDistance) {
 -        getHandle().getChunkSource().chunkMap.playerChunkManager.setSendDistance(viewDistance); // Paper - replace old player chunk management
 -    }
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +//    @Override
 +//    public int getNoTickViewDistance() {
 +//        return this.getViewDistance(); // Paper - replace old player chunk management
@@ -2224,7 +2224,7 @@ index 176df5b16876e2c5b718fe797078da641fe4330d..702ee8aeac939dacc9c47c2ed8194cf7
 +//    public void setSendViewDistance(int viewDistance) {
 +//        getHandle().getChunkSource().chunkMap.playerChunkManager.setSendDistance(viewDistance); // Paper - replace old player chunk management
 +//    }
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
      // Paper end - view distance api
  
      // Spigot start
@@ -2310,7 +2310,7 @@ index 84bce377e1a9b9358dddd15455b8d849b4a3ae36..8e85a6b57323545aefda95e6b6cde0ec
 -        data.setTargetSendViewDistance(viewDistance);
 -    }
 -    // Paper end - implement view distances
-+    // Martijn start - per-player view distance
++    // Suki start - per-player view distance
 +//    // Paper start - implement view distances
 +//    @Override
 +//    public int getViewDistance() {
@@ -2385,7 +2385,7 @@ index 84bce377e1a9b9358dddd15455b8d849b4a3ae36..8e85a6b57323545aefda95e6b6cde0ec
 +//        data.setTargetSendViewDistance(viewDistance);
 +//    }
 +//    // Paper end - implement view distances
-+    // Martijn end - per-player view distance
++    // Suki end - per-player view distance
  
      @Override
      public <T> T getClientOption(com.destroystokyo.paper.ClientOption<T> type) {
