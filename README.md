@@ -16,8 +16,10 @@
     - Async Pathfinding and Multithreaded Entity Tracker from **[Petal](https://github.com/Bloom-host/Petal)** which drastically reduce entity load.
     - Reduced bandwidth consumption and CPU usage from avoiding sending useless packets in certain situations.
     - Bugfixes for several Minecraft issues.
-    - Faster process for Vanilla methods.
-- Patches from **[EmpireCraft](https://github.com/starlis/empirecraft)** improving performance, gameplay and fixing inconsistencies.
+    - Faster process for Vanilla methods.\
+&nbsp;
+- Patches from **[EmpireCraft](https://github.com/starlis/empirecraft)** improving performance, gameplay and fixing inconsistencies.\
+&nbsp;
 - <sup>Configurable</sup> Strongholds can [spawn above ground](https://cdn.discordapp.com/attachments/363647799373463562/990000668611854357/2022-06-24_23.07.08.png), are bigger and are more challenging with webs, holes and water.
 - <sup>Configurable</sup> Adds permissions to see plugins in `/plugins`.
 - <sup>Configurable</sup> Disable `Moved too quickly` and `Moved wrongly`.
