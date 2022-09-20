@@ -20,13 +20,13 @@ index 994e81359154fc52392fe64cbe5f17a7a67e66c0..ba7f5b61704fb33ccebb142d72837887
          return server.addRecipe(recipe);
      }
  
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +
 +    public static boolean addRecipe(@Nullable Recipe recipe, boolean isSkippableForPlayersThatCannotAcceptLargePackets) {
 +        return server.addRecipe(recipe, isSkippableForPlayersThatCannotAcceptLargePackets);
 +    }
 +
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
 +
      /**
       * Get a list of all recipes for a given item. The stack size is ignored
@@ -36,7 +36,7 @@ index 994e81359154fc52392fe64cbe5f17a7a67e66c0..ba7f5b61704fb33ccebb142d72837887
          return server.getPotionBrewer();
      }
 +
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +
 +    public static void addCanAcceptLargePacketsDisjunct(@NotNull Predicate<@NotNull Player> disjunct) {
 +        server.addCanAcceptLargePacketsDisjunct(disjunct);
@@ -46,7 +46,7 @@ index 994e81359154fc52392fe64cbe5f17a7a67e66c0..ba7f5b61704fb33ccebb142d72837887
 +        server.addCanAcceptServerResourcePackDisjunct(disjunct);
 +    }
 +
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
 +
      // Paper end
  
@@ -60,7 +60,7 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
      POTTED_AZALEA_BUSH(20430),
      POTTED_FLOWERING_AZALEA_BUSH(10609),
 +
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +
 +    SUCRAFT_SNOWY_STONE_BRICKS(78131, MOSSY_STONE_BRICKS),
 +    SUCRAFT_DIRTY_STONE_BRICKS(78132, SUCRAFT_SNOWY_STONE_BRICKS),
@@ -564,7 +564,7 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
 +    SUCRAFT_THATCH_SLAB(78623, SUCRAFT_HAY_SLAB),
 +    SUCRAFT_THATCH_STAIRS(78624, SUCRAFT_HAY_STAIRS),
 +
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
 +
      // ----- Legacy Separator -----
      @Deprecated
@@ -584,9 +584,9 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
      private final NamespacedKey key;
      private boolean isBlock; // Paper
  
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +    private @Nullable Material vanillaTarget = null;
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
 +
      private Material(final int id) {
          this(id, 64);
@@ -596,14 +596,14 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
          this.data = data;
          this.legacy = this.name().startsWith(LEGACY_PREFIX);
 -        this.key = NamespacedKey.minecraft(this.name().toLowerCase(Locale.ROOT));
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        String lowerCaseName = this.name().toLowerCase(Locale.ROOT);
 +        if (this.name().startsWith("SUCRAFT_")) {
 +            this.key = NamespacedKey.sucraft(lowerCaseName.substring(8));
 +        } else {
 +            this.key = NamespacedKey.minecraft(lowerCaseName);
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          // try to cache the constructor for this material
          try {
              if (MaterialData.class.isAssignableFrom(data)) {
@@ -611,12 +611,12 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
          }
      }
  
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +    Material(final int id, Material vanillaTarget) {
 +        this(id);
 +        this.vanillaTarget = vanillaTarget;
 +    }
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
 +
      // Paper start
  
@@ -625,11 +625,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
      }
      private boolean isBlock0() {
      // Paper end
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.isBlock();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              //<editor-fold defaultstate="collapsed" desc="isBlock">
              case ACACIA_BUTTON:
@@ -637,11 +637,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
       * @return True if this material represents a playable music disk.
       */
      public boolean isRecord() {
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.isRecord();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              //<editor-fold defaultstate="collapsed" desc="isRecord">
              case MUSIC_DISC_5:
@@ -649,11 +649,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
          if (!isBlock() || id == 0) {
              return false;
          }
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.isSolid();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              //<editor-fold defaultstate="collapsed" desc="isSolid">
              case ACACIA_DOOR:
@@ -661,11 +661,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
       * @return True if this material is an air block.
       */
      public boolean isAir() {
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.isAir();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              //<editor-fold defaultstate="collapsed" desc="isAir">
              case AIR:
@@ -673,11 +673,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
          if (!isBlock()) {
              return false;
          }
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.isTransparent();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              //<editor-fold defaultstate="collapsed" desc="isTransparent">
              case ACACIA_BUTTON:
@@ -685,11 +685,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
          if (!isBlock()) {
              return false;
          }
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.isFlammable();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              //<editor-fold defaultstate="collapsed" desc="isFlammable">
              case ACACIA_DOOR:
@@ -697,11 +697,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
          if (!isBlock()) {
              return false;
          }
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.isBurnable();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              //<editor-fold defaultstate="collapsed" desc="isBurnable">
              case ACACIA_FENCE:
@@ -709,11 +709,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
       * @return true if this Material can be used as fuel.
       */
      public boolean isFuel() {
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.isFuel();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              //<editor-fold defaultstate="collapsed" desc="isFuel">
              case ACACIA_BOAT:
@@ -721,11 +721,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
          if (!isBlock()) {
              return false;
          }
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.isOccluding();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              //<editor-fold defaultstate="collapsed" desc="isOccluding">
              case ACACIA_LOG:
@@ -733,11 +733,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
          if (!isBlock()) {
              return false;
          }
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.hasGravity();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              //<editor-fold defaultstate="collapsed" desc="hasGravity">
              case ANVIL:
@@ -745,11 +745,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
       * @return true if this material is an item
       */
      public boolean isItem() {
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.isItem();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              //<editor-fold defaultstate="collapsed" desc="isItem">
              case ACACIA_WALL_SIGN:
@@ -757,11 +757,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
       * @return true if this material can be interacted with.
       */
      public boolean isInteractable() {
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.isInteractable();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              // <editor-fold defaultstate="collapsed" desc="isInteractable">
              case ACACIA_BUTTON:
@@ -769,11 +769,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
       */
      public float getHardness() {
          Preconditions.checkArgument(isBlock(), "The Material is not a block!");
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.getHardness();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              // <editor-fold defaultstate="collapsed" desc="getBlockHardness">
              case BARRIER:
@@ -781,11 +781,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
       */
      public float getBlastResistance() {
          Preconditions.checkArgument(isBlock(), "The Material is not a block!");
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.getBlastResistance();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              // <editor-fold defaultstate="collapsed" desc="getBlastResistance">
              case BIG_DRIPLEAF:
@@ -793,11 +793,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
       */
      public float getSlipperiness() {
          Preconditions.checkArgument(isBlock(), "The Material is not a block!");
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.getSlipperiness();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              // <editor-fold defaultstate="collapsed" desc="getSlipperiness">
              default:
@@ -805,11 +805,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
      @Nullable
      public Material getCraftingRemainingItem() {
          Preconditions.checkArgument(isItem(), "The Material is not an item!");
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.getCraftingRemainingItem();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              // <editor-fold defaultstate="collapsed" desc="getCraftingRemainingItem">
              case WATER_BUCKET:
@@ -817,11 +817,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
      @NotNull
      public EquipmentSlot getEquipmentSlot() {
          Preconditions.checkArgument(isItem(), "The Material is not an item!");
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.getEquipmentSlot();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          switch (this) {
              // <editor-fold defaultstate="collapsed" desc="getEquipmentSlot">
              case CARVED_PUMPKIN:
@@ -830,11 +830,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
      public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot slot) {
          Preconditions.checkArgument(isItem(), "The Material is not an item!");
 -
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.getDefaultAttributeModifiers(slot);
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          return Bukkit.getUnsafe().getDefaultAttributeModifiers(this, slot);
      }
  
@@ -842,11 +842,11 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
       */
      @Nullable
      public CreativeCategory getCreativeCategory() {
-+        // Martijn start - custom blocks and items
++        // Suki start - custom blocks and items
 +        if (vanillaTarget != null) {
 +            return vanillaTarget.getCreativeCategory();
 +        }
-+        // Martijn end - custom blocks and items
++        // Suki end - custom blocks and items
          return Bukkit.getUnsafe().getCreativeCategory(this);
      }
  
@@ -858,9 +858,9 @@ index 236c9aea9ffc36269e5c32eacc9f1fd6bd039c88..1121a533b31489a66b76aeeacccaed46
       * compatibility measures.
       */
      public static final String BUKKIT = "bukkit";
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +    public static final String SUCRAFT = "sucraft";
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      //
      private static final Pattern VALID_NAMESPACE = Pattern.compile("[a-z0-9._-]+");
      private static final Pattern VALID_KEY = Pattern.compile("[a-z0-9/._-]+");
@@ -868,14 +868,14 @@ index 236c9aea9ffc36269e5c32eacc9f1fd6bd039c88..1121a533b31489a66b76aeeacccaed46
          return new NamespacedKey(MINECRAFT, key);
      }
  
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +
 +    @NotNull
 +    public static NamespacedKey sucraft(@NotNull String key) {
 +        return new NamespacedKey(SUCRAFT, key);
 +    }
 +
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
 +
      /**
       * Get a NamespacedKey from the supplied string with a default namespace if
@@ -896,11 +896,11 @@ index 85ccb5f671faca50332b31a7b3f0a55858d330ef..ddb82e822bd621d55420b2ba53d76b59
      @Contract("null -> false")
      public boolean addRecipe(@Nullable Recipe recipe);
  
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +
 +    public boolean addRecipe(@Nullable Recipe recipe, boolean isSkippableForPlayersThatCannotAcceptLargePackets);
 +
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
 +
      /**
       * Get a list of all recipes for a given item. The stack size is ignored
@@ -910,13 +910,13 @@ index 85ccb5f671faca50332b31a7b3f0a55858d330ef..ddb82e822bd621d55420b2ba53d76b59
       */
      @NotNull org.bukkit.potion.PotionBrewer getPotionBrewer();
 +
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +
 +    void addCanAcceptLargePacketsDisjunct(@NotNull Predicate<@NotNull Player> disjunct);
 +
 +    void addCanAcceptServerResourcePackDisjunct(@NotNull Predicate<@NotNull Player> disjunct);
 +
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
 +
      // Paper end
  }
@@ -937,7 +937,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Key for the built in block registry.
       */
      String REGISTRY_BLOCKS = "blocks";
-+    // Martijn start - custom blocks
++    // Suki start - custom blocks
      /**
       * Vanilla block tag representing all colors of wool.
 +     * <br>
@@ -1001,7 +1001,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Custom block tag exactly representing the blocks normally represented by {@link #STONE_BRICKS} in vanilla.
 +     */
 +    Tag<Material> VANILLA_STONE_BRICKS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.sucraft("vanilla_stone_bricks"), Material.class);
-+    // Martijn end - custom blocks
++    // Suki end - custom blocks
      /**
       * Vanilla block tag representing all wooden buttons.
       */
@@ -1009,7 +1009,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all wooden doors.
       */
      Tag<Material> WOODEN_DOORS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("wooden_doors"), Material.class);
-+    // Martijn start - custom blocks
++    // Suki start - custom blocks
      /**
       * Vanilla block tag representing all wooden stairs.
 +     * <br>
@@ -1030,7 +1030,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Custom block tag exactly representing the blocks normally represented by {@link #WOODEN_SLABS} in vanilla.
 +     */
 +    Tag<Material> VANILLA_WOODEN_SLABS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.sucraft("vanilla_wooden_slabs"), Material.class);
-+    // Martijn end - custom blocks
++    // Suki end - custom blocks
      /**
       * Vanilla block tag representing all wooden fences.
       */
@@ -1038,7 +1038,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all sapling variants.
       */
      Tag<Material> SAPLINGS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("saplings"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all log and bark variants that burn.
 +     * <br>
@@ -1112,7 +1112,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include the following: derived stairs and slabs.
       */
      Tag<Material> WARPED_STEMS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("warped_stems"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all banner blocks.
       */
@@ -1124,12 +1124,12 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include the following: custom leaves.
       */
      Tag<Material> LEAVES = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("leaves"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +    /**
 +     * Custom block tag exactly representing the blocks normally represented by {@link #LEAVES} in vanilla.
 +     */
 +    Tag<Material> VANILLA_LEAVES = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.sucraft("vanilla_leaves"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all trapdoors (inherits from
       * {@link #WOODEN_TRAPDOORS}.
@@ -1137,7 +1137,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all candles.
       */
      Tag<Material> CANDLES = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("candles"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all dirt.
 +     * <br>
@@ -1179,7 +1179,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include the following: custom additions to {@link #DIRT}.
       */
      Tag<Material> ENDERMAN_HOLDABLE = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("enderman_holdable"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag denoting ice blocks.
       */
@@ -1187,14 +1187,14 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all coral.
       */
      Tag<Material> CORALS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("corals"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag denoting all blocks bamboo may be planted on.
 +     * <br>
 +     * Modified to also include the following: stairs and slabs derived from gravel, and custom additions to {@link #SAND} and {@link #DIRT}.
       */
      Tag<Material> BAMBOO_PLANTABLE_ON = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("bamboo_plantable_on"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all standing signs.
       */
@@ -1202,7 +1202,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all signs.
       */
      Tag<Material> SIGNS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("signs"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks immune to dragons.
 +     * <br>
@@ -1216,19 +1216,19 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include the following: custom additions to {@link #FIRE}.
       */
      Tag<Material> DRAGON_TRANSPARENT = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("dragon_transparent"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all blocks immune to withers.
       */
      Tag<Material> WITHER_IMMUNE = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("wither_immune"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all base blocks used for wither summoning.
 +     * <br>
 +     * Modified to also include the following: stairs derived from soul sand or soul soil.
       */
      Tag<Material> WITHER_SUMMON_BASE_BLOCKS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("wither_summon_base_blocks"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all beehives.
       */
@@ -1236,31 +1236,31 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all portals.
       */
      Tag<Material> PORTALS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("portals"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all fire blocks.
 +     * <br>
 +     * Modified to also include the following: colored fire.
       */
      Tag<Material> FIRE = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("fire"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all nylium blocks.
       */
      Tag<Material> NYLIUM = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("nylium"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all wart blocks.
 +     * <br>
 +     * Modified to also include the following: derived stairs and slabs.
       */
      Tag<Material> WART_BLOCKS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("wart_blocks"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all beacon base blocks.
       */
      Tag<Material> BEACON_BASE_BLOCKS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("beacon_base_blocks"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks affected by the soul speed
       * enchantment.
@@ -1268,7 +1268,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include the following: soul sandstone blocks, and derived stairs and slabs.
       */
      Tag<Material> SOUL_SPEED_BLOCKS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("soul_speed_blocks"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all wall post overrides.
       */
@@ -1276,14 +1276,14 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all hoglin repellents.
       */
      Tag<Material> HOGLIN_REPELLENTS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("hoglin_repellents"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all soul fire base blocks.
 +     * <br>
 +     * Modified to also include the following: soul sandstone blocks, and derived stairs and slabs.
       */
      Tag<Material> SOUL_FIRE_BASE_BLOCKS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("soul_fire_base_blocks"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all warm strider blocks.
       */
@@ -1291,14 +1291,14 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all campfires.
       */
      Tag<Material> CAMPFIRES = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("campfires"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks guarded by piglins.
 +     * <br>
 +     * Modified to also include the following: stairs and slabs derived from blocks of gold, blocks of raw gold and gilded blackstone.
       */
      Tag<Material> GUARDED_BY_PIGLINS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("guarded_by_piglins"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all blocks that prevent inside mob
       * spawning.
@@ -1307,7 +1307,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
      Tag<Material> UNSTABLE_BOTTOM_CENTER = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("unstable_bottom_center"), Material.class);
      Tag<Material> MUSHROOM_GROW_BLOCK = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("mushroom_grow_block"), Material.class);
 -
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks that burn forever in the
       * overworld.
@@ -1328,7 +1328,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include the following: stairs and slabs derived from netherrack.
       */
      Tag<Material> INFINIBURN_END = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("infiniburn_end"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing the overworld base material.
       */
@@ -1336,19 +1336,19 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all cauldrons.
       */
      Tag<Material> CAULDRONS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("cauldrons"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks that make cryustal sounds.
 +     * <br>
 +     * Modified to also include the following: stairs and slabs derived from blocks of amethyst.
       */
      Tag<Material> CRYSTAL_SOUND_BLOCKS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("crystal_sound_blocks"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all blocks that play muffled step sounds.
       */
      Tag<Material> INSIDE_STEP_SOUND_BLOCKS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("inside_step_sound_blocks"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks that block vibration signals.
 +     * <br>
@@ -1362,7 +1362,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include the following: stairs and slabs derived from wool.
       */
      Tag<Material> DAMPENS_VIBRATIONS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("dampens_vibrations"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all blocks that are replaceable by
       * dripstone.
@@ -1370,7 +1370,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all cave vines.
       */
      Tag<Material> CAVE_VINES = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("cave_vines"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks replaceable by moss.
 +     * <br>
@@ -1389,13 +1389,13 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include the following: custom additions to {@link #DIRT} and {@link #TERRACOTTA}.
       */
      Tag<Material> AZALEA_ROOT_REPLACEABLE = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("azalea_root_replaceable"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all blocks which small dripleaf can be
       * placed on.
       */
      Tag<Material> SMALL_DRIPLEAF_PLACEABLE = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("small_dripleaf_placeable"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks which big dripleaf can be
       * placed on.
@@ -1403,12 +1403,12 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include the following: custom additions to {@link #DIRT}.
       */
      Tag<Material> BIG_DRIPLEAF_PLACEABLE = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("big_dripleaf_placeable"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all snow blocks.
       */
      Tag<Material> SNOW = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("snow"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks mineable with an axe.
 +     * <br>
@@ -1433,7 +1433,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include all custom blocks that are intended to be mineable with a shovel, as well as player-observable versions (either with or without the resource pack) of these blocks.
       */
      Tag<Material> MINEABLE_SHOVEL = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("mineable/shovel"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all blocks which require a diamond tool.
       */
@@ -1441,7 +1441,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * world generation features.
       */
      Tag<Material> FEATURES_CANNOT_REPLACE = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("features_cannot_replace"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks which lava pools will not
       * replace.
@@ -1449,7 +1449,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include the following: custom additions to {@link #LOGS} and {@link #LEAVES}.
       */
      Tag<Material> LAVA_POOL_STONE_CANNOT_REPLACE = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("lava_pool_stone_cannot_replace"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all blocks which geodes will not spawn in.
       */
@@ -1457,14 +1457,14 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all blocks which frogs prefer to jump to.
       */
      Tag<Material> FROG_PREFER_JUMP_TO = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("frog_prefer_jump_to"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks which can be replaced by skulk.
 +     * <br>
 +     * Modified to also include the following: custom additions to {@link #DIRT} and {@link #TERRACOTTA}.
       */
      Tag<Material> SCULK_REPLACEABLE = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("sculk_replaceable"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all blocks which can be replaced by skulk
       * during world generation.
@@ -1472,14 +1472,14 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all blocks which mooshrooms will spawn on.
       */
      Tag<Material> MOOSHROOMS_SPAWNABLE_ON = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("mooshrooms_spawnable_on"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks which parrots will spawn on.
 +     * <br>
 +     * Modified to also include the following: custom additions to {@link #LOGS} and {@link #LEAVES}.
       */
      Tag<Material> PARROTS_SPAWNABLE_ON = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("parrots_spawnable_on"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all blocks which polar bears will spawn
       * on.
@@ -1487,14 +1487,14 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing all blocks which frogs will spawn on.
       */
      Tag<Material> FROGS_SPAWNABLE_ON = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("frogs_spawnable_on"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks which azaleas will grow on.
 +     * <br>
 +     * Modified to also include the following: custom additions to {@link #DIRT}, {@link #SAND} and {@link #TERRACOTTA}.
       */
      Tag<Material> AZALEA_GROWS_ON = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("azalea_grows_on"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing all plant blocks which may be replaced.
       */
@@ -1502,7 +1502,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * through.
       */
      Tag<Material> MANGROVE_ROOTS_CAN_GROW_THROUGH = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("mangrove_roots_can_grow_through"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
      /**
       * Vanilla block tag representing all blocks which dead bushes may be placed
       * on.
@@ -1516,7 +1516,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Modified to also include a lot of derived and similar blocks.
       */
      Tag<Material> SNAPS_GOAT_HORN = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("snaps_goat_horn"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Vanilla block tag representing blocks which snow cannot survive on.
       */
@@ -1524,7 +1524,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Vanilla block tag representing blocks which snow can survive on.
       */
      Tag<Material> SNOW_LAYER_CAN_SURVIVE_ON = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.minecraft("snow_layer_can_survive_on"), Material.class);
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +    /**
 +     * Custom block tag representing dyed planks.
 +     */
@@ -1541,7 +1541,7 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
 +     * Custom block tag representing the stairs in {@link #DYED_PLANKS}.
 +     */
 +    Tag<Material> DYED_PLANK_FULL_STAIRS = Bukkit.getTag(REGISTRY_BLOCKS, NamespacedKey.sucraft("dyed_plank_stairs"), Material.class);
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
      /**
       * Key for the built in item registry.
       */
@@ -1553,7 +1553,7 @@ index c72ac209bb46b08ebb3c262aad23af9a182faf37..1d17bd553d7fb4ce2ff4d7fb7df4283d
       */
      boolean hasResourcePack();
  
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +
 +    public boolean hasSuCraftResourcePack();
 +
@@ -1563,7 +1563,7 @@ index c72ac209bb46b08ebb3c262aad23af9a182faf37..1d17bd553d7fb4ce2ff4d7fb7df4283d
 +
 +    public boolean canAcceptServerResourcePack();
 +
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
 +
      /**
       * Gets a copy of this players profile
@@ -1577,7 +1577,7 @@ index c6b0fd783675cd019048e445d8e959637d90be7a..93dc8aaa1146c6a218dd6a9f53b62c42
      boolean hasDestroyableKeys();
      // Paper end
 +
-+    // Martijn start - custom blocks and items
++    // Suki start - custom blocks and items
 +
 +    boolean getAddTechnicalPropertiesLore();
 +
@@ -1587,6 +1587,6 @@ index c6b0fd783675cd019048e445d8e959637d90be7a..93dc8aaa1146c6a218dd6a9f53b62c42
 +
 +    void setAddUnderlyingItemLoreIfRenamed(boolean add);
 +
-+    // Martijn end - custom blocks and items
++    // Suki end - custom blocks and items
 +
  }
