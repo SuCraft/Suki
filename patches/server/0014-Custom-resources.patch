@@ -32,11 +32,11 @@ index 7afb07a24c21706473c28a058214e81ebff1ab0a..41ea63c34bd933279df363db5a85389a
 +import net.minecraft.world.level.biome.Biome;
 +import net.minecraft.world.level.biome.Biomes;
 +import net.minecraft.world.level.levelgen.structure.Structure;
-+import nl.martijnmuijsers.paper.biome.SuCraftBiomeTags;
-+import nl.martijnmuijsers.paper.biome.SuCraftBiomeTagsProvider;
-+import nl.martijnmuijsers.paper.data.SuCraftTagsProvider;
-+import nl.martijnmuijsers.paper.structure.SuCraftBuiltinStructures;
-+import nl.martijnmuijsers.paper.structure.SuCraftStructureTagsProvider;
++import org.sucraft.suki.biome.SuCraftBiomeTags;
++import org.sucraft.suki.biome.SuCraftBiomeTagsProvider;
++import org.sucraft.suki.data.SuCraftTagsProvider;
++import org.sucraft.suki.structure.SuCraftBuiltinStructures;
++import org.sucraft.suki.structure.SuCraftStructureTagsProvider;
  import org.apache.commons.lang3.Validate;
  import org.slf4j.Logger;
  
@@ -74,7 +74,7 @@ index ae1d5d7f347491485a4101e81501213759e3cfa5..c063227cdf647897e8cbd6aea9a14654
  import net.minecraft.world.level.levelgen.structure.structures.StrongholdStructure;
  import net.minecraft.world.level.levelgen.structure.structures.SwampHutStructure;
  import net.minecraft.world.level.levelgen.structure.structures.WoodlandMansionStructure;
-+import nl.martijnmuijsers.paper.structure.SuCraftStructures;
++import org.sucraft.suki.structure.SuCraftStructures;
  
  public class Structures {
      public static final Holder<Structure> PILLAGER_OUTPOST = register(BuiltinStructures.PILLAGER_OUTPOST, new JigsawStructure(structure(BiomeTags.HAS_PILLAGER_OUTPOST, Map.of(MobCategory.MONSTER, new StructureSpawnOverride(StructureSpawnOverride.BoundingBoxType.STRUCTURE, WeightedRandomList.create(new MobSpawnSettings.SpawnerData(EntityType.PILLAGER, 1, 1, 1)))), GenerationStep.Decoration.SURFACE_STRUCTURES, TerrainAdjustment.BEARD_THIN), PillagerOutpostPools.START, 7, ConstantHeight.of(VerticalAnchor.absolute(0)), true, Heightmap.Types.WORLD_SURFACE_WG));
@@ -157,9 +157,9 @@ index 0b677d128cbd108bb58d74d3cfe6015551e94143..82da9a5113122a31fb39fff16749e733
  import net.minecraft.world.level.storage.LevelResource;
  import net.minecraft.world.level.storage.LevelStorageSource;
  import net.minecraft.world.level.storage.LevelSummary;
-+import nl.martijnmuijsers.paper.biome.SuCraftBiomeTagsProvider;
-+import nl.martijnmuijsers.paper.data.BlackHoleCachedOutput;
-+import nl.martijnmuijsers.paper.structure.SuCraftStructureTagsProvider;
++import org.sucraft.suki.biome.SuCraftBiomeTagsProvider;
++import org.sucraft.suki.data.BlackHoleCachedOutput;
++import org.sucraft.suki.structure.SuCraftStructureTagsProvider;
  import org.slf4j.Logger;
  
  // CraftBukkit start
@@ -245,15 +245,15 @@ index fd74cc9c0dab84b176f7da3fbbbdbc8fd3a7e26d..fbf69c402ba97b99319d0df90b501d43
          // Paper end
          // Paper start
          private long blockCollisionBehavior = io.papermc.paper.util.CollisionUtil.KNOWN_SPECIAL_BLOCK;
-diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTags.java b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTags.java
+diff --git a/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTags.java b/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTags.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..bde00c76313a1794edf0f353b93187ce3a3541b5
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTags.java
++++ b/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTags.java
 @@ -0,0 +1,19 @@
 +// Suki - custom resources
 +
-+package nl.martijnmuijsers.paper.biome;
++package org.sucraft.suki.biome;
 +
 +import net.minecraft.core.Registry;
 +import net.minecraft.resources.ResourceLocation;
@@ -270,19 +270,19 @@ index 0000000000000000000000000000000000000000..bde00c76313a1794edf0f353b93187ce
 +    }
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTagsProvider.java b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTagsProvider.java
+diff --git a/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTagsProvider.java b/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTagsProvider.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..9a6b12ce35e8f34b5e58f302a28328dacfd0883a
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTagsProvider.java
++++ b/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTagsProvider.java
 @@ -0,0 +1,21 @@
 +// Suki - custom resources
 +
-+package nl.martijnmuijsers.paper.biome;
++package org.sucraft.suki.biome;
 +
 +import net.minecraft.core.Registry;
 +import net.minecraft.world.level.biome.Biome;
-+import nl.martijnmuijsers.paper.data.SuCraftTagsProvider;
++import org.sucraft.suki.data.SuCraftTagsProvider;
 +
 +/**
 + * Based on {@link net.minecraft.data.tags.BiomeTagsProvider}
@@ -297,15 +297,15 @@ index 0000000000000000000000000000000000000000..9a6b12ce35e8f34b5e58f302a28328da
 +    protected void addTags() {}
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/data/BlackHoleCachedOutput.java b/src/main/java/nl/martijnmuijsers/paper/data/BlackHoleCachedOutput.java
+diff --git a/src/main/java/org/sucraft/suki/data/BlackHoleCachedOutput.java b/src/main/java/org/sucraft/suki/data/BlackHoleCachedOutput.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..6af9cb40f08526365030843ca609220c6c16b120
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/data/BlackHoleCachedOutput.java
++++ b/src/main/java/org/sucraft/suki/data/BlackHoleCachedOutput.java
 @@ -0,0 +1,19 @@
 +// Suki - custom resources
 +
-+package nl.martijnmuijsers.paper.data;
++package org.sucraft.suki.data;
 +
 +import com.google.common.hash.HashCode;
 +import net.minecraft.data.CachedOutput;
@@ -322,15 +322,15 @@ index 0000000000000000000000000000000000000000..6af9cb40f08526365030843ca609220c
 +    public void writeIfNeeded(Path path, byte[] data, HashCode hashCode) {}
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/data/SuCraftTagsProvider.java b/src/main/java/nl/martijnmuijsers/paper/data/SuCraftTagsProvider.java
+diff --git a/src/main/java/org/sucraft/suki/data/SuCraftTagsProvider.java b/src/main/java/org/sucraft/suki/data/SuCraftTagsProvider.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..1491d5ff59ee49cd230f67eebf705d81c4e17dfb
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/data/SuCraftTagsProvider.java
++++ b/src/main/java/org/sucraft/suki/data/SuCraftTagsProvider.java
 @@ -0,0 +1,146 @@
 +// Suki - custom resources
 +
-+package nl.martijnmuijsers.paper.data;
++package org.sucraft.suki.data;
 +
 +import com.google.common.collect.Maps;
 +import net.minecraft.core.Holder;
@@ -474,15 +474,15 @@ index 0000000000000000000000000000000000000000..1491d5ff59ee49cd230f67eebf705d81
 +    }
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftBuiltinStructures.java b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftBuiltinStructures.java
+diff --git a/src/main/java/org/sucraft/suki/structure/SuCraftBuiltinStructures.java b/src/main/java/org/sucraft/suki/structure/SuCraftBuiltinStructures.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..d81b5b97f24c4ebb73f10cdab99a07fa2ba9ead0
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftBuiltinStructures.java
++++ b/src/main/java/org/sucraft/suki/structure/SuCraftBuiltinStructures.java
 @@ -0,0 +1,19 @@
 +// Suki - custom resources
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +import net.minecraft.core.Registry;
 +import net.minecraft.resources.ResourceKey;
@@ -499,15 +499,15 @@ index 0000000000000000000000000000000000000000..d81b5b97f24c4ebb73f10cdab99a07fa
 +    }
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTags.java b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTags.java
+diff --git a/src/main/java/org/sucraft/suki/structure/SuCraftStructureTags.java b/src/main/java/org/sucraft/suki/structure/SuCraftStructureTags.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..806bfc5a4c8b6cfd868b508bedb70e6302272ac1
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTags.java
++++ b/src/main/java/org/sucraft/suki/structure/SuCraftStructureTags.java
 @@ -0,0 +1,19 @@
 +// Suki - custom resources
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +import net.minecraft.core.Registry;
 +import net.minecraft.resources.ResourceLocation;
@@ -524,19 +524,19 @@ index 0000000000000000000000000000000000000000..806bfc5a4c8b6cfd868b508bedb70e63
 +    }
 +    
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTagsProvider.java b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTagsProvider.java
+diff --git a/src/main/java/org/sucraft/suki/structure/SuCraftStructureTagsProvider.java b/src/main/java/org/sucraft/suki/structure/SuCraftStructureTagsProvider.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..173e76e24b01627d9fb2b1723be0be10e1d95c16
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTagsProvider.java
++++ b/src/main/java/org/sucraft/suki/structure/SuCraftStructureTagsProvider.java
 @@ -0,0 +1,21 @@
 +// Suki - custom resources
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +import net.minecraft.core.Registry;
 +import net.minecraft.world.level.levelgen.structure.Structure;
-+import nl.martijnmuijsers.paper.data.SuCraftTagsProvider;
++import org.sucraft.suki.data.SuCraftTagsProvider;
 +
 +/**
 + * Based on {@link net.minecraft.data.tags.StructureTagsProvider}
@@ -551,15 +551,15 @@ index 0000000000000000000000000000000000000000..173e76e24b01627d9fb2b1723be0be10
 +    protected void addTags() {}
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructures.java b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructures.java
+diff --git a/src/main/java/org/sucraft/suki/structure/SuCraftStructures.java b/src/main/java/org/sucraft/suki/structure/SuCraftStructures.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..86609d3eb6c17a69843bd5ef2e934bb366554e18
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructures.java
++++ b/src/main/java/org/sucraft/suki/structure/SuCraftStructures.java
 @@ -0,0 +1,49 @@
 +// Suki - custom resources
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +import net.minecraft.core.Holder;
 +import net.minecraft.core.HolderSet;

@@ -158,7 +158,7 @@ index 712e249ebe86d9adabf2bb816eea45543061efd3..de8a9a5fae3cfe9941481f1500a9a807
  import net.minecraft.world.level.Level;
  import net.minecraft.world.level.block.Blocks;
  import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
-+import nl.martijnmuijsers.paper.structure.SuCraftBuiltinStructures;
++import org.sucraft.suki.structure.SuCraftBuiltinStructures;
  
  public class StoryAdvancements implements Consumer<Consumer<Advancement>> {
      @Override
@@ -188,7 +188,7 @@ index ef50bc6a61c074c9b9f6a12dc465d407aec95d19..e497632891b5534b76943d9a4a24bf2d
  import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
  import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
  import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
-+import nl.martijnmuijsers.paper.structure.SuCraftStructures;
++import org.sucraft.suki.structure.SuCraftStructures;
  
  public interface StructureSets {
      Holder<StructureSet> VILLAGES = register(BuiltinStructureSets.VILLAGES, new StructureSet(List.of(StructureSet.entry(Structures.VILLAGE_PLAINS), StructureSet.entry(Structures.VILLAGE_DESERT), StructureSet.entry(Structures.VILLAGE_SAVANNA), StructureSet.entry(Structures.VILLAGE_SNOWY), StructureSet.entry(Structures.VILLAGE_TAIGA)), new RandomSpreadStructurePlacement(34, 8, RandomSpreadType.LINEAR, 10387312)));
@@ -234,7 +234,7 @@ index 902f179e4e997829d9f2143ba358dd16d2303829..3e86f9d07a6c252558138ef26175ff6e
  import net.minecraft.util.profiling.ProfilerFiller;
 +import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
  import net.minecraft.world.level.storage.loot.PredicateManager;
-+import nl.martijnmuijsers.paper.structure.SuCraftBuiltinStructures;
++import org.sucraft.suki.structure.SuCraftBuiltinStructures;
 +import org.bukkit.Bukkit;
  import org.slf4j.Logger;
  
@@ -2686,7 +2686,7 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
  import net.minecraft.world.level.levelgen.structure.StructureType;
 +import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
  import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
-+import nl.martijnmuijsers.paper.biome.SuCraftBiomeTags;
++import org.sucraft.suki.biome.SuCraftBiomeTags;
 +import org.bukkit.Bukkit;
 +import org.jetbrains.annotations.Nullable;
  
@@ -2922,10 +2922,10 @@ index f0bc479d3dfb4df09c61f6bc87f4a124e39c352d..4bd881cf09432ce67519825e5d910010
 +    // Suki end - custom strongholds - strongholds in water
 +
  }
-diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTags.java b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTags.java
+diff --git a/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTags.java b/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTags.java
 index bde00c76313a1794edf0f353b93187ce3a3541b5..7f81a0060fa8ab72b71ac60e7f9c4a66429f048d 100644
---- a/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTags.java
-+++ b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTags.java
+--- a/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTags.java
++++ b/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTags.java
 @@ -12,6 +12,8 @@ import net.minecraft.world.level.biome.Biome;
   */
  public class SuCraftBiomeTags {
@@ -2935,17 +2935,17 @@ index bde00c76313a1794edf0f353b93187ce3a3541b5..7f81a0060fa8ab72b71ac60e7f9c4a66
      private static TagKey<Biome> create(String id) {
          return TagKey.create(Registry.BIOME_REGISTRY, ResourceLocation.sucraft(id));
      }
-diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTagsProvider.java b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTagsProvider.java
+diff --git a/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTagsProvider.java b/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTagsProvider.java
 index 9a6b12ce35e8f34b5e58f302a28328dacfd0883a..347f0b29fbe89eaab83692e3991aa19752c0e8fd 100644
---- a/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTagsProvider.java
-+++ b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTagsProvider.java
+--- a/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTagsProvider.java
++++ b/src/main/java/org/sucraft/suki/biome/SuCraftBiomeTagsProvider.java
 @@ -3,8 +3,10 @@
- package nl.martijnmuijsers.paper.biome;
+ package org.sucraft.suki.biome;
  
  import net.minecraft.core.Registry;
 +import net.minecraft.server.MinecraftServer;
  import net.minecraft.world.level.biome.Biome;
- import nl.martijnmuijsers.paper.data.SuCraftTagsProvider;
+ import org.sucraft.suki.data.SuCraftTagsProvider;
 +import net.minecraft.world.level.biome.Biomes;
  
  /**
@@ -2961,10 +2961,10 @@ index 9a6b12ce35e8f34b5e58f302a28328dacfd0883a..347f0b29fbe89eaab83692e3991aa197
 +    }
  
  }
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftBuiltinStructures.java b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftBuiltinStructures.java
+diff --git a/src/main/java/org/sucraft/suki/structure/SuCraftBuiltinStructures.java b/src/main/java/org/sucraft/suki/structure/SuCraftBuiltinStructures.java
 index d81b5b97f24c4ebb73f10cdab99a07fa2ba9ead0..1b890f788d0e93647424de2671e8c9e16ac6840c 100644
---- a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftBuiltinStructures.java
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftBuiltinStructures.java
+--- a/src/main/java/org/sucraft/suki/structure/SuCraftBuiltinStructures.java
++++ b/src/main/java/org/sucraft/suki/structure/SuCraftBuiltinStructures.java
 @@ -12,6 +12,8 @@ import net.minecraft.world.level.levelgen.structure.Structure;
   */
  public interface SuCraftBuiltinStructures {
@@ -2974,18 +2974,18 @@ index d81b5b97f24c4ebb73f10cdab99a07fa2ba9ead0..1b890f788d0e93647424de2671e8c9e1
      private static ResourceKey<Structure> createKey(String id) {
          return ResourceKey.create(Registry.STRUCTURE_REGISTRY, ResourceLocation.sucraft(id));
      }
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTagsProvider.java b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTagsProvider.java
+diff --git a/src/main/java/org/sucraft/suki/structure/SuCraftStructureTagsProvider.java b/src/main/java/org/sucraft/suki/structure/SuCraftStructureTagsProvider.java
 index 173e76e24b01627d9fb2b1723be0be10e1d95c16..d8999bae8bd0fea2265320fc6505eb7e09fc3e12 100644
---- a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTagsProvider.java
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTagsProvider.java
+--- a/src/main/java/org/sucraft/suki/structure/SuCraftStructureTagsProvider.java
++++ b/src/main/java/org/sucraft/suki/structure/SuCraftStructureTagsProvider.java
 @@ -3,6 +3,8 @@
- package nl.martijnmuijsers.paper.structure;
+ package org.sucraft.suki.structure;
  
  import net.minecraft.core.Registry;
 +import net.minecraft.server.MinecraftServer;
 +import net.minecraft.tags.StructureTags;
  import net.minecraft.world.level.levelgen.structure.Structure;
- import nl.martijnmuijsers.paper.data.SuCraftTagsProvider;
+ import org.sucraft.suki.data.SuCraftTagsProvider;
  
 @@ -16,6 +18,9 @@ public class SuCraftStructureTagsProvider extends SuCraftTagsProvider<Structure>
      }
@@ -2998,16 +2998,16 @@ index 173e76e24b01627d9fb2b1723be0be10e1d95c16..d8999bae8bd0fea2265320fc6505eb7e
 +    }
  
  }
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructures.java b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructures.java
+diff --git a/src/main/java/org/sucraft/suki/structure/SuCraftStructures.java b/src/main/java/org/sucraft/suki/structure/SuCraftStructures.java
 index 86609d3eb6c17a69843bd5ef2e934bb366554e18..2aae54a4542a3f6fb725bebf465c441e3e43ac1c 100644
---- a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructures.java
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructures.java
+--- a/src/main/java/org/sucraft/suki/structure/SuCraftStructures.java
++++ b/src/main/java/org/sucraft/suki/structure/SuCraftStructures.java
 @@ -14,6 +14,8 @@ import net.minecraft.world.level.levelgen.GenerationStep;
  import net.minecraft.world.level.levelgen.structure.Structure;
  import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride;
  import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 +import net.minecraft.world.level.levelgen.structure.structures.StrongholdStructure;
-+import nl.martijnmuijsers.paper.biome.SuCraftBiomeTags;
++import org.sucraft.suki.biome.SuCraftBiomeTags;
  
  import java.util.Map;
  

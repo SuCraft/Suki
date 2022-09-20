@@ -2109,8 +2109,8 @@ index 176df5b16876e2c5b718fe797078da641fe4330d..702ee8aeac939dacc9c47c2ed8194cf7
  import net.minecraft.world.phys.AABB;
  import net.minecraft.world.phys.HitResult;
  import net.minecraft.world.phys.Vec3;
--import nl.martijnmuijsers.paper.structure.CraftWorldStructure;
- import nl.martijnmuijsers.paper.structure.WorldStructure;
+-import org.sucraft.suki.structure.CraftWorldStructure;
+ import org.sucraft.suki.structure.WorldStructure;
  import org.apache.commons.lang.Validate;
  import org.bukkit.BlockChangeDelegate;
 @@ -121,7 +119,6 @@ import org.bukkit.entity.TippedArrow;

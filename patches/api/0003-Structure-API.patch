@@ -4,15 +4,58 @@ Date: Sun, 19 Jun 2022 00:13:36 +0200
 Subject: [PATCH] Structure API
 
 
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructure.java b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructure.java
+diff --git a/src/main/java/org/bukkit/World.java b/src/main/java/org/bukkit/World.java
+index e8c0c853eb52d1473c20231660355f77b1f7e016..8d92afd03c832517722670455fff2b7e15e95a0c 100644
+--- a/src/main/java/org/bukkit/World.java
++++ b/src/main/java/org/bukkit/World.java
+@@ -1,6 +1,9 @@
+ package org.bukkit;
+ 
+ import java.io.File;
++
++import io.papermc.paper.world.structure.ConfiguredStructure;
++import org.sucraft.suki.structure.WorldStructure;
+ import org.bukkit.generator.ChunkGenerator;
+ 
+ import java.util.ArrayList;
+@@ -75,6 +78,28 @@ public interface World extends RegionAccessor, WorldInfo, PluginMessageRecipient
+     int getPlayerCount();
+     // Paper end
+ 
++    // Suki start - structure API
++
++    /**
++     * Gets all structures at the given coordinates,
++     * with an optional type (if null, will get the structures of any type)
++     *
++     * @param block A block
++     * @param structureType An optional type of structure
++     * @return A list of structures found at the location
++     */
++    @NotNull List<@NotNull WorldStructure> getWorldStructuresAt(@NotNull Block block, @Nullable ConfiguredStructure structureType);
++
++    /**
++     * Gets all structures at the given coordinates
++     *
++     * @param block A block
++     * @return A list of structures found at the location
++     */
++    @NotNull List<@NotNull WorldStructure> getWorldStructuresAt(@NotNull Block block);
++
++    // Suki end - structure API
++
+     /**
+      * Gets the {@link Block} at the given coordinates
+      *
+diff --git a/src/main/java/org/sucraft/suki/structure/WorldStructure.java b/src/main/java/org/sucraft/suki/structure/WorldStructure.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..ddebd9059b00b58e18cdba2d5205200f9657dc0d
+index 0000000000000000000000000000000000000000..b3a209dbaed700507775d109ac3c170a61f9b509
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructure.java
++++ b/src/main/java/org/sucraft/suki/structure/WorldStructure.java
 @@ -0,0 +1,54 @@
 +// Suki - structure API
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +import io.papermc.paper.world.structure.ConfiguredStructure;
 +import org.bukkit.StructureType;
@@ -64,30 +107,30 @@ index 0000000000000000000000000000000000000000..ddebd9059b00b58e18cdba2d5205200f
 +    @NotNull List<@NotNull WorldStructurePiece> getPieces();
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructureBoundingBox.java b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructureBoundingBox.java
+diff --git a/src/main/java/org/sucraft/suki/structure/WorldStructureBoundingBox.java b/src/main/java/org/sucraft/suki/structure/WorldStructureBoundingBox.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..9922316629b8b67f217bbe55e69da20521645e89
+index 0000000000000000000000000000000000000000..b01aad79988db4df7c4b4a71d04d09432d51326b
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructureBoundingBox.java
++++ b/src/main/java/org/sucraft/suki/structure/WorldStructureBoundingBox.java
 @@ -0,0 +1,9 @@
 +// Suki - structure API
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +public interface WorldStructureBoundingBox {
 +
 +
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructurePiece.java b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructurePiece.java
+diff --git a/src/main/java/org/sucraft/suki/structure/WorldStructurePiece.java b/src/main/java/org/sucraft/suki/structure/WorldStructurePiece.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..68be99d386b9f810d0c3ba20f8b2c7e587241bf4
+index 0000000000000000000000000000000000000000..9d359dfe7332a3a22d1e8f55620875276376201c
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructurePiece.java
++++ b/src/main/java/org/sucraft/suki/structure/WorldStructurePiece.java
 @@ -0,0 +1,64 @@
 +// Suki - structure API
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +import org.jetbrains.annotations.NotNull;
 +import org.jetbrains.annotations.Nullable;
@@ -149,60 +192,17 @@ index 0000000000000000000000000000000000000000..68be99d386b9f810d0c3ba20f8b2c7e5
 +    @NotNull WorldStructureBoundingBox getBoundingBox();
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructurePieceType.java b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructurePieceType.java
+diff --git a/src/main/java/org/sucraft/suki/structure/WorldStructurePieceType.java b/src/main/java/org/sucraft/suki/structure/WorldStructurePieceType.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c85bd9aed69c1865fd7379e261c80c8fd5221435
+index 0000000000000000000000000000000000000000..73540ebfcc32089f90adf1fa7824aa8ba0f8c4a7
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/WorldStructurePieceType.java
++++ b/src/main/java/org/sucraft/suki/structure/WorldStructurePieceType.java
 @@ -0,0 +1,8 @@
 +// Suki - structure API
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +/**
 + * A type of structure piece
 + */
 +public interface WorldStructurePieceType {}
-diff --git a/src/main/java/org/bukkit/World.java b/src/main/java/org/bukkit/World.java
-index e8c0c853eb52d1473c20231660355f77b1f7e016..752d9c48d78a6baeb905830b5652f1131f3be638 100644
---- a/src/main/java/org/bukkit/World.java
-+++ b/src/main/java/org/bukkit/World.java
-@@ -1,6 +1,9 @@
- package org.bukkit;
- 
- import java.io.File;
-+
-+import io.papermc.paper.world.structure.ConfiguredStructure;
-+import nl.martijnmuijsers.paper.structure.WorldStructure;
- import org.bukkit.generator.ChunkGenerator;
- 
- import java.util.ArrayList;
-@@ -75,6 +78,28 @@ public interface World extends RegionAccessor, WorldInfo, PluginMessageRecipient
-     int getPlayerCount();
-     // Paper end
- 
-+    // Suki start - structure API
-+
-+    /**
-+     * Gets all structures at the given coordinates,
-+     * with an optional type (if null, will get the structures of any type)
-+     *
-+     * @param block A block
-+     * @param structureType An optional type of structure
-+     * @return A list of structures found at the location
-+     */
-+    @NotNull List<@NotNull WorldStructure> getWorldStructuresAt(@NotNull Block block, @Nullable ConfiguredStructure structureType);
-+
-+    /**
-+     * Gets all structures at the given coordinates
-+     *
-+     * @param block A block
-+     * @return A list of structures found at the location
-+     */
-+    @NotNull List<@NotNull WorldStructure> getWorldStructuresAt(@NotNull Block block);
-+
-+    // Suki end - structure API
-+
-     /**
-      * Gets the {@link Block} at the given coordinates
-      *

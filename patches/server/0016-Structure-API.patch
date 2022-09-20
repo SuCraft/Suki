@@ -5,16 +5,16 @@ Subject: [PATCH] Structure API
 
 
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java b/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java
-index 4947f9a00015b3dba1c829287defce71659ec908..606556f22fb002e46ffb6be80a9c1228b2b42531 100644
+index 4947f9a00015b3dba1c829287defce71659ec908..636b868297ea3586d9357cfbac0ace4b4cede732 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/BoundingBox.java
 @@ -13,8 +13,14 @@ import net.minecraft.Util;
  import net.minecraft.core.BlockPos;
  import net.minecraft.core.Direction;
  import net.minecraft.core.Vec3i;
-+import nl.martijnmuijsers.paper.structure.CraftWorldStructure;
-+import nl.martijnmuijsers.paper.structure.CraftWorldStructureBoundingBox;
-+import nl.martijnmuijsers.paper.structure.CraftWorldStructurePiece;
++import org.sucraft.suki.structure.CraftWorldStructure;
++import org.sucraft.suki.structure.CraftWorldStructureBoundingBox;
++import org.sucraft.suki.structure.CraftWorldStructurePiece;
 +import org.jetbrains.annotations.NotNull;
  import org.slf4j.Logger;
  
@@ -44,15 +44,15 @@ index 4947f9a00015b3dba1c829287defce71659ec908..606556f22fb002e46ffb6be80a9c1228
          this(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
      }
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/StructurePiece.java b/src/main/java/net/minecraft/world/level/levelgen/structure/StructurePiece.java
-index 048e03bd416fc3b905df1d06117a99b2b47135da..ea31b02a817ce8b3b9e986e788e3d1cce67ce7ad 100644
+index 048e03bd416fc3b905df1d06117a99b2b47135da..6f062ad8b3a87ad9e943267c538a0ac306cd84a3 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/StructurePiece.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/StructurePiece.java
 @@ -34,6 +34,13 @@ import net.minecraft.world.level.levelgen.Heightmap;
  import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
  import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
  import net.minecraft.world.level.material.FluidState;
-+import nl.martijnmuijsers.paper.structure.CraftWorldStructure;
-+import nl.martijnmuijsers.paper.structure.CraftWorldStructurePiece;
++import org.sucraft.suki.structure.CraftWorldStructure;
++import org.sucraft.suki.structure.CraftWorldStructurePiece;
 +import org.apache.commons.lang3.tuple.ImmutableTriple;
 +import org.apache.commons.lang3.tuple.Triple;
 +import org.apache.logging.log4j.util.TriConsumer;
@@ -82,7 +82,7 @@ index 048e03bd416fc3b905df1d06117a99b2b47135da..ea31b02a817ce8b3b9e986e788e3d1cc
          this.type = type;
          this.genDepth = length;
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/StructureStart.java b/src/main/java/net/minecraft/world/level/levelgen/structure/StructureStart.java
-index 902a35b63c0b1c87eff3d850589ba1d272d0cace..57f1fd35cb32e50dbc94792fa97c12f868593dc0 100644
+index 902a35b63c0b1c87eff3d850589ba1d272d0cace..fdcd933c6afd30d591e6a48b0ed931b81d07a7b3 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/StructureStart.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/StructureStart.java
 @@ -3,12 +3,12 @@ package net.minecraft.world.level.levelgen.structure;
@@ -103,7 +103,7 @@ index 902a35b63c0b1c87eff3d850589ba1d272d0cace..57f1fd35cb32e50dbc94792fa97c12f8
  import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
  import net.minecraft.world.level.levelgen.structure.structures.OceanMonumentStructure;
  import org.slf4j.Logger;
-+import nl.martijnmuijsers.paper.structure.CraftWorldStructure;
++import org.sucraft.suki.structure.CraftWorldStructure;
 +import org.bukkit.craftbukkit.CraftWorld;
 +import org.jetbrains.annotations.NotNull;
  
@@ -129,15 +129,108 @@ index 902a35b63c0b1c87eff3d850589ba1d272d0cace..57f1fd35cb32e50dbc94792fa97c12f8
      public StructureStart(Structure structure, ChunkPos pos, int references, PiecesContainer children) {
          this.structure = structure;
          this.chunkPos = pos;
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructure.java b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructure.java
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
+index c4c98a3ab24aac7fe0db11662af726db49930f03..b5da496680ef583ed0b7fe7c17b5f1b3116652dd 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
+@@ -5,6 +5,7 @@ import com.google.common.base.Predicates;
+ import com.google.common.collect.ImmutableList;
+ import com.google.common.collect.ImmutableMap;
+ import com.mojang.datafixers.util.Pair;
++import io.papermc.paper.world.structure.ConfiguredStructure;
+ import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
+ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.Holder;
+ import net.minecraft.core.HolderSet;
++import net.minecraft.data.BuiltinRegistries;
+ import net.minecraft.nbt.CompoundTag;
+ import net.minecraft.nbt.Tag;
+ import net.minecraft.network.protocol.game.ClientboundCustomSoundPacket;
+@@ -55,13 +57,17 @@ import net.minecraft.world.level.ChunkPos;
+ import net.minecraft.world.level.ClipContext;
+ import net.minecraft.world.level.Explosion;
+ import net.minecraft.world.level.GameRules;
++import net.minecraft.world.level.StructureManager;
+ import net.minecraft.world.level.chunk.ChunkAccess;
+ import net.minecraft.world.level.chunk.ChunkStatus;
+ import net.minecraft.world.level.chunk.ImposterProtoChunk;
++import net.minecraft.world.level.levelgen.structure.StructureStart;
+ import net.minecraft.world.level.storage.LevelResource;
+ import net.minecraft.world.phys.AABB;
+ import net.minecraft.world.phys.HitResult;
+ import net.minecraft.world.phys.Vec3;
++import org.sucraft.suki.structure.CraftWorldStructure;
++import org.sucraft.suki.structure.WorldStructure;
+ import org.apache.commons.lang.Validate;
+ import org.bukkit.BlockChangeDelegate;
+ import org.bukkit.Bukkit;
+@@ -135,6 +141,8 @@ import org.bukkit.util.Consumer;
+ import org.bukkit.util.RayTraceResult;
+ import org.bukkit.util.StructureSearchResult;
+ import org.bukkit.util.Vector;
++import org.jetbrains.annotations.NotNull;
++import org.jetbrains.annotations.Nullable;
+ 
+ public class CraftWorld extends CraftRegionAccessor implements World {
+     public static final int CUSTOM_DIMENSION_OFFSET = 10;
+@@ -227,6 +235,45 @@ public class CraftWorld extends CraftRegionAccessor implements World {
+     }
+     // Paper end
+ 
++    // Suki start - structure API
++
++    @Override
++    public @NotNull List<@NotNull WorldStructure> getWorldStructuresAt(@NotNull Block block, @Nullable ConfiguredStructure structureType) {
++        BlockPos blockPos = ((CraftBlock) block).getPosition();
++        ChunkPos chunkPos = ((CraftChunk) block.getChunk()).getHandle().getPos();
++        StructureManager featureManager = this.getHandle().structureManager();
++
++        final Set<net.minecraft.world.level.levelgen.structure.Structure> features;
++        if (structureType != null) {
++//            // Base on CraftWorld.locateNearestStructure
++//            features = this.structureCache.computeIfAbsent(structureType, (type) -> {
++//                final Registry<StructureFeature<?>> structureFeatureRegistry = this.getHandle().registryAccess().registryOrThrow(Registry.STRUCTURE_FEATURE_REGISTRY);
++//                return this.getHandle().registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY).holders().filter(holder -> {
++//                    return structureType.getKey().equals(CraftNamespacedKey.fromMinecraft(Objects.requireNonNull(structureFeatureRegistry.getKey(holder.value().feature))));
++//                }).toList();
++//            }).stream().map(holder -> holder.value()).toList();
++            features = Collections.singleton(io.papermc.paper.registry.PaperRegistry.getRegistry(io.papermc.paper.registry.RegistryKey.CONFIGURED_STRUCTURE_REGISTRY).getMinecraftValue(structureType));
++        } else {
++            features = BuiltinRegistries.STRUCTURES.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toUnmodifiableSet());
++        }
++
++        List<WorldStructure> structures = new ArrayList<>(0);
++        // Based on StructureFeatureManager.getStructureWithPieceAt
++        for (StructureStart structureStart : featureManager.startsForStructure(chunkPos, features::contains, this.getHandle().getLevel())) {
++            if (featureManager.structureHasPieceAt(blockPos, structureStart)) {
++                structures.add(structureStart.bukkit(this));
++            }
++        }
++        return structures;
++    }
++
++    @Override
++    public @NotNull List<@NotNull WorldStructure> getWorldStructuresAt(@NotNull Block block) {
++        return this.getWorldStructuresAt(block, null);
++    }
++
++    // Suki end - structure API
++
+     private static final Random rand = new Random();
+ 
+     public CraftWorld(ServerLevel world, ChunkGenerator gen, BiomeProvider biomeProvider, Environment env) {
+diff --git a/src/main/java/org/sucraft/suki/structure/CraftWorldStructure.java b/src/main/java/org/sucraft/suki/structure/CraftWorldStructure.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..04e7bb1b09df74c2b23c3b34a572ff002252dd7a
+index 0000000000000000000000000000000000000000..586396da7c178f949820b70432646b8077b34080
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructure.java
++++ b/src/main/java/org/sucraft/suki/structure/CraftWorldStructure.java
 @@ -0,0 +1,77 @@
 +// Suki - structure API
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +import io.papermc.paper.world.structure.ConfiguredStructure;
 +import net.minecraft.world.level.levelgen.structure.StructureStart;
@@ -212,15 +305,15 @@ index 0000000000000000000000000000000000000000..04e7bb1b09df74c2b23c3b34a572ff00
 +    }
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructureBoundingBox.java b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructureBoundingBox.java
+diff --git a/src/main/java/org/sucraft/suki/structure/CraftWorldStructureBoundingBox.java b/src/main/java/org/sucraft/suki/structure/CraftWorldStructureBoundingBox.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e9c6c62f7d9b62e531b1c64e823f2f1d67560c81
+index 0000000000000000000000000000000000000000..b28dbe50ff7fda043c331da520b44369c0226eb9
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructureBoundingBox.java
++++ b/src/main/java/org/sucraft/suki/structure/CraftWorldStructureBoundingBox.java
 @@ -0,0 +1,32 @@
 +// Suki - structure API
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +import net.minecraft.world.level.levelgen.structure.BoundingBox;
 +
@@ -250,15 +343,15 @@ index 0000000000000000000000000000000000000000..e9c6c62f7d9b62e531b1c64e823f2f1d
 +    }
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePiece.java b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePiece.java
+diff --git a/src/main/java/org/sucraft/suki/structure/CraftWorldStructurePiece.java b/src/main/java/org/sucraft/suki/structure/CraftWorldStructurePiece.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c5e428bbb05f801da88449307e7c75b00f7e7cfd
+index 0000000000000000000000000000000000000000..095b83a7a7bb18392912ba00afd2d59e58a75f80
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePiece.java
++++ b/src/main/java/org/sucraft/suki/structure/CraftWorldStructurePiece.java
 @@ -0,0 +1,164 @@
 +// Suki - structure API
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +import net.minecraft.nbt.CompoundTag;
 +import net.minecraft.world.level.levelgen.structure.StructurePiece;
@@ -420,15 +513,15 @@ index 0000000000000000000000000000000000000000..c5e428bbb05f801da88449307e7c75b0
 +    }
 +
 +}
-diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePieceType.java b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePieceType.java
+diff --git a/src/main/java/org/sucraft/suki/structure/CraftWorldStructurePieceType.java b/src/main/java/org/sucraft/suki/structure/CraftWorldStructurePieceType.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..1c239af1b0d542665014f11101e3399132cb3fcb
+index 0000000000000000000000000000000000000000..4d254f4a7388be07497786a30d8ac7f43ec0edb2
 --- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePieceType.java
++++ b/src/main/java/org/sucraft/suki/structure/CraftWorldStructurePieceType.java
 @@ -0,0 +1,32 @@
 +// Suki - structure API
 +
-+package nl.martijnmuijsers.paper.structure;
++package org.sucraft.suki.structure;
 +
 +import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 +
@@ -458,96 +551,3 @@ index 0000000000000000000000000000000000000000..1c239af1b0d542665014f11101e33991
 +    }
 +
 +}
-diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index c4c98a3ab24aac7fe0db11662af726db49930f03..176df5b16876e2c5b718fe797078da641fe4330d 100644
---- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-+++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-@@ -5,6 +5,7 @@ import com.google.common.base.Predicates;
- import com.google.common.collect.ImmutableList;
- import com.google.common.collect.ImmutableMap;
- import com.mojang.datafixers.util.Pair;
-+import io.papermc.paper.world.structure.ConfiguredStructure;
- import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
- import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
- import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
- import net.minecraft.core.BlockPos;
- import net.minecraft.core.Holder;
- import net.minecraft.core.HolderSet;
-+import net.minecraft.data.BuiltinRegistries;
- import net.minecraft.nbt.CompoundTag;
- import net.minecraft.nbt.Tag;
- import net.minecraft.network.protocol.game.ClientboundCustomSoundPacket;
-@@ -55,13 +57,17 @@ import net.minecraft.world.level.ChunkPos;
- import net.minecraft.world.level.ClipContext;
- import net.minecraft.world.level.Explosion;
- import net.minecraft.world.level.GameRules;
-+import net.minecraft.world.level.StructureManager;
- import net.minecraft.world.level.chunk.ChunkAccess;
- import net.minecraft.world.level.chunk.ChunkStatus;
- import net.minecraft.world.level.chunk.ImposterProtoChunk;
-+import net.minecraft.world.level.levelgen.structure.StructureStart;
- import net.minecraft.world.level.storage.LevelResource;
- import net.minecraft.world.phys.AABB;
- import net.minecraft.world.phys.HitResult;
- import net.minecraft.world.phys.Vec3;
-+import nl.martijnmuijsers.paper.structure.CraftWorldStructure;
-+import nl.martijnmuijsers.paper.structure.WorldStructure;
- import org.apache.commons.lang.Validate;
- import org.bukkit.BlockChangeDelegate;
- import org.bukkit.Bukkit;
-@@ -135,6 +141,8 @@ import org.bukkit.util.Consumer;
- import org.bukkit.util.RayTraceResult;
- import org.bukkit.util.StructureSearchResult;
- import org.bukkit.util.Vector;
-+import org.jetbrains.annotations.NotNull;
-+import org.jetbrains.annotations.Nullable;
- 
- public class CraftWorld extends CraftRegionAccessor implements World {
-     public static final int CUSTOM_DIMENSION_OFFSET = 10;
-@@ -227,6 +235,45 @@ public class CraftWorld extends CraftRegionAccessor implements World {
-     }
-     // Paper end
- 
-+    // Suki start - structure API
-+
-+    @Override
-+    public @NotNull List<@NotNull WorldStructure> getWorldStructuresAt(@NotNull Block block, @Nullable ConfiguredStructure structureType) {
-+        BlockPos blockPos = ((CraftBlock) block).getPosition();
-+        ChunkPos chunkPos = ((CraftChunk) block.getChunk()).getHandle().getPos();
-+        StructureManager featureManager = this.getHandle().structureManager();
-+
-+        final Set<net.minecraft.world.level.levelgen.structure.Structure> features;
-+        if (structureType != null) {
-+//            // Base on CraftWorld.locateNearestStructure
-+//            features = this.structureCache.computeIfAbsent(structureType, (type) -> {
-+//                final Registry<StructureFeature<?>> structureFeatureRegistry = this.getHandle().registryAccess().registryOrThrow(Registry.STRUCTURE_FEATURE_REGISTRY);
-+//                return this.getHandle().registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY).holders().filter(holder -> {
-+//                    return structureType.getKey().equals(CraftNamespacedKey.fromMinecraft(Objects.requireNonNull(structureFeatureRegistry.getKey(holder.value().feature))));
-+//                }).toList();
-+//            }).stream().map(holder -> holder.value()).toList();
-+            features = Collections.singleton(io.papermc.paper.registry.PaperRegistry.getRegistry(io.papermc.paper.registry.RegistryKey.CONFIGURED_STRUCTURE_REGISTRY).getMinecraftValue(structureType));
-+        } else {
-+            features = BuiltinRegistries.STRUCTURES.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toUnmodifiableSet());
-+        }
-+
-+        List<WorldStructure> structures = new ArrayList<>(0);
-+        // Based on StructureFeatureManager.getStructureWithPieceAt
-+        for (StructureStart structureStart : featureManager.startsForStructure(chunkPos, features::contains, this.getHandle().getLevel())) {
-+            if (featureManager.structureHasPieceAt(blockPos, structureStart)) {
-+                structures.add(structureStart.bukkit(this));
-+            }
-+        }
-+        return structures;
-+    }
-+
-+    @Override
-+    public @NotNull List<@NotNull WorldStructure> getWorldStructuresAt(@NotNull Block block) {
-+        return this.getWorldStructuresAt(block, null);
-+    }
-+
-+    // Suki end - structure API
-+
-     private static final Random rand = new Random();
- 
-     public CraftWorld(ServerLevel world, ChunkGenerator gen, BiomeProvider biomeProvider, Environment env) {

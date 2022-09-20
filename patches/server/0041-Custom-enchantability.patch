@@ -12,7 +12,7 @@ index 7c012f1e37b0085c0939797b0dae8996b4953ab8..6a1ac4a271e97a471b2f9972c18d5a2a
  import net.minecraft.world.item.ItemStack;
  import net.minecraft.world.item.enchantment.Enchantment;
  import net.minecraft.world.item.enchantment.EnchantmentHelper;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  
  public class EnchantCommand {
      private static final DynamicCommandExceptionType ERROR_NOT_LIVING_ENTITY = new DynamicCommandExceptionType((entityName) -> {
@@ -33,7 +33,7 @@ index c59d00c689925cab88f19a02ab3c83dceb14be16..468ecce6121a8a3af13a12712cb14f01
  import net.minecraft.world.level.material.Fluid;
  import net.minecraft.world.level.pathfinder.BlockPathTypes;
  import net.minecraft.world.level.storage.loot.LootContext;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  import org.bukkit.craftbukkit.event.CraftEventFactory;
  import org.bukkit.craftbukkit.entity.CraftLivingEntity;
  import org.bukkit.craftbukkit.util.permissions.CraftDefaultPermissions;
@@ -63,7 +63,7 @@ index 68887c1a475c119d061c8325136c5245011cdcbb..a3801d98cd3b36653dd5aa54a4838d61
  import net.minecraft.world.item.ItemStack;
  import net.minecraft.world.item.Items;
  import net.minecraft.world.item.enchantment.EnchantmentHelper;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  
  public class SkeletonTrapGoal extends Goal {
  
@@ -88,7 +88,7 @@ index 770a91fcc351a2d1de4762c0fd9bae2b49c363b5..69d9503f6998c62044f9828734a1e9cb
  import net.minecraft.world.level.levelgen.structure.Structure;
  import net.minecraft.world.level.saveddata.maps.MapDecoration;
  import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  
  public class VillagerTrades {
      private static final int DEFAULT_SUPPLY = 12;
@@ -109,7 +109,7 @@ index 506d758efbf16da9467f120321d2359a8832e477..5a1c2f10c1482d57d23c421c562b19e2
  import net.minecraft.world.item.enchantment.EnchantmentHelper;
  import net.minecraft.world.level.block.AnvilBlock;
  import net.minecraft.world.level.block.state.BlockState;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  import org.apache.commons.lang3.StringUtils;
  import org.slf4j.Logger;
  
@@ -130,7 +130,7 @@ index f7404f41c2df202a428711e7e09a9a6eb11bf527..e01d30430bb3016500da43035d309cfb
  import net.minecraft.world.item.enchantment.Enchantment;
  import net.minecraft.world.item.enchantment.EnchantmentHelper;
  import net.minecraft.world.item.enchantment.EnchantmentInstance;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  import org.bukkit.Location;
  import org.bukkit.NamespacedKey;
  import org.bukkit.craftbukkit.inventory.CraftInventoryEnchanting;
@@ -207,7 +207,7 @@ index 971179e713944593cdcb6409588619e290d17170..154bfc7e7cbedb277d293af5bb1b9a3d
  import net.minecraft.world.entity.LivingEntity;
  import net.minecraft.world.entity.MobType;
  import net.minecraft.world.item.ItemStack;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  
  public abstract class Enchantment {
      public final EquipmentSlot[] slots;
@@ -241,7 +241,7 @@ index 6f6106ca4d74d50a7b74b086adc96c58c7906cb6..99941312687999683d85e7c2f359220c
  import net.minecraft.world.item.Vanishable;
  import net.minecraft.world.item.Wearable;
  import net.minecraft.world.level.block.Block;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  
  public enum EnchantmentCategory {
      ARMOR {
@@ -370,7 +370,7 @@ index e694a256a72479cff28b65a86ce31a8ca0b1eba6..fd089dc65c395dacd82d357ddeb89c2e
  import net.minecraft.world.item.Item;
  import net.minecraft.world.item.ItemStack;
  import net.minecraft.world.item.Items;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  import org.apache.commons.lang3.mutable.MutableFloat;
  import org.apache.commons.lang3.mutable.MutableInt;
  
@@ -433,7 +433,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
  import net.minecraft.world.entity.EquipmentSlot;
 +import net.minecraft.world.item.ItemStack;
 +import net.minecraft.world.item.Items;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  
  public class Enchantments {
  
@@ -703,7 +703,7 @@ index 2bfb9ff77839e9ed91c9c48ad34abb46361c04b7..cfade5bc50500a30f159cc9d5c058e1a
  import net.minecraft.world.item.enchantment.EnchantmentInstance;
  import net.minecraft.world.level.storage.loot.LootContext;
  import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  import org.slf4j.Logger;
  
  public class EnchantRandomlyFunction extends LootItemConditionalFunction {
@@ -729,7 +729,7 @@ index acaeecd0abb972c461c2302c9c011b3c2052e497..54709e72fa8a7fb1ed14b695d19f4249
  import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
  import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
  import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  
  public class EnchantWithLevelsFunction extends LootItemConditionalFunction {
      final NumberProvider levels;
@@ -750,7 +750,7 @@ index 873185fd4d4c994130f2e7c271b3e03cefb2278c..d8ad0bd6d9432afa0cec82974e032b25
  import net.minecraft.core.Registry;
  import net.minecraft.world.item.enchantment.BindingCurseEnchantment;
  import net.minecraft.world.item.enchantment.VanishingCurseEnchantment;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  import org.bukkit.craftbukkit.inventory.CraftItemStack;
  import org.bukkit.craftbukkit.util.CraftNamespacedKey;
  import org.bukkit.enchantments.Enchantment;
@@ -785,7 +785,7 @@ index 09b6475b77ebc7f43c13861aa2af26e2f6e6a8b5..a1348c8702820b1a867235c8a3bbb6a9
  import net.minecraft.core.Registry;
  import net.minecraft.nbt.CompoundTag;
  import net.minecraft.world.item.Item;
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  import org.apache.commons.lang.Validate;
  import org.bukkit.Color;
  import org.bukkit.Material;

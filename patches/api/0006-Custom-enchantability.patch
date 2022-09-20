@@ -4,35 +4,8 @@ Date: Sun, 19 Jun 2022 22:34:03 +0200
 Subject: [PATCH] Custom enchantability
 
 
-diff --git a/src/main/java/nl/martijnmuijsers/paper/enchantments/EnchantmentSource.java b/src/main/java/nl/martijnmuijsers/paper/enchantments/EnchantmentSource.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..3ac20f6f39b1dde7e8dad01d1537f3b2955966e7
---- /dev/null
-+++ b/src/main/java/nl/martijnmuijsers/paper/enchantments/EnchantmentSource.java
-@@ -0,0 +1,21 @@
-+// Suki - custom enchantability
-+
-+package nl.martijnmuijsers.paper.enchantments;
-+
-+/**
-+ * The various reasons for which an enchantment can be attempted to be added to an item
-+ */
-+public enum EnchantmentSource {
-+
-+    ANVIL,
-+    ENCHANTING_TABLE,
-+    GENERATED_LOOT,
-+    BUKKIT_API,
-+    ENCHANT_COMMAND,
-+    VILLAGER_TRADE,
-+    SPAWNED_SKELETON_TRAP_MAIN_HAND,
-+    SPAWNED_SKELETON_TRAP_HELMET,
-+    SPAWNED_MOB_MAIN_HAND,
-+    SPAWNED_MOB_ARMOR;
-+
-+}
 diff --git a/src/main/java/org/bukkit/enchantments/Enchantment.java b/src/main/java/org/bukkit/enchantments/Enchantment.java
-index 69a048eb4e48c92db70c3d6b6aa4ae96326b9705..52f655dc8fe1cc173ad6a25855f9816458cc908d 100644
+index 69a048eb4e48c92db70c3d6b6aa4ae96326b9705..1c706954992e3334396c3d9dea574a9094f64bca 100644
 --- a/src/main/java/org/bukkit/enchantments/Enchantment.java
 +++ b/src/main/java/org/bukkit/enchantments/Enchantment.java
 @@ -2,6 +2,8 @@ package org.bukkit.enchantments;
@@ -40,7 +13,7 @@ index 69a048eb4e48c92db70c3d6b6aa4ae96326b9705..52f655dc8fe1cc173ad6a25855f98164
  import java.util.HashMap;
  import java.util.Map;
 +
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  import org.bukkit.Keyed;
  import org.bukkit.NamespacedKey;
  import org.bukkit.inventory.ItemStack;
@@ -85,13 +58,13 @@ index 69a048eb4e48c92db70c3d6b6aa4ae96326b9705..52f655dc8fe1cc173ad6a25855f98164
      /**
       * Get the name of the enchantment with its applied level.
 diff --git a/src/main/java/org/bukkit/enchantments/EnchantmentWrapper.java b/src/main/java/org/bukkit/enchantments/EnchantmentWrapper.java
-index 5f42a9c0c43ced10b754170d7c83793a99fce81b..699a2125157e4fcb12b9c59c2529119204e4f6bf 100644
+index 5f42a9c0c43ced10b754170d7c83793a99fce81b..cda7e174e8219f71cf33522b8314b4cad3b8da1f 100644
 --- a/src/main/java/org/bukkit/enchantments/EnchantmentWrapper.java
 +++ b/src/main/java/org/bukkit/enchantments/EnchantmentWrapper.java
 @@ -1,5 +1,6 @@
  package org.bukkit.enchantments;
  
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  import org.bukkit.NamespacedKey;
  import org.bukkit.inventory.ItemStack;
  import org.jetbrains.annotations.NotNull;
@@ -119,13 +92,13 @@ index 5f42a9c0c43ced10b754170d7c83793a99fce81b..699a2125157e4fcb12b9c59c25291192
      @Override
      public String getName() {
 diff --git a/src/main/java/org/bukkit/inventory/ItemFactory.java b/src/main/java/org/bukkit/inventory/ItemFactory.java
-index 40edff7c93b6bf75de81102326667135b9344666..8d2b3d936d684a38e39342e8a35a14b36d5b5c1f 100644
+index 40edff7c93b6bf75de81102326667135b9344666..dc5dabd4174072a1318e62479da1a7a0ff4cbabc 100644
 --- a/src/main/java/org/bukkit/inventory/ItemFactory.java
 +++ b/src/main/java/org/bukkit/inventory/ItemFactory.java
 @@ -1,5 +1,6 @@
  package org.bukkit.inventory;
  
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  import org.bukkit.Color;
  import org.bukkit.Material;
  import org.bukkit.Server;
@@ -169,7 +142,7 @@ index 40edff7c93b6bf75de81102326667135b9344666..8d2b3d936d684a38e39342e8a35a14b3
       * Creates a hover event for the given item.
       *
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index b8a344fd900dcbd4b28085a54b85b16c742e9c6f..a4f9cfd2ea05e24c0c051b8dd0483300aa8212df 100644
+index b8a344fd900dcbd4b28085a54b85b16c742e9c6f..118da06536cad9466a49e341ee7497ea23ace5ca 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
 @@ -5,6 +5,8 @@ import com.google.common.collect.ImmutableMap;
@@ -177,7 +150,7 @@ index b8a344fd900dcbd4b28085a54b85b16c742e9c6f..a4f9cfd2ea05e24c0c051b8dd0483300
  import java.util.List; // Paper
  import java.util.Map;
 +
-+import nl.martijnmuijsers.paper.enchantments.EnchantmentSource;
++import org.sucraft.suki.enchantments.EnchantmentSource;
  import org.bukkit.Bukkit;
  import org.bukkit.Material;
  import org.bukkit.UndefinedNullability;
@@ -190,3 +163,30 @@ index b8a344fd900dcbd4b28085a54b85b16c742e9c6f..a4f9cfd2ea05e24c0c051b8dd0483300
              throw new IllegalArgumentException("Specified enchantment cannot be applied to this itemstack");
          }
  
+diff --git a/src/main/java/org/sucraft/suki/enchantments/EnchantmentSource.java b/src/main/java/org/sucraft/suki/enchantments/EnchantmentSource.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..35d2bf59ce298650c3a7ba1a080e24a95c84f08a
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/enchantments/EnchantmentSource.java
+@@ -0,0 +1,21 @@
++// Suki - custom enchantability
++
++package org.sucraft.suki.enchantments;
++
++/**
++ * The various reasons for which an enchantment can be attempted to be added to an item
++ */
++public enum EnchantmentSource {
++
++    ANVIL,
++    ENCHANTING_TABLE,
++    GENERATED_LOOT,
++    BUKKIT_API,
++    ENCHANT_COMMAND,
++    VILLAGER_TRADE,
++    SPAWNED_SKELETON_TRAP_MAIN_HAND,
++    SPAWNED_SKELETON_TRAP_HELMET,
++    SPAWNED_MOB_MAIN_HAND,
++    SPAWNED_MOB_ARMOR;
++
++}
