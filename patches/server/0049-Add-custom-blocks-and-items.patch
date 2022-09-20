@@ -5,7 +5,7 @@ Subject: [PATCH] Add custom blocks and items
 
 
 diff --git a/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketBlockController.java b/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketBlockController.java
-index bd86dc2ad2f87969da4add06de2a629f69d4b5de..81837cea1d0f356f3aa14aa75a3602a28b86b435 100644
+index bd86dc2ad2f87969da4add06de2a629f69d4b5de..60bed5928b91ede650f140e61aaa9fca318c5c64 100644
 --- a/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketBlockController.java
 +++ b/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketBlockController.java
 @@ -13,7 +13,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
@@ -27,7 +27,7 @@ index bd86dc2ad2f87969da4add06de2a629f69d4b5de..81837cea1d0f356f3aa14aa75a3602a2
      }
  
 diff --git a/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketBlockControllerAntiXray.java b/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketBlockControllerAntiXray.java
-index dabd93c35bdbac6a8b668a82d5f3d4173a1baa4a..97c8a1609930568d3f64499ecd16c097193752f3 100644
+index dabd93c35bdbac6a8b668a82d5f3d4173a1baa4a..29b39c07489b0eb0aa95229e9ef62fbff3c53af6 100644
 --- a/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketBlockControllerAntiXray.java
 +++ b/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketBlockControllerAntiXray.java
 @@ -20,6 +20,8 @@ import net.minecraft.world.level.block.Blocks;
@@ -135,7 +135,7 @@ index dabd93c35bdbac6a8b668a82d5f3d4173a1baa4a..97c8a1609930568d3f64499ecd16c097
  }
 +// Suki end - custom blocks and items
 diff --git a/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketInfo.java b/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketInfo.java
-index d98a3f5c54c67a673eb7dc456dd039cd78f9c34d..7e9b89c8d18df38831f0e5a4945c65b1285fc7a0 100644
+index d98a3f5c54c67a673eb7dc456dd039cd78f9c34d..3bd0ffc0234c57d01b28e4f68dfdad711fd58c5d 100644
 --- a/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketInfo.java
 +++ b/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketInfo.java
 @@ -13,6 +13,7 @@ public class ChunkPacketInfo<T> {
@@ -174,7 +174,7 @@ index d98a3f5c54c67a673eb7dc456dd039cd78f9c34d..7e9b89c8d18df38831f0e5a4945c65b1
          return bits[chunkSectionIndex] != 0;
      }
 diff --git a/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketInfoAntiXray.java b/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketInfoAntiXray.java
-index 80a2dfb266ae1221680a7b24fee2f7e2a8330b7d..48bc2e20e45183733ec5b1e545ce0d371b3e1ad0 100644
+index 80a2dfb266ae1221680a7b24fee2f7e2a8330b7d..8511b03e051f984c872243ac5828336a7e47f502 100644
 --- a/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketInfoAntiXray.java
 +++ b/src/main/java/com/destroystokyo/paper/antixray/ChunkPacketInfoAntiXray.java
 @@ -3,15 +3,21 @@ package com.destroystokyo.paper.antixray;
@@ -202,7 +202,7 @@ index 80a2dfb266ae1221680a7b24fee2f7e2a8330b7d..48bc2e20e45183733ec5b1e545ce0d37
  
      public LevelChunk[] getNearbyChunks() {
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index ee5bb11b11d2705b982eed677e022f387aad9ee9..bcc570a6a4f32067fa880a3a965c6b490beffee7 100644
+index 6be8c28bfdeca098d0c785c2cf121b5a6c9a91be..58b6dbc841d2cafa8fc704e9acbfbdda1e62ddf6 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -925,7 +925,7 @@ public final class PlayerChunkLoader {
@@ -215,7 +215,7 @@ index ee5bb11b11d2705b982eed677e022f387aad9ee9..bcc570a6a4f32067fa880a3a965c6b49
          }
          protected LongOpenHashSet getChunksToBeSent(final boolean concernsTracking) {
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 90f506c167fb57a96c58359fa6d4949eba2dbc8d..cbf0aa4904fb587b39266c09408816f1f24026bb 100644
+index 7c7ad9828d2bd1b17cdf5f69d2a3de465895ef18..84db940123aba6ea78bfe02e36a11eaef208af63 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -36,6 +36,18 @@ public class GlobalConfiguration extends ConfigurationPart {
@@ -238,7 +238,7 @@ index 90f506c167fb57a96c58359fa6d4949eba2dbc8d..cbf0aa4904fb587b39266c09408816f1
  
      public CustomStrongholds customStrongholds;
 diff --git a/src/main/java/net/minecraft/commands/arguments/item/ItemParser.java b/src/main/java/net/minecraft/commands/arguments/item/ItemParser.java
-index d36518504d6524e551abb2ee424b7133508934b2..0a15552af53d89ffae76e8ece84d6e001405d7cd 100644
+index d36518504d6524e551abb2ee424b7133508934b2..18ea75c648773bc8f0efe3e37435cb96cf83a7b3 100644
 --- a/src/main/java/net/minecraft/commands/arguments/item/ItemParser.java
 +++ b/src/main/java/net/minecraft/commands/arguments/item/ItemParser.java
 @@ -26,7 +26,7 @@ import net.minecraft.world.item.Item;
@@ -263,7 +263,7 @@ index 442b42e80ee9001f9610003c3eaeb7f75f782f73..3a52405f4b560b6cca0ecb516cccbe6e
  public class ArgumentTypeInfos {
      private static final Map<Class<?>, ArgumentTypeInfo<?, ?>> BY_CLASS = Maps.newHashMap();
 diff --git a/src/main/java/net/minecraft/core/MappedRegistry.java b/src/main/java/net/minecraft/core/MappedRegistry.java
-index 41ea63c34bd933279df363db5a85389a41d9850f..fb76ebbca1dfcf8fb5f47e3cbcc40fb86b2b07b2 100644
+index b0f7b89b4da094cee0b542ff1df64bb44a00b036..cebf5655c7523a92b6274c7d1b0ceeadee390727 100644
 --- a/src/main/java/net/minecraft/core/MappedRegistry.java
 +++ b/src/main/java/net/minecraft/core/MappedRegistry.java
 @@ -33,12 +33,17 @@ import net.minecraft.server.MinecraftServer;
@@ -298,7 +298,7 @@ index 41ea63c34bd933279df363db5a85389a41d9850f..fb76ebbca1dfcf8fb5f47e3cbcc40fb8
          // Suki end - custom resource
          tagEntries.forEach((tag, entries) -> {
 diff --git a/src/main/java/net/minecraft/core/Rotations.java b/src/main/java/net/minecraft/core/Rotations.java
-index 152b1a2cb88c6456282b537611c18975d6da5f57..a353f9b9e20c0f23b04eee5885893d81f52a860d 100644
+index 152b1a2cb88c6456282b537611c18975d6da5f57..967652c9fe7f43f78deb49edd37dceca4ce928c7 100644
 --- a/src/main/java/net/minecraft/core/Rotations.java
 +++ b/src/main/java/net/minecraft/core/Rotations.java
 @@ -3,12 +3,15 @@ package net.minecraft.core;
@@ -318,7 +318,7 @@ index 152b1a2cb88c6456282b537611c18975d6da5f57..a353f9b9e20c0f23b04eee5885893d81
          this.x = !Float.isInfinite(pitch) && !Float.isNaN(pitch) ? pitch % 360.0F : 0.0F;
          this.y = !Float.isInfinite(yaw) && !Float.isNaN(yaw) ? yaw % 360.0F : 0.0F;
 diff --git a/src/main/java/net/minecraft/data/loot/BlockLoot.java b/src/main/java/net/minecraft/data/loot/BlockLoot.java
-index b2ee7ebf6d960437da1387d4f051995629d15e56..e54d120ff00abf4c1d518fc85bd96017dfca0886 100644
+index b2ee7ebf6d960437da1387d4f051995629d15e56..8208c306ebb5a47cffffe75474316ff81bd686c1 100644
 --- a/src/main/java/net/minecraft/data/loot/BlockLoot.java
 +++ b/src/main/java/net/minecraft/data/loot/BlockLoot.java
 @@ -97,7 +97,7 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
@@ -389,7 +389,7 @@ index b2ee7ebf6d960437da1387d4f051995629d15e56..e54d120ff00abf4c1d518fc85bd96017
  
          for(Block block : Registry.BLOCK) {
 diff --git a/src/main/java/net/minecraft/data/worldgen/biome/Biomes.java b/src/main/java/net/minecraft/data/worldgen/biome/Biomes.java
-index aa8d3566a6979f2d61ebee409f98e2b9af0a6933..8ab934a0f6c0857c68e84af8ce8a56e295644b77 100644
+index aa8d3566a6979f2d61ebee409f98e2b9af0a6933..596aeddcb2896b4ad1a95dc63610acb257903edf 100644
 --- a/src/main/java/net/minecraft/data/worldgen/biome/Biomes.java
 +++ b/src/main/java/net/minecraft/data/worldgen/biome/Biomes.java
 @@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
@@ -412,7 +412,7 @@ index aa8d3566a6979f2d61ebee409f98e2b9af0a6933..8ab934a0f6c0857c68e84af8ce8a56e2
      }
  }
 diff --git a/src/main/java/net/minecraft/data/worldgen/biome/OverworldBiomes.java b/src/main/java/net/minecraft/data/worldgen/biome/OverworldBiomes.java
-index e589653c227abfba7b1497b75045e88ef84c9331..6000f3523fde7dbf38e08fb5d6693adc0b2a4740 100644
+index e589653c227abfba7b1497b75045e88ef84c9331..2f20aa50a0d519dcc37afaff52893de18bb5886d 100644
 --- a/src/main/java/net/minecraft/data/worldgen/biome/OverworldBiomes.java
 +++ b/src/main/java/net/minecraft/data/worldgen/biome/OverworldBiomes.java
 @@ -18,6 +18,7 @@ import net.minecraft.world.level.biome.BiomeGenerationSettings;
@@ -472,7 +472,7 @@ index 46681f3fa63516aa750de11cf1dee17cb3734fcd..30129e9307b5d289782a6a9a5c3f2bd5
  
  public final class NbtUtils {
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index 7130173b0d1fd5f96efa9beeee01757bed4ca0ea..fe7e6d9f31edebd9b580e45b83b9abe3c7811bad 100644
+index 4069ef0030d66e1186afe5066030cb7b3f19a002..640d4d073ea361ff32085405710217e049da9580 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -2,6 +2,7 @@ package net.minecraft.network;
@@ -1295,7 +1295,7 @@ index 7130173b0d1fd5f96efa9beeee01757bed4ca0ea..fe7e6d9f31edebd9b580e45b83b9abe3
          this.averageSentPackets = Mth.lerp(0.75F, (float) this.sentPackets, this.averageSentPackets);
          this.averageReceivedPackets = Mth.lerp(0.75F, (float) this.receivedPackets, this.averageReceivedPackets);
 diff --git a/src/main/java/net/minecraft/network/FriendlyByteBuf.java b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
-index 8747a55d8818d4526939070fa29a12ab643f0798..a90dac4a4636832afd6c5664fb7c1bb63236bf24 100644
+index 8747a55d8818d4526939070fa29a12ab643f0798..be7c3c02308efad3fc77d18a8b0024349eb1960e 100644
 --- a/src/main/java/net/minecraft/network/FriendlyByteBuf.java
 +++ b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
 @@ -60,6 +60,7 @@ import net.minecraft.network.chat.Component;
@@ -1397,7 +1397,7 @@ index 8747a55d8818d4526939070fa29a12ab643f0798..a90dac4a4636832afd6c5664fb7c1bb6
              this.writeByte(stack.getCount());
              CompoundTag nbttagcompound = null;
 diff --git a/src/main/java/net/minecraft/network/PacketEncoder.java b/src/main/java/net/minecraft/network/PacketEncoder.java
-index 5fce1177e7198d791d4ab1c64b394c5b1c145782..3e4da70a4e7aad235060cebe43ff9704cfaaebba 100644
+index 5fce1177e7198d791d4ab1c64b394c5b1c145782..de8782009f77612407ba5dc8ddfbb271d750cb29 100644
 --- a/src/main/java/net/minecraft/network/PacketEncoder.java
 +++ b/src/main/java/net/minecraft/network/PacketEncoder.java
 @@ -8,6 +8,7 @@ import io.papermc.paper.adventure.PaperAdventure; // Paper
@@ -1429,7 +1429,7 @@ index 5fce1177e7198d791d4ab1c64b394c5b1c145782..3e4da70a4e7aad235060cebe43ff9704
                  }
                  // Paper end
 diff --git a/src/main/java/net/minecraft/network/protocol/Packet.java b/src/main/java/net/minecraft/network/protocol/Packet.java
-index e8fcd56906d26f6dc87959e32c4c7c78cfea9658..04a9f8d02f4a0ed0b3c33e3a083c821a8516f224 100644
+index e8fcd56906d26f6dc87959e32c4c7c78cfea9658..b224cfa2adf30b5c5a9108b70d9026c6ef43cb97 100644
 --- a/src/main/java/net/minecraft/network/protocol/Packet.java
 +++ b/src/main/java/net/minecraft/network/protocol/Packet.java
 @@ -1,7 +1,14 @@
@@ -1482,7 +1482,7 @@ index e8fcd56906d26f6dc87959e32c4c7c78cfea9658..04a9f8d02f4a0ed0b3c33e3a083c821a
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundBlockUpdatePacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundBlockUpdatePacket.java
-index 7b4947aa2cdd7f359184689bf348560bde1016dd..bde8ecf0e4a8c33beeb2fb49db6eee8367323912 100644
+index 7b4947aa2cdd7f359184689bf348560bde1016dd..6e81daa3bcb52a301fcd99e69d495584609aeac4 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundBlockUpdatePacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundBlockUpdatePacket.java
 @@ -1,15 +1,25 @@
@@ -1591,7 +1591,7 @@ index 7b4947aa2cdd7f359184689bf348560bde1016dd..bde8ecf0e4a8c33beeb2fb49db6eee83
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetContentPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetContentPacket.java
-index dbd8b9b09b82c1b75e8be9dc7416d9f0863c8c87..ccf0485d73aeef0be2078adbafe75994d06bcda3 100644
+index dbd8b9b09b82c1b75e8be9dc7416d9f0863c8c87..8436fa475901deb77b5411dab86468eebfee9048 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetContentPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetContentPacket.java
 @@ -5,12 +5,19 @@ import net.minecraft.core.NonNullList;
@@ -1642,7 +1642,7 @@ index dbd8b9b09b82c1b75e8be9dc7416d9f0863c8c87..ccf0485d73aeef0be2078adbafe75994
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetSlotPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetSlotPacket.java
-index 13ee7ad9c9415cd785b5487de7131c932c2198a0..0d5bfd1c6c10361059d281ab3f4b43c62d241b4c 100644
+index 13ee7ad9c9415cd785b5487de7131c932c2198a0..794eacce858887db110a4fecccec9e3d9da5a2c0 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetSlotPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundContainerSetSlotPacket.java
 @@ -3,6 +3,9 @@ package net.minecraft.network.protocol.game;
@@ -1694,7 +1694,7 @@ index 13ee7ad9c9415cd785b5487de7131c932c2198a0..0d5bfd1c6c10361059d281ab3f4b43c6
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundForgetLevelChunkPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundForgetLevelChunkPacket.java
-index 578600a56f9461fbf3a6c1abf1d5aad614a93eb6..0e4b059d57d021eed38df098395cebb4b1e8b97e 100644
+index 578600a56f9461fbf3a6c1abf1d5aad614a93eb6..2034e1a2dac0ffd20bbc1b589ca0a1ec045d7e40 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundForgetLevelChunkPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundForgetLevelChunkPacket.java
 @@ -1,7 +1,16 @@
@@ -1755,7 +1755,7 @@ index 578600a56f9461fbf3a6c1abf1d5aad614a93eb6..0e4b059d57d021eed38df098395cebb4
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacketData.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacketData.java
-index 76b6437a1d807c7e1b673f8feeed1f171ee9a803..37d4929d1f858683f1b5c38db976d000972c3ff0 100644
+index 76b6437a1d807c7e1b673f8feeed1f171ee9a803..0334e48b1674971b13f6397e3391262d7437dc12 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacketData.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkPacketData.java
 @@ -192,4 +192,19 @@ public class ClientboundLevelChunkPacketData {
@@ -1779,7 +1779,7 @@ index 76b6437a1d807c7e1b673f8feeed1f171ee9a803..37d4929d1f858683f1b5c38db976d000
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkWithLightPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkWithLightPacket.java
-index 000853110c7a89f2d0403a7a2737025a5ac28240..ff5fe2b10be8105776bc270f910dae3c77292a63 100644
+index 000853110c7a89f2d0403a7a2737025a5ac28240..a4b89a9b47a098ce02d3206ccdad645897205818 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkWithLightPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundLevelChunkWithLightPacket.java
 @@ -2,11 +2,22 @@ package net.minecraft.network.protocol.game;
@@ -1877,7 +1877,7 @@ index 000853110c7a89f2d0403a7a2737025a5ac28240..ff5fe2b10be8105776bc270f910dae3c
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundMerchantOffersPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundMerchantOffersPacket.java
-index dc31aa80ead5765e0b8cc63aa890966ab0bf94a4..d79da37b82063505ecd2dda57a728a4fc8aa284f 100644
+index dc31aa80ead5765e0b8cc63aa890966ab0bf94a4..89cfc647eb9ab623e8ac92a8469ea09be26e9d0a 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundMerchantOffersPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundMerchantOffersPacket.java
 @@ -3,6 +3,9 @@ package net.minecraft.network.protocol.game;
@@ -1929,7 +1929,7 @@ index dc31aa80ead5765e0b8cc63aa890966ab0bf94a4..d79da37b82063505ecd2dda57a728a4f
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java
-index 62ced75ae96b0b97b87ea9960282f1b33ffef2cf..d6bcb945d8943be2a0daa5a1add1dcf687386c73 100644
+index 70ca28f06d0e8541c1130ff7b1b0bce21872b649..45a2f894a4bde045cbc0f90dd7f3c299d4e69ef0 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java
 @@ -1,17 +1,33 @@
@@ -2051,7 +2051,7 @@ index 62ced75ae96b0b97b87ea9960282f1b33ffef2cf..d6bcb945d8943be2a0daa5a1add1dcf6
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEntityDataPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEntityDataPacket.java
-index 3e17f6131bf590d7c4a16b79c1c145cb4f565bc9..5aef3b156d56615427a469c4ba3b2f59148a7bfd 100644
+index 3e17f6131bf590d7c4a16b79c1c145cb4f565bc9..7968d60a5ab0f3023fc79cd49bbf8a65ccc0c850 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEntityDataPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEntityDataPacket.java
 @@ -1,15 +1,21 @@
@@ -2120,7 +2120,7 @@ index 3e17f6131bf590d7c4a16b79c1c145cb4f565bc9..5aef3b156d56615427a469c4ba3b2f59
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEquipmentPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEquipmentPacket.java
-index 5a8f850b447fc3a4bd0eb0c505bbdfc8be7115e8..35b1775891397448b3ab9433c7b34c9ce13e061b 100644
+index 5a8f850b447fc3a4bd0eb0c505bbdfc8be7115e8..5d7c1595e75bb5f066115e3caf18c02dfed750be 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEquipmentPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundSetEquipmentPacket.java
 @@ -7,11 +7,18 @@ import net.minecraft.network.FriendlyByteBuf;
@@ -2183,7 +2183,7 @@ index 5a8f850b447fc3a4bd0eb0c505bbdfc8be7115e8..35b1775891397448b3ab9433c7b34c9c
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateAdvancementsPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateAdvancementsPacket.java
-index 053a66d714168f5e8a7cc5ff532190e80de887ca..42e6324a53a1168f3bc0012d901621c085104432 100644
+index 053a66d714168f5e8a7cc5ff532190e80de887ca..31c957ed797fc52117875e5b737a784f8a61775a 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateAdvancementsPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateAdvancementsPacket.java
 @@ -11,12 +11,19 @@ import net.minecraft.advancements.AdvancementProgress;
@@ -2234,7 +2234,7 @@ index 053a66d714168f5e8a7cc5ff532190e80de887ca..42e6324a53a1168f3bc0012d901621c0
 +
  }
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java
-index e562a768ad400a6dca0f1546fb0dddbe72324eea..21c37416bf81c37c61cc53a70c732c217ef227d1 100644
+index e562a768ad400a6dca0f1546fb0dddbe72324eea..185cea6f1139ac776d141cadeecd535818afed9f 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java
 @@ -9,9 +9,15 @@ import net.minecraft.network.protocol.Packet;
@@ -2281,7 +2281,7 @@ index e562a768ad400a6dca0f1546fb0dddbe72324eea..21c37416bf81c37c61cc53a70c732c21
 +
  }
 diff --git a/src/main/java/net/minecraft/resources/ResourceKey.java b/src/main/java/net/minecraft/resources/ResourceKey.java
-index b8cd7177d82c08604bc3654cc2098e78484551d2..092f99ab1f169932f8bfe8a629a131fb97438a58 100644
+index b8cd7177d82c08604bc3654cc2098e78484551d2..95dd60f95d0b720eeff756326a6cfed45c986774 100644
 --- a/src/main/java/net/minecraft/resources/ResourceKey.java
 +++ b/src/main/java/net/minecraft/resources/ResourceKey.java
 @@ -6,6 +6,8 @@ import java.util.Collections;
@@ -2309,7 +2309,7 @@ index b8cd7177d82c08604bc3654cc2098e78484551d2..092f99ab1f169932f8bfe8a629a131fb
          return this.registryName;
      }
 diff --git a/src/main/java/net/minecraft/resources/ResourceLocation.java b/src/main/java/net/minecraft/resources/ResourceLocation.java
-index 73b3d10d18457f35721a1b941913826224b1b6f7..9b2561eddd6b49499c3262efda54d4d8ce3dfd22 100644
+index 50c284854aa2404cc821ba9cec66347c5d642c5e..4ad9348d7ce7b7ab8ae503e28bdb1d2910d9ab7a 100644
 --- a/src/main/java/net/minecraft/resources/ResourceLocation.java
 +++ b/src/main/java/net/minecraft/resources/ResourceLocation.java
 @@ -17,7 +17,10 @@ import javax.annotation.Nullable;
@@ -2371,7 +2371,7 @@ index 82da9a5113122a31fb39fff16749e733aaff317d..7174ed27533431a26883a7f918b1c463
              Thread thread = new Thread("Server Shutdown Thread") {
                  public void run() {
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index e142931f91b9dfc636d3e595dd11f3cee3d29e0d..184861260decdb5ee607a7babc552b6739429494 100644
+index cf3389f045e4b6cc0f48888be75c509e74a3f94b..718b68938ad6c14760f3d7336925da5c860a5485 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -153,6 +153,7 @@ import net.minecraft.world.level.storage.loot.LootTables;
@@ -2397,7 +2397,7 @@ index e142931f91b9dfc636d3e595dd11f3cee3d29e0d..184861260decdb5ee607a7babc552b67
              // Paper start - move done tracking
              LOGGER.info("Running delayed init tasks");
 diff --git a/src/main/java/net/minecraft/server/PlayerAdvancements.java b/src/main/java/net/minecraft/server/PlayerAdvancements.java
-index 90173d7c0e8fc41ecd70ffce81eaa624045eac70..3f9f38ea20d6d3b35f3e9cdb3d3437019ec989aa 100644
+index 90173d7c0e8fc41ecd70ffce81eaa624045eac70..22a9e365b7dec75d0f8613cc2f5106a05cd10189 100644
 --- a/src/main/java/net/minecraft/server/PlayerAdvancements.java
 +++ b/src/main/java/net/minecraft/server/PlayerAdvancements.java
 @@ -61,7 +61,7 @@ public class PlayerAdvancements {
@@ -2410,7 +2410,7 @@ index 90173d7c0e8fc41ecd70ffce81eaa624045eac70..3f9f38ea20d6d3b35f3e9cdb3d343701
      private ServerPlayer player;
      @Nullable
 diff --git a/src/main/java/net/minecraft/server/commands/GiveCommand.java b/src/main/java/net/minecraft/server/commands/GiveCommand.java
-index 00c481ebf012efa5424e32521e7aecf4b36f24c0..83fe7bad8f86b79f97d514257429eb7dc6f98b75 100644
+index 00c481ebf012efa5424e32521e7aecf4b36f24c0..7149a79815db00cc17ed1e7ac5b988e95938fc4a 100644
 --- a/src/main/java/net/minecraft/server/commands/GiveCommand.java
 +++ b/src/main/java/net/minecraft/server/commands/GiveCommand.java
 @@ -2,6 +2,7 @@ package net.minecraft.server.commands;
@@ -2476,7 +2476,7 @@ index 00c481ebf012efa5424e32521e7aecf4b36f24c0..83fe7bad8f86b79f97d514257429eb7d
          int j = item.getItem().getMaxStackSize();
          int k = j * 100;
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 60ba00eb6daeeb9b97281f9380d373af3cc29402..2625971c40a8f4ec9c58143918d76db039c2c5c5 100644
+index 60ba00eb6daeeb9b97281f9380d373af3cc29402..a8da99fa7ba2c3f99df92295c9d40f7f97f80ca8 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -13,11 +13,16 @@ import java.net.Proxy;
@@ -2589,7 +2589,7 @@ index 60ba00eb6daeeb9b97281f9380d373af3cc29402..2625971c40a8f4ec9c58143918d76db0
          // this.setPlayerList(new DedicatedPlayerList(this, this.registryHolder, this.playerDataStorage)); // Spigot - moved up
          server.loadPlugins();
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index a7a7ad04e0ca9a9119075df7afe2ad5ba9d1695a..0291b7ef73e4c3b9afd9f40f50d91f4bea388528 100644
+index 907e6ee49a703021a3af7ecc53c70f518eea181e..48b431997266b48a8998d81e89c454aca673f36d 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -64,6 +64,7 @@ import net.minecraft.CrashReport;
@@ -2716,7 +2716,7 @@ index a7a7ad04e0ca9a9119075df7afe2ad5ba9d1695a..0291b7ef73e4c3b9afd9f40f50d91f4b
          // Paper end
          DebugPackets.sendPoiPacketsForChunk(this.level, chunk.getPos());
 diff --git a/src/main/java/net/minecraft/server/level/ServerEntity.java b/src/main/java/net/minecraft/server/level/ServerEntity.java
-index 09be313aefd5dda15bd4db6ee0324b2aec879744..926a82b8bbea7c8d3fd27202a267f8ab3cf4a769 100644
+index 09be313aefd5dda15bd4db6ee0324b2aec879744..0d1640a07ee883e47537d475b4f35591b15fdcf4 100644
 --- a/src/main/java/net/minecraft/server/level/ServerEntity.java
 +++ b/src/main/java/net/minecraft/server/level/ServerEntity.java
 @@ -31,6 +31,7 @@ import net.minecraft.world.entity.LivingEntity;
@@ -2746,7 +2746,7 @@ index 09be313aefd5dda15bd4db6ee0324b2aec879744..926a82b8bbea7c8d3fd27202a267f8ab
          this.positionCodec.setBase(entity.trackingPosition());
          this.yRotp = Mth.floor(entity.getYRot() * 256.0F / 360.0F);
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index a621cf75f800a2c05b6c2a0f4b95220c5881f716..1f366e8556bc1a7a7b281051d1bb2c9d52a2874d 100644
+index 63479e24d2d28f275d05485e15c798c0b1a4cca7..b4ded6c14bf8b6c2a169565f7913c59fe887701e 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -9,8 +9,10 @@ import com.mojang.logging.LogUtils;
@@ -3003,7 +3003,7 @@ index a621cf75f800a2c05b6c2a0f4b95220c5881f716..1f366e8556bc1a7a7b281051d1bb2c9d
 +
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
-index 280d28257ff2c28775f8a236a324d8c63b53093a..5c2733ece95df1d63ac8c4d69faaf5304fb4ac78 100644
+index 615ae506972ee0f7df842d18b3060577cb5272e1..d946e44c0c85b09441209a15ae5a73c5fc801da7 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
 @@ -59,6 +59,7 @@ public class ServerPlayerGameMode {
@@ -3041,7 +3041,7 @@ index 280d28257ff2c28775f8a236a324d8c63b53093a..5c2733ece95df1d63ac8c4d69faaf530
  
                      this.level.destroyBlockProgress(this.player.getId(), pos, k);
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 2c25a82f3db795893f90056c2f9a5909d9990945..b24cddf898de0172ee6f544e4b4cd036c0c44f2a 100644
+index 7bc0f0ec1fb6ed7cc21e02eb0e93a965173a767b..518a4c2360abbb90da8b6e845379b15e1ddbefd1 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -159,6 +159,7 @@ import net.minecraft.world.entity.player.Inventory;
@@ -3149,7 +3149,7 @@ index 2c25a82f3db795893f90056c2f9a5909d9990945..b24cddf898de0172ee6f544e4b4cd036
                  SlotType type = SlotType.QUICKBAR;
                  if (flag) {
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 4f5b857226dbdf2b0abee7fb510e46f156eb20d2..4d2c674416fb4dbac7e62703a8f038f130acfa5e 100644
+index c3355db1f57310d2e6b85d84a76f93390dab1f0f..0f91bf646f76bae5ae747377180b69bb0bebf48c 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -15,6 +15,7 @@ import java.net.SocketAddress;
@@ -3247,7 +3247,7 @@ index 4f5b857226dbdf2b0abee7fb510e46f156eb20d2..4d2c674416fb4dbac7e62703a8f038f1
          }
  
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index f00132a16e7ab8d6af42e2b3c43ef97e3138066b..8867ac935d4ea8c6af11aa0777dd28ec77b4ff1e 100644
+index 436f6f860c7cb6dfad2e3176e527dd23591f0e0b..76d0e905e6e8f43aeb046192fb7aa82453122fe2 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -265,7 +265,7 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {
@@ -3290,7 +3290,7 @@ index f00132a16e7ab8d6af42e2b3c43ef97e3138066b..8867ac935d4ea8c6af11aa0777dd28ec
      private final VecDeltaCodec packetPositionCodec;
      public boolean noCulling;
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 30425e1d3ea874a798e8473caa3664aa39f725ad..179d59b4c667cff053444aa844394929f63d7588 100644
+index 5bb9325aa1b8ec0779c191582e877a455dfbb463..856f9604b26d47f8f3549f57c63b16ed7ce7d2ee 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -512,7 +512,7 @@ public abstract class LivingEntity extends Entity {
@@ -3303,7 +3303,7 @@ index 30425e1d3ea874a798e8473caa3664aa39f725ad..179d59b4c667cff053444aa844394929
  
      @Override
 diff --git a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
-index ef07967b64180c54338b8fb2ba1780adec87f333..ad786ae74d578d93b3b4b60d0926a95c4e8dabfb 100644
+index ef07967b64180c54338b8fb2ba1780adec87f333..b34b8d72d581d68be003568c5cdccb6030ea2214 100644
 --- a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
 @@ -40,6 +40,7 @@ import net.minecraft.world.level.block.FallingBlock;
@@ -3347,7 +3347,7 @@ index 2dcda3b03796655da443e1b3dd68c6f6bca20d21..75f071fbeea888d2f37e3fa9f8801d6f
  import net.minecraft.sounds.SoundEvents;
  import net.minecraft.util.RandomSource;
 diff --git a/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java b/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java
-index 69d9503f6998c62044f9828734a1e9cbaf2799d4..0a3cf9358e96c7b5dc65d9c74ec59c391724d7f5 100644
+index 71cd9203731a4e7991b8d297633b74ce78171c62..ece7022e73312ae08ad8f78c51e4d9e869061b38 100644
 --- a/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java
 +++ b/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java
 @@ -5,6 +5,8 @@ import com.google.common.collect.Lists;
@@ -3460,7 +3460,7 @@ index 69d9503f6998c62044f9828734a1e9cbaf2799d4..0a3cf9358e96c7b5dc65d9c74ec59c39
          final MobEffect effect;
          final int duration;
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index fea6fcffbc511156886fd0b410877a121ecf0121..4de80adb1d0a2fe6df1c59528510c20e74835e8d 100644
+index 2e8e5a13e369c4fd26b429b47e2410d06101b127..a5ad6de11e88b6fe88ebe18ed9b4df64cf07c98a 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -855,6 +855,14 @@ public abstract class Player extends LivingEntity {
@@ -3499,7 +3499,7 @@ index 49b063655dfc09e30d446dbf07503fdda04a7e30..9fe719482611a93bbe708815be86dd91
                                  itemstack3.setCount(k1);
                              }
 diff --git a/src/main/java/net/minecraft/world/inventory/StonecutterMenu.java b/src/main/java/net/minecraft/world/inventory/StonecutterMenu.java
-index d4f71422b25f70abfe50481d6071abea6ad147c0..a5063cc97aee67887944fa9c337cc47295dd6feb 100644
+index d4f71422b25f70abfe50481d6071abea6ad147c0..91c6c863d8b3d57f2a32a22725b0acc00a7b7db2 100644
 --- a/src/main/java/net/minecraft/world/inventory/StonecutterMenu.java
 +++ b/src/main/java/net/minecraft/world/inventory/StonecutterMenu.java
 @@ -2,6 +2,8 @@ package net.minecraft.world.inventory;
@@ -3535,7 +3535,7 @@ index d4f71422b25f70abfe50481d6071abea6ad147c0..a5063cc97aee67887944fa9c337cc472
  
              // CraftBukkit start
 diff --git a/src/main/java/net/minecraft/world/item/AxeItem.java b/src/main/java/net/minecraft/world/item/AxeItem.java
-index 03a6a99dcc0c8fcc32776dd49cf6092b899bf6ed..7056462eda051ba95abd03bdff9f24bc24a75b70 100644
+index 03a6a99dcc0c8fcc32776dd49cf6092b899bf6ed..1728954f1767e3649a0f687ca03f031145f1aa4e 100644
 --- a/src/main/java/net/minecraft/world/item/AxeItem.java
 +++ b/src/main/java/net/minecraft/world/item/AxeItem.java
 @@ -19,9 +19,68 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -3618,7 +3618,7 @@ index 03a6a99dcc0c8fcc32776dd49cf6092b899bf6ed..7056462eda051ba95abd03bdff9f24bc
      }
  }
 diff --git a/src/main/java/net/minecraft/world/item/DyeItem.java b/src/main/java/net/minecraft/world/item/DyeItem.java
-index 6a492ac3e67c743210d632aaddb5d5e67948468d..d698b7d62f9e697bda2cf9ce4dbf3be38e5db166 100644
+index 6a492ac3e67c743210d632aaddb5d5e67948468d..d63b4eb5321169236b75958cd37a3447fec728be 100644
 --- a/src/main/java/net/minecraft/world/item/DyeItem.java
 +++ b/src/main/java/net/minecraft/world/item/DyeItem.java
 @@ -2,14 +2,25 @@ package net.minecraft.world.item;
@@ -3703,7 +3703,7 @@ index 6a492ac3e67c743210d632aaddb5d5e67948468d..d698b7d62f9e697bda2cf9ce4dbf3be3
      public InteractionResult interactLivingEntity(ItemStack stack, Player user, LivingEntity entity, InteractionHand hand) {
          if (entity instanceof Sheep) {
 diff --git a/src/main/java/net/minecraft/world/item/FlintAndSteelItem.java b/src/main/java/net/minecraft/world/item/FlintAndSteelItem.java
-index 81994943198b92a3975910e1c50b9579912ff008..087e6b186015d18e62f2379205b5515a09202749 100644
+index 81994943198b92a3975910e1c50b9579912ff008..4abb39a71d381beb8a050c781629c0cc531d6d4d 100644
 --- a/src/main/java/net/minecraft/world/item/FlintAndSteelItem.java
 +++ b/src/main/java/net/minecraft/world/item/FlintAndSteelItem.java
 @@ -17,6 +17,8 @@ import net.minecraft.world.level.block.CandleCakeBlock;
@@ -3737,7 +3737,7 @@ index 81994943198b92a3975910e1c50b9579912ff008..087e6b186015d18e62f2379205b5515a
              if (entityhuman != null) {
                  context.getItemInHand().hurtAndBreak(1, entityhuman, (entityhuman1) -> {
 diff --git a/src/main/java/net/minecraft/world/item/Item.java b/src/main/java/net/minecraft/world/item/Item.java
-index 7e57163c82f7a4f9df0774f049f724c9b201e023..f7b5be2ab719fc4cb294c2682f0c3223c470598f 100644
+index 7e57163c82f7a4f9df0774f049f724c9b201e023..8061db50a523d8d35e00c2e99a93fb8be39802cf 100644
 --- a/src/main/java/net/minecraft/world/item/Item.java
 +++ b/src/main/java/net/minecraft/world/item/Item.java
 @@ -4,22 +4,46 @@ import com.google.common.collect.ImmutableMultimap;
@@ -4187,7 +4187,7 @@ index 7e57163c82f7a4f9df0774f049f724c9b201e023..f7b5be2ab719fc4cb294c2682f0c3223
          return item == null ? 0 : Registry.ITEM.getId(item);
      }
 diff --git a/src/main/java/net/minecraft/world/item/ItemStack.java b/src/main/java/net/minecraft/world/item/ItemStack.java
-index 5a07f5e3119d82f8055e9d925f3f728b5afc1be2..9218f9bb884477a315457055f887daf1845ba41e 100644
+index 7da482dca5a0da9badff64736cfbfa37259208ce..4f09c7bf60b8c01fcc9c6062890d5a1a44d6ee7b 100644
 --- a/src/main/java/net/minecraft/world/item/ItemStack.java
 +++ b/src/main/java/net/minecraft/world/item/ItemStack.java
 @@ -675,6 +675,25 @@ public final class ItemStack {
@@ -4260,7 +4260,7 @@ index 5a07f5e3119d82f8055e9d925f3f728b5afc1be2..9218f9bb884477a315457055f887daf1
 +
  }
 diff --git a/src/main/java/net/minecraft/world/item/Items.java b/src/main/java/net/minecraft/world/item/Items.java
-index 51016663829b1f36b8e752dcf9c9361282c3f06b..f7d9190cf8aad61d6f4b7688f84b0e2cd3762e3c 100644
+index 51016663829b1f36b8e752dcf9c9361282c3f06b..7ff2b5dde43d49ca6ee0451c74d7c8b9ac1eb0a0 100644
 --- a/src/main/java/net/minecraft/world/item/Items.java
 +++ b/src/main/java/net/minecraft/world/item/Items.java
 @@ -14,6 +14,9 @@ import net.minecraft.world.food.Foods;
@@ -4367,7 +4367,7 @@ index 51016663829b1f36b8e752dcf9c9361282c3f06b..f7d9190cf8aad61d6f4b7688f84b0e2c
 +
  }
 diff --git a/src/main/java/net/minecraft/world/item/crafting/Recipe.java b/src/main/java/net/minecraft/world/item/crafting/Recipe.java
-index 6d50c7ae912a36c8d3caaf26e2fc2dc20731b279..57fb7a92dc8ee6b66b6d5e6e4435bcf22f427c02 100644
+index 6d50c7ae912a36c8d3caaf26e2fc2dc20731b279..46695290d586dabf3b00b3ee3b3046edfb7bb7c7 100644
 --- a/src/main/java/net/minecraft/world/item/crafting/Recipe.java
 +++ b/src/main/java/net/minecraft/world/item/crafting/Recipe.java
 @@ -2,11 +2,16 @@ package net.minecraft.world.item.crafting;
@@ -4435,7 +4435,7 @@ index 6d50c7ae912a36c8d3caaf26e2fc2dc20731b279..57fb7a92dc8ee6b66b6d5e6e4435bcf2
          NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inventory.getContainerSize(), ItemStack.EMPTY);
  
 diff --git a/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java b/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java
-index 4872f70977e73c889fe6e2339d00ebc64459613d..f6cf391189715ef3c7eb2dca99443bfe180f0214 100644
+index 4872f70977e73c889fe6e2339d00ebc64459613d..2ff9f663a5211db8278a9656470cb07d67c5866f 100644
 --- a/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java
 +++ b/src/main/java/net/minecraft/world/item/crafting/RecipeManager.java
 @@ -14,11 +14,14 @@ import com.mojang.logging.LogUtils;
@@ -4553,7 +4553,7 @@ index 4872f70977e73c889fe6e2339d00ebc64459613d..f6cf391189715ef3c7eb2dca99443bfe
  
      private <C extends Container, T extends Recipe<C>> Map<ResourceLocation, T> byType(RecipeType<T> type) {
 diff --git a/src/main/java/net/minecraft/world/item/crafting/RecipeSerializer.java b/src/main/java/net/minecraft/world/item/crafting/RecipeSerializer.java
-index 71d491172b73fa5f428e3cab39240349dd715b6d..5b9b8fdae3a078e154490905e37c7aa18993ae45 100644
+index 71d491172b73fa5f428e3cab39240349dd715b6d..ee80e8b7ed663dd79a97ee96ad94375c0b5dbe35 100644
 --- a/src/main/java/net/minecraft/world/item/crafting/RecipeSerializer.java
 +++ b/src/main/java/net/minecraft/world/item/crafting/RecipeSerializer.java
 @@ -25,7 +25,7 @@ public interface RecipeSerializer<T extends Recipe<?>> {
@@ -4566,7 +4566,7 @@ index 71d491172b73fa5f428e3cab39240349dd715b6d..5b9b8fdae3a078e154490905e37c7aa1
  
      T fromJson(ResourceLocation id, JsonObject json);
 diff --git a/src/main/java/net/minecraft/world/item/crafting/StonecutterRecipe.java b/src/main/java/net/minecraft/world/item/crafting/StonecutterRecipe.java
-index 6d5803fcdd0a0b2d106745e9e6b859693b2aade2..32d8e3498c6d4ef610dcec59a9952ab00390fefb 100644
+index 6d5803fcdd0a0b2d106745e9e6b859693b2aade2..cc90efa5383fcf5baf6ce8904e522e26fd18d098 100644
 --- a/src/main/java/net/minecraft/world/item/crafting/StonecutterRecipe.java
 +++ b/src/main/java/net/minecraft/world/item/crafting/StonecutterRecipe.java
 @@ -1,7 +1,14 @@
@@ -4669,7 +4669,7 @@ index 6d5803fcdd0a0b2d106745e9e6b859693b2aade2..32d8e3498c6d4ef610dcec59a9952ab0
 +
  }
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index 641317a593b9b2442cdf6ad77432b3a61e8f45cc..bda2f14c45c11dabd5f84f0ad5735eff3b747e2f 100644
+index c22a23c50c6e93765561ab78d157bf030db7c76f..8e2f0ec4d1f98b8eed4acf5f1f023067a8ffb32b 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
 @@ -1,10 +1,7 @@
@@ -4731,7 +4731,7 @@ index 641317a593b9b2442cdf6ad77432b3a61e8f45cc..bda2f14c45c11dabd5f84f0ad5735eff
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/biome/OverworldBiomeBuilder.java b/src/main/java/net/minecraft/world/level/biome/OverworldBiomeBuilder.java
-index eb8ecff9f249341901477b3e89fff66f5608d48b..f4ac95cb888e91f3b74d1bda207ff3be3c5eab4a 100644
+index eb8ecff9f249341901477b3e89fff66f5608d48b..563574ff75ef4f9dceeb320114b1cbe8eb8e547e 100644
 --- a/src/main/java/net/minecraft/world/level/biome/OverworldBiomeBuilder.java
 +++ b/src/main/java/net/minecraft/world/level/biome/OverworldBiomeBuilder.java
 @@ -12,6 +12,7 @@ import net.minecraft.util.ToFloatFunction;
@@ -4752,7 +4752,7 @@ index eb8ecff9f249341901477b3e89fff66f5608d48b..f4ac95cb888e91f3b74d1bda207ff3be
      private final ResourceKey<Biome>[][] PLATEAU_BIOMES = new ResourceKey[][]{{Biomes.SNOWY_PLAINS, Biomes.SNOWY_PLAINS, Biomes.SNOWY_PLAINS, Biomes.SNOWY_TAIGA, Biomes.SNOWY_TAIGA}, {Biomes.MEADOW, Biomes.MEADOW, Biomes.FOREST, Biomes.TAIGA, Biomes.OLD_GROWTH_SPRUCE_TAIGA}, {Biomes.MEADOW, Biomes.MEADOW, Biomes.MEADOW, Biomes.MEADOW, Biomes.DARK_FOREST}, {Biomes.SAVANNA_PLATEAU, Biomes.SAVANNA_PLATEAU, Biomes.FOREST, Biomes.FOREST, Biomes.JUNGLE}, {Biomes.BADLANDS, Biomes.BADLANDS, Biomes.BADLANDS, Biomes.WOODED_BADLANDS, Biomes.WOODED_BADLANDS}};
      private final ResourceKey<Biome>[][] PLATEAU_BIOMES_VARIANT = new ResourceKey[][]{{Biomes.ICE_SPIKES, null, null, null, null}, {null, null, Biomes.MEADOW, Biomes.MEADOW, Biomes.OLD_GROWTH_PINE_TAIGA}, {null, null, Biomes.FOREST, Biomes.BIRCH_FOREST, null}, {null, null, null, null, null}, {Biomes.ERODED_BADLANDS, Biomes.ERODED_BADLANDS, null, null, null}};
 diff --git a/src/main/java/net/minecraft/world/level/block/BaseFireBlock.java b/src/main/java/net/minecraft/world/level/block/BaseFireBlock.java
-index a76c452dc5c2069a3071aec31bfb3e977867161e..0783cf8d12707ec7376d3f578a54b59999f0803d 100644
+index a76c452dc5c2069a3071aec31bfb3e977867161e..d3432ae4c5a816fdaa8f7deba52d4350bb588620 100644
 --- a/src/main/java/net/minecraft/world/level/block/BaseFireBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/BaseFireBlock.java
 @@ -15,9 +15,12 @@ import net.minecraft.world.level.BlockGetter;
@@ -4781,7 +4781,7 @@ index a76c452dc5c2069a3071aec31bfb3e977867161e..0783cf8d12707ec7376d3f578a54b599
                      break;
                  }
 diff --git a/src/main/java/net/minecraft/world/level/block/Block.java b/src/main/java/net/minecraft/world/level/block/Block.java
-index ebbbb5033f88a4cea866b0415001c2f747e1248f..c372c27b66ecbf20c0ddb7767f4c3ade952372a6 100644
+index ebbbb5033f88a4cea866b0415001c2f747e1248f..6bacbf794a5b5c49b2cb8ea8f989126d89070e93 100644
 --- a/src/main/java/net/minecraft/world/level/block/Block.java
 +++ b/src/main/java/net/minecraft/world/level/block/Block.java
 @@ -6,6 +6,9 @@ import com.google.common.cache.LoadingCache;
@@ -5515,7 +5515,7 @@ index ebbbb5033f88a4cea866b0415001c2f747e1248f..c372c27b66ecbf20c0ddb7767f4c3ade
 +
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/Blocks.java b/src/main/java/net/minecraft/world/level/block/Blocks.java
-index 5b5086f4016fc9015ac53bafd2c80bc724d575e4..38e27d177dfb3942e8f2c66849bb2b71eb572a6a 100644
+index 9b15d0a0fe5bc8c1ecb4b89eaed7a6e264940ce6..07fc88981972d0274344aa7f80fa1588297c43fd 100644
 --- a/src/main/java/net/minecraft/world/level/block/Blocks.java
 +++ b/src/main/java/net/minecraft/world/level/block/Blocks.java
 @@ -7,6 +7,7 @@ import net.minecraft.core.Registry;
@@ -5635,7 +5635,7 @@ index 5b5086f4016fc9015ac53bafd2c80bc724d575e4..38e27d177dfb3942e8f2c66849bb2b71
      }
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/ComposterBlock.java b/src/main/java/net/minecraft/world/level/block/ComposterBlock.java
-index c7ca1390bc8becb46dd843a4e1006af99b8639bb..b379aa62e5ab8811d20a6d646ce60549476b6d88 100644
+index c7ca1390bc8becb46dd843a4e1006af99b8639bb..2ea33d5715eb55cf9ee89f24da622f523277da83 100644
 --- a/src/main/java/net/minecraft/world/level/block/ComposterBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/ComposterBlock.java
 @@ -38,6 +38,7 @@ import net.minecraft.world.WorldlyContainerHolder;
@@ -5705,7 +5705,7 @@ index c7ca1390bc8becb46dd843a4e1006af99b8639bb..b379aa62e5ab8811d20a6d646ce60549
          ComposterBlock.add(0.85F, Items.BREAD);
          ComposterBlock.add(0.85F, Items.BAKED_POTATO);
 diff --git a/src/main/java/net/minecraft/world/level/block/EnchantmentTableBlock.java b/src/main/java/net/minecraft/world/level/block/EnchantmentTableBlock.java
-index f4ee3ce287528337a0f9a3b612c157254f895a58..ac96e9274929850c61d5bc499e2ba9eb2eef8cbb 100644
+index f4ee3ce287528337a0f9a3b612c157254f895a58..2636afc5a35bd0784aa50f44a7689f5b09e2db86 100644
 --- a/src/main/java/net/minecraft/world/level/block/EnchantmentTableBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/EnchantmentTableBlock.java
 @@ -5,6 +5,7 @@ import javax.annotation.Nullable;
@@ -5743,7 +5743,7 @@ index f4ee3ce287528337a0f9a3b612c157254f895a58..ac96e9274929850c61d5bc499e2ba9eb
  
      @Override
 diff --git a/src/main/java/net/minecraft/world/level/block/FireBlock.java b/src/main/java/net/minecraft/world/level/block/FireBlock.java
-index e34b8cff424ad58eee65a65fa510fa9908dbdf39..0d6bafb4beb01fe6baeb402d8620f36a572ea117 100644
+index e34b8cff424ad58eee65a65fa510fa9908dbdf39..32110551edb503d5d81635f3ee08c81b66349df5 100644
 --- a/src/main/java/net/minecraft/world/level/block/FireBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/FireBlock.java
 @@ -28,6 +28,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
@@ -6026,7 +6026,7 @@ index e34b8cff424ad58eee65a65fa510fa9908dbdf39..0d6bafb4beb01fe6baeb402d8620f36a
      }
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/InfestedBlock.java b/src/main/java/net/minecraft/world/level/block/InfestedBlock.java
-index f33033c99ac52e2c64adeb8c58ae87625e92b299..423e5bcd3ea481f20abac1ddc5d2aaad730da4d4 100644
+index f33033c99ac52e2c64adeb8c58ae87625e92b299..486422fe2e458fbd9988b8f55c4c06de674a5c54 100644
 --- a/src/main/java/net/minecraft/world/level/block/InfestedBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/InfestedBlock.java
 @@ -5,6 +5,7 @@ import java.util.Iterator;
@@ -6053,7 +6053,7 @@ index f33033c99ac52e2c64adeb8c58ae87625e92b299..423e5bcd3ea481f20abac1ddc5d2aaad
          InfestedBlock.BLOCK_BY_HOST_BLOCK.put(regularBlock, this);
      }
 diff --git a/src/main/java/net/minecraft/world/level/block/NoteBlock.java b/src/main/java/net/minecraft/world/level/block/NoteBlock.java
-index c14eb4f7decdbcd6176d3bff95d595a947d4ec95..67c14254c1fca29290437c0335a113119ca7140e 100644
+index c14eb4f7decdbcd6176d3bff95d595a947d4ec95..115df2d50fe0c6ba7cf9e2f1e799afe71c3630de 100644
 --- a/src/main/java/net/minecraft/world/level/block/NoteBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/NoteBlock.java
 @@ -70,7 +70,7 @@ public class NoteBlock extends Block {
@@ -6066,7 +6066,7 @@ index c14eb4f7decdbcd6176d3bff95d595a947d4ec95..67c14254c1fca29290437c0335a11311
  
      }
 diff --git a/src/main/java/net/minecraft/world/level/block/StairBlock.java b/src/main/java/net/minecraft/world/level/block/StairBlock.java
-index 827713a332baa6d280cd61d40faf8f6243b3b08c..d0a0b1f696441c8ebcda8cc96a33fae3764e89cc 100644
+index 827713a332baa6d280cd61d40faf8f6243b3b08c..33ccb8c4d0282a27101fca72ed37352013af3ca2 100644
 --- a/src/main/java/net/minecraft/world/level/block/StairBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/StairBlock.java
 @@ -81,7 +81,7 @@ public class StairBlock extends Block implements SimpleWaterloggedBlock {
@@ -6079,7 +6079,7 @@ index 827713a332baa6d280cd61d40faf8f6243b3b08c..d0a0b1f696441c8ebcda8cc96a33fae3
          this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HALF, Half.BOTTOM).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, Boolean.valueOf(false)));
          this.base = baseBlockState.getBlock();
 diff --git a/src/main/java/net/minecraft/world/level/block/StonecutterBlock.java b/src/main/java/net/minecraft/world/level/block/StonecutterBlock.java
-index 0a95842c53a9d0286c57bcb42db97e468e30fb7d..52e1e78adc7c3fe69edb9eec0242a4e3819e074b 100644
+index 0a95842c53a9d0286c57bcb42db97e468e30fb7d..2b57654c5b1a0f8dad230beda56859e961fd4999 100644
 --- a/src/main/java/net/minecraft/world/level/block/StonecutterBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/StonecutterBlock.java
 @@ -25,7 +25,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
@@ -6092,7 +6092,7 @@ index 0a95842c53a9d0286c57bcb42db97e468e30fb7d..52e1e78adc7c3fe69edb9eec0242a4e3
      protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 9.0D, 16.0D);
  
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
-index ebf718cea97d4ff88e888675eeceeca253dc01cb..67212a55110cd752eb7fd3013175b1a1e995050e 100644
+index ebf718cea97d4ff88e888675eeceeca253dc01cb..722f7033c723dd5a69a401ffe9946a6886a2fb7d 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
 @@ -45,6 +45,9 @@ import net.minecraft.world.level.block.Blocks;
@@ -6172,7 +6172,7 @@ index ebf718cea97d4ff88e888675eeceeca253dc01cb..67212a55110cd752eb7fd3013175b1a1
          AbstractFurnaceBlockEntity.add(map, (ItemLike) Blocks.BAMBOO, 50);
          AbstractFurnaceBlockEntity.add(map, (ItemLike) Blocks.DEAD_BUSH, 100);
 diff --git a/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java b/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java
-index 1be8276594db09231f97767878ed475138e79946..096b920c61e95723b3a93e8557e47870d5ffe7ff 100644
+index e784f0b6d862b1d981ce7d63dbf7f1e3e21b0923..882ba5304052f3bcac2fdaa4b942f91c0ccaffe8 100644
 --- a/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java
 @@ -40,6 +40,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
@@ -6194,7 +6194,7 @@ index 1be8276594db09231f97767878ed475138e79946..096b920c61e95723b3a93e8557e47870
                      return false;
                  } else if (direction == Direction.UP && pos.getY() == world.getMaxBuildHeight() - 1) {
 diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
-index 09c95fea219fc777aeb9354387aa694fcc9fe03a..d899bb673a8564558121f692b1373cf89bac7dfd 100644
+index 09c95fea219fc777aeb9354387aa694fcc9fe03a..8fe5a34529622bbaa8def0b2a18ca9aff23d5792 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/BlockBehaviour.java
 @@ -19,6 +19,7 @@ import net.minecraft.core.HolderSet;
@@ -6284,7 +6284,7 @@ index 09c95fea219fc777aeb9354387aa694fcc9fe03a..d899bb673a8564558121f692b1373cf8
              return this.offsetType;
          }
 diff --git a/src/main/java/net/minecraft/world/level/block/state/StateHolder.java b/src/main/java/net/minecraft/world/level/block/state/StateHolder.java
-index 340d0648fcf9b9749c4daa1c25a226b947707c3d..d3033f13b92966d6b40853e64f096ab03efcc567 100644
+index 340d0648fcf9b9749c4daa1c25a226b947707c3d..85389883e50c59438bf6002c5e2e850d31d2686b 100644
 --- a/src/main/java/net/minecraft/world/level/block/state/StateHolder.java
 +++ b/src/main/java/net/minecraft/world/level/block/state/StateHolder.java
 @@ -81,6 +81,19 @@ public abstract class StateHolder<O, S> {
@@ -6308,7 +6308,7 @@ index 340d0648fcf9b9749c4daa1c25a226b947707c3d..d3033f13b92966d6b40853e64f096ab0
          return Collections.unmodifiableCollection(this.values.keySet());
      }
 diff --git a/src/main/java/net/minecraft/world/level/chunk/HashMapPalette.java b/src/main/java/net/minecraft/world/level/chunk/HashMapPalette.java
-index ba9b0f419b0785a0b1e3bc57f18bfe5edaa192bd..b21d11d08f7b69240e416bee1a7a2f0be49d627a 100644
+index ba9b0f419b0785a0b1e3bc57f18bfe5edaa192bd..15b442229c2ed58ed93dc52dc5424b517bd14278 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/HashMapPalette.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/HashMapPalette.java
 @@ -11,7 +11,7 @@ public class HashMapPalette<T> implements Palette<T> {
@@ -6355,7 +6355,7 @@ index ba9b0f419b0785a0b1e3bc57f18bfe5edaa192bd..b21d11d08f7b69240e416bee1a7a2f0b
 +
  }
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
-index 3ea5715b065ac0aeea68feadaaf871564d6572ec..8509c425e43cf65e4a54c89e09d43cec3d9abefa 100644
+index 3ea5715b065ac0aeea68feadaaf871564d6572ec..2a01d3d22566255c0903820daa6dc8efd9df018b 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunkSection.java
 @@ -333,4 +333,45 @@ public class LevelChunkSection {
@@ -6405,7 +6405,7 @@ index 3ea5715b065ac0aeea68feadaaf871564d6572ec..8509c425e43cf65e4a54c89e09d43cec
 +
  }
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LinearPalette.java b/src/main/java/net/minecraft/world/level/chunk/LinearPalette.java
-index fb65457bc03a24b5f67e8eef538da8d6c2aabd6e..1732975254176f19f80d3563488b7f30959dbbff 100644
+index fb65457bc03a24b5f67e8eef538da8d6c2aabd6e..d6715b8386f6a639a6221840e1eecb87d19be5dc 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LinearPalette.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LinearPalette.java
 @@ -10,7 +10,7 @@ public class LinearPalette<T> implements Palette<T> {
@@ -6452,7 +6452,7 @@ index fb65457bc03a24b5f67e8eef538da8d6c2aabd6e..1732975254176f19f80d3563488b7f30
 +
  }
 diff --git a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
-index 5f578da4a7251b17d6a12821a3cd090e66b52a8a..934af8c6f568f3396523dcd23ac87878243b7275 100644
+index 5f578da4a7251b17d6a12821a3cd090e66b52a8a..f036df38e4b1c98b3ff6465bf3a6118e063c3adf 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/PalettedContainer.java
 @@ -233,6 +233,21 @@ public class PalettedContainer<T> implements PaletteResize<T>, PalettedContainer
@@ -6500,7 +6500,7 @@ index 5f578da4a7251b17d6a12821a3cd090e66b52a8a..934af8c6f568f3396523dcd23ac87878
  
              if (chunkPacketInfo != null) {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/SingleValuePalette.java b/src/main/java/net/minecraft/world/level/chunk/SingleValuePalette.java
-index 76cfa5797a71df34c7b933798815863f437debcd..f7b8bcbc27c52176b68dcd558531ec8349f06bec 100644
+index 76cfa5797a71df34c7b933798815863f437debcd..32b5a52f4e454175d3e0eee44d7ba57d96b00fcf 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/SingleValuePalette.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/SingleValuePalette.java
 @@ -8,12 +8,12 @@ import net.minecraft.network.FriendlyByteBuf;
@@ -6572,7 +6572,7 @@ index 76cfa5797a71df34c7b933798815863f437debcd..f7b8bcbc27c52176b68dcd558531ec83
 +
  }
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/feature/configurations/TreeConfiguration.java b/src/main/java/net/minecraft/world/level/levelgen/feature/configurations/TreeConfiguration.java
-index b8405113d67a02ee933af65a7b8a912df64356b4..442d6ba895145b0afe7069e5e81c91d062e30c19 100644
+index b8405113d67a02ee933af65a7b8a912df64356b4..94683dd3896bb37193fd4e0237062696f67fb44a 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/feature/configurations/TreeConfiguration.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/feature/configurations/TreeConfiguration.java
 @@ -3,15 +3,24 @@ package net.minecraft.world.level.levelgen.feature.configurations;
@@ -6654,7 +6654,7 @@ index b8405113d67a02ee933af65a7b8a912df64356b4..442d6ba895145b0afe7069e5e81c91d0
              return new TreeConfiguration(this.trunkProvider, this.trunkPlacer, this.foliageProvider, this.foliagePlacer, this.rootPlacer, this.dirtProvider, this.minimumSize, this.decorators, this.ignoreVines, this.forceDirt);
          }
 diff --git a/src/main/java/net/minecraft/world/level/portal/PortalShape.java b/src/main/java/net/minecraft/world/level/portal/PortalShape.java
-index 3414f3190e1a760c602613e82e551e797c3aa575..99e71bad80a8090968df054e10b465d38b64dadf 100644
+index 3414f3190e1a760c602613e82e551e797c3aa575..7832be25e41ab0cdf6c0b8b4b8eb25a96b8d2092 100644
 --- a/src/main/java/net/minecraft/world/level/portal/PortalShape.java
 +++ b/src/main/java/net/minecraft/world/level/portal/PortalShape.java
 @@ -17,8 +17,10 @@ import net.minecraft.world.level.block.NetherPortalBlock;
@@ -6678,7 +6678,7 @@ index 3414f3190e1a760c602613e82e551e797c3aa575..99e71bad80a8090968df054e10b465d3
      private final LevelAccessor level;
      private final Direction.Axis axis;
 diff --git a/src/main/java/net/minecraft/world/level/storage/loot/LootTables.java b/src/main/java/net/minecraft/world/level/storage/loot/LootTables.java
-index aef7198ca8b781d02204098811086b25050ab262..c51bd7abafdb609c9e4086b33e6210f1f1f9ba74 100644
+index aef7198ca8b781d02204098811086b25050ab262..b499428caa585b203fb44ad944886383d12d904b 100644
 --- a/src/main/java/net/minecraft/world/level/storage/loot/LootTables.java
 +++ b/src/main/java/net/minecraft/world/level/storage/loot/LootTables.java
 @@ -9,12 +9,17 @@ import java.util.Map;
@@ -6718,7 +6718,7 @@ index aef7198ca8b781d02204098811086b25050ab262..c51bd7abafdb609c9e4086b33e6210f1
          LootContextParamSet lootcontextparameterset = LootContextParamSets.ALL_PARAMS;
 diff --git a/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerAntiXrayCustom.java b/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerAntiXrayCustom.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..8437ad716fc469e43579c7197aad7b541162a48e
+index 0000000000000000000000000000000000000000..0cb9a17cc994f48346b1b98d3e25df1ccee6846f
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerAntiXrayCustom.java
 @@ -0,0 +1,29 @@
@@ -6753,7 +6753,7 @@ index 0000000000000000000000000000000000000000..8437ad716fc469e43579c7197aad7b54
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerCustom.java b/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerCustom.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7e67ba40e51972c54167ff4e9f41401bfeb35435
+index 0000000000000000000000000000000000000000..50dc8e695bbbf9e27ed49b9389c241ca51b9c274
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerCustom.java
 @@ -0,0 +1,212 @@
@@ -6971,7 +6971,7 @@ index 0000000000000000000000000000000000000000..7e67ba40e51972c54167ff4e9f41401b
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerModifier.java b/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerModifier.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..5657efde50d31c1661b9c47a596f0df58c137803
+index 0000000000000000000000000000000000000000..cd3e2522d5cb9d285a7224fa1e9efc449638d408
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerModifier.java
 @@ -0,0 +1,15 @@
@@ -6992,7 +6992,7 @@ index 0000000000000000000000000000000000000000..5657efde50d31c1661b9c47a596f0df5
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerModifierBase.java b/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerModifierBase.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..a50c702b7e653d74a1f8f7d0f472c6ae5ac624e2
+index 0000000000000000000000000000000000000000..a3467234bd9e051e38f9a8ac12c47f4842cea62a
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/antixray/ChunkPacketBlockControllerModifierBase.java
 @@ -0,0 +1,66 @@
@@ -7063,7 +7063,7 @@ index 0000000000000000000000000000000000000000..a50c702b7e653d74a1f8f7d0f472c6ae
 +
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTagsProvider.java b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTagsProvider.java
-index 347f0b29fbe89eaab83692e3991aa19752c0e8fd..a78fda932753da88ca14c3b4469431197db9f6e0 100644
+index da61658e94e680be7caf40e75b0534970e310ab0..a238142b5384e1a1a3089c3642df8e8b2e909619 100644
 --- a/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTagsProvider.java
 +++ b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomeTagsProvider.java
 @@ -2,11 +2,19 @@
@@ -7107,7 +7107,7 @@ index 347f0b29fbe89eaab83692e3991aa19752c0e8fd..a78fda932753da88ca14c3b446943119
  }
 diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomes.java b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomes.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..482cc6dc13643d1101e28ebd15b9dc7a4bc08732
+index 0000000000000000000000000000000000000000..924d1bcbf571819a4660c27f15fe6aac64e23d52
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/biome/SuCraftBiomes.java
 @@ -0,0 +1,28 @@
@@ -7141,7 +7141,7 @@ index 0000000000000000000000000000000000000000..482cc6dc13643d1101e28ebd15b9dc7a
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftBiomeDefaultFeatures.java b/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftBiomeDefaultFeatures.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..56f7f8e30e56bade4e0d320c151d01cf46c6dd3e
+index 0000000000000000000000000000000000000000..c0dcaa6e8c26e3e09acbbff2e7a16fe23b7ddaac
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftBiomeDefaultFeatures.java
 @@ -0,0 +1,18 @@
@@ -7165,7 +7165,7 @@ index 0000000000000000000000000000000000000000..56f7f8e30e56bade4e0d320c151d01cf
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftFeatureUtils.java b/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftFeatureUtils.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..ddceb5f9379d889aa544e108321d9fd719406952
+index 0000000000000000000000000000000000000000..29ab3db9dad43a0fc03d612cb0d4f69c4ddc6ff0
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftFeatureUtils.java
 @@ -0,0 +1,27 @@
@@ -7198,7 +7198,7 @@ index 0000000000000000000000000000000000000000..ddceb5f9379d889aa544e108321d9fd7
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftTreeFeatures.java b/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftTreeFeatures.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..1461c3646380f1f4601145b23932bc43411d7cad
+index 0000000000000000000000000000000000000000..310acef35fbdddb83ebdf60688357430b8823d75
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftTreeFeatures.java
 @@ -0,0 +1,65 @@
@@ -7269,7 +7269,7 @@ index 0000000000000000000000000000000000000000..1461c3646380f1f4601145b23932bc43
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftVegetationFeatures.java b/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftVegetationFeatures.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..a08fcd1f98feb5fad0ab473f7fb8f2f6d841dc07
+index 0000000000000000000000000000000000000000..50bcfd957a7905033bb7222c94763cd6561aecea
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/biome/features/SuCraftVegetationFeatures.java
 @@ -0,0 +1,45 @@
@@ -7320,7 +7320,7 @@ index 0000000000000000000000000000000000000000..a08fcd1f98feb5fad0ab473f7fb8f2f6
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/placements/SuCraftPlacementUtils.java b/src/main/java/nl/martijnmuijsers/paper/biome/placements/SuCraftPlacementUtils.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..174e77c1120b4dfdc118b3abfb6125abe7dcf21a
+index 0000000000000000000000000000000000000000..c3bc0c6bbca6d32de89710e79cdee94c72783949
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/biome/placements/SuCraftPlacementUtils.java
 @@ -0,0 +1,27 @@
@@ -7353,7 +7353,7 @@ index 0000000000000000000000000000000000000000..174e77c1120b4dfdc118b3abfb6125ab
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/placements/SuCraftTreePlacements.java b/src/main/java/nl/martijnmuijsers/paper/biome/placements/SuCraftTreePlacements.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..cabda099246598ac80fb0085bc27302886f41b8a
+index 0000000000000000000000000000000000000000..94c4322d89ea357ff0d50cb9ae26fa130989f24c
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/biome/placements/SuCraftTreePlacements.java
 @@ -0,0 +1,65 @@
@@ -7424,7 +7424,7 @@ index 0000000000000000000000000000000000000000..cabda099246598ac80fb0085bc273028
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/biome/placements/SuCraftVegetationPlacements.java b/src/main/java/nl/martijnmuijsers/paper/biome/placements/SuCraftVegetationPlacements.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7a0d4c26b5804b2acafa9c2cb3e867a6e131e1b9
+index 0000000000000000000000000000000000000000..42180e6aca66574edaebd844ed2b9ae192d85fda
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/biome/placements/SuCraftVegetationPlacements.java
 @@ -0,0 +1,19 @@
@@ -7449,7 +7449,7 @@ index 0000000000000000000000000000000000000000..7a0d4c26b5804b2acafa9c2cb3e867a6
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/ConcreteDirectionalBlock.java b/src/main/java/nl/martijnmuijsers/paper/block/ConcreteDirectionalBlock.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..ea2f292f7d26674b1bb834211af7a3997b21fee0
+index 0000000000000000000000000000000000000000..28b7855c6cc7fb66692280ee840a37afb38273ec
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/ConcreteDirectionalBlock.java
 @@ -0,0 +1,36 @@
@@ -7491,7 +7491,7 @@ index 0000000000000000000000000000000000000000..ea2f292f7d26674b1bb834211af7a399
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/FallingSlabBlock.java b/src/main/java/nl/martijnmuijsers/paper/block/FallingSlabBlock.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..745b96e61f87fc7116cf2cb4dd85210bd6a548a3
+index 0000000000000000000000000000000000000000..aa21bc90e0d3917e8adc87b2702dc745ae64ae0a
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/FallingSlabBlock.java
 @@ -0,0 +1,76 @@
@@ -7573,7 +7573,7 @@ index 0000000000000000000000000000000000000000..745b96e61f87fc7116cf2cb4dd85210b
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/FallingStairBlock.java b/src/main/java/nl/martijnmuijsers/paper/block/FallingStairBlock.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..b5c3f679c8a3d0abbd6dbccfba6c7437f3674b8a
+index 0000000000000000000000000000000000000000..f52be0965e597f94a5311912796c14921df5016a
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/FallingStairBlock.java
 @@ -0,0 +1,73 @@
@@ -7686,7 +7686,7 @@ diff --git a/src/main/java/net/minecraft/world/level/block/StrippedBlock.java b/
 similarity index 84%
 rename from src/main/java/net/minecraft/world/level/block/StrippedBlock.java
 rename to src/main/java/nl/martijnmuijsers/paper/block/StrippedBlock.java
-index 86f2705b9a943a8aa599d2354d1270e5be3de126..d0a83213b84ade6294aaf2e241fd2fbd383a3350 100644
+index 55022bf39ac71f03774c547e6f2498795a2c8306..f17c14326aabe40426cc4d7436f8401d0cd62575 100644
 --- a/src/main/java/net/minecraft/world/level/block/StrippedBlock.java
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/StrippedBlock.java
 @@ -1,6 +1,6 @@
@@ -7729,10 +7729,10 @@ index 86f2705b9a943a8aa599d2354d1270e5be3de126..d0a83213b84ade6294aaf2e241fd2fbd
          world.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, newState));
      }
 diff --git a/src/main/java/net/minecraft/world/level/block/StrippedHyphaeBlock.java b/src/main/java/nl/martijnmuijsers/paper/block/StrippedHyphaeBlock.java
-similarity index 78%
+similarity index 77%
 rename from src/main/java/net/minecraft/world/level/block/StrippedHyphaeBlock.java
 rename to src/main/java/nl/martijnmuijsers/paper/block/StrippedHyphaeBlock.java
-index 67c3945e2c396cb2cb6dbf01771cc7237a2d5590..ff1dc0c9b34dfd6c1c9e8d6f30ad7446fb25ac65 100644
+index c18aca56348a11bd33597710f770f977aa8da873..bf1d22c99098b0085ff707da7a493a5a23bbe43b 100644
 --- a/src/main/java/net/minecraft/world/level/block/StrippedHyphaeBlock.java
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/StrippedHyphaeBlock.java
 @@ -1,7 +1,9 @@
@@ -7750,7 +7750,7 @@ diff --git a/src/main/java/net/minecraft/world/level/block/StrippedLogBlock.java
 similarity index 79%
 rename from src/main/java/net/minecraft/world/level/block/StrippedLogBlock.java
 rename to src/main/java/nl/martijnmuijsers/paper/block/StrippedLogBlock.java
-index 00e7ba6762e9dd3201db59f43dadd6d333d4aa1a..fdd9dc671fffea2113e51b5e8e2ad6718306ac7d 100644
+index 0a1dbd9fa8086d6d7b3b231de859ffbd9f0f5653..49760a0709b8c183aecc6d2cbddbfa9b2e4166f0 100644
 --- a/src/main/java/net/minecraft/world/level/block/StrippedLogBlock.java
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/StrippedLogBlock.java
 @@ -1,8 +1,11 @@
@@ -7768,7 +7768,7 @@ index 00e7ba6762e9dd3201db59f43dadd6d333d4aa1a..fdd9dc671fffea2113e51b5e8e2ad671
  import net.minecraft.world.level.material.MaterialColor;
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/StrippedSlabBlock.java b/src/main/java/nl/martijnmuijsers/paper/block/StrippedSlabBlock.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..64f29a739d85db6a31f3716570c9dace96b43f79
+index 0000000000000000000000000000000000000000..8af0e6c1cf161c43d3402d394c5780158c2604a6
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/StrippedSlabBlock.java
 @@ -0,0 +1,75 @@
@@ -7849,7 +7849,7 @@ index 0000000000000000000000000000000000000000..64f29a739d85db6a31f3716570c9dace
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/StrippedStairBlock.java b/src/main/java/nl/martijnmuijsers/paper/block/StrippedStairBlock.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..8be887cdbbfa6e1abea8672dffc45c75f00267a1
+index 0000000000000000000000000000000000000000..8922a271310d8df6f9db1c0c77961d230bbf1d06
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/StrippedStairBlock.java
 @@ -0,0 +1,72 @@
@@ -7929,7 +7929,7 @@ diff --git a/src/main/java/net/minecraft/world/level/block/StrippedStemBlock.jav
 similarity index 77%
 rename from src/main/java/net/minecraft/world/level/block/StrippedStemBlock.java
 rename to src/main/java/nl/martijnmuijsers/paper/block/StrippedStemBlock.java
-index e88632f8005dee66908c773fd4e37c0ac0ec665a..696d924be3255690ae676ed3cb8cf9a7a0d531ad 100644
+index 6ff782b536a1a2a6afb6ec233cb68b825be36183..5f0c4b08b0ae9708d60ad0b13ff9236d5bb75778 100644
 --- a/src/main/java/net/minecraft/world/level/block/StrippedStemBlock.java
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/StrippedStemBlock.java
 @@ -1,7 +1,9 @@
@@ -7947,7 +7947,7 @@ diff --git a/src/main/java/net/minecraft/world/level/block/StrippedWoodBlock.jav
 similarity index 77%
 rename from src/main/java/net/minecraft/world/level/block/StrippedWoodBlock.java
 rename to src/main/java/nl/martijnmuijsers/paper/block/StrippedWoodBlock.java
-index 4d99b2911919e486f368faad86b4e47f75400b64..9a77c84d6f7c6a608cff04835776fadf611a7f59 100644
+index 32d7035f98aa575c4b65d154c312a13047a24fb7..3e2e9ed5d1f8f1489a29b55746141ab084589cec 100644
 --- a/src/main/java/net/minecraft/world/level/block/StrippedWoodBlock.java
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/StrippedWoodBlock.java
 @@ -1,7 +1,9 @@
@@ -7963,7 +7963,7 @@ index 4d99b2911919e486f368faad86b4e47f75400b64..9a77c84d6f7c6a608cff04835776fadf
  import org.jetbrains.annotations.NotNull;
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlockLoot.java b/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlockLoot.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..5a2e8c0c52ee2e6109d85445f1e4242fe6a1b851
+index 0000000000000000000000000000000000000000..236cb000d78e59e2ef360a79c44b225d06d58384
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlockLoot.java
 @@ -0,0 +1,49 @@
@@ -8018,7 +8018,7 @@ index 0000000000000000000000000000000000000000..5a2e8c0c52ee2e6109d85445f1e4242f
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlockTags.java b/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlockTags.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..95db5f45c4e20ce53de4f76e834b02ed306ba5ec
+index 0000000000000000000000000000000000000000..d14c22ee7fa1ae4d574bc280a11f05089fa99872
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlockTags.java
 @@ -0,0 +1,58 @@
@@ -8082,7 +8082,7 @@ index 0000000000000000000000000000000000000000..95db5f45c4e20ce53de4f76e834b02ed
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlockTagsProvider.java b/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlockTagsProvider.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..8cf7b921442f63a9f5246ff22faf6be6b861fcd6
+index 0000000000000000000000000000000000000000..8fb3cb08eab280561edcc4bc1814879513afed3d
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlockTagsProvider.java
 @@ -0,0 +1,261 @@
@@ -8349,7 +8349,7 @@ index 0000000000000000000000000000000000000000..8cf7b921442f63a9f5246ff22faf6be6
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlocks.java b/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlocks.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..ece64c736572873056967040dac561af6777d0c4
+index 0000000000000000000000000000000000000000..929af7054b3e23318b1952b1da2624787e09101a
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/SuCraftBlocks.java
 @@ -0,0 +1,1531 @@
@@ -9886,7 +9886,7 @@ index 0000000000000000000000000000000000000000..ece64c736572873056967040dac561af
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/SuCraftObservableBlockTagsSpreader.java b/src/main/java/nl/martijnmuijsers/paper/block/SuCraftObservableBlockTagsSpreader.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..8704a102dec8468e7dee4e342361d9b65ce5dce4
+index 0000000000000000000000000000000000000000..696ab681602cdae623217703be2b607402906838
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/SuCraftObservableBlockTagsSpreader.java
 @@ -0,0 +1,65 @@
@@ -9957,7 +9957,7 @@ index 0000000000000000000000000000000000000000..8704a102dec8468e7dee4e342361d9b6
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/UsedHostBlockStates.java b/src/main/java/nl/martijnmuijsers/paper/block/UsedHostBlockStates.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..34357c237d9a45e91c9de0b5731fcccae3b27447
+index 0000000000000000000000000000000000000000..684ded14e45162df30812521cd5418b3c3441087
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/UsedHostBlockStates.java
 @@ -0,0 +1,116 @@
@@ -10079,7 +10079,7 @@ index 0000000000000000000000000000000000000000..34357c237d9a45e91c9de0b5731fccca
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockEntityItemMappingsForVersionCompatability.java b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockEntityItemMappingsForVersionCompatability.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..d1e894ae02be2f94e365d40d4ba948dd1221ca13
+index 0000000000000000000000000000000000000000..ade98db12fcd3d697c65c25909a9406ec644e017
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockEntityItemMappingsForVersionCompatability.java
 @@ -0,0 +1,526 @@
@@ -10611,7 +10611,7 @@ index 0000000000000000000000000000000000000000..d1e894ae02be2f94e365d40d4ba948dd
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockReplacementRule.java b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockReplacementRule.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..aaca165521e803163202189f063fec96564f99a9
+index 0000000000000000000000000000000000000000..5a73f13b02ef3bba83d4dd59d7e7ee803f050224
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockReplacementRule.java
 @@ -0,0 +1,475 @@
@@ -11092,7 +11092,7 @@ index 0000000000000000000000000000000000000000..aaca165521e803163202189f063fec96
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockReplacementRuleBase.java b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockReplacementRuleBase.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..1697ad1f1a14bc0a29d4ecf50df54a6321f38503
+index 0000000000000000000000000000000000000000..add53934fedc587fcedfdebbe88ac3239ddbfe68
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockReplacementRuleBase.java
 @@ -0,0 +1,151 @@
@@ -11249,7 +11249,7 @@ index 0000000000000000000000000000000000000000..1697ad1f1a14bc0a29d4ecf50df54a63
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockReplacementRuleBuilder.java b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockReplacementRuleBuilder.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..36ca00e54abe2d6787e4ff286a3811dc6fe81e13
+index 0000000000000000000000000000000000000000..233429513250a7c65dac49febf49b7ec47115923
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/BlockReplacementRuleBuilder.java
 @@ -0,0 +1,582 @@
@@ -11837,7 +11837,7 @@ index 0000000000000000000000000000000000000000..36ca00e54abe2d6787e4ff286a3811dc
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/HostItemReplacementRule.java b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/HostItemReplacementRule.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..a25b1d9970f82b6d7085b977e29f83e53202763d
+index 0000000000000000000000000000000000000000..beada388a7d65a09b64f70bb6fc4f4aeb8bde7f0
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/HostItemReplacementRule.java
 @@ -0,0 +1,64 @@
@@ -11907,7 +11907,7 @@ index 0000000000000000000000000000000000000000..a25b1d9970f82b6d7085b977e29f83e5
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/MultiStateRealBlockReplacementRule.java b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/MultiStateRealBlockReplacementRule.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..9c28ab1b068bf29d160638660da31d2c3ddb6b1d
+index 0000000000000000000000000000000000000000..1a9e82f912c9210b8fe3b4644cad64e70939a024
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/MultiStateRealBlockReplacementRule.java
 @@ -0,0 +1,206 @@
@@ -12119,7 +12119,7 @@ index 0000000000000000000000000000000000000000..9c28ab1b068bf29d160638660da31d2c
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/RealItemReplacementRule.java b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/RealItemReplacementRule.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..97d59c6c248d3323c3f3e8d320c2b91656b9f1bf
+index 0000000000000000000000000000000000000000..4132ec96dd5a40698e8795947a0044c3228bebb8
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/RealItemReplacementRule.java
 @@ -0,0 +1,102 @@
@@ -12227,7 +12227,7 @@ index 0000000000000000000000000000000000000000..97d59c6c248d3323c3f3e8d320c2b916
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/SingleMultiStateRealBlockReplacementRuleBuilder.java b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/SingleMultiStateRealBlockReplacementRuleBuilder.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..8d6a19c4a32bdb74e0b34a0840e2f18205dbeff3
+index 0000000000000000000000000000000000000000..c3156841fd10b55d122ac00b05588b440c32b362
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/SingleMultiStateRealBlockReplacementRuleBuilder.java
 @@ -0,0 +1,314 @@
@@ -12547,7 +12547,7 @@ index 0000000000000000000000000000000000000000..8d6a19c4a32bdb74e0b34a0840e2f182
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/SingleStateRealBlockReplacementRule.java b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/SingleStateRealBlockReplacementRule.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..2deef3cc16dd174ab2e4e5c8d7a38c039f06fb26
+index 0000000000000000000000000000000000000000..53939a1c919675d8e753d89bd59df26b6673b49a
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/block/replacementrule/SingleStateRealBlockReplacementRule.java
 @@ -0,0 +1,240 @@
@@ -12793,7 +12793,7 @@ index 0000000000000000000000000000000000000000..2deef3cc16dd174ab2e4e5c8d7a38c03
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BaseBlockEntityModelVisualProperties.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BaseBlockEntityModelVisualProperties.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..0cab32e59740f55237ab643e66eb77e0faba610b
+index 0000000000000000000000000000000000000000..af4d1b8c8828d643b8141b35bfe84a20126934cd
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BaseBlockEntityModelVisualProperties.java
 @@ -0,0 +1,50 @@
@@ -12849,7 +12849,7 @@ index 0000000000000000000000000000000000000000..0cab32e59740f55237ab643e66eb77e0
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelPosition.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelPosition.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..a9ffdb7d6482260b6f99b3b7671fc1c91f42ef19
+index 0000000000000000000000000000000000000000..2e0e8b6ad625d5fa14d54a3de841d6b22db826cf
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelPosition.java
 @@ -0,0 +1,31 @@
@@ -12886,7 +12886,7 @@ index 0000000000000000000000000000000000000000..a9ffdb7d6482260b6f99b3b7671fc1c9
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelProximity.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelProximity.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..6198b7bd28de54b6933d893eea6aea71670d7b46
+index 0000000000000000000000000000000000000000..8d729b12d574f0fcc92723ffb3584602046652c8
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelProximity.java
 @@ -0,0 +1,26 @@
@@ -12918,7 +12918,7 @@ index 0000000000000000000000000000000000000000..6198b7bd28de54b6933d893eea6aea71
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelVisualProperties.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelVisualProperties.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..70b3b5214f09bfd4a845edd1b83f02362fe4e26d
+index 0000000000000000000000000000000000000000..e2ae5ce35647e4f0fdbda3beaba7d933e4bafec9
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelVisualProperties.java
 @@ -0,0 +1,14 @@
@@ -12938,7 +12938,7 @@ index 0000000000000000000000000000000000000000..70b3b5214f09bfd4a845edd1b83f0236
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelVisualPropertiesUniverse.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelVisualPropertiesUniverse.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..8387ee1aac7fe2cfaaa471985c8ec1d9b749db89
+index 0000000000000000000000000000000000000000..916d36667946148668dee2876d2b91d8cd4f2db0
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/BlockEntityModelVisualPropertiesUniverse.java
 @@ -0,0 +1,17 @@
@@ -12961,7 +12961,7 @@ index 0000000000000000000000000000000000000000..8387ee1aac7fe2cfaaa471985c8ec1d9
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/Model.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/Model.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..b6853ca72943d1f620a2ac7faab6b177080e1b30
+index 0000000000000000000000000000000000000000..c7ec2d4fd49676cd02a0a08d461d65c210657723
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/Model.java
 @@ -0,0 +1,278 @@
@@ -13245,7 +13245,7 @@ index 0000000000000000000000000000000000000000..b6853ca72943d1f620a2ac7faab6b177
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelContent.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelContent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..3b7f68902c055e612321c435d5026ff0e3f60d2b
+index 0000000000000000000000000000000000000000..6a9a5a13f440866061c009b2fcc931b28e0e27d7
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelContent.java
 @@ -0,0 +1,1371 @@
@@ -14622,7 +14622,7 @@ index 0000000000000000000000000000000000000000..3b7f68902c055e612321c435d5026ff0
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelContentCreation.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelContentCreation.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..a8d98bfd5aa38c7c0d313855a04a0fcabf7107fb
+index 0000000000000000000000000000000000000000..657b0c7b094e5018ada39746792243c6dece8b2d
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelContentCreation.java
 @@ -0,0 +1,13 @@
@@ -14641,7 +14641,7 @@ index 0000000000000000000000000000000000000000..a8d98bfd5aa38c7c0d313855a04a0fca
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelCreation.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelCreation.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f5f95e2387db67cf1aa8c3e1a5da8ee7066c7514
+index 0000000000000000000000000000000000000000..4bee355c6ab059693913e47f1fc178522937cd89
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelCreation.java
 @@ -0,0 +1,21 @@
@@ -14668,7 +14668,7 @@ index 0000000000000000000000000000000000000000..f5f95e2387db67cf1aa8c3e1a5da8ee7
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelCreationWithParameters.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelCreationWithParameters.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..066ca7dfc0eedf8bbb2283be3dabc578f7b025f4
+index 0000000000000000000000000000000000000000..6eebe4bb7ca5d1380b235e251000268753c81fac
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelCreationWithParameters.java
 @@ -0,0 +1,19 @@
@@ -14693,7 +14693,7 @@ index 0000000000000000000000000000000000000000..066ca7dfc0eedf8bbb2283be3dabc578
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelParameters.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelParameters.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..6a2bc73c958e5c4116fe49fd447ac5072808183a
+index 0000000000000000000000000000000000000000..e9ed8ae27fa5ea2d0b3cb260c0343732c49d9242
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelParameters.java
 @@ -0,0 +1,26 @@
@@ -14725,7 +14725,7 @@ index 0000000000000000000000000000000000000000..6a2bc73c958e5c4116fe49fd447ac507
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelWithParameters.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelWithParameters.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..737300e26856d5efdaf8efcb17c3838850f5c45a
+index 0000000000000000000000000000000000000000..d643938617622217771ac2b13d89688ab9ff855b
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ModelWithParameters.java
 @@ -0,0 +1,11 @@
@@ -14742,7 +14742,7 @@ index 0000000000000000000000000000000000000000..737300e26856d5efdaf8efcb17c38388
 +public record ModelWithParameters(@NotNull Model model, @Nullable ModelParameters parameters) {}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/PositionAndProximityBlockEntityModelVisualPropertiesUniverse.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/PositionAndProximityBlockEntityModelVisualPropertiesUniverse.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7f41a978412f7957153eb3cf1c8073c09eab9830
+index 0000000000000000000000000000000000000000..a2df347f58311e88feba523730bfef2b1146b4ae
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/PositionAndProximityBlockEntityModelVisualPropertiesUniverse.java
 @@ -0,0 +1,67 @@
@@ -14815,7 +14815,7 @@ index 0000000000000000000000000000000000000000..7f41a978412f7957153eb3cf1c8073c0
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ProximityBlockEntityModelVisualPropertiesUniverse.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ProximityBlockEntityModelVisualPropertiesUniverse.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e1b976547664cb840052fe21a1843e27eba88530
+index 0000000000000000000000000000000000000000..c3479ce89ab9dc6d6bb03048fb4cb48d887fe421
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/ProximityBlockEntityModelVisualPropertiesUniverse.java
 @@ -0,0 +1,55 @@
@@ -14876,7 +14876,7 @@ index 0000000000000000000000000000000000000000..e1b976547664cb840052fe21a1843e27
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/TypicalBlockEntityModelVisualProperties.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/TypicalBlockEntityModelVisualProperties.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..05ef1a8f7c1c2799ee6bff82aff0a2d54694ab1d
+index 0000000000000000000000000000000000000000..4a59d4077d9e43f7f6f98e79878c7f9421ed5fb2
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/model/TypicalBlockEntityModelVisualProperties.java
 @@ -0,0 +1,15 @@
@@ -14897,7 +14897,7 @@ index 0000000000000000000000000000000000000000..05ef1a8f7c1c2799ee6bff82aff0a2d5
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/Texture.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/Texture.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c9fa17a7c04692236e8276b24fd7892b0ba971a1
+index 0000000000000000000000000000000000000000..4d3f0ee126a299116d3ead64f677d3b91d89cc9c
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/Texture.java
 @@ -0,0 +1,94 @@
@@ -14997,7 +14997,7 @@ index 0000000000000000000000000000000000000000..c9fa17a7c04692236e8276b24fd7892b
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureContent.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureContent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..b8927359c06186657637f010f333d692baaf326a
+index 0000000000000000000000000000000000000000..866850d4cee9809f079aa12844cc1b7e3cc2b921
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureContent.java
 @@ -0,0 +1,95 @@
@@ -15098,7 +15098,7 @@ index 0000000000000000000000000000000000000000..b8927359c06186657637f010f333d692
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureContentCreation.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureContentCreation.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..a1141f37a4295bdec3a2b5a2e1f52cf168947861
+index 0000000000000000000000000000000000000000..0a5d19fd5cf1da23b9b42f18141f6ae64e0b8145
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureContentCreation.java
 @@ -0,0 +1,14 @@
@@ -15118,7 +15118,7 @@ index 0000000000000000000000000000000000000000..a1141f37a4295bdec3a2b5a2e1f52cf1
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureCreation.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureCreation.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..df18c89f3e82f74296d2642ac4577ceab9b8e81e
+index 0000000000000000000000000000000000000000..b97fa2c9a12fe319e038c741a6eef6451eb34a25
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureCreation.java
 @@ -0,0 +1,14 @@
@@ -15138,7 +15138,7 @@ index 0000000000000000000000000000000000000000..df18c89f3e82f74296d2642ac4577cea
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureFilenameCreation.java b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureFilenameCreation.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..dbd573f970e913f7f7123dc5d3ccd6c5e377ab73
+index 0000000000000000000000000000000000000000..d566814ddc709eee9cfd7b0b36f0c8309625588f
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/blockanditemdata/texture/TextureFilenameCreation.java
 @@ -0,0 +1,13 @@
@@ -15157,10 +15157,12 @@ index 0000000000000000000000000000000000000000..dbd573f970e913f7f7123dc5d3ccd6c5
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/command/CustomItemArgument.java b/src/main/java/nl/martijnmuijsers/paper/command/CustomItemArgument.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f7141a9887c825afda3e2434ccc0e575244fe79f
+index 0000000000000000000000000000000000000000..9c51bf80650b00e9fb5f63ee4b00abe2d4c52efa
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/command/CustomItemArgument.java
-@@ -0,0 +1,59 @@
+@@ -0,0 +1,61 @@
++// Suki - custom blocks and items
++
 +package nl.martijnmuijsers.paper.command;
 +
 +import com.mojang.brigadier.StringReader;
@@ -15221,7 +15223,7 @@ index 0000000000000000000000000000000000000000..f7141a9887c825afda3e2434ccc0e575
 +
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/data/BlackHoleCachedOutput.java b/src/main/java/nl/martijnmuijsers/paper/data/BlackHoleCachedOutput.java
-index 6af9cb40f08526365030843ca609220c6c16b120..9f609f9b9df23040416b3907f92cdda28153d0ad 100644
+index 0bfc00545a1a26313fb32d3ef9291db80e5de032..d4a9aa9ae75a54086911b2d9ceb018dc437c2793 100644
 --- a/src/main/java/nl/martijnmuijsers/paper/data/BlackHoleCachedOutput.java
 +++ b/src/main/java/nl/martijnmuijsers/paper/data/BlackHoleCachedOutput.java
 @@ -4,8 +4,8 @@ package nl.martijnmuijsers.paper.data;
@@ -15243,7 +15245,7 @@ index 6af9cb40f08526365030843ca609220c6c16b120..9f609f9b9df23040416b3907f92cdda2
  
  }
 diff --git a/src/main/java/nl/martijnmuijsers/paper/data/SuCraftTagsProvider.java b/src/main/java/nl/martijnmuijsers/paper/data/SuCraftTagsProvider.java
-index 1491d5ff59ee49cd230f67eebf705d81c4e17dfb..85bd1d479eee6afcadff7f905548e43ecfdcb649 100644
+index d31497e6a082f0a464dd4401ce9664856420679e..9a7fcd2c72611df48ff2a8d6eada08fcacb2a387 100644
 --- a/src/main/java/nl/martijnmuijsers/paper/data/SuCraftTagsProvider.java
 +++ b/src/main/java/nl/martijnmuijsers/paper/data/SuCraftTagsProvider.java
 @@ -5,18 +5,21 @@ package nl.martijnmuijsers.paper.data;
@@ -15381,10 +15383,12 @@ index 1491d5ff59ee49cd230f67eebf705d81c4e17dfb..85bd1d479eee6afcadff7f905548e43e
  }
 diff --git a/src/main/java/nl/martijnmuijsers/paper/item/ItemReplacementRule.java b/src/main/java/nl/martijnmuijsers/paper/item/ItemReplacementRule.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..cdec11e46ea19ac6d1dc24efff90ba8808ead9a9
+index 0000000000000000000000000000000000000000..e613579ec49b3c1af99a0b7cce1b2874d373a2a4
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/item/ItemReplacementRule.java
-@@ -0,0 +1,539 @@
+@@ -0,0 +1,541 @@
++// Suki - custom blocks and items
++
 +package nl.martijnmuijsers.paper.item;
 +
 +import com.google.common.collect.Lists;
@@ -15926,7 +15930,7 @@ index 0000000000000000000000000000000000000000..cdec11e46ea19ac6d1dc24efff90ba88
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/item/SuCraftCraftingRecipeProvider.java b/src/main/java/nl/martijnmuijsers/paper/item/SuCraftCraftingRecipeProvider.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..2f9c56c03101d953dbfff479f9a1062ca7c39c5b
+index 0000000000000000000000000000000000000000..2246402d480133431ffaa186779462cf8aabecbc
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/item/SuCraftCraftingRecipeProvider.java
 @@ -0,0 +1,276 @@
@@ -16208,7 +16212,7 @@ index 0000000000000000000000000000000000000000..2f9c56c03101d953dbfff479f9a1062c
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/item/SuCraftItemTags.java b/src/main/java/nl/martijnmuijsers/paper/item/SuCraftItemTags.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..8a81317374860658eccc604a092a1b635516c6be
+index 0000000000000000000000000000000000000000..35ac93803b9b8f73339086e868075cc563dd1f87
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/item/SuCraftItemTags.java
 @@ -0,0 +1,56 @@
@@ -16270,7 +16274,7 @@ index 0000000000000000000000000000000000000000..8a81317374860658eccc604a092a1b63
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/item/SuCraftItemTagsProvider.java b/src/main/java/nl/martijnmuijsers/paper/item/SuCraftItemTagsProvider.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..3b0b2392315675a25fb12210f529625a94895468
+index 0000000000000000000000000000000000000000..6358890a13823e775476f15b3f0aa9a80e7ec74e
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/item/SuCraftItemTagsProvider.java
 @@ -0,0 +1,79 @@
@@ -16355,7 +16359,7 @@ index 0000000000000000000000000000000000000000..3b0b2392315675a25fb12210f529625a
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/item/SuCraftItems.java b/src/main/java/nl/martijnmuijsers/paper/item/SuCraftItems.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..2a29f529509dbeaa2b8327b2b9e2b5355135f64a
+index 0000000000000000000000000000000000000000..d91247beb0f1d58e9b93e13a41c69e899a48ab2e
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/item/SuCraftItems.java
 @@ -0,0 +1,886 @@
@@ -17247,7 +17251,7 @@ index 0000000000000000000000000000000000000000..2a29f529509dbeaa2b8327b2b9e2b535
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/item/UsedHostCustomModelData.java b/src/main/java/nl/martijnmuijsers/paper/item/UsedHostCustomModelData.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..06a0dc24555614354b73c1d863d9e628e4ff84bc
+index 0000000000000000000000000000000000000000..749aa12272e3cca8e6ab692bc4d6532008ffc566
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/item/UsedHostCustomModelData.java
 @@ -0,0 +1,30 @@
@@ -17283,7 +17287,7 @@ index 0000000000000000000000000000000000000000..06a0dc24555614354b73c1d863d9e628
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/json/JsonMerging.java b/src/main/java/nl/martijnmuijsers/paper/json/JsonMerging.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..be98f3856147b681feb9895423e5f2a49a7f87f5
+index 0000000000000000000000000000000000000000..6c9a331b6f38f28495cafa21743778d915f4e90c
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/json/JsonMerging.java
 @@ -0,0 +1,59 @@
@@ -17348,7 +17352,7 @@ index 0000000000000000000000000000000000000000..be98f3856147b681feb9895423e5f2a4
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/protocol/CachableCustomContentReplaceable.java b/src/main/java/nl/martijnmuijsers/paper/protocol/CachableCustomContentReplaceable.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c6967b23c422a0e4a0bf6f1a2bcf6465f99106cc
+index 0000000000000000000000000000000000000000..625c0aebce11a1fb868fb12fb9cafc562779621b
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/protocol/CachableCustomContentReplaceable.java
 @@ -0,0 +1,21 @@
@@ -17375,7 +17379,7 @@ index 0000000000000000000000000000000000000000..c6967b23c422a0e4a0bf6f1a2bcf6465
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/protocol/ReplacedCustomContentCache.java b/src/main/java/nl/martijnmuijsers/paper/protocol/ReplacedCustomContentCache.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f5dabd85a486b834daa902c16b9b960ff385f8b2
+index 0000000000000000000000000000000000000000..26cc637592e89d4de25041b58b4f6aed7e204225
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/protocol/ReplacedCustomContentCache.java
 @@ -0,0 +1,37 @@
@@ -17418,7 +17422,7 @@ index 0000000000000000000000000000000000000000..f5dabd85a486b834daa902c16b9b960f
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/KeyConstants.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/KeyConstants.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..87af6516cb683d10753a6d1accfdb9afd9f011fe
+index 0000000000000000000000000000000000000000..e5e99da3ccb49a776d092660484ab930664cc11a
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/KeyConstants.java
 @@ -0,0 +1,124 @@
@@ -17548,7 +17552,7 @@ index 0000000000000000000000000000000000000000..87af6516cb683d10753a6d1accfdb9af
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/MutableResourcePack.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/MutableResourcePack.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..40482092b4e5132462d7947741366d2612f47a9e
+index 0000000000000000000000000000000000000000..9fd95aafeaa90d0726efda3477f12c098d89064f
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/MutableResourcePack.java
 @@ -0,0 +1,75 @@
@@ -17629,7 +17633,7 @@ index 0000000000000000000000000000000000000000..40482092b4e5132462d7947741366d26
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/PathConstants.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/PathConstants.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..677d97e5ccbaa0ee0e8a4df0072fcc07d8cc0275
+index 0000000000000000000000000000000000000000..180017c37ced8323bd858073532389ffbec1c30e
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/PathConstants.java
 @@ -0,0 +1,114 @@
@@ -17749,7 +17753,7 @@ index 0000000000000000000000000000000000000000..677d97e5ccbaa0ee0e8a4df0072fcc07
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/ResourcePack.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/ResourcePack.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..2cd9daad642bb1a76e8173a8231d1742c74e86e9
+index 0000000000000000000000000000000000000000..15fd166843a2ccda1198d9be8d7e50db17206dc5
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/ResourcePack.java
 @@ -0,0 +1,75 @@
@@ -17830,7 +17834,7 @@ index 0000000000000000000000000000000000000000..2cd9daad642bb1a76e8173a8231d1742
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/ResourcePackHash.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/ResourcePackHash.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..dd244b1b7bc4045e2b7b13aeaa7a9bdb49579206
+index 0000000000000000000000000000000000000000..5233036b31ed85d9a3ff80d9e4d7642da7031faa
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/ResourcePackHash.java
 @@ -0,0 +1,47 @@
@@ -17883,10 +17887,12 @@ index 0000000000000000000000000000000000000000..dd244b1b7bc4045e2b7b13aeaa7a9bdb
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/ResourcePackSettings.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/ResourcePackSettings.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..0735331150608e9ee745263ae8f2bda7ccb3aea0
+index 0000000000000000000000000000000000000000..74fb3bd16d551326ed0b248e75b999c150e1b937
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/ResourcePackSettings.java
-@@ -0,0 +1,26 @@
+@@ -0,0 +1,28 @@
++// Suki - custom blocks and items
++
 +package nl.martijnmuijsers.paper.resourcepack;
 +
 +import com.google.gson.JsonElement;
@@ -17915,7 +17921,7 @@ index 0000000000000000000000000000000000000000..0735331150608e9ee745263ae8f2bda7
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/InitializableResourcePackAssetType.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/InitializableResourcePackAssetType.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..4aa67eb849955b8794badf7b3b3515489555f308
+index 0000000000000000000000000000000000000000..5c943c668864053413f8d493ce062e91d5e99df2
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/InitializableResourcePackAssetType.java
 @@ -0,0 +1,17 @@
@@ -17938,7 +17944,7 @@ index 0000000000000000000000000000000000000000..4aa67eb849955b8794badf7b3b351548
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/MutableResourcePackAsset.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/MutableResourcePackAsset.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..d85c52b3cbb4eaad314e7fe66bfd83ef50615a65
+index 0000000000000000000000000000000000000000..2fc870e254d1e07bcb1705362205a4cddc1e6a26
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/MutableResourcePackAsset.java
 @@ -0,0 +1,41 @@
@@ -17985,7 +17991,7 @@ index 0000000000000000000000000000000000000000..d85c52b3cbb4eaad314e7fe66bfd83ef
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackAsset.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackAsset.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..6352e3d84d21f57cfa62c1e6cd647243eb2910b6
+index 0000000000000000000000000000000000000000..7912498f48fdefb1e7752eb5ab9ed23565b57a75
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackAsset.java
 @@ -0,0 +1,49 @@
@@ -18040,7 +18046,7 @@ index 0000000000000000000000000000000000000000..6352e3d84d21f57cfa62c1e6cd647243
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackAssetDataContent.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackAssetDataContent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..25237ac03a56ac1e26e09c651380786cb45e7bc6
+index 0000000000000000000000000000000000000000..b7efd389d3e0aba9558d84026cd145b5565d2888
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackAssetDataContent.java
 @@ -0,0 +1,5 @@
@@ -18051,7 +18057,7 @@ index 0000000000000000000000000000000000000000..25237ac03a56ac1e26e09c651380786c
 +public interface ResourcePackAssetDataContent {}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackAssetType.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackAssetType.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..fecf02ab7d20d0c5f48e286dcf74d215a5be3885
+index 0000000000000000000000000000000000000000..13938da6cf766d9716ca43e5c09e3ce319c6c3eb
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackAssetType.java
 @@ -0,0 +1,56 @@
@@ -18113,7 +18119,7 @@ index 0000000000000000000000000000000000000000..fecf02ab7d20d0c5f48e286dcf74d215
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackIntentionedAssetData.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackIntentionedAssetData.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..66e5d7775df20d785860abe085356d3c8cd379ae
+index 0000000000000000000000000000000000000000..3cf64c59936e4a3b057fbe83524b362c0271beaa
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackIntentionedAssetData.java
 @@ -0,0 +1,32 @@
@@ -18151,7 +18157,7 @@ index 0000000000000000000000000000000000000000..66e5d7775df20d785860abe085356d3c
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackIntentionedAssetDataByContent.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackIntentionedAssetDataByContent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..3c24d7070a2958d94fb925197f8f47bc70f05bfe
+index 0000000000000000000000000000000000000000..c5de359d5f8a93efa8680a770a433d2f047f8c68
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/ResourcePackIntentionedAssetDataByContent.java
 @@ -0,0 +1,22 @@
@@ -18179,7 +18185,7 @@ index 0000000000000000000000000000000000000000..3c24d7070a2958d94fb925197f8f47bc
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/SimpleResourcePackAsset.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/SimpleResourcePackAsset.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..d2c7592594da0701ed1fcd03261fd8ec6a8bcc53
+index 0000000000000000000000000000000000000000..bc45aa5c96bca23df15fd2c0f86ac4bdda9fd3a9
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/SimpleResourcePackAsset.java
 @@ -0,0 +1,44 @@
@@ -18229,7 +18235,7 @@ index 0000000000000000000000000000000000000000..d2c7592594da0701ed1fcd03261fd8ec
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/blockstates/ConcreteResourcePackBlockStates.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/blockstates/ConcreteResourcePackBlockStates.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..50564cc5c93b69955d45387a663ddc181cb5946c
+index 0000000000000000000000000000000000000000..f90fa7d898797525f5df4818cf6c76e52deaaf8f
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/blockstates/ConcreteResourcePackBlockStates.java
 @@ -0,0 +1,503 @@
@@ -18738,7 +18744,7 @@ index 0000000000000000000000000000000000000000..50564cc5c93b69955d45387a663ddc18
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/blockstates/MutableResourcePackBlockStates.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/blockstates/MutableResourcePackBlockStates.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..79167013080462d5e701526a683e145a43016843
+index 0000000000000000000000000000000000000000..8ca9b53f3aaf65ff75ae1435e2369927648bdecb
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/blockstates/MutableResourcePackBlockStates.java
 @@ -0,0 +1,66 @@
@@ -18810,7 +18816,7 @@ index 0000000000000000000000000000000000000000..79167013080462d5e701526a683e145a
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/blockstates/ResourcePackBlockStates.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/blockstates/ResourcePackBlockStates.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..9716eca9c118700f8476661f981b31b592753c13
+index 0000000000000000000000000000000000000000..a8a9c8d952eb22f572b53cfa7bdbfce331ae52d4
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/blockstates/ResourcePackBlockStates.java
 @@ -0,0 +1,18 @@
@@ -18834,7 +18840,7 @@ index 0000000000000000000000000000000000000000..9716eca9c118700f8476661f981b31b5
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/image/ImageResourcePackAsset.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/image/ImageResourcePackAsset.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..b6a85e9f19d80a0aacc16450fe53e1801a4e9606
+index 0000000000000000000000000000000000000000..c7f78ded9ade551a009ecb239e0884f91083c219
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/image/ImageResourcePackAsset.java
 @@ -0,0 +1,20 @@
@@ -18860,7 +18866,7 @@ index 0000000000000000000000000000000000000000..b6a85e9f19d80a0aacc16450fe53e180
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/image/MutableImageResourcePackAsset.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/image/MutableImageResourcePackAsset.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c57ae7f9074a4fd30834e59362fc7f931d4716a3
+index 0000000000000000000000000000000000000000..083a896d8a02abb67a731601a1c8922eed729d0b
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/image/MutableImageResourcePackAsset.java
 @@ -0,0 +1,17 @@
@@ -18883,7 +18889,7 @@ index 0000000000000000000000000000000000000000..c57ae7f9074a4fd30834e59362fc7f93
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/image/SimpleImageFileResourcePackAsset.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/image/SimpleImageFileResourcePackAsset.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7b648bacde4fc2e087621f2aacc940d25fae4bd6
+index 0000000000000000000000000000000000000000..d378e80d690b3e165fc61dc8c2b3e47a774d57a5
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/image/SimpleImageFileResourcePackAsset.java
 @@ -0,0 +1,85 @@
@@ -18974,10 +18980,12 @@ index 0000000000000000000000000000000000000000..7b648bacde4fc2e087621f2aacc940d2
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/intention/NamespacedKeyWithIntention.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/intention/NamespacedKeyWithIntention.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7563ae3054672af378441818e8c043b541b9452c
+index 0000000000000000000000000000000000000000..93aee9a1c362b48ba845a22bdbafcc71cb2aad56
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/intention/NamespacedKeyWithIntention.java
-@@ -0,0 +1,35 @@
+@@ -0,0 +1,37 @@
++// Suki - custom blocks and items
++
 +package nl.martijnmuijsers.paper.resourcepack.asset.intention;
 +
 +import org.jetbrains.annotations.NotNull;
@@ -19015,10 +19023,12 @@ index 0000000000000000000000000000000000000000..7563ae3054672af378441818e8c043b5
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/intention/NamespacedKeyWithoutIntention.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/intention/NamespacedKeyWithoutIntention.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..ef957030ad27dc8ae113f08e3be378952e995057
+index 0000000000000000000000000000000000000000..2199b851fbe90140ffd6141ed303bb9685370db4
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/intention/NamespacedKeyWithoutIntention.java
-@@ -0,0 +1,59 @@
+@@ -0,0 +1,61 @@
++// Suki - custom blocks and items
++
 +package nl.martijnmuijsers.paper.resourcepack.asset.intention;
 +
 +import net.minecraft.resources.ResourceLocation;
@@ -19080,10 +19090,12 @@ index 0000000000000000000000000000000000000000..ef957030ad27dc8ae113f08e3be37895
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/intention/ResourcePackAssetIntention.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/intention/ResourcePackAssetIntention.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..114b57c69156c584bd818dcd902e0b72e0c67990
+index 0000000000000000000000000000000000000000..62ee57dfa4341bb472ede46adad44918c4d93e88
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/intention/ResourcePackAssetIntention.java
-@@ -0,0 +1,22 @@
+@@ -0,0 +1,24 @@
++// Suki - custom blocks and items
++
 +package nl.martijnmuijsers.paper.resourcepack.asset.intention;
 +
 +import nl.martijnmuijsers.paper.resourcepack.asset.ResourcePackAsset;
@@ -19108,7 +19120,7 @@ index 0000000000000000000000000000000000000000..114b57c69156c584bd818dcd902e0b72
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/json/JsonResourcePackAsset.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/json/JsonResourcePackAsset.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..876fe33b34243ddd37696bcdace1b8ee048e7c8e
+index 0000000000000000000000000000000000000000..e5a32a2dea548051d4bfe656a9ca94596c5addc7
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/json/JsonResourcePackAsset.java
 @@ -0,0 +1,21 @@
@@ -19135,7 +19147,7 @@ index 0000000000000000000000000000000000000000..876fe33b34243ddd37696bcdace1b8ee
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/json/MutableJsonResourcePackAsset.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/json/MutableJsonResourcePackAsset.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e36cb8277fa667532f558ced487808dbef1d6841
+index 0000000000000000000000000000000000000000..dcace3af9d2444d8a29060e868d5696a6650568d
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/json/MutableJsonResourcePackAsset.java
 @@ -0,0 +1,19 @@
@@ -19160,7 +19172,7 @@ index 0000000000000000000000000000000000000000..e36cb8277fa667532f558ced487808db
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/json/SimpleJsonResourcePackAsset.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/json/SimpleJsonResourcePackAsset.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..cc051357807b2a16091639bb28e0d2eada9bc5ab
+index 0000000000000000000000000000000000000000..35c950f7f3d77132eaed401ffe92a36a12a4fe3a
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/json/SimpleJsonResourcePackAsset.java
 @@ -0,0 +1,102 @@
@@ -19268,7 +19280,7 @@ index 0000000000000000000000000000000000000000..cc051357807b2a16091639bb28e0d2ea
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/model/ConcreteResourcePackModel.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/model/ConcreteResourcePackModel.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..88c9ef8db5afdd6c197616bbaa922d24a41fcd2b
+index 0000000000000000000000000000000000000000..8c8fb5a03c62ea7c5d0a1c2b3edc1db11fd9c662
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/model/ConcreteResourcePackModel.java
 @@ -0,0 +1,369 @@
@@ -19643,7 +19655,7 @@ index 0000000000000000000000000000000000000000..88c9ef8db5afdd6c197616bbaa922d24
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/model/MutableResourcePackModel.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/model/MutableResourcePackModel.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..6b8123dfe93e6d869728732394247091ce1e884f
+index 0000000000000000000000000000000000000000..bc3b507a3e92820d5a740fe9d6e1cd77050cf2a2
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/model/MutableResourcePackModel.java
 @@ -0,0 +1,60 @@
@@ -19709,7 +19721,7 @@ index 0000000000000000000000000000000000000000..6b8123dfe93e6d869728732394247091
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/model/ResourcePackModel.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/model/ResourcePackModel.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..acd5a19f1396c3b1c5404dc9cea4d04349055e05
+index 0000000000000000000000000000000000000000..ef488c30ae6a72467df3acb449dd57868a75d1d1
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/model/ResourcePackModel.java
 @@ -0,0 +1,21 @@
@@ -19736,7 +19748,7 @@ index 0000000000000000000000000000000000000000..acd5a19f1396c3b1c5404dc9cea4d043
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/texture/ConcreteResourcePackTexture.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/texture/ConcreteResourcePackTexture.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..742d4558b13e1360a0617322681f599567b6f4cc
+index 0000000000000000000000000000000000000000..3d721961d592c851f7b19e064b69785a0713c1dc
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/texture/ConcreteResourcePackTexture.java
 @@ -0,0 +1,41 @@
@@ -19783,7 +19795,7 @@ index 0000000000000000000000000000000000000000..742d4558b13e1360a0617322681f5995
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/texture/MutableResourcePackTexture.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/texture/MutableResourcePackTexture.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..3b18ece5e503170a02ee7f6b6a967064f1533fb8
+index 0000000000000000000000000000000000000000..c6aed8be6557491282914fa955724ac2ac832847
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/texture/MutableResourcePackTexture.java
 @@ -0,0 +1,19 @@
@@ -19808,7 +19820,7 @@ index 0000000000000000000000000000000000000000..3b18ece5e503170a02ee7f6b6a967064
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/texture/ResourcePackTexture.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/texture/ResourcePackTexture.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..52b2cda69eb3dc8f4754e439ee64483878bc34b2
+index 0000000000000000000000000000000000000000..cff1dd0fd7d3c7712136b2df5bf9ef8f3f8e1de2
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/asset/texture/ResourcePackTexture.java
 @@ -0,0 +1,18 @@
@@ -19832,7 +19844,7 @@ index 0000000000000000000000000000000000000000..52b2cda69eb3dc8f4754e439ee644838
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/httpserver/ResourcePackHTTPServer.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/httpserver/ResourcePackHTTPServer.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..cff37985a741e4a055ee4b5298216c4eaeba2a62
+index 0000000000000000000000000000000000000000..eaa83bc0e8e62883194d8ae5ac2ef5ee536aa16f
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/httpserver/ResourcePackHTTPServer.java
 @@ -0,0 +1,142 @@
@@ -19980,7 +19992,7 @@ index 0000000000000000000000000000000000000000..cff37985a741e4a055ee4b5298216c4e
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/memory/MemoryResourcePack.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/memory/MemoryResourcePack.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..cc6ff3dfe87819440e52693ab71b0f2f9d1dee54
+index 0000000000000000000000000000000000000000..a19fbe0ab3666dcbcbb751bfa184435d61c160ff
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/memory/MemoryResourcePack.java
 @@ -0,0 +1,265 @@
@@ -20251,7 +20263,7 @@ index 0000000000000000000000000000000000000000..cc6ff3dfe87819440e52693ab71b0f2f
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/memory/MemoryResourcePackSettings.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/memory/MemoryResourcePackSettings.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..504f1da6c1018950ef154b461c5e1e6abfa38603
+index 0000000000000000000000000000000000000000..c546a071f7f71a9b996b2b16b47522801f0c7f4f
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/memory/MemoryResourcePackSettings.java
 @@ -0,0 +1,80 @@
@@ -20337,7 +20349,7 @@ index 0000000000000000000000000000000000000000..504f1da6c1018950ef154b461c5e1e6a
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/readfromarchive/ReadFromArchiveResourcePack.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/readfromarchive/ReadFromArchiveResourcePack.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..45e527e19839fa167f76b6e59f853cb5b39f939b
+index 0000000000000000000000000000000000000000..c0f891525f78e9d1463969d5fdc106a4f0dfe498
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/readfromarchive/ReadFromArchiveResourcePack.java
 @@ -0,0 +1,132 @@
@@ -20475,7 +20487,7 @@ index 0000000000000000000000000000000000000000..45e527e19839fa167f76b6e59f853cb5
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/readfromarchive/ReadFromArchiveResourcePackSettings.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/readfromarchive/ReadFromArchiveResourcePackSettings.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..3d9a586c9ca60ea8797d586a54d5233e9c2f3cb3
+index 0000000000000000000000000000000000000000..93a3f03ef1b03454c2087ca15cce01e2dc927a68
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/readfromarchive/ReadFromArchiveResourcePackSettings.java
 @@ -0,0 +1,69 @@
@@ -20550,7 +20562,7 @@ index 0000000000000000000000000000000000000000..3d9a586c9ca60ea8797d586a54d5233e
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/resourcepack/sucraft/CreateSuCraftResourcePack.java b/src/main/java/nl/martijnmuijsers/paper/resourcepack/sucraft/CreateSuCraftResourcePack.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..defb5e866de4d6dbf1b82d3191191f67f7290fba
+index 0000000000000000000000000000000000000000..6f1233459312693fed7e49b0dbc17a56a9d77be9
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/resourcepack/sucraft/CreateSuCraftResourcePack.java
 @@ -0,0 +1,1447 @@
@@ -22002,7 +22014,7 @@ index 0000000000000000000000000000000000000000..defb5e866de4d6dbf1b82d3191191f67
 +
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePiece.java b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePiece.java
-index c5e428bbb05f801da88449307e7c75b00f7e7cfd..60158b10b5258016a89eb879f22661463e539d47 100644
+index b934caa629e595ed7005573039dd9177c3ed9774..0693fa3d1c040b6b09ca3cf061f0f2c0f51fc96d 100644
 --- a/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePiece.java
 +++ b/src/main/java/nl/martijnmuijsers/paper/structure/CraftWorldStructurePiece.java
 @@ -66,8 +66,8 @@ public class CraftWorldStructurePiece implements WorldStructurePiece {
@@ -22039,7 +22051,7 @@ index c5e428bbb05f801da88449307e7c75b00f7e7cfd..60158b10b5258016a89eb879f2266146
                  } else {
                      this.cachedShortPoolElementName = Optional.ofNullable(name);
 diff --git a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTagsProvider.java b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTagsProvider.java
-index d8999bae8bd0fea2265320fc6505eb7e09fc3e12..106e07afaf3164ebe1d63e9e48f543c99da83d4c 100644
+index b8608abd376ee64f2c181a51663fb2576d727e7e..908b406d9773ee29823d2521a2bca06a1dd69963 100644
 --- a/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTagsProvider.java
 +++ b/src/main/java/nl/martijnmuijsers/paper/structure/SuCraftStructureTagsProvider.java
 @@ -2,12 +2,17 @@
@@ -22071,7 +22083,7 @@ index d8999bae8bd0fea2265320fc6505eb7e09fc3e12..106e07afaf3164ebe1d63e9e48f543c9
      }
 diff --git a/src/main/java/nl/martijnmuijsers/paper/util/CollectionPercentageProgress.java b/src/main/java/nl/martijnmuijsers/paper/util/CollectionPercentageProgress.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..687d586feb19223ef411e82d6c3e33794877ee75
+index 0000000000000000000000000000000000000000..755b900ce7f9072ff1ad7fbeae5614cc3ed64773
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/util/CollectionPercentageProgress.java
 @@ -0,0 +1,51 @@
@@ -22128,7 +22140,7 @@ index 0000000000000000000000000000000000000000..687d586feb19223ef411e82d6c3e3379
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/util/ConsumerThrowsException.java b/src/main/java/nl/martijnmuijsers/paper/util/ConsumerThrowsException.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..d4b5da62bac0fa5e3bd1e1e6b3d608b710891a26
+index 0000000000000000000000000000000000000000..39a23a7d8226a4700d9ecbbc1c56dede9562d1c5
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/util/ConsumerThrowsException.java
 @@ -0,0 +1,13 @@
@@ -22147,7 +22159,7 @@ index 0000000000000000000000000000000000000000..d4b5da62bac0fa5e3bd1e1e6b3d608b7
 +}
 diff --git a/src/main/java/nl/martijnmuijsers/paper/util/PercentageProgress.java b/src/main/java/nl/martijnmuijsers/paper/util/PercentageProgress.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..465cb288e3fb241a17080fb801ebda3ce6c2b779
+index 0000000000000000000000000000000000000000..96a6924c71704061a6fce2ce7983fd7dbb5463b1
 --- /dev/null
 +++ b/src/main/java/nl/martijnmuijsers/paper/util/PercentageProgress.java
 @@ -0,0 +1,50 @@
@@ -22202,7 +22214,7 @@ index 0000000000000000000000000000000000000000..465cb288e3fb241a17080fb801ebda3c
 +
 +}
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index a92da286883e4cc1f6125a26b0340828a57d199e..c0a0794493343f3c9dded32f92dfec618c272c0f 100644
+index ad26167586279b54c812463e6b3626d89fe1652c..06fee2cfb5e981ffa2dc8705a0545e87e20234d5 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -42,6 +42,7 @@ import java.util.Optional;
@@ -22260,7 +22272,7 @@ index a92da286883e4cc1f6125a26b0340828a57d199e..c0a0794493343f3c9dded32f92dfec61
  
      // Yatopia start
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index 702ee8aeac939dacc9c47c2ed8194cf78dd5050f..6009614f5c5fe53bb37a0c5cc7194112374cd8f0 100644
+index 971a8a271e2b9908f87e502b5960a5fa85f956af..6bca7d06d286213bb51c08a960a9fa795c826b7c 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 @@ -67,6 +67,7 @@ import net.minecraft.world.phys.HitResult;
@@ -22292,7 +22304,7 @@ index 702ee8aeac939dacc9c47c2ed8194cf78dd5050f..6009614f5c5fe53bb37a0c5cc7194112
              // Paper end
          }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 8e85a6b57323545aefda95e6b6cde0ec032f1ae2..d9c6df663f2e6f4b449e6a8054edd55ab81d60ae 100644
+index 717678f25848f43078c4d277baddbca6e92e7e34..dab90145f6a67375830c16cab9e086cf09519d92 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -27,6 +27,8 @@ import java.util.WeakHashMap;
@@ -22348,7 +22360,7 @@ index 8e85a6b57323545aefda95e6b6cde0ec032f1ae2..d9c6df663f2e6f4b449e6a8054edd55a
  
      @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java
-index 3c4dadd0012c11191c873fe25a7625193563915d..f9839b7e643ccdb1608f737c4466ed5214496f80 100644
+index 3c4dadd0012c11191c873fe25a7625193563915d..4cbda2cf5a2272369f4ab79ec5c0bf0e2c40c354 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java
 @@ -47,6 +47,7 @@ import net.minecraft.nbt.StringTag;
@@ -22473,7 +22485,7 @@ index 3c4dadd0012c11191c873fe25a7625193563915d..f9839b7e643ccdb1608f737c4466ed52
 +
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index b3f5b7e5ea44174bf2769e9b80d4e21f9438b77f..fc37d6e6fd238f304047a0b3528f02c6fccc0b47 100644
+index b3f5b7e5ea44174bf2769e9b80d4e21f9438b77f..484655ef1fd61855c490d2d37725e9108a7b0928 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 @@ -143,12 +143,25 @@ public final class CraftMagicNumbers implements UnsafeValues {
