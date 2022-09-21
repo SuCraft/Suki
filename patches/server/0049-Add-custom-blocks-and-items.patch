@@ -20866,7 +20866,7 @@ index 0000000000000000000000000000000000000000..1afccf5f8af5d7bd4d40f2701b44a003
 +}
 diff --git a/src/main/java/org/sucraft/suki/resourcepack/sucraft/CreateSuCraftResourcePack.java b/src/main/java/org/sucraft/suki/resourcepack/sucraft/CreateSuCraftResourcePack.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..764596f34be0faa436e37725ebc02b5df4545c07
+index 0000000000000000000000000000000000000000..795504ab9905dda84cec72db73bbc654d06db46a
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/resourcepack/sucraft/CreateSuCraftResourcePack.java
 @@ -0,0 +1,1447 @@
@@ -20944,7 +20944,7 @@ index 0000000000000000000000000000000000000000..764596f34be0faa436e37725ebc02b5d
 +        if (useRandomResourcePackVersion) {
 +            currentResourcePackVersion = (int) (Math.random() * -2000000000) - 1;
 +        } else {
-+            currentResourcePackVersion = 205;
++            currentResourcePackVersion = 206;
 +        }
 +    }
 +
