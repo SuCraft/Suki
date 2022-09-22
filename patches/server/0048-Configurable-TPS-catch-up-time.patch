@@ -5,7 +5,7 @@ Subject: [PATCH] Configurable TPS catch-up time
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 1915058a26b536a786c356256ce971e6f190663a..90f506c167fb57a96c58359fa6d4949eba2dbc8d 100644
+index 42e553a04deaff73d7d6630aedca4ceb84dedea7..7c7ad9828d2bd1b17cdf5f69d2a3de465895ef18 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -337,6 +337,21 @@ public class GlobalConfiguration extends ConfigurationPart {
@@ -31,7 +31,7 @@ index 1915058a26b536a786c356256ce971e6f190663a..90f506c167fb57a96c58359fa6d4949e
  
      public class Messages extends ConfigurationPart {
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index b175ce7da568026476a95456bbedfc5307e394a1..cb027555e5f31e0cf2c58af070529784f6a6ad9c 100644
+index 03694443ea1fde6718ed6acbccf81a5c6972e9a7..cf3389f045e4b6cc0f48888be75c509e74a3f94b 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -13,6 +13,7 @@ import com.mojang.authlib.GameProfileRepository;

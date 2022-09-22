@@ -6,7 +6,7 @@ Subject: [PATCH] Utility methods for getting the distance between an entity
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 2331ed3bdf11df468b8c39eaa076ca5ccba0540e..f00132a16e7ab8d6af42e2b3c43ef97e3138066b 100644
+index 326c9fbad6bd7b63051a49feed1d80b6e3a3f575..436f6f860c7cb6dfad2e3176e527dd23591f0e0b 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -636,6 +636,36 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {

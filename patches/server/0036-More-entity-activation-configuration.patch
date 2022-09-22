@@ -5,7 +5,7 @@ Subject: [PATCH] More entity activation configuration
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index a3d715d9b90b5b1ca4a3c3308a4f3c04b0260711..931db53ebde71ebe9398f1a1ea72178c1ced8ec0 100644
+index a922815ff4c3d3917fec312f9c45d2c6a7d91df3..ee02fa6117db6a58cb28c7cd6d83adfc164fa1d3 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -218,6 +218,23 @@ public class GlobalConfiguration extends ConfigurationPart {
@@ -33,7 +33,7 @@ index a3d715d9b90b5b1ca4a3c3308a4f3c04b0260711..931db53ebde71ebe9398f1a1ea72178c
  
      public class Messages extends ConfigurationPart {
 diff --git a/src/main/java/org/spigotmc/ActivationRange.java b/src/main/java/org/spigotmc/ActivationRange.java
-index 70b5b307193dc288a6257d90ca96762cb4a8345a..af2ac1ae5039dc664b9b01d7852598f894d0c0bb 100644
+index 70b5b307193dc288a6257d90ca96762cb4a8345a..d8327448d14c82cf749427deabd26defcff722c2 100644
 --- a/src/main/java/org/spigotmc/ActivationRange.java
 +++ b/src/main/java/org/spigotmc/ActivationRange.java
 @@ -1,5 +1,7 @@
@@ -218,7 +218,7 @@ index 70b5b307193dc288a6257d90ca96762cb4a8345a..af2ac1ae5039dc664b9b01d7852598f8
      }
  }
 diff --git a/src/main/java/org/spigotmc/SpigotWorldConfig.java b/src/main/java/org/spigotmc/SpigotWorldConfig.java
-index 1d65012e4d305df6736b148d4345682da6437267..fcf2a49f5e09ccfecc3bb9f78df014f6018806bb 100644
+index 1d65012e4d305df6736b148d4345682da6437267..c264c7454f548d31d034a8898d4ec3e612d00363 100644
 --- a/src/main/java/org/spigotmc/SpigotWorldConfig.java
 +++ b/src/main/java/org/spigotmc/SpigotWorldConfig.java
 @@ -233,6 +233,37 @@ public class SpigotWorldConfig

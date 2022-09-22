@@ -5,7 +5,7 @@ Subject: [PATCH] Variable entity wake-up duration
 
 
 diff --git a/src/main/java/org/spigotmc/ActivationRange.java b/src/main/java/org/spigotmc/ActivationRange.java
-index af2ac1ae5039dc664b9b01d7852598f894d0c0bb..c4c687a58ed3d1679e514ea8cba4da795eda074f 100644
+index d8327448d14c82cf749427deabd26defcff722c2..73714aae88e5b55554d94d9332c2bccd0dfc5cd4 100644
 --- a/src/main/java/org/spigotmc/ActivationRange.java
 +++ b/src/main/java/org/spigotmc/ActivationRange.java
 @@ -1,6 +1,5 @@
@@ -72,7 +72,7 @@ index af2ac1ae5039dc664b9b01d7852598f894d0c0bb..c4c687a58ed3d1679e514ea8cba4da79
          }
          return -1;
 diff --git a/src/main/java/org/spigotmc/SpigotWorldConfig.java b/src/main/java/org/spigotmc/SpigotWorldConfig.java
-index fcf2a49f5e09ccfecc3bb9f78df014f6018806bb..5a69c8e2da524f25b6c69534faa9a9b6f266fb97 100644
+index c264c7454f548d31d034a8898d4ec3e612d00363..cbb0aad53128b8e301a468272ea927d3975eb7a1 100644
 --- a/src/main/java/org/spigotmc/SpigotWorldConfig.java
 +++ b/src/main/java/org/spigotmc/SpigotWorldConfig.java
 @@ -227,6 +227,15 @@ public class SpigotWorldConfig

@@ -5,10 +5,10 @@ Subject: [PATCH] Bone meal regrows bark
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
-index 517baa6c18ba13c06fbbedac4ddbc644e6d0fe0e..3182b83f16d324b9f40d0920f29af6b1c360eff9 100644
+index 246182d188f7695e39ad4dc2dbefc7a5f0403d36..80034024e8ebcf3fe13bb4f9be96b51358f29b7a 100644
 --- a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
-@@ -258,6 +258,20 @@ public class WorldConfiguration extends ConfigurationPart {
+@@ -303,6 +303,20 @@ public class WorldConfiguration extends ConfigurationPart {
  
      // Suki end - network-constrained chunk sending
  
@@ -30,7 +30,7 @@ index 517baa6c18ba13c06fbbedac4ddbc644e6d0fe0e..3182b83f16d324b9f40d0920f29af6b1
  
      public class Anticheat extends ConfigurationPart {
 diff --git a/src/main/java/net/minecraft/world/item/BoneMealItem.java b/src/main/java/net/minecraft/world/item/BoneMealItem.java
-index ad0af20dc32a518110c5e74a7ac54ea1c3b93bcb..fa6c00abfc9d28aaac8387a6874c5a2ff1083027 100644
+index ad0af20dc32a518110c5e74a7ac54ea1c3b93bcb..75d6e48bf0be169ff7fd5263afc0b68bcaa10395 100644
 --- a/src/main/java/net/minecraft/world/item/BoneMealItem.java
 +++ b/src/main/java/net/minecraft/world/item/BoneMealItem.java
 @@ -7,10 +7,12 @@ import net.minecraft.core.Holder;
@@ -89,7 +89,7 @@ index ad0af20dc32a518110c5e74a7ac54ea1c3b93bcb..fa6c00abfc9d28aaac8387a6874c5a2f
  
                  return true;
 diff --git a/src/main/java/net/minecraft/world/level/block/Blocks.java b/src/main/java/net/minecraft/world/level/block/Blocks.java
-index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..5b5086f4016fc9015ac53bafd2c80bc724d575e4 100644
+index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..9b15d0a0fe5bc8c1ecb4b89eaed7a6e264940ce6 100644
 --- a/src/main/java/net/minecraft/world/level/block/Blocks.java
 +++ b/src/main/java/net/minecraft/world/level/block/Blocks.java
 @@ -34,6 +34,7 @@ import net.minecraft.world.level.block.state.properties.WoodType;
@@ -208,7 +208,7 @@ index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..5b5086f4016fc9015ac53bafd2c80bc7
          return new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.NETHER_WOOD, (state) -> {
              return mapColor;
 diff --git a/src/main/java/net/minecraft/world/level/block/BonemealableBlock.java b/src/main/java/net/minecraft/world/level/block/BonemealableBlock.java
-index 7ee556bed7009292331158ed51d97714ab5b777b..aa3de72d28f34624935fee4daa109f646d2aeb38 100644
+index 7ee556bed7009292331158ed51d97714ab5b777b..90e77749ec5cb64fd4fd478f06ccceab8ca63912 100644
 --- a/src/main/java/net/minecraft/world/level/block/BonemealableBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/BonemealableBlock.java
 @@ -2,10 +2,13 @@ package net.minecraft.world.level.block;
@@ -245,7 +245,7 @@ index 7ee556bed7009292331158ed51d97714ab5b777b..aa3de72d28f34624935fee4daa109f64
  }
 diff --git a/src/main/java/net/minecraft/world/level/block/StrippedBlock.java b/src/main/java/net/minecraft/world/level/block/StrippedBlock.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..86f2705b9a943a8aa599d2354d1270e5be3de126
+index 0000000000000000000000000000000000000000..55022bf39ac71f03774c547e6f2498795a2c8306
 --- /dev/null
 +++ b/src/main/java/net/minecraft/world/level/block/StrippedBlock.java
 @@ -0,0 +1,72 @@
@@ -323,7 +323,7 @@ index 0000000000000000000000000000000000000000..86f2705b9a943a8aa599d2354d1270e5
 +}
 diff --git a/src/main/java/net/minecraft/world/level/block/StrippedHyphaeBlock.java b/src/main/java/net/minecraft/world/level/block/StrippedHyphaeBlock.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..67c3945e2c396cb2cb6dbf01771cc7237a2d5590
+index 0000000000000000000000000000000000000000..c18aca56348a11bd33597710f770f977aa8da873
 --- /dev/null
 +++ b/src/main/java/net/minecraft/world/level/block/StrippedHyphaeBlock.java
 @@ -0,0 +1,20 @@
@@ -349,7 +349,7 @@ index 0000000000000000000000000000000000000000..67c3945e2c396cb2cb6dbf01771cc723
 +}
 diff --git a/src/main/java/net/minecraft/world/level/block/StrippedLogBlock.java b/src/main/java/net/minecraft/world/level/block/StrippedLogBlock.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..00e7ba6762e9dd3201db59f43dadd6d333d4aa1a
+index 0000000000000000000000000000000000000000..0a1dbd9fa8086d6d7b3b231de859ffbd9f0f5653
 --- /dev/null
 +++ b/src/main/java/net/minecraft/world/level/block/StrippedLogBlock.java
 @@ -0,0 +1,24 @@
@@ -379,7 +379,7 @@ index 0000000000000000000000000000000000000000..00e7ba6762e9dd3201db59f43dadd6d3
 +}
 diff --git a/src/main/java/net/minecraft/world/level/block/StrippedStemBlock.java b/src/main/java/net/minecraft/world/level/block/StrippedStemBlock.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e88632f8005dee66908c773fd4e37c0ac0ec665a
+index 0000000000000000000000000000000000000000..6ff782b536a1a2a6afb6ec233cb68b825be36183
 --- /dev/null
 +++ b/src/main/java/net/minecraft/world/level/block/StrippedStemBlock.java
 @@ -0,0 +1,20 @@
@@ -405,7 +405,7 @@ index 0000000000000000000000000000000000000000..e88632f8005dee66908c773fd4e37c0a
 +}
 diff --git a/src/main/java/net/minecraft/world/level/block/StrippedWoodBlock.java b/src/main/java/net/minecraft/world/level/block/StrippedWoodBlock.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..4d99b2911919e486f368faad86b4e47f75400b64
+index 0000000000000000000000000000000000000000..32d7035f98aa575c4b65d154c312a13047a24fb7
 --- /dev/null
 +++ b/src/main/java/net/minecraft/world/level/block/StrippedWoodBlock.java
 @@ -0,0 +1,20 @@

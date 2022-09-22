@@ -5,7 +5,7 @@ Subject: [PATCH] Utility method to sort chunks by distance
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index a9f83218af1675a15505acafd67d79954a8ed38d..77916cd06e2c63cce37dc109013655ab30b56772 100644
+index a9f83218af1675a15505acafd67d79954a8ed38d..877afa898a35f1ef12543394f052bb18cdad4257 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -14,6 +14,7 @@ import com.mojang.datafixers.util.Either;
@@ -109,7 +109,7 @@ index a9f83218af1675a15505acafd67d79954a8ed38d..77916cd06e2c63cce37dc109013655ab
      public ChunkMap(ServerLevel world, LevelStorageSource.LevelStorageAccess session, DataFixer dataFixer, StructureTemplateManager structureTemplateManager, Executor executor, BlockableEventLoop<Runnable> mainThreadExecutor, LightChunkGetter chunkProvider, ChunkGenerator chunkGenerator, ChunkProgressListener worldGenerationProgressListener, ChunkStatusUpdateListener chunkStatusChangeListener, Supplier<DimensionDataStorage> persistentStateManagerFactory, int viewDistance, boolean dsync) {
          super(session.getDimensionPath(world.dimension()).resolve("region"), dataFixer, dsync);
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 9c8a931c456c411952a636708c752dacebd72acf..7f93ba15b4a0b2788f3118841232a8ffa1e64afe 100644
+index 034e6ec288b0c1e9a23f70e5bacf8f5f5e9e197b..7098c0461b757821b20c5cd5632216a4f3c6a50b 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -388,6 +388,24 @@ public class ServerPlayer extends Player {

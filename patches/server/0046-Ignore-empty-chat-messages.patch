@@ -5,7 +5,7 @@ Subject: [PATCH] Ignore empty chat messages
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index f31cc2bc3051f7bb0dcdc6fa1e582875a684690f..2c25a82f3db795893f90056c2f9a5909d9990945 100644
+index c36f3bafc4f6681ee817360260744f6e0523da46..7bc0f0ec1fb6ed7cc21e02eb0e93a965173a767b 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2626,7 +2626,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic

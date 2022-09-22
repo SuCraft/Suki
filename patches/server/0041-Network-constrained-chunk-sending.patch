@@ -5,7 +5,7 @@ Subject: [PATCH] Network-constrained chunk sending
 
 
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index f822ad0e8f676863c486ebed008e40d57cde3bfa..807008fdec2fde0e62bcf076269f5fa0896e95cb 100644
+index a7e73ee9eb69774e40a5f878a174e790e509b0a1..53e8754f932ea8fbdc8a82df863df75771c4bc77 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -25,7 +25,9 @@ import org.bukkit.entity.Player;
@@ -165,7 +165,7 @@ index f822ad0e8f676863c486ebed008e40d57cde3bfa..807008fdec2fde0e62bcf076269f5fa0
              if (
                  // has view distance stayed the same?
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 55c249dea72d05ad75102a031c18b70a150b7c4f..1915058a26b536a786c356256ce971e6f190663a 100644
+index 5038a4bc25ae67f9cf6cd4c01c6a7cc9355850af..42e553a04deaff73d7d6630aedca4ceb84dedea7 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -310,6 +310,33 @@ public class GlobalConfiguration extends ConfigurationPart {
@@ -203,10 +203,10 @@ index 55c249dea72d05ad75102a031c18b70a150b7c4f..1915058a26b536a786c356256ce971e6
  
      public class Messages extends ConfigurationPart {
 diff --git a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
-index 6405158e50332138cbc047107d0d4db06f1aa56a..517baa6c18ba13c06fbbedac4ddbc644e6d0fe0e 100644
+index d2c5c0afabf931fc41fe4da71a043bf5166bb9f0..246182d188f7695e39ad4dc2dbefc7a5f0403d36 100644
 --- a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
-@@ -236,6 +236,28 @@ public class WorldConfiguration extends ConfigurationPart {
+@@ -281,6 +281,28 @@ public class WorldConfiguration extends ConfigurationPart {
  
      // Suki end - per-player view distance
  
@@ -236,7 +236,7 @@ index 6405158e50332138cbc047107d0d4db06f1aa56a..517baa6c18ba13c06fbbedac4ddbc644
  
      public class Anticheat extends ConfigurationPart {
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 61335b87c2325ff1512bd5b2f40b9a21a59cc866..bd1df088043427cb8d2d3e1fb60b32a007d9ca96 100644
+index 1e853a5ceec97c0edef3950f7300622dd8b8b758..0026ff47f3193b433074abfaec9f1e279bd655ab 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -538,6 +538,100 @@ public class ServerPlayer extends Player {
@@ -349,7 +349,7 @@ index 61335b87c2325ff1512bd5b2f40b9a21a59cc866..bd1df088043427cb8d2d3e1fb60b32a0
  
      public void untrackChunk(ChunkPos chunkPos, boolean concernsTracking) {
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 464311b63a01487baab2fed78ea9e9ad886b961a..136c81ebb956f360d8828341164abf00dfcc212d 100644
+index 780e834ef6a0338f654dd16cba6e935375129380..191aff6231c8458e284c04f5f9fbf742679cd247 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -3635,12 +3635,14 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic

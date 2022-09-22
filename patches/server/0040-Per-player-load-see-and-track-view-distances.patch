@@ -5,7 +5,7 @@ Subject: [PATCH] Per-player load, see and track view distances
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..29696cb9a68e8b2d9b5f5a6787c8862f956f9d46 100644
+index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..729d1b9809faba5f41cd6ebf21bb368598171bb4 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -164,8 +164,11 @@ public class TimingsExport extends Thread {
@@ -23,7 +23,7 @@ index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..29696cb9a68e8b2d9b5f5a6787c8862f
              ));
          }));
 diff --git a/src/main/java/co/aikar/timings/WorldTimingsHandler.java b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
-index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..dc4f52c99466302345f2818c12d0760733f5fe9b 100644
+index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..d685867d69f95bff0c5677b89722ccf5ffea1f20 100644
 --- a/src/main/java/co/aikar/timings/WorldTimingsHandler.java
 +++ b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
 @@ -44,6 +44,24 @@ public class WorldTimingsHandler {
@@ -76,7 +76,7 @@ index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..dc4f52c99466302345f2818c12d07607
          miscMobSpawning = Timings.ofSafe(name + "Mob spawning - Misc");
  
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d57cde3bfa 100644
+index 0d43afcdd5db346d0ddf82e06bad5b219721715c..a7e73ee9eb69774e40a5f878a174e790e509b0a1 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -24,6 +24,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -906,7 +906,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..f822ad0e8f676863c486ebed008e40d5
      }
  }
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 931db53ebde71ebe9398f1a1ea72178c1ced8ec0..55c249dea72d05ad75102a031c18b70a150b7c4f 100644
+index ee02fa6117db6a58cb28c7cd6d83adfc164fa1d3..5038a4bc25ae67f9cf6cd4c01c6a7cc9355850af 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -8,7 +8,9 @@ import net.kyori.adventure.text.Component;
@@ -1000,7 +1000,7 @@ index 931db53ebde71ebe9398f1a1ea72178c1ced8ec0..55c249dea72d05ad75102a031c18b70a
  
      public class Messages extends ConfigurationPart {
 diff --git a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
-index 62b5b528535b1032aa7007b383895dbc2a228063..6405158e50332138cbc047107d0d4db06f1aa56a 100644
+index 86bff07535f0e542b18ca60fc21c86e96b8a5d1d..d2c5c0afabf931fc41fe4da71a043bf5166bb9f0 100644
 --- a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 @@ -24,6 +24,7 @@ import net.minecraft.Util;
@@ -1020,7 +1020,7 @@ index 62b5b528535b1032aa7007b383895dbc2a228063..6405158e50332138cbc047107d0d4db0
  import org.slf4j.Logger;
  import org.spigotmc.SpigotWorldConfig;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
-@@ -91,6 +94,148 @@ public class WorldConfiguration extends ConfigurationPart {
+@@ -136,6 +139,148 @@ public class WorldConfiguration extends ConfigurationPart {
  
      // Suki end - difficulty changes
  
@@ -1170,7 +1170,7 @@ index 62b5b528535b1032aa7007b383895dbc2a228063..6405158e50332138cbc047107d0d4db0
  
      public class Anticheat extends ConfigurationPart {
 diff --git a/src/main/java/net/minecraft/server/MCUtil.java b/src/main/java/net/minecraft/server/MCUtil.java
-index cae99d217f40f6bc8337619b6e26153ccf261fc2..45c29b842b97b6e829150cf3f867299113426a87 100644
+index cae99d217f40f6bc8337619b6e26153ccf261fc2..7d0b368a872c667bcd2f180c605be0c8399b0065 100644
 --- a/src/main/java/net/minecraft/server/MCUtil.java
 +++ b/src/main/java/net/minecraft/server/MCUtil.java
 @@ -663,7 +663,12 @@ public final class MCUtil {
@@ -1188,7 +1188,7 @@ index cae99d217f40f6bc8337619b6e26153ccf261fc2..45c29b842b97b6e829150cf3f8672991
              worldData.addProperty("keep-spawn-loaded", world.keepSpawnInMemory);
              worldData.addProperty("keep-spawn-loaded-range", world.paperConfig().spawn.keepSpawnLoadedRange * 16);
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index a041161dee9a857d43c83fb677dba7e90a6a5d24..c9a363d467bbb9dca962ce511a086397c33dc75d 100644
+index a041161dee9a857d43c83fb677dba7e90a6a5d24..15e22def419e314b1433b9043d02a0625bc7e967 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -414,7 +414,7 @@ public class ChunkHolder {
@@ -1220,7 +1220,7 @@ index a041161dee9a857d43c83fb677dba7e90a6a5d24..c9a363d467bbb9dca962ce511a086397
  
      private static final class ChunkSaveDebug {
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713adfc8155 100644
+index 877afa898a35f1ef12543394f052bb18cdad4257..aa57dc154c365031e71d9a611296335cafd40eff 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -170,7 +170,10 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
@@ -1520,7 +1520,7 @@ index 77916cd06e2c63cce37dc109013655ab30b56772..2d149e79ad180c12544de81f850fe713
                  double d2 = d0 * d0;
                  boolean flag = d1 <= d2 && this.entity.broadcastToPlayer(player);
 diff --git a/src/main/java/net/minecraft/server/level/DistanceManager.java b/src/main/java/net/minecraft/server/level/DistanceManager.java
-index d1b5c25b7455174e908cd6ed66789fa700190604..7922ced4e86d49df02169ac820fc5cbde974a18b 100644
+index d1b5c25b7455174e908cd6ed66789fa700190604..b8760409a1f88a74a8ea1787d6bf0a23b879bd5d 100644
 --- a/src/main/java/net/minecraft/server/level/DistanceManager.java
 +++ b/src/main/java/net/minecraft/server/level/DistanceManager.java
 @@ -548,9 +548,12 @@ public abstract class DistanceManager {
@@ -1540,7 +1540,7 @@ index d1b5c25b7455174e908cd6ed66789fa700190604..7922ced4e86d49df02169ac820fc5cbd
      public void updateSimulationDistance(int simulationDistance) {
          this.chunkMap.playerChunkManager.setTargetTickViewDistance(simulationDistance); // Paper - route to player chunk manager
 diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
-index 2bb545b505aa726b7ed7c757caed84bf0538782e..99b9d4951fadb8f6da800f948a841c9daa8e11c5 100644
+index 2bb545b505aa726b7ed7c757caed84bf0538782e..5f1f6e8bd7e7ec02803f14a0fc7f88d0c8d5fa9c 100644
 --- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 +++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
 @@ -761,7 +761,7 @@ public class ServerChunkCache extends ChunkSource {
@@ -1567,7 +1567,7 @@ index 2bb545b505aa726b7ed7c757caed84bf0538782e..99b9d4951fadb8f6da800f948a841c9d
      public void setSimulationDistance(int simulationDistance) {
          this.distanceManager.updateSimulationDistance(simulationDistance);
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 7f93ba15b4a0b2788f3118841232a8ffa1e64afe..61335b87c2325ff1512bd5b2f40b9a21a59cc866 100644
+index 7098c0461b757821b20c5cd5632216a4f3c6a50b..1e853a5ceec97c0edef3950f7300622dd8b8b758 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -22,6 +22,8 @@ import java.util.UUID;
@@ -1922,7 +1922,7 @@ index 7f93ba15b4a0b2788f3118841232a8ffa1e64afe..61335b87c2325ff1512bd5b2f40b9a21
          return this.lastSectionPos;
      }
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index bded25d3d87ee8c6e90874275e9d1ab3fd65a26b..7440a6686b064d17fdd8ae4afe91aad38f6797f9 100644
+index bded25d3d87ee8c6e90874275e9d1ab3fd65a26b..b35f72b0cf764145ecb193eb3db5a42b885c6b71 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -24,7 +24,6 @@ import java.util.Optional;
@@ -1978,7 +1978,7 @@ index bded25d3d87ee8c6e90874275e9d1ab3fd65a26b..7440a6686b064d17fdd8ae4afe91aad3
          }
  
 diff --git a/src/main/java/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java b/src/main/java/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
-index 47d6236daca806878399890a8d08e55233f19fd9..1b8d70f06d00b78137a697186e839f6ae69b1e25 100644
+index 47d6236daca806878399890a8d08e55233f19fd9..4d85e3840827d779c53700d49362fcac1298aa8e 100644
 --- a/src/main/java/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
 +++ b/src/main/java/net/minecraft/world/entity/boss/enderdragon/EnderDragon.java
 @@ -5,6 +5,8 @@ import com.mojang.logging.LogUtils;
@@ -2000,7 +2000,7 @@ index 47d6236daca806878399890a8d08e55233f19fd9..1b8d70f06d00b78137a697186e839f6a
                      double deltaZ = this.getZ() - player.getZ();
                      double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
 diff --git a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
-index 3a3c2211585278b236fad7cc0d809a5e25e0fc58..88816bb1df4ef16b0d463719729ed95ec89e01cc 100644
+index 3a3c2211585278b236fad7cc0d809a5e25e0fc58..d1a387cc28d2196c77ef5fc517b99b793abb2f06 100644
 --- a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
 +++ b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
 @@ -5,6 +5,8 @@ import java.util.EnumSet;
@@ -2032,7 +2032,7 @@ index 3a3c2211585278b236fad7cc0d809a5e25e0fc58..88816bb1df4ef16b0d463719729ed95e
                          double deltaZ = this.getZ() - player.getZ();
                          double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
 diff --git a/src/main/java/net/minecraft/world/item/EnderEyeItem.java b/src/main/java/net/minecraft/world/item/EnderEyeItem.java
-index fa1ff2e79954089552974cefedfcbff2225738ec..eca3c9beb026c30174caaf38fa9e964180510baf 100644
+index fa1ff2e79954089552974cefedfcbff2225738ec..53b361d075307cf7171df170308a580e37da7281 100644
 --- a/src/main/java/net/minecraft/world/item/EnderEyeItem.java
 +++ b/src/main/java/net/minecraft/world/item/EnderEyeItem.java
 @@ -1,5 +1,6 @@
@@ -2052,7 +2052,7 @@ index fa1ff2e79954089552974cefedfcbff2225738ec..eca3c9beb026c30174caaf38fa9e9641
                          double deltaZ = soundPos.getZ() - player.getZ();
                          double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index 4f79fb616d594c1d1456cf7efc938c6621fbee68..641317a593b9b2442cdf6ad77432b3a61e8f45cc 100644
+index 4f79fb616d594c1d1456cf7efc938c6621fbee68..c22a23c50c6e93765561ab78d157bf030db7c76f 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
 @@ -732,7 +732,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
@@ -2065,7 +2065,7 @@ index 4f79fb616d594c1d1456cf7efc938c6621fbee68..641317a593b9b2442cdf6ad77432b3a6
                  // Paper end - per player view distance
              }
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index b3f8de20eb09547672218c62817759d03461922d..4f7f5a9346ebbb254c3ef5d7c6f3dd006cee8040 100644
+index b3f8de20eb09547672218c62817759d03461922d..94cf9e5ba69fcf36d03d7e17792282357c374bb3 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 @@ -235,7 +235,7 @@ public class LevelChunk extends ChunkAccess {
@@ -2078,7 +2078,7 @@ index b3f8de20eb09547672218c62817759d03461922d..4f7f5a9346ebbb254c3ef5d7c6f3dd00
                  // a player.
                  chunkProviderServer.mainThreadProcessor.execute(() -> {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index 176df5b16876e2c5b718fe797078da641fe4330d..702ee8aeac939dacc9c47c2ed8194cf78dd5050f 100644
+index b5da496680ef583ed0b7fe7c17b5f1b3116652dd..fe8433163a775aa19569b3681b5108b5d0b6c016 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 @@ -5,6 +5,7 @@ import com.google.common.base.Predicates;
@@ -2229,7 +2229,7 @@ index 176df5b16876e2c5b718fe797078da641fe4330d..702ee8aeac939dacc9c47c2ed8194cf7
  
      // Spigot start
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 84bce377e1a9b9358dddd15455b8d849b4a3ae36..8e85a6b57323545aefda95e6b6cde0ec032f1ae2 100644
+index 84bce377e1a9b9358dddd15455b8d849b4a3ae36..717678f25848f43078c4d277baddbca6e92e7e34 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -541,80 +541,82 @@ public class CraftPlayer extends CraftHumanEntity implements Player {

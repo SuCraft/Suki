@@ -5,7 +5,7 @@ Subject: [PATCH] Custom enchantability
 
 
 diff --git a/src/main/java/net/minecraft/server/commands/EnchantCommand.java b/src/main/java/net/minecraft/server/commands/EnchantCommand.java
-index 7c012f1e37b0085c0939797b0dae8996b4953ab8..6a1ac4a271e97a471b2f9972c18d5a2a366402ae 100644
+index 7c012f1e37b0085c0939797b0dae8996b4953ab8..7dbd1a69909efbad2da3731a935c2556d957fed0 100644
 --- a/src/main/java/net/minecraft/server/commands/EnchantCommand.java
 +++ b/src/main/java/net/minecraft/server/commands/EnchantCommand.java
 @@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
@@ -26,7 +26,7 @@ index 7c012f1e37b0085c0939797b0dae8996b4953ab8..6a1ac4a271e97a471b2f9972c18d5a2a
                              ++i;
                          } else if (targets.size() == 1) {
 diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
-index c59d00c689925cab88f19a02ab3c83dceb14be16..468ecce6121a8a3af13a12712cb14f01a23012e8 100644
+index 447c2ea9603f6482aead79dcb6c729e13cdaf975..6abc2b7be00ce4f8ba1ee3308fa27ed5293a78ba 100644
 --- a/src/main/java/net/minecraft/world/entity/Mob.java
 +++ b/src/main/java/net/minecraft/world/entity/Mob.java
 @@ -75,6 +75,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
@@ -56,7 +56,7 @@ index c59d00c689925cab88f19a02ab3c83dceb14be16..468ecce6121a8a3af13a12712cb14f01
  
      }
 diff --git a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonTrapGoal.java b/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonTrapGoal.java
-index 68887c1a475c119d061c8325136c5245011cdcbb..a3801d98cd3b36653dd5aa54a4838d612482f923 100644
+index 68887c1a475c119d061c8325136c5245011cdcbb..8eef7b83645aa059e3c561f65288ef0ed0a57367 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonTrapGoal.java
 +++ b/src/main/java/net/minecraft/world/entity/animal/horse/SkeletonTrapGoal.java
 @@ -13,6 +13,7 @@ import net.minecraft.world.entity.monster.Skeleton;
@@ -81,7 +81,7 @@ index 68887c1a475c119d061c8325136c5245011cdcbb..a3801d98cd3b36653dd5aa54a4838d61
      }
  
 diff --git a/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java b/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java
-index 770a91fcc351a2d1de4762c0fd9bae2b49c363b5..69d9503f6998c62044f9828734a1e9cbaf2799d4 100644
+index 770a91fcc351a2d1de4762c0fd9bae2b49c363b5..2c1c6b1c352161eb98ead4518f74a0c64bc9fef4 100644
 --- a/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java
 +++ b/src/main/java/net/minecraft/world/entity/npc/VillagerTrades.java
 @@ -44,6 +44,7 @@ import net.minecraft.world.level.block.Blocks;
@@ -102,7 +102,7 @@ index 770a91fcc351a2d1de4762c0fd9bae2b49c363b5..69d9503f6998c62044f9828734a1e9cb
              ItemStack itemStack2 = new ItemStack(Items.EMERALD, j);
              return new MerchantOffer(itemStack2, itemStack, this.maxUses, this.villagerXp, this.priceMultiplier);
 diff --git a/src/main/java/net/minecraft/world/inventory/AnvilMenu.java b/src/main/java/net/minecraft/world/inventory/AnvilMenu.java
-index 506d758efbf16da9467f120321d2359a8832e477..5a1c2f10c1482d57d23c421c562b19e2e4698208 100644
+index 506d758efbf16da9467f120321d2359a8832e477..6cbe9f0ba1e8c9effe1dd362d51440d0eb31492b 100644
 --- a/src/main/java/net/minecraft/world/inventory/AnvilMenu.java
 +++ b/src/main/java/net/minecraft/world/inventory/AnvilMenu.java
 @@ -14,6 +14,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
@@ -123,7 +123,7 @@ index 506d758efbf16da9467f120321d2359a8832e477..5a1c2f10c1482d57d23c421c562b19e2
                              if (this.player.getAbilities().instabuild || itemstack.is(Items.ENCHANTED_BOOK)) {
                                  flag3 = true;
 diff --git a/src/main/java/net/minecraft/world/inventory/EnchantmentMenu.java b/src/main/java/net/minecraft/world/inventory/EnchantmentMenu.java
-index f7404f41c2df202a428711e7e09a9a6eb11bf527..e01d30430bb3016500da43035d309cfb2def2c61 100644
+index f7404f41c2df202a428711e7e09a9a6eb11bf527..876c6a9902e39d3f94d4a98d5166ff9943d7cdd1 100644
 --- a/src/main/java/net/minecraft/world/inventory/EnchantmentMenu.java
 +++ b/src/main/java/net/minecraft/world/inventory/EnchantmentMenu.java
 @@ -26,6 +26,7 @@ import java.util.Map;
@@ -144,7 +144,7 @@ index f7404f41c2df202a428711e7e09a9a6eb11bf527..e01d30430bb3016500da43035d309cfb
          if (stack.is(Items.BOOK) && list.size() > 1) {
              list.remove(this.random.nextInt(list.size()));
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/DamageEnchantment.java b/src/main/java/net/minecraft/world/item/enchantment/DamageEnchantment.java
-index d6c354856c71d9629828e2ddbe316306bfaf6ea6..e0320acf84b08e5e365716ff74e6fd5dbdcc633b 100644
+index d6c354856c71d9629828e2ddbe316306bfaf6ea6..42788c1b16caebcad408c3b29ac4e4806b9d48e6 100644
 --- a/src/main/java/net/minecraft/world/item/enchantment/DamageEnchantment.java
 +++ b/src/main/java/net/minecraft/world/item/enchantment/DamageEnchantment.java
 @@ -50,10 +50,12 @@ public class DamageEnchantment extends Enchantment {
@@ -163,7 +163,7 @@ index d6c354856c71d9629828e2ddbe316306bfaf6ea6..e0320acf84b08e5e365716ff74e6fd5d
      @Override
      public void doPostAttack(LivingEntity user, Entity target, int level) {
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/DigDurabilityEnchantment.java b/src/main/java/net/minecraft/world/item/enchantment/DigDurabilityEnchantment.java
-index cbd39863b75245f1a5a16ab49f09238c034e09d2..09c04b29019da76bc766d754cb267afb10347b9c 100644
+index cbd39863b75245f1a5a16ab49f09238c034e09d2..804de17ddb3423bbbef875391c3e9beb0c9a5a94 100644
 --- a/src/main/java/net/minecraft/world/item/enchantment/DigDurabilityEnchantment.java
 +++ b/src/main/java/net/minecraft/world/item/enchantment/DigDurabilityEnchantment.java
 @@ -25,10 +25,12 @@ public class DigDurabilityEnchantment extends Enchantment {
@@ -182,7 +182,7 @@ index cbd39863b75245f1a5a16ab49f09238c034e09d2..09c04b29019da76bc766d754cb267afb
      public static boolean shouldIgnoreDurabilityDrop(ItemStack item, int level, RandomSource random) {
          if (item.getItem() instanceof ArmorItem && random.nextFloat() < 0.6F) {
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/DiggingEnchantment.java b/src/main/java/net/minecraft/world/item/enchantment/DiggingEnchantment.java
-index c55b492e9bcf5a9eef1bf86d9a0ada7231c459e9..4b9f284e401d137ae433f261a1aecd8d95623174 100644
+index c55b492e9bcf5a9eef1bf86d9a0ada7231c459e9..1856cf3776167c8d0082eb198bcaa7fd7b04e777 100644
 --- a/src/main/java/net/minecraft/world/item/enchantment/DiggingEnchantment.java
 +++ b/src/main/java/net/minecraft/world/item/enchantment/DiggingEnchantment.java
 @@ -24,8 +24,11 @@ public class DiggingEnchantment extends Enchantment {
@@ -200,7 +200,7 @@ index c55b492e9bcf5a9eef1bf86d9a0ada7231c459e9..4b9f284e401d137ae433f261a1aecd8d
 +
  }
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/Enchantment.java b/src/main/java/net/minecraft/world/item/enchantment/Enchantment.java
-index 971179e713944593cdcb6409588619e290d17170..154bfc7e7cbedb277d293af5bb1b9a3d3c7f4a4a 100644
+index 971179e713944593cdcb6409588619e290d17170..7ddb35de5f469c7aad5fe7502df2c089c0a8d68e 100644
 --- a/src/main/java/net/minecraft/world/item/enchantment/Enchantment.java
 +++ b/src/main/java/net/minecraft/world/item/enchantment/Enchantment.java
 @@ -14,6 +14,7 @@ import net.minecraft.world.entity.EquipmentSlot;
@@ -234,7 +234,7 @@ index 971179e713944593cdcb6409588619e290d17170..154bfc7e7cbedb277d293af5bb1b9a3d
      }
  
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/EnchantmentCategory.java b/src/main/java/net/minecraft/world/item/enchantment/EnchantmentCategory.java
-index 6f6106ca4d74d50a7b74b086adc96c58c7906cb6..99941312687999683d85e7c2f359220caec094a1 100644
+index 6f6106ca4d74d50a7b74b086adc96c58c7906cb6..b689a24f23f341d555e7e3b7818582ee3e9d33cc 100644
 --- a/src/main/java/net/minecraft/world/item/enchantment/EnchantmentCategory.java
 +++ b/src/main/java/net/minecraft/world/item/enchantment/EnchantmentCategory.java
 @@ -12,92 +12,108 @@ import net.minecraft.world.item.TridentItem;
@@ -363,7 +363,7 @@ index 6f6106ca4d74d50a7b74b086adc96c58c7906cb6..99941312687999683d85e7c2f359220c
 +
  }
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/EnchantmentHelper.java b/src/main/java/net/minecraft/world/item/enchantment/EnchantmentHelper.java
-index e694a256a72479cff28b65a86ce31a8ca0b1eba6..fd089dc65c395dacd82d357ddeb89c2e634f6cad 100644
+index e694a256a72479cff28b65a86ce31a8ca0b1eba6..599798d218c05b22e5a39e525477cfdb08017c60 100644
 --- a/src/main/java/net/minecraft/world/item/enchantment/EnchantmentHelper.java
 +++ b/src/main/java/net/minecraft/world/item/enchantment/EnchantmentHelper.java
 @@ -26,6 +26,7 @@ import net.minecraft.world.item.EnchantedBookItem;
@@ -422,7 +422,7 @@ index e694a256a72479cff28b65a86ce31a8ca0b1eba6..fd089dc65c395dacd82d357ddeb89c2e
                      if (power >= enchantment.getMinCost(i) && power <= enchantment.getMaxCost(i)) {
                          list.add(new EnchantmentInstance(enchantment, i));
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java b/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java
-index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77b40ecfd8 100644
+index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..df55acd9c61c1f6221f87eb81f2e0472e93c9724 100644
 --- a/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java
 +++ b/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java
 @@ -1,43 +1,234 @@
@@ -677,7 +677,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..1dc7c177b093f7c52093b8b3f4a4fe77
      public static final Enchantment CHANNELING = Enchantments.register("channeling", new TridentChannelingEnchantment(Enchantment.Rarity.VERY_RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
      public static final Enchantment MULTISHOT = Enchantments.register("multishot", new MultiShotEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}));
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/ThornsEnchantment.java b/src/main/java/net/minecraft/world/item/enchantment/ThornsEnchantment.java
-index 97f61bfdf39def907d7d3686914189f7545937ef..38c15510fe81df10eb4718f43f8084657b2b699b 100644
+index 97f61bfdf39def907d7d3686914189f7545937ef..d519d04e64a29eb5de22adcba63a4e9bc318876b 100644
 --- a/src/main/java/net/minecraft/world/item/enchantment/ThornsEnchantment.java
 +++ b/src/main/java/net/minecraft/world/item/enchantment/ThornsEnchantment.java
 @@ -31,10 +31,12 @@ public class ThornsEnchantment extends Enchantment {
@@ -696,7 +696,7 @@ index 97f61bfdf39def907d7d3686914189f7545937ef..38c15510fe81df10eb4718f43f808465
      @Override
      public void doPostHurt(LivingEntity user, Entity attacker, int level) {
 diff --git a/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java b/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java
-index 2bfb9ff77839e9ed91c9c48ad34abb46361c04b7..cfade5bc50500a30f159cc9d5c058e1af5e3e0a1 100644
+index 2bfb9ff77839e9ed91c9c48ad34abb46361c04b7..f4e817c209f3bd2d0db8b6318cd7bd2de5b34095 100644
 --- a/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java
 +++ b/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java
 @@ -27,6 +27,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
@@ -722,7 +722,7 @@ index 2bfb9ff77839e9ed91c9c48ad34abb46361c04b7..cfade5bc50500a30f159cc9d5c058e1a
                  LOGGER.warn("Couldn't find a compatible enchantment for {}", (Object)stack);
                  return stack;
 diff --git a/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantWithLevelsFunction.java b/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantWithLevelsFunction.java
-index acaeecd0abb972c461c2302c9c011b3c2052e497..54709e72fa8a7fb1ed14b695d19f42497bdc76af 100644
+index acaeecd0abb972c461c2302c9c011b3c2052e497..e40d9235c7bcd76999797ec122fa06cec1b1b245 100644
 --- a/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantWithLevelsFunction.java
 +++ b/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantWithLevelsFunction.java
 @@ -12,6 +12,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
@@ -743,7 +743,7 @@ index acaeecd0abb972c461c2302c9c011b3c2052e497..54709e72fa8a7fb1ed14b695d19f4249
  
      public static EnchantWithLevelsFunction.Builder enchantWithLevels(NumberProvider range) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/enchantments/CraftEnchantment.java b/src/main/java/org/bukkit/craftbukkit/enchantments/CraftEnchantment.java
-index 873185fd4d4c994130f2e7c271b3e03cefb2278c..d8ad0bd6d9432afa0cec82974e032b25e2f6130e 100644
+index 873185fd4d4c994130f2e7c271b3e03cefb2278c..9d145bd881c05466b5a75d1b05b8c241047b31f9 100644
 --- a/src/main/java/org/bukkit/craftbukkit/enchantments/CraftEnchantment.java
 +++ b/src/main/java/org/bukkit/craftbukkit/enchantments/CraftEnchantment.java
 @@ -3,6 +3,7 @@ package org.bukkit.craftbukkit.enchantments;
@@ -778,7 +778,7 @@ index 873185fd4d4c994130f2e7c271b3e03cefb2278c..d8ad0bd6d9432afa0cec82974e032b25
      public String getName() {
          // PAIL: migration paths
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemFactory.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemFactory.java
-index 09b6475b77ebc7f43c13861aa2af26e2f6e6a8b5..a1348c8702820b1a867235c8a3bbb6a953e513cc 100644
+index 09b6475b77ebc7f43c13861aa2af26e2f6e6a8b5..ed97c55780e9e99dd6b6fa3933b538501588601d 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftItemFactory.java
 @@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;

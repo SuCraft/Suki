@@ -5,7 +5,7 @@ Subject: [PATCH] Limit some packet sending per tick
 
 
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index 807008fdec2fde0e62bcf076269f5fa0896e95cb..ee5bb11b11d2705b982eed677e022f387aad9ee9 100644
+index 53e8754f932ea8fbdc8a82df863df75771c4bc77..6be8c28bfdeca098d0c785c2cf121b5a6c9a91be 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -936,6 +936,20 @@ public final class PlayerChunkLoader {
@@ -63,7 +63,7 @@ index 4a6b624df834217d7305ba42cab78fdf320ec64c..442b42e80ee9001f9610003c3eaeb7f7
      }
  
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index 4ce2c89cfe7d9255ade257c2a1e6507f28ab2acc..7130173b0d1fd5f96efa9beeee01757bed4ca0ea 100644
+index e6369e00c224c8768e4b2e3509646c108bfd18d2..4069ef0030d66e1186afe5066030cb7b3f19a002 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -31,24 +31,87 @@ import java.util.Queue;
@@ -988,7 +988,7 @@ index 4ce2c89cfe7d9255ade257c2a1e6507f28ab2acc..7130173b0d1fd5f96efa9beeee01757b
      // Paper end
      public void disconnect(Component disconnectReason) {
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java
-index 652bea6868a03a5315965f79c76172fb9dbb93fb..62ced75ae96b0b97b87ea9960282f1b33ffef2cf 100644
+index 652bea6868a03a5315965f79c76172fb9dbb93fb..70ca28f06d0e8541c1130ff7b1b0bce21872b649 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java
 @@ -14,9 +14,11 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -1033,7 +1033,7 @@ index 07d96cca04c9658291eea91e7b0a7f5a3fc9882e..e562a768ad400a6dca0f1546fb0dddbe
      }
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 4caf8cddea835c17c31ebe9cfbeb3813e2ee7e4d..a621cf75f800a2c05b6c2a0f4b95220c5881f716 100644
+index dbb5afb00345796dcd2655ab77f5c4f91c5e03a0..63479e24d2d28f275d05485e15c798c0b1a4cca7 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -635,6 +635,30 @@ public class ServerPlayer extends Player {
@@ -1068,7 +1068,7 @@ index 4caf8cddea835c17c31ebe9cfbeb3813e2ee7e4d..a621cf75f800a2c05b6c2a0f4b95220c
  
      // CraftBukkit start
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 83fd5b26174f08c771ca1320cf8b0d3f6759938a..4f5b857226dbdf2b0abee7fb510e46f156eb20d2 100644
+index 5a5f0354e664cf739dcb73fd98731e1a982c8f1b..c3355db1f57310d2e6b85d84a76f93390dab1f0f 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -25,6 +25,8 @@ import java.util.Set;
@@ -1128,7 +1128,7 @@ index 83fd5b26174f08c771ca1320cf8b0d3f6759938a..4f5b857226dbdf2b0abee7fb510e46f1
                  double d5 = y - entityplayer.getY();
                  double d6 = z - entityplayer.getZ();
 diff --git a/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java b/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java
-index f456ad8a74464414f69b616a48ee9a2c1cee4d90..1be8276594db09231f97767878ed475138e79946 100644
+index f456ad8a74464414f69b616a48ee9a2c1cee4d90..e784f0b6d862b1d981ce7d63dbf7f1e3e21b0923 100644
 --- a/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/piston/PistonBaseBlock.java
 @@ -286,6 +286,7 @@ public class PistonBaseBlock extends DirectionalBlock {

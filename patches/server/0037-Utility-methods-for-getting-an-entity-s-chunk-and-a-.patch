@@ -6,7 +6,7 @@ Subject: [PATCH] Utility methods for getting an entity's chunk and a player's
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 712cdc009ceea543f9e430398affe09e5957af8a..9c8a931c456c411952a636708c752dacebd72acf 100644
+index 28e514e3274e5040579c562949c816f79d94e448..034e6ec288b0c1e9a23f70e5bacf8f5f5e9e197b 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -1,18 +1,34 @@
@@ -94,7 +94,7 @@ index 712cdc009ceea543f9e430398affe09e5957af8a..9c8a931c456c411952a636708c752dac
      // If this is an issue, PRs are welcome
      public final BlockPos getSpawnPoint(ServerLevel worldserver) {
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index a21f7de5331fc31a291fe177e6e1e843c7895cee..2331ed3bdf11df468b8c39eaa076ca5ccba0540e 100644
+index a21f7de5331fc31a291fe177e6e1e843c7895cee..326c9fbad6bd7b63051a49feed1d80b6e3a3f575 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -616,6 +616,26 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {

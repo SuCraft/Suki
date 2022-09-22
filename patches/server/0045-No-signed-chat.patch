@@ -5,7 +5,7 @@ Subject: [PATCH] No signed chat
 
 
 diff --git a/src/main/java/io/papermc/paper/adventure/ChatProcessor.java b/src/main/java/io/papermc/paper/adventure/ChatProcessor.java
-index 28ddab1121e314e82bf764fd89f36714bd7445f8..6f739de85e0f70e9119baae955dc717020e0b10e 100644
+index 28ddab1121e314e82bf764fd89f36714bd7445f8..94f160be8a0ce9e86e5f9e52e51c2b1caf3d40f3 100644
 --- a/src/main/java/io/papermc/paper/adventure/ChatProcessor.java
 +++ b/src/main/java/io/papermc/paper/adventure/ChatProcessor.java
 @@ -313,7 +313,7 @@ public final class ChatProcessor {
@@ -18,7 +18,7 @@ index 28ddab1121e314e82bf764fd89f36714bd7445f8..6f739de85e0f70e9119baae955dc7170
  
          record ConstantFunction(net.minecraft.network.chat.Component component) implements Function<Audience, net.minecraft.network.chat.Component> {
 diff --git a/src/main/java/net/minecraft/network/chat/OutgoingPlayerChatMessage.java b/src/main/java/net/minecraft/network/chat/OutgoingPlayerChatMessage.java
-index bd82f0316df85b621c1970ff30bbbec0d2712ccd..85d1a6b2cd21d9c456c37c6025c0fa0326409242 100644
+index bd82f0316df85b621c1970ff30bbbec0d2712ccd..81004b3b4acc03d2d901a91add748af72aeda1be 100644
 --- a/src/main/java/net/minecraft/network/chat/OutgoingPlayerChatMessage.java
 +++ b/src/main/java/net/minecraft/network/chat/OutgoingPlayerChatMessage.java
 @@ -52,7 +52,7 @@ public interface OutgoingPlayerChatMessage {
@@ -42,7 +42,7 @@ index bd82f0316df85b621c1970ff30bbbec0d2712ccd..85d1a6b2cd21d9c456c37c6025c0fa03
              }
  
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerChatPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerChatPacket.java
-index 0b818969d74eae05e2d2adfdbc38e513972c61a1..80e1bbe1c8da3271aa1acfd51203f1f9956c6741 100644
+index 0b818969d74eae05e2d2adfdbc38e513972c61a1..bb2b995c90af00299efadcc27339f932e3cad286 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerChatPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerChatPacket.java
 @@ -4,8 +4,11 @@ import java.util.Optional;
@@ -81,7 +81,7 @@ index 0b818969d74eae05e2d2adfdbc38e513972c61a1..80e1bbe1c8da3271aa1acfd51203f1f9
 +
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 684c4bef872f416bf80fea01b680a6d86f3bf90d..4caf8cddea835c17c31ebe9cfbeb3813e2ee7e4d 100644
+index 485c3ae9a856781d6f2bff9169b7fe0abc3368ee..dbb5afb00345796dcd2655ab77f5c4f91c5e03a0 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -2318,10 +2318,11 @@ public class ServerPlayer extends Player {
@@ -110,7 +110,7 @@ index 684c4bef872f416bf80fea01b680a6d86f3bf90d..4caf8cddea835c17c31ebe9cfbeb3813
  
      @Override
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 7440a6686b064d17fdd8ae4afe91aad38f6797f9..83fd5b26174f08c771ca1320cf8b0d3f6759938a 100644
+index b35f72b0cf764145ecb193eb3db5a42b885c6b71..5a5f0354e664cf739dcb73fd98731e1a982c8f1b 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -1451,7 +1451,7 @@ public abstract class PlayerList {
