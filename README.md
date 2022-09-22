@@ -36,6 +36,8 @@
     - Prevent lightning from spawning fire.
     - Set the minimum health left after starving.
     - Spiders can spawn with potion effects on all difficulties.
+    - Set the gossip (reputation) change for player-villager interactions.
+    - Players can share positive villager gossips.
 - Banners and other items/blocks can be placed directly into the head slot.
 - <sup>Configurable</sup> Skip a custom proportion of active entity ticks (Paper uses 1/4 by default).
 - <sup>Configurable</sup> Entities are immune from beig made inactive for a time after certain actions (like a fox targeting a rabbit, or a tamed dog while it is not sitting).
