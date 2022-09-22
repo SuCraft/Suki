@@ -203,10 +203,10 @@ index 5038a4bc25ae67f9cf6cd4c01c6a7cc9355850af..42e553a04deaff73d7d6630aedca4ceb
  
      public class Messages extends ConfigurationPart {
 diff --git a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
-index d2c5c0afabf931fc41fe4da71a043bf5166bb9f0..246182d188f7695e39ad4dc2dbefc7a5f0403d36 100644
+index ea791dcc56294ef1ae346068ae216284c7fb0829..c534fe4a4f3957c32c9da118e3cd8d0eac8748f2 100644
 --- a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
-@@ -281,6 +281,28 @@ public class WorldConfiguration extends ConfigurationPart {
+@@ -300,6 +300,28 @@ public class WorldConfiguration extends ConfigurationPart {
  
      // Suki end - per-player view distance
  

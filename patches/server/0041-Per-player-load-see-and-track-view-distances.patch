@@ -1000,7 +1000,7 @@ index ee02fa6117db6a58cb28c7cd6d83adfc164fa1d3..5038a4bc25ae67f9cf6cd4c01c6a7cc9
  
      public class Messages extends ConfigurationPart {
 diff --git a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
-index 86bff07535f0e542b18ca60fc21c86e96b8a5d1d..d2c5c0afabf931fc41fe4da71a043bf5166bb9f0 100644
+index f839af58f580d4c3943dcd254a464177112fa7ce..ea791dcc56294ef1ae346068ae216284c7fb0829 100644
 --- a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 @@ -24,6 +24,7 @@ import net.minecraft.Util;
@@ -1020,7 +1020,7 @@ index 86bff07535f0e542b18ca60fc21c86e96b8a5d1d..d2c5c0afabf931fc41fe4da71a043bf5
  import org.slf4j.Logger;
  import org.spigotmc.SpigotWorldConfig;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
-@@ -136,6 +139,148 @@ public class WorldConfiguration extends ConfigurationPart {
+@@ -155,6 +158,148 @@ public class WorldConfiguration extends ConfigurationPart {
  
      // Suki end - difficulty changes
  

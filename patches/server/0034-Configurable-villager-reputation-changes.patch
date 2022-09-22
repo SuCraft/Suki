@@ -5,7 +5,7 @@ Subject: [PATCH] Configurable villager reputation changes
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
-index 262a0d7a68310decc15efc0bd085a869629ce689..86bff07535f0e542b18ca60fc21c86e96b8a5d1d 100644
+index 262a0d7a68310decc15efc0bd085a869629ce689..a03160c0d94df9f11820e44702375ea3ace00f18 100644
 --- a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 @@ -87,6 +87,51 @@ public class WorldConfiguration extends ConfigurationPart {
@@ -39,8 +39,8 @@ index 262a0d7a68310decc15efc0bd085a869629ce689..86bff07535f0e542b18ca60fc21c86e9
 +
 +            public class VillagerHurt extends ConfigurationPart {
 +
-+                public int minorNegative = 25;
 +                public int majorNegative = 0;
++                public int minorNegative = 25;
 +
 +            }
 +
@@ -48,8 +48,8 @@ index 262a0d7a68310decc15efc0bd085a869629ce689..86bff07535f0e542b18ca60fc21c86e9
 +
 +            public class VillagerKilled extends ConfigurationPart {
 +
-+                public int minorNegative = 0;
 +                public int majorNegative = 25;
++                public int minorNegative = 0;
 +
 +            }
 +
