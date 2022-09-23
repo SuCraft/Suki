@@ -15687,10 +15687,10 @@ index 219c00b7e77691954e7f4a91fe3d19af901ab52a..cd63c39224d7098f070f0cb8f273594b
  }
 diff --git a/src/main/java/org/sucraft/suki/item/ItemReplacementRule.java b/src/main/java/org/sucraft/suki/item/ItemReplacementRule.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..a162e2aed3c061c012872bfd834b1e2baca5ea2c
+index 0000000000000000000000000000000000000000..3e9c39bed0c15cf4554305eece473c51aa256c7d
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/item/ItemReplacementRule.java
-@@ -0,0 +1,541 @@
+@@ -0,0 +1,545 @@
 +// Suki - custom blocks and items
 +
 +package org.sucraft.suki.item;
@@ -16195,7 +16195,11 @@ index 0000000000000000000000000000000000000000..a162e2aed3c061c012872bfd834b1e2b
 +        if (tag == null) {
 +            tag = itemStack.getOrCreateTag();
 +        }
-+        tag.put(ORIGINAL_ITEM_INFO_ITEM_STACK_KEY, originalItemStack.save(new CompoundTag()));
++        var originalItemStackTag = new CompoundTag();
++        originalItemStack.save(originalItemStackTag);
++        // Remove the count, or otherwise items become non-stackable by client operations because the client thinks they are different
++        originalItemStackTag.remove("Count");
++        tag.put(ORIGINAL_ITEM_INFO_ITEM_STACK_KEY, originalItemStackTag);
 +    }
 +
 +    /**
@@ -16217,7 +16221,7 @@ index 0000000000000000000000000000000000000000..a162e2aed3c061c012872bfd834b1e2b
 +            }
 +            CompoundTag originalNBT = tag.getCompound(ORIGINAL_ITEM_INFO_ITEM_STACK_KEY);
 +            ItemStack original = ItemStack.of(originalNBT);
-+            // The intended amount is chosen by the client
++            // The intended amount is chosen by the client - the original item NBT does not contain this on purpose (to make differently sized stacks of the same item stackable according to the client)
 +            original.setCount(itemStack.getCount());
 +            return original;
 +        } catch (Throwable e) {
