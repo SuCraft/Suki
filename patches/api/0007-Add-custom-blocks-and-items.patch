@@ -5,7 +5,7 @@ Subject: [PATCH] Add custom blocks and items
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 994e81359154fc52392fe64cbe5f17a7a67e66c0..ba7f5b61704fb33ccebb142d72837887e93d2303 100644
+index 994e81359154fc52392fe64cbe5f17a7a67e66c0..6cb3bdcf6ca967b010d2793747d7169ad737bf50 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
 @@ -12,6 +12,7 @@ import java.util.Map;
@@ -31,7 +31,7 @@ index 994e81359154fc52392fe64cbe5f17a7a67e66c0..ba7f5b61704fb33ccebb142d72837887
      /**
       * Get a list of all recipes for a given item. The stack size is ignored
       * in comparisons. If the durability is -1, it will match any data value.
-@@ -2446,6 +2455,19 @@ public final class Bukkit {
+@@ -2446,6 +2455,23 @@ public final class Bukkit {
      public static @NotNull org.bukkit.potion.PotionBrewer getPotionBrewer() {
          return server.getPotionBrewer();
      }
@@ -46,13 +46,17 @@ index 994e81359154fc52392fe64cbe5f17a7a67e66c0..ba7f5b61704fb33ccebb142d72837887
 +        server.addCanAcceptServerResourcePackDisjunct(disjunct);
 +    }
 +
++    public static void addCanAcceptNonMinecraftRecipesDisjunct(@NotNull Predicate<@NotNull Player> disjunct) {
++        server.addCanAcceptNonMinecraftRecipesDisjunct(disjunct);
++    }
++
 +    // Suki end - custom blocks and items
 +
      // Paper end
  
      @NotNull
 diff --git a/src/main/java/org/bukkit/Material.java b/src/main/java/org/bukkit/Material.java
-index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338d50025d6 100644
+index 1d6baee05643607baa40a07022576906ea61a92f..1c1339b6af1e3689a63dd08e5d3d91037f8d4402 100644
 --- a/src/main/java/org/bukkit/Material.java
 +++ b/src/main/java/org/bukkit/Material.java
 @@ -3126,6 +3126,513 @@ public enum Material implements Keyed, net.kyori.adventure.translation.Translata
@@ -851,7 +855,7 @@ index 1d6baee05643607baa40a07022576906ea61a92f..d591db906afa7bdc951abf80b64e7338
      }
  
 diff --git a/src/main/java/org/bukkit/NamespacedKey.java b/src/main/java/org/bukkit/NamespacedKey.java
-index 236c9aea9ffc36269e5c32eacc9f1fd6bd039c88..1121a533b31489a66b76aeeacccaed466d3fe8e3 100644
+index 236c9aea9ffc36269e5c32eacc9f1fd6bd039c88..5d56865ec4d3512df835d13ac6113851dae4afea 100644
 --- a/src/main/java/org/bukkit/NamespacedKey.java
 +++ b/src/main/java/org/bukkit/NamespacedKey.java
 @@ -30,6 +30,9 @@ public final class NamespacedKey implements net.kyori.adventure.key.Key, com.des
@@ -881,7 +885,7 @@ index 236c9aea9ffc36269e5c32eacc9f1fd6bd039c88..1121a533b31489a66b76aeeacccaed46
       * Get a NamespacedKey from the supplied string with a default namespace if
       * a namespace is not defined. This is a utility method meant to fetch a
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 85ccb5f671faca50332b31a7b3f0a55858d330ef..ddb82e822bd621d55420b2ba53d76b59cf02daef 100644
+index 9a0af1b76191a49f9e00a645224bbcc73eda45c8..b3a25e44c746de2cb3d62cdd436534ab52707e7e 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
 @@ -12,6 +12,7 @@ import java.util.Map;
@@ -905,7 +909,7 @@ index 85ccb5f671faca50332b31a7b3f0a55858d330ef..ddb82e822bd621d55420b2ba53d76b59
      /**
       * Get a list of all recipes for a given item. The stack size is ignored
       * in comparisons. If the durability is -1, it will match any data value.
-@@ -2153,5 +2160,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2153,5 +2160,16 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       * @return the potion brewer
       */
      @NotNull org.bukkit.potion.PotionBrewer getPotionBrewer();
@@ -916,12 +920,14 @@ index 85ccb5f671faca50332b31a7b3f0a55858d330ef..ddb82e822bd621d55420b2ba53d76b59
 +
 +    void addCanAcceptServerResourcePackDisjunct(@NotNull Predicate<@NotNull Player> disjunct);
 +
++    void addCanAcceptNonMinecraftRecipesDisjunct(@NotNull Predicate<@NotNull Player> disjunct);
++
 +    // Suki end - custom blocks and items
 +
      // Paper end
  }
 diff --git a/src/main/java/org/bukkit/Tag.java b/src/main/java/org/bukkit/Tag.java
-index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987bcc98fa31 100644
+index 34fdab6ca0e0b4c1f70d9b849fcdc829f044166d..825caea1d4d29f22cf972019938d9fecdff80035 100644
 --- a/src/main/java/org/bukkit/Tag.java
 +++ b/src/main/java/org/bukkit/Tag.java
 @@ -1,6 +1,8 @@
@@ -1546,10 +1552,10 @@ index 0db922d56468f6ab9c76277c8a4c42e1808d7169..6c6cdaf2907667f54db239a43043987b
       * Key for the built in item registry.
       */
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index c72ac209bb46b08ebb3c262aad23af9a182faf37..1d17bd553d7fb4ce2ff4d7fb7df4283d37a2a0ce 100644
+index 790b68f4f87968182fae03bcfab78e5814ff421f..b63b09feec836f9cc96156bf359381eeba6e3b6c 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -2509,6 +2509,18 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -2509,6 +2509,20 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
       */
      boolean hasResourcePack();
  
@@ -1563,13 +1569,15 @@ index c72ac209bb46b08ebb3c262aad23af9a182faf37..1d17bd553d7fb4ce2ff4d7fb7df4283d
 +
 +    public boolean canAcceptServerResourcePack();
 +
++    public boolean canAcceptNonMinecraftRecipes();
++
 +    // Suki end - custom blocks and items
 +
      /**
       * Gets a copy of this players profile
       * @return The players profile object
 diff --git a/src/main/java/org/bukkit/inventory/meta/ItemMeta.java b/src/main/java/org/bukkit/inventory/meta/ItemMeta.java
-index c6b0fd783675cd019048e445d8e959637d90be7a..93dc8aaa1146c6a218dd6a9f53b62c4266f1ed8d 100644
+index c6b0fd783675cd019048e445d8e959637d90be7a..6bffdf48b852744c953e2c6a79b3897c0da2b8fe 100644
 --- a/src/main/java/org/bukkit/inventory/meta/ItemMeta.java
 +++ b/src/main/java/org/bukkit/inventory/meta/ItemMeta.java
 @@ -581,4 +581,17 @@ public interface ItemMeta extends Cloneable, ConfigurationSerializable, Persiste
