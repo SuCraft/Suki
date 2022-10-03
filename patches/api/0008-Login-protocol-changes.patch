@@ -5,10 +5,10 @@ Subject: [PATCH] Login protocol changes
 
 
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index 790b68f4f87968182fae03bcfab78e5814ff421f..14aa7f0e5be41e53132a075df4e3a903f04cf61a 100644
+index b63b09feec836f9cc96156bf359381eeba6e3b6c..b63033d6f2256f98b9589bcb2779d56d4ed8fab9 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -2523,6 +2523,12 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -2537,6 +2537,12 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
       */
      void setPlayerProfile(@NotNull com.destroystokyo.paper.profile.PlayerProfile profile);
  

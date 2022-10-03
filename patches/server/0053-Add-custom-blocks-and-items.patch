@@ -215,7 +215,7 @@ index 6be8c28bfdeca098d0c785c2cf121b5a6c9a91be..58b6dbc841d2cafa8fc704e9acbfbdda
          }
          protected LongOpenHashSet getChunksToBeSent(final boolean concernsTracking) {
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 7c7ad9828d2bd1b17cdf5f69d2a3de465895ef18..84db940123aba6ea78bfe02e36a11eaef208af63 100644
+index 02afbeb5e120d68e6a0ce07101d5b7aaafae9325..6ec1c5e371e29900b86360090e1a65a277262299 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -36,6 +36,18 @@ public class GlobalConfiguration extends ConfigurationPart {
@@ -472,7 +472,7 @@ index 46681f3fa63516aa750de11cf1dee17cb3734fcd..6788cf46df539dfe9973088c9376619d
  
  public final class NbtUtils {
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index 4069ef0030d66e1186afe5066030cb7b3f19a002..c0b8b7402a77acb1ef37fe0f4c2a68f6aa854584 100644
+index dab1c33bbeb5d3f496795df0ece8b54f51e4c602..070673bf444e98bc67d12a8063b7c2e159107e65 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -2,6 +2,7 @@ package net.minecraft.network;
@@ -1081,7 +1081,7 @@ index 4069ef0030d66e1186afe5066030cb7b3f19a002..c0b8b7402a77acb1ef37fe0f4c2a68f6
      // Paper start - NetworkClient implementation
      public int protocolVersion;
      public java.net.InetSocketAddress virtualHost;
-@@ -391,6 +961,21 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -397,6 +967,21 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
              return null;
          }
      }
@@ -1103,7 +1103,7 @@ index 4069ef0030d66e1186afe5066030cb7b3f19a002..c0b8b7402a77acb1ef37fe0f4c2a68f6
      private static class InnerUtil { // Attempt to hide these methods from ProtocolLib so it doesn't accidently pick them up.
          private static java.util.List<Packet> buildExtraPackets(Packet packet) {
              java.util.List<Packet> extra = packet.getExtraPackets();
-@@ -427,7 +1012,15 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -433,7 +1018,15 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
                  packet instanceof net.minecraft.network.protocol.game.ClientboundClearTitlesPacket ||
                  packet instanceof net.minecraft.network.protocol.game.ClientboundBossEventPacket ||
                  packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket ||
@@ -1120,7 +1120,7 @@ index 4069ef0030d66e1186afe5066030cb7b3f19a002..c0b8b7402a77acb1ef37fe0f4c2a68f6
              // Suki end - more packets that can be sent immediately
          }
          // Paper end
-@@ -1208,6 +1801,11 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1214,6 +1807,11 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
          if (!connected && !preparing) {
              return; // Do nothing
          }
@@ -1132,7 +1132,7 @@ index 4069ef0030d66e1186afe5066030cb7b3f19a002..c0b8b7402a77acb1ef37fe0f4c2a68f6
          packet.onPacketDispatch(getPlayer());
          if (connected && (InnerUtil.canSendImmediate(this, packet) || (
              net.minecraft.server.MCUtil.isMainThread() && packet.isReady() && this.queue.isEmpty() &&
-@@ -1270,6 +1868,65 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1276,6 +1874,65 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
  //        }
          // Suki end - limit packets per tick
          this.packetWrites.getAndIncrement(); // must be befeore using canFlush
@@ -1198,7 +1198,7 @@ index 4069ef0030d66e1186afe5066030cb7b3f19a002..c0b8b7402a77acb1ef37fe0f4c2a68f6
          boolean effectiveFlush = flushConditional == null ? this.canFlush : flushConditional.booleanValue();
          // Suki start - more packets without delay
          final boolean flush = effectiveFlush || packet instanceof net.minecraft.network.protocol.game.ClientboundKeepAlivePacket || packet instanceof ClientboundDisconnectPacket
-@@ -1277,6 +1934,14 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1283,6 +1940,14 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
              || packet instanceof net.minecraft.network.protocol.game.ClientboundForgetLevelChunkPacket
              || packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket
              || packet instanceof net.minecraft.network.protocol.game.ClientboundMapItemDataPacket
@@ -1213,7 +1213,7 @@ index 4069ef0030d66e1186afe5066030cb7b3f19a002..c0b8b7402a77acb1ef37fe0f4c2a68f6
              ; // no delay for certain packets
          // Suki end - more packets without delay
          // Paper end - add flush parameter
-@@ -1289,20 +1954,22 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1295,20 +1960,22 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
              this.channel.config().setAutoRead(false);
          }
  
@@ -1239,7 +1239,7 @@ index 4069ef0030d66e1186afe5066030cb7b3f19a002..c0b8b7402a77acb1ef37fe0f4c2a68f6
              });
              } // Paper
          }
-@@ -1426,8 +2093,35 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1432,8 +2099,35 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
      private static final int MAX_PER_TICK = io.papermc.paper.configuration.GlobalConfiguration.get().misc.maxJoinsPerTick; // Paper
      private static int joinAttemptsThisTick; // Paper
      private static int currTick; // Paper
@@ -1275,7 +1275,7 @@ index 4069ef0030d66e1186afe5066030cb7b3f19a002..c0b8b7402a77acb1ef37fe0f4c2a68f6
          this.flushQueue();
          // Paper start
          if (currTick != net.minecraft.server.MinecraftServer.currentTick) {
-@@ -1469,6 +2163,18 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1475,6 +2169,18 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
  
      }
  
@@ -2746,7 +2746,7 @@ index 09be313aefd5dda15bd4db6ee0324b2aec879744..0d1640a07ee883e47537d475b4f35591
          this.positionCodec.setBase(entity.trackingPosition());
          this.yRotp = Mth.floor(entity.getYRot() * 256.0F / 360.0F);
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 63479e24d2d28f275d05485e15c798c0b1a4cca7..8868b226ed92d7cb743b0a57360134b2c17b347b 100644
+index ce24922d05c365a535fa8257199c135983a26d80..5cb8056e66ca1c5cf3475e192a41713064bdd6ef 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -1,6 +1,5 @@
@@ -2845,7 +2845,7 @@ index 63479e24d2d28f275d05485e15c798c0b1a4cca7..8868b226ed92d7cb743b0a57360134b2
      }
  
      public void sendServerStatus(ServerStatus metadata) {
-@@ -2946,4 +2964,186 @@ public class ServerPlayer extends Player {
+@@ -2955,4 +2973,186 @@ public class ServerPlayer extends Player {
      // CraftBukkit end
  
      public final int getViewDistance() { throw new UnsupportedOperationException("Use PlayerChunkLoader"); } // Paper - placeholder
@@ -6929,7 +6929,7 @@ index fe8433163a775aa19569b3681b5108b5d0b6c016..ecaf2a1b5f869f975df13e37dab8f6e7
              // Paper end
          }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 717678f25848f43078c4d277baddbca6e92e7e34..40515a07238ecfc9dcd146e3347dcffbef820779 100644
+index 4a10f5c57a5a46b54eee4e1811a8433449f688bc..b63e2c278238bb2c5cf6e04c6dd7b915809c8adb 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -27,6 +27,8 @@ import java.util.WeakHashMap;
@@ -6949,7 +6949,7 @@ index 717678f25848f43078c4d277baddbca6e92e7e34..40515a07238ecfc9dcd146e3347dcffb
  import org.bukkit.event.player.PlayerShowEntityEvent;
  import org.bukkit.event.player.PlayerTeleportEvent;
  import org.bukkit.event.player.PlayerUnregisterChannelEvent;
-@@ -2548,6 +2551,39 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -2558,6 +2561,39 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
      public void setResourcePackStatus(org.bukkit.event.player.PlayerResourcePackStatusEvent.Status status) {
          this.resourcePackStatus = status;
      }
