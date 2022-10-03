@@ -1,0 +1,83 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Mon, 3 Oct 2022 20:33:38 +0200
+Subject: [PATCH] Login protocol changes
+
+
+diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
+index 790b68f4f87968182fae03bcfab78e5814ff421f..14aa7f0e5be41e53132a075df4e3a903f04cf61a 100644
+--- a/src/main/java/org/bukkit/entity/Player.java
++++ b/src/main/java/org/bukkit/entity/Player.java
+@@ -2523,6 +2523,12 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+      */
+     void setPlayerProfile(@NotNull com.destroystokyo.paper.profile.PlayerProfile profile);
+ 
++    // Suki start - login protocol - client-provided UUID API
++
++    @Nullable UUID getClientProvidedUUID();
++
++    // Suki end - login protocol - client-provided UUID API
++
+     /**
+      * Returns the amount of ticks the current cooldown lasts
+      *
+diff --git a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
+index 635b8787fc235b61c0d5677def034656e4ec4cef..10b5b988eb57cd3c74d9996089776e7b68a5d911 100644
+--- a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
++++ b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
+@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
+ import org.bukkit.event.Event;
+ import org.bukkit.event.HandlerList;
+ import org.jetbrains.annotations.NotNull;
++import org.jetbrains.annotations.Nullable;
+ 
+ /**
+  * Stores details for players attempting to log in.
+@@ -62,6 +63,8 @@ public class AsyncPlayerPreLoginEvent extends Event {
+     }
+     // Paper end
+ 
++    private final @Nullable UUID clientProvidedUUID; // Suki - login protocol - client-provided UUID API
++
+     @Deprecated
+     public AsyncPlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress, @NotNull final UUID uniqueId, @NotNull PlayerProfile profile) {
+         this(name, ipAddress, ipAddress, uniqueId, profile);
+@@ -73,7 +76,14 @@ public class AsyncPlayerPreLoginEvent extends Event {
+         this(name, ipAddress, rawAddress, uniqueId, profile, "");
+     }
+ 
++    // Suki start - login protocol - client-provided UUID API
++    @Deprecated
+     public AsyncPlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress, @NotNull final InetAddress rawAddress, @NotNull final UUID uniqueId, @NotNull PlayerProfile profile, @NotNull String hostname) {
++        this(name, ipAddress, rawAddress, uniqueId, profile, hostname, null);
++    }
++
++    public AsyncPlayerPreLoginEvent(@NotNull final String name, @NotNull final InetAddress ipAddress, @NotNull final InetAddress rawAddress, @NotNull final UUID uniqueId, @NotNull PlayerProfile profile, @NotNull String hostname, @Nullable UUID clientProvidedUUID) {
++        // Suki end - login protocol - client-provided UUID API
+         // Paper end - Add hostname
+         super(true);
+         this.profile = profile;
+@@ -85,6 +95,7 @@ public class AsyncPlayerPreLoginEvent extends Event {
+         this.rawAddress = rawAddress; // Paper
+         //this.uniqueId = uniqueId; // Paper - Not used anymore
+         this.hostname = hostname; // Paper - Add hostname
++        this.clientProvidedUUID = clientProvidedUUID; // Suki - login protocol - client-provided UUID API
+     }
+ 
+     /**
+@@ -283,6 +294,15 @@ public class AsyncPlayerPreLoginEvent extends Event {
+     }
+     // Paper end
+ 
++    // Suki start - login protocol - client-provided UUID API
++
++    @Nullable
++    public UUID getClientProvidedUUID() {
++        return this.clientProvidedUUID;
++    }
++
++    // Suki end - login protocol - client-provided UUID API
++
+     @NotNull
+     @Override
+     public HandlerList getHandlers() {
