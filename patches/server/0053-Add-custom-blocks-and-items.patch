@@ -215,7 +215,7 @@ index 6be8c28bfdeca098d0c785c2cf121b5a6c9a91be..58b6dbc841d2cafa8fc704e9acbfbdda
          }
          protected LongOpenHashSet getChunksToBeSent(final boolean concernsTracking) {
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 02afbeb5e120d68e6a0ce07101d5b7aaafae9325..6ec1c5e371e29900b86360090e1a65a277262299 100644
+index 7078bb109a6763d021d3cd002e094cc4ca9b35da..f9f9d56734f23da1c15b86314a4ecba864eb3a02 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -36,6 +36,18 @@ public class GlobalConfiguration extends ConfigurationPart {
@@ -472,7 +472,7 @@ index 46681f3fa63516aa750de11cf1dee17cb3734fcd..6788cf46df539dfe9973088c9376619d
  
  public final class NbtUtils {
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index dab1c33bbeb5d3f496795df0ece8b54f51e4c602..070673bf444e98bc67d12a8063b7c2e159107e65 100644
+index 958745e0db737d5d331e8ded3255f4192511d15d..b57e6fcf71b483d56470170a4c2f3332a5596377 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -2,6 +2,7 @@ package net.minecraft.network;
@@ -1120,7 +1120,7 @@ index dab1c33bbeb5d3f496795df0ece8b54f51e4c602..070673bf444e98bc67d12a8063b7c2e1
              // Suki end - more packets that can be sent immediately
          }
          // Paper end
-@@ -1214,6 +1807,11 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1219,6 +1812,11 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
          if (!connected && !preparing) {
              return; // Do nothing
          }
@@ -1132,7 +1132,7 @@ index dab1c33bbeb5d3f496795df0ece8b54f51e4c602..070673bf444e98bc67d12a8063b7c2e1
          packet.onPacketDispatch(getPlayer());
          if (connected && (InnerUtil.canSendImmediate(this, packet) || (
              net.minecraft.server.MCUtil.isMainThread() && packet.isReady() && this.queue.isEmpty() &&
-@@ -1276,6 +1874,65 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1281,6 +1879,65 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
  //        }
          // Suki end - limit packets per tick
          this.packetWrites.getAndIncrement(); // must be befeore using canFlush
@@ -1198,7 +1198,7 @@ index dab1c33bbeb5d3f496795df0ece8b54f51e4c602..070673bf444e98bc67d12a8063b7c2e1
          boolean effectiveFlush = flushConditional == null ? this.canFlush : flushConditional.booleanValue();
          // Suki start - more packets without delay
          final boolean flush = effectiveFlush || packet instanceof net.minecraft.network.protocol.game.ClientboundKeepAlivePacket || packet instanceof ClientboundDisconnectPacket
-@@ -1283,6 +1940,14 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1288,6 +1945,14 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
              || packet instanceof net.minecraft.network.protocol.game.ClientboundForgetLevelChunkPacket
              || packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket
              || packet instanceof net.minecraft.network.protocol.game.ClientboundMapItemDataPacket
@@ -1213,7 +1213,7 @@ index dab1c33bbeb5d3f496795df0ece8b54f51e4c602..070673bf444e98bc67d12a8063b7c2e1
              ; // no delay for certain packets
          // Suki end - more packets without delay
          // Paper end - add flush parameter
-@@ -1295,20 +1960,22 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1300,20 +1965,22 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
              this.channel.config().setAutoRead(false);
          }
  
@@ -1239,7 +1239,7 @@ index dab1c33bbeb5d3f496795df0ece8b54f51e4c602..070673bf444e98bc67d12a8063b7c2e1
              });
              } // Paper
          }
-@@ -1432,8 +2099,35 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1437,8 +2104,35 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
      private static final int MAX_PER_TICK = io.papermc.paper.configuration.GlobalConfiguration.get().misc.maxJoinsPerTick; // Paper
      private static int joinAttemptsThisTick; // Paper
      private static int currTick; // Paper
@@ -1275,7 +1275,7 @@ index dab1c33bbeb5d3f496795df0ece8b54f51e4c602..070673bf444e98bc67d12a8063b7c2e1
          this.flushQueue();
          // Paper start
          if (currTick != net.minecraft.server.MinecraftServer.currentTick) {
-@@ -1475,6 +2169,18 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -1480,6 +2174,18 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
  
      }
  

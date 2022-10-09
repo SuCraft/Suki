@@ -1552,7 +1552,7 @@ index 34fdab6ca0e0b4c1f70d9b849fcdc829f044166d..825caea1d4d29f22cf972019938d9fec
       * Key for the built in item registry.
       */
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index 790b68f4f87968182fae03bcfab78e5814ff421f..b63b09feec836f9cc96156bf359381eeba6e3b6c 100644
+index 14aa7f0e5be41e53132a075df4e3a903f04cf61a..b63033d6f2256f98b9589bcb2779d56d4ed8fab9 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
 @@ -2509,6 +2509,20 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
