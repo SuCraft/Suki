@@ -25,6 +25,7 @@
 - <sup>Configurable</sup> Disable `Moved too quickly` and `Moved wrongly`.
 - Small important packets are sent without delay.
 - <sup>Configurable</sup> Don't kick players for timing out.
+- <sup>Configurable</sup> Log login protocol packets.
 - Prevents staggered terrain after data corruption.
 - Further reach distance is accepted from players to prevent block placements failing due to lag.
 - Debug stick can be used in survival mode (with a permission) for a limited number of block properties, such as changing the visual `lit` state of a furnace or the rotation of logs or stairs.
