@@ -1,0 +1,29 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Mon, 10 Oct 2022 14:16:59 +0200
+Subject: [PATCH] (WIP) Show vanished players in tab list
+
+
+diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+index 6af7bd59cf3bd8db29cb7a0b8196f1877536c5c7..bc02850206ab6fd69f98df358095714790dda213 100644
+--- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
++++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+@@ -428,6 +428,18 @@ public class GlobalConfiguration extends ConfigurationPart {
+ 
+     // Suki end - hide game modes
+ 
++    // Suki start - show vanished players in tab list
++
++    public VanishedPlayers vanishedPlayers;
++
++    public class VanishedPlayers extends ConfigurationPart {
++
++        public boolean showInTabList = false;
++
++    }
++
++    // Suki end - show vanished players in tab list
++
+     public Messages messages;
+ 
+     public class Messages extends ConfigurationPart {
