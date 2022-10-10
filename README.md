@@ -42,7 +42,7 @@
     - Players can share positive villager gossips.
 - Banners and other items/blocks can be placed directly into the head slot.
 - <sup>Configurable</sup> Skip a custom proportion of active entity ticks (Paper uses 1/4 by default).
-- <sup>Configurable</sup> Entities are immune from beig made inactive for a time after certain actions (like a fox targeting a rabbit, or a tamed dog while it is not sitting).
+- <sup>Configurable</sup> Entities are immune from being made inactive for a time after certain actions (like a fox targeting a rabbit, or a tamed dog while it is not sitting).
 - <sup>Configurable</sup> Entities are woken up from inactivity with some variance instead of many at the same time
 - Enchantment compatibilities:
     - Looting on a Bow, Crossbow and Trident
