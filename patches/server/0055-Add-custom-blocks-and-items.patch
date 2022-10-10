@@ -8780,7 +8780,7 @@ index 0000000000000000000000000000000000000000..ea7465a8fc5ee4ff5d872fb7c0f96ffc
 +}
 diff --git a/src/main/java/org/sucraft/suki/block/SuCraftBlocks.java b/src/main/java/org/sucraft/suki/block/SuCraftBlocks.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..726ca5423fff63072d1fce72064e6e7cf407fedb
+index 0000000000000000000000000000000000000000..3888fae19a3eb39c4976b6985d81dc03f81a0a33
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/block/SuCraftBlocks.java
 @@ -0,0 +1,1531 @@
@@ -9615,7 +9615,7 @@ index 0000000000000000000000000000000000000000..726ca5423fff63072d1fce72064e6e7c
 +                .withFallback(Blocks.BOOKSHELF)
 +                .withModelCreation(Model.YPillarCube.defaultCreationWithAlternativeEnd(new Texture(ResourcePackAssetIntention.BLOCK, NamespacedKeyWithoutIntention.minecraft(idWoodType + "_planks"), TextureContent.Existing.getInstance())).withNoParameters())
 +                .withFullBlockBoundingBoxItem(),
-+            new Block(BlockBehaviour.Properties.of(Material.WOOD).strength(1.5F).sound(SoundType.WOOD)).mineableWithAxe().bookshelf(),
++            new Block(BlockBehaviour.Properties.of(Material.WOOD).strength(1.5F).sound(SoundType.WOOD)).mineableWithAxe().bookshelfFullBlock(),
 +            block -> SuCraftBlockLoot.dropSingleItemAndSingleItemWhenSilkTouch(Items.BOOK, ConstantValue.exactly(3.0F), block)
 +        );
 +    }
