@@ -215,10 +215,10 @@ index 6be8c28bfdeca098d0c785c2cf121b5a6c9a91be..58b6dbc841d2cafa8fc704e9acbfbdda
          }
          protected LongOpenHashSet getChunksToBeSent(final boolean concernsTracking) {
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 7078bb109a6763d021d3cd002e094cc4ca9b35da..f9f9d56734f23da1c15b86314a4ecba864eb3a02 100644
+index bc02850206ab6fd69f98df358095714790dda213..42c33c5e23443f75758e27950255e692b460657d 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -36,6 +36,18 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -39,6 +39,18 @@ public class GlobalConfiguration extends ConfigurationPart {
      @Setting(Configuration.VERSION_FIELD)
      public int version = CURRENT_VERSION;
  
