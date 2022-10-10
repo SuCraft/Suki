@@ -16365,10 +16365,10 @@ index 0000000000000000000000000000000000000000..3e9c39bed0c15cf4554305eece473c51
 +}
 diff --git a/src/main/java/org/sucraft/suki/item/SuCraftCraftingRecipeProvider.java b/src/main/java/org/sucraft/suki/item/SuCraftCraftingRecipeProvider.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..6f394e6911d9ecf4dd8c8d06b4afe425bd924324
+index 0000000000000000000000000000000000000000..cdc79741bbb303f404229d85c30caf439a38674a
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/item/SuCraftCraftingRecipeProvider.java
-@@ -0,0 +1,276 @@
+@@ -0,0 +1,278 @@
 +// Suki - custom blocks and items
 +
 +package org.sucraft.suki.item;
@@ -16539,6 +16539,8 @@ index 0000000000000000000000000000000000000000..6f394e6911d9ecf4dd8c8d06b4afe425
 +        addStonecutterRecipe(Items.QUARTZ_BLOCK, SuCraftItems.QUARTZ_PILLAR_STAIRS);
 +        addStonecutterRecipe(Items.PURPUR_BLOCK, SuCraftItems.PURPUR_PILLAR_SLAB, 2);
 +        addStonecutterRecipe(Items.PURPUR_BLOCK, SuCraftItems.PURPUR_PILLAR_STAIRS);
++        addStonecutterRecipe(Items.SANDSTONE, SuCraftItems.CUT_SANDSTONE_STAIRS);
++        addStonecutterRecipe(Items.RED_SANDSTONE, SuCraftItems.CUT_RED_SANDSTONE_STAIRS);
 +
 +        // Quartz meander
 +        Stream.of(Items.QUARTZ_BLOCK, Items.CHISELED_QUARTZ_BLOCK).forEach(ingredient -> {
