@@ -26,10 +26,10 @@
 - Small important packets are sent without delay.
 - <sup>Configurable</sup> Don't kick players for timing out.
 - <sup>Configurable</sup> Log login protocol packets.
-- <sup>Configurable</sup> Hide player's game modes.
+- <sup>Configurable</sup> Hide player's game modes from others. (Permission: `bukkit.seerealgamemodes`; default `op`)
 - Prevents staggered terrain after data corruption.
 - Further reach distance is accepted from players to prevent block placements failing due to lag.
-- Debug stick can be used in survival mode (with a permission) for a limited number of block properties, such as changing the visual `lit` state of a furnace or the rotation of logs or stairs.
+- Debug stick can be used in survival mode (with a permission) for a limited number of block properties, such as changing the visual `lit` state of a furnace or the rotation of logs or stairs. (Permission: `bukkit.debugstick.survivallike`; default `false`)
 - <sup>Configurable</sup> Gameplay difficulty changes:
     - Zombies can call for reinforcements on all difficulties.
     - All raids are hard (so they contain evokers).
@@ -40,7 +40,7 @@
     - Spiders can spawn with potion effects on all difficulties.
     - Set the gossip (reputation) change for player-villager interactions.
     - Players can share positive villager gossips.
-- Banners and other items/blocks can be placed directly into the head slot.
+- Banners and other items/blocks can be placed directly into the head slot. (Permissions: `bukkit.moreitemsonhead.banner`, `bukkit.moreitemsonhead.all`; default `false)
 - <sup>Configurable</sup> Skip a custom proportion of active entity ticks (Paper uses 1/4 by default).
 - <sup>Configurable</sup> Entities are immune from being made inactive for a time after certain actions (like a fox targeting a rabbit, or a tamed dog while it is not sitting).
 - <sup>Configurable</sup> Entities are woken up from inactivity with some variance instead of many at the same time
