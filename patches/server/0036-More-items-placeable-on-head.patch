@@ -230,7 +230,7 @@ index 42f79d418ec4e2dbeac9a217d9dc144cda2ef714..5182c179af488ca70c21ccaa1f93bae0
          if (itemStack2.isEmpty()) {
              user.setItemSlot(equipmentSlot, itemStack.copy());
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
-index 28ef21d387cc46bd64dcab5e127bdd29a180fd0b..14c3c9256441d00c88abe056af0f42902d978ae8 100644
+index 28ef21d387cc46bd64dcab5e127bdd29a180fd0b..5a3927fefeb98f6e443d7fbe26064a0a507a3adf 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
 @@ -12,6 +12,11 @@ public final class CraftDefaultPermissions {
@@ -250,8 +250,8 @@ index 28ef21d387cc46bd64dcab5e127bdd29a180fd0b..14c3c9256441d00c88abe056af0f4290
          // Suki end - survival debug stick
          DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".commandblock", "Gives the user the ability to use command blocks.", org.bukkit.permissions.PermissionDefault.OP, parent); // Paper
 +        // Suki start - more items placeable on head
-+        putBannersOnHead = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".moreitemsonhead.banner", "Gives the user the ability to put banners into their head armor slot");
-+        putAllBlocksAndItemsOnHead = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".moreitemsonhead.all", "Gives the user the ability to put any block or item into their head armor slot");
++        putBannersOnHead = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".moreitemsonhead.banner", "Gives the user the ability to put banners into their head armor slot", org.bukkit.permissions.PermissionDefault.FALSE, parent);
++        putAllBlocksAndItemsOnHead = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".moreitemsonhead.all", "Gives the user the ability to put any block or item into their head armor slot", org.bukkit.permissions.PermissionDefault.FALSE, parent);
 +        // Suki end - more items placeable on head
          // Spigot end
          parent.recalculatePermissibles();
