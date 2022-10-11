@@ -5,12 +5,12 @@ Subject: [PATCH] Survival-compatible debug stick
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 51ab2c492e68a7d3b5ecc63838a6233950ad0ce6..a3d715d9b90b5b1ca4a3c3308a4f3c04b0260711 100644
+index 30902f914d29a4cec0d24c0bbc899b85f698d408..c6fa0b7924a380a634e37a11b94e38bb09ed3284 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -203,6 +203,21 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -217,6 +217,21 @@ public class GlobalConfiguration extends ConfigurationPart {
  
-     // Suki end - configurable keepalive
+     // Suki end - increase max interaction distance
  
 +    // Suki start - survival debug stick
 +
@@ -31,7 +31,7 @@ index 51ab2c492e68a7d3b5ecc63838a6233950ad0ce6..a3d715d9b90b5b1ca4a3c3308a4f3c04
  
      public class Messages extends ConfigurationPart {
 diff --git a/src/main/java/net/minecraft/core/Direction.java b/src/main/java/net/minecraft/core/Direction.java
-index 445f21c3764d148de937f558e3f087ae2006733d..a22f59bec9e070464e60c01d5daeb5e50a295f8d 100644
+index 445f21c3764d148de937f558e3f087ae2006733d..c630a6b3f36aedd05085c495ac20853ef1e33884 100644
 --- a/src/main/java/net/minecraft/core/Direction.java
 +++ b/src/main/java/net/minecraft/core/Direction.java
 @@ -650,7 +650,7 @@ public enum Direction implements StringRepresentable {
@@ -44,10 +44,10 @@ index 445f21c3764d148de937f558e3f087ae2006733d..a22f59bec9e070464e60c01d5daeb5e5
  
          private Plane(Direction[] facingArray, Direction.Axis[] axisArray) {
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
-index 5a60f5dc202c44b06ca34e9a19d45cb715f74fd3..280d28257ff2c28775f8a236a324d8c63b53093a 100644
+index 85c6fb720059d3806f149d446d662a053b1eee9b..232172ef678982c26d7712d2830e679d1282e5c8 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
-@@ -10,6 +10,7 @@ import net.minecraft.world.MenuProvider;
+@@ -12,6 +12,7 @@ import net.minecraft.world.MenuProvider;
  import net.minecraft.world.entity.EquipmentSlot;
  import net.minecraft.world.item.DoubleHighBlockItem;
  import net.minecraft.world.item.ItemStack;
@@ -55,7 +55,7 @@ index 5a60f5dc202c44b06ca34e9a19d45cb715f74fd3..280d28257ff2c28775f8a236a324d8c6
  import net.minecraft.world.item.context.UseOnContext;
  import net.minecraft.world.level.GameType;
  import net.minecraft.world.level.Level;
-@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
+@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
  import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
  import net.minecraft.world.phys.BlockHitResult;
  import net.minecraft.world.phys.Vec3;
@@ -63,7 +63,7 @@ index 5a60f5dc202c44b06ca34e9a19d45cb715f74fd3..280d28257ff2c28775f8a236a324d8c6
  import org.slf4j.Logger;
  
  // CraftBukkit start
-@@ -210,7 +212,37 @@ public class ServerPlayerGameMode {
+@@ -212,7 +214,37 @@ public class ServerPlayerGameMode {
                  }
                  // CraftBukkit end
  
@@ -116,7 +116,7 @@ index b029ae19db2bfde9b08950f41ba8a09e8e4091a0..30b08814aa91d1e73b0dc96b82206ede
  import org.bukkit.craftbukkit.event.CraftEventFactory;
  import org.bukkit.craftbukkit.util.CraftVector;
 diff --git a/src/main/java/net/minecraft/world/item/DebugStickItem.java b/src/main/java/net/minecraft/world/item/DebugStickItem.java
-index 09124f20d00d5631fa52e84cc0e8645caaa80e35..146cf10455214e62773bc1b8670674c9a3eb0afd 100644
+index 09124f20d00d5631fa52e84cc0e8645caaa80e35..386e66e90aad56075fb96d71d0a01895b373f9cf 100644
 --- a/src/main/java/net/minecraft/world/item/DebugStickItem.java
 +++ b/src/main/java/net/minecraft/world/item/DebugStickItem.java
 @@ -1,10 +1,25 @@
@@ -455,7 +455,7 @@ index fbf69c402ba97b99319d0df90b501d43686bce8c..09c95fea219fc777aeb9354387aa694f
  
          if (f == -1.0F) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
-index 8e06bc11fb28baee3407bbfe9d7b3689d6f85ff2..843e04d58c7aca4bd11ab84cf42120cda6a3f4ee 100644
+index 8e06bc11fb28baee3407bbfe9d7b3689d6f85ff2..28ef21d387cc46bd64dcab5e127bdd29a180fd0b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
 @@ -6,6 +6,12 @@ import org.bukkit.util.permissions.DefaultPermissions;

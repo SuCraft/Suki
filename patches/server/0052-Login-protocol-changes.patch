@@ -5,10 +5,10 @@ Subject: [PATCH] Login protocol changes
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 7c7ad9828d2bd1b17cdf5f69d2a3de465895ef18..7078bb109a6763d021d3cd002e094cc4ca9b35da 100644
+index 0ea54703e07504d419a07c4137e283708b4ca867..548c95baa0cba1ed93e25087b8e2bb2bb84dccd2 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -352,6 +352,41 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -363,6 +363,41 @@ public class GlobalConfiguration extends ConfigurationPart {
  
      // Suki end - configurable TPS catch-up time
  

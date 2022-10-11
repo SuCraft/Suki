@@ -5,10 +5,10 @@ Subject: [PATCH] More entity activation configuration
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index a922815ff4c3d3917fec312f9c45d2c6a7d91df3..ee02fa6117db6a58cb28c7cd6d83adfc164fa1d3 100644
+index c6fa0b7924a380a634e37a11b94e38bb09ed3284..66c41fd593d72874210511257ddc2c9244adf9ea 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -218,6 +218,23 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -232,6 +232,23 @@ public class GlobalConfiguration extends ConfigurationPart {
  
      // Suki end - survival debug stick
  

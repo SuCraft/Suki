@@ -906,20 +906,18 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..a7e73ee9eb69774e40a5f878a174e790
      }
  }
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index ee02fa6117db6a58cb28c7cd6d83adfc164fa1d3..5038a4bc25ae67f9cf6cd4c01c6a7cc9355850af 100644
+index 66c41fd593d72874210511257ddc2c9244adf9ea..cdef6e69e140251c97df14c340bcf2309052ce18 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -8,7 +8,9 @@ import net.kyori.adventure.text.Component;
- import net.kyori.adventure.text.format.NamedTextColor;
- import net.minecraft.network.protocol.Packet;
- import net.minecraft.network.protocol.game.ServerboundPlaceRecipePacket;
-+import net.minecraft.server.level.ServerPlayer;
+@@ -11,7 +11,6 @@ import net.minecraft.network.protocol.game.ServerboundPlaceRecipePacket;
+ import net.minecraft.server.level.ServerPlayer;
+ import net.minecraft.world.level.GameType;
  import org.bukkit.Bukkit; // Pufferfish
-+import net.minecraft.server.level.ServerPlayer;
+-import org.bukkit.GameMode;
  import org.checkerframework.checker.nullness.qual.Nullable;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
  import org.spongepowered.configurate.objectmapping.meta.Comment;
-@@ -235,6 +237,79 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -249,6 +248,79 @@ public class GlobalConfiguration extends ConfigurationPart {
  
      // Suki end - configurable proportion of skipped active entities
  

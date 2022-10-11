@@ -1,0 +1,434 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Tue, 11 Oct 2022 21:16:46 +0200
+Subject: [PATCH] Max view distance environment variable
+
+
+diff --git a/src/main/java/net/minecraft/Util.java b/src/main/java/net/minecraft/Util.java
+index 37836dbdbff2ca4cd8bfc8300087377f70da2ee1..e9bf68b8b3c8f7d398848a15d24f4570ad2a7945 100644
+--- a/src/main/java/net/minecraft/Util.java
++++ b/src/main/java/net/minecraft/Util.java
+@@ -80,6 +80,12 @@ import java.util.Collections;
+ // JettPack end
+ 
+ public class Util {
++    // Suki start - max view distance environment variable
++    public static final int MAX_VIEW_DISTANCE = Mth.clamp(Integer.getInteger("suki.viewdistance.max", 32), 32, 125);
++    public static final int MAX_VIEW_DISTANCE_PLUS_ONE = MAX_VIEW_DISTANCE + 1;
++    public static final int MAX_VIEW_DISTANCE_PLUS_TWO = MAX_VIEW_DISTANCE + 2;
++    public static final int MAX_VIEW_DISTANCE_MINUS_ONE = MAX_VIEW_DISTANCE - 1;
++    // Suki end - max view distance environment variable
+     static final Logger LOGGER = LogUtils.getLogger();
+     private static final int DEFAULT_MAX_THREADS = 255;
+     private static final String MAX_THREADS_SYSTEM_PROPERTY = "max.bg.threads";
+diff --git a/src/main/java/net/minecraft/server/ChunkSystem.java b/src/main/java/net/minecraft/server/ChunkSystem.java
+index 81ea64443a843736f9ada97900d173c302e39ba0..f611a7488c70200cc87d32b56a1ddae251d4767d 100644
+--- a/src/main/java/net/minecraft/server/ChunkSystem.java
++++ b/src/main/java/net/minecraft/server/ChunkSystem.java
+@@ -5,6 +5,7 @@ import com.destroystokyo.paper.util.SneakyThrow;
+ import com.mojang.datafixers.util.Either;
+ import com.mojang.logging.LogUtils;
+ import io.papermc.paper.util.CoordinateUtils;
++import net.minecraft.Util;
+ import net.minecraft.server.level.ChunkHolder;
+ import net.minecraft.server.level.ChunkMap;
+ import net.minecraft.server.level.ServerLevel;
+@@ -78,7 +79,7 @@ public final class ChunkSystem {
+             return;
+         }
+ 
+-        final int minLevel = 33 + ChunkStatus.getDistance(toStatus);
++        final int minLevel = Util.MAX_VIEW_DISTANCE_PLUS_ONE + ChunkStatus.getDistance(toStatus); // Suki - max view distance environment variable
+         final Long chunkReference = addTicket ? Long.valueOf(++chunkLoadCounter) : null;
+         final ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
+         final int priorityBoost = getPriorityBoost(priority);
+@@ -156,7 +157,7 @@ public final class ChunkSystem {
+             return;
+         }
+ 
+-        final int minLevel = 33 - (toStatus.ordinal() - 1);
++        final int minLevel = Util.MAX_VIEW_DISTANCE_PLUS_ONE - (toStatus.ordinal() - 1); // Suki - max view distance environment variable
+         final int radius = toStatus.ordinal() - 1;
+         final Long chunkReference = addTicket ? Long.valueOf(++chunkLoadCounter) : null;
+         final ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
+diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
+index 15e22def419e314b1433b9043d02a0625bc7e967..c2ccb8c9f25270d0cec7a8bf766c1d7779dfa1a7 100644
+--- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
++++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
+@@ -564,7 +564,7 @@ public class ChunkHolder {
+             this.getFutureIfPresentUnchecked(ChunkStatus.FULL).thenAccept((either) -> {
+                 io.papermc.paper.util.TickThread.ensureTickThread("Async full status chunk future completion"); // Paper
+                 LevelChunk chunk = (LevelChunk)either.left().orElse(null);
+-                if (chunk != null && chunk.wasLoadCallbackInvoked() && ChunkHolder.this.ticketLevel > 33) { // Paper - only invoke unload if load was called
++                if (chunk != null && chunk.wasLoadCallbackInvoked() && ChunkHolder.this.ticketLevel > Util.MAX_VIEW_DISTANCE_PLUS_ONE) { // Paper - only invoke unload if load was called // Suki - max view distance environment variable
+                     // Paper  start - only schedule once, now the future is no longer completed as RIGHT if unloaded...
+                     if (ChunkHolder.this.unloadCallbackScheduled) {
+                         return;
+@@ -574,7 +574,7 @@ public class ChunkHolder {
+                     chunkStorage.callbackExecutor.execute(() -> {
+                         // Paper  start - only schedule once, now the future is no longer completed as RIGHT if unloaded...
+                         ChunkHolder.this.unloadCallbackScheduled = false;
+-                        if (ChunkHolder.this.ticketLevel <= 33) {
++                        if (ChunkHolder.this.ticketLevel <= Util.MAX_VIEW_DISTANCE_PLUS_ONE) { // Suki - max view distance environment variable
+                             return;
+                         }
+                         // Paper  end - only schedule once, now the future is no longer completed as RIGHT if unloaded...
+@@ -758,7 +758,7 @@ public class ChunkHolder {
+             this.getFutureIfPresentUnchecked(ChunkStatus.FULL).thenAccept((either) -> {
+                 io.papermc.paper.util.TickThread.ensureTickThread("Async full status chunk future completion"); // Paper
+                 LevelChunk chunk = (LevelChunk)either.left().orElse(null);
+-                if (chunk != null && ChunkHolder.this.oldTicketLevel <= 33 && !chunk.wasLoadCallbackInvoked()) { // Paper - ensure ticket level is set to loaded before calling, as now this can complete with ticket level > 33
++                if (chunk != null && ChunkHolder.this.oldTicketLevel <= Util.MAX_VIEW_DISTANCE_PLUS_ONE && !chunk.wasLoadCallbackInvoked()) { // Paper - ensure ticket level is set to loaded before calling, as now this can complete with ticket level > 33 // Suki - max view distance environment variable
+                     // Paper  start - only schedule once, now the future is no longer completed as RIGHT if unloaded...
+                     if (ChunkHolder.this.loadCallbackScheduled) {
+                         return;
+@@ -767,7 +767,7 @@ public class ChunkHolder {
+                     // Paper  end - only schedule once, now the future is no longer completed as RIGHT if unloaded...
+                     chunkStorage.callbackExecutor.execute(() -> {
+                         ChunkHolder.this.loadCallbackScheduled = false; // Paper  - only schedule once, now the future is no longer completed as RIGHT if unloaded...
+-                        if (ChunkHolder.this.oldTicketLevel <= 33) chunk.loadCallback(); // Paper "
++                        if (ChunkHolder.this.oldTicketLevel <= Util.MAX_VIEW_DISTANCE_PLUS_ONE) chunk.loadCallback(); // Paper " // Suki - max view distance environment variable
+                     });
+                 }
+             }).exceptionally((throwable) -> {
+@@ -783,11 +783,11 @@ public class ChunkHolder {
+     }
+ 
+     public static ChunkStatus getStatus(int level) {
+-        return level < 33 ? ChunkStatus.FULL : ChunkStatus.getStatusAroundFullChunk(level - 33);
++        return level < Util.MAX_VIEW_DISTANCE_PLUS_ONE ? ChunkStatus.FULL : ChunkStatus.getStatusAroundFullChunk(level - Util.MAX_VIEW_DISTANCE_PLUS_ONE); // Suki - max view distance environment variable
+     }
+ 
+     public static ChunkHolder.FullChunkStatus getFullChunkStatus(int distance) {
+-        return ChunkHolder.FULL_CHUNK_STATUSES[Mth.clamp(33 - distance + 1, (int) 0, ChunkHolder.FULL_CHUNK_STATUSES.length - 1)];
++        return ChunkHolder.FULL_CHUNK_STATUSES[Mth.clamp(Util.MAX_VIEW_DISTANCE_PLUS_ONE - distance + 1, (int) 0, ChunkHolder.FULL_CHUNK_STATUSES.length - 1)]; // Suki - max view distance environment variable
+     }
+ 
+     public boolean wasAccessibleSinceLastSave() {
+@@ -904,7 +904,7 @@ public class ChunkHolder {
+         int priority = neighborPriority; // if we have a neighbor priority, use it
+         int myPriority = getMyPriority();
+ 
+-        if (priority == -1 || (ticketLevel <= 33 && priority > myPriority)) {
++        if (priority == -1 || (ticketLevel <= Util.MAX_VIEW_DISTANCE_PLUS_ONE && priority > myPriority)) { // Suki - max view distance environment variable
+             priority = myPriority;
+         }
+ 
+diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
+index 907e6ee49a703021a3af7ecc53c70f518eea181e..d8f320c6db0970d5d54a240756e2ebbb0831d366 100644
+--- a/src/main/java/net/minecraft/server/level/ChunkMap.java
++++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
+@@ -131,12 +131,14 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+     private static final int CHUNK_SAVED_EAGERLY_PER_TICK = 20;
+     private static final int EAGER_CHUNK_SAVE_COOLDOWN_IN_MILLIS = 10000;
+     private static final int MIN_VIEW_DISTANCE = 3;
+-    public static final int MAX_VIEW_DISTANCE = 33;
+-    public static final int MAX_CHUNK_DISTANCE = 33 + ChunkStatus.maxDistance();
++    // Suki start - max view distance environment variable
++    public static final int MAX_VIEW_DISTANCE = Util.MAX_VIEW_DISTANCE_PLUS_ONE;
++    public static final int MAX_CHUNK_DISTANCE = Util.MAX_VIEW_DISTANCE_PLUS_ONE + ChunkStatus.maxDistance();
++    // Suki end - max view distance environment variable
+     // Paper start - Don't copy
+     public final com.destroystokyo.paper.util.map.QueuedChangesMapLong2Object<ChunkHolder> updatingChunks = new com.destroystokyo.paper.util.map.QueuedChangesMapLong2Object<>();
+     // Paper end - Don't copy
+-    public static final int FORCED_TICKET_LEVEL = 31;
++    public static final int FORCED_TICKET_LEVEL = Util.MAX_VIEW_DISTANCE_MINUS_ONE; // Suki - max view distance environment variable
+     // Paper - Don't copy
+     private final Long2ObjectLinkedOpenHashMap<ChunkHolder> pendingUnloads;
+     public final LongSet entitiesInLevel;
+@@ -1217,7 +1219,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+             }
+             // Paper end - revert 1.17 chunk system changes
+             if (requiredStatus == ChunkStatus.LIGHT) {
+-                this.distanceManager.addTicket(TicketType.LIGHT, chunkcoordintpair, 33 + ChunkStatus.getDistance(ChunkStatus.LIGHT), chunkcoordintpair);
++                this.distanceManager.addTicket(TicketType.LIGHT, chunkcoordintpair, Util.MAX_VIEW_DISTANCE_PLUS_ONE + ChunkStatus.getDistance(ChunkStatus.LIGHT), chunkcoordintpair); // Suki - max view distance environment variable
+             }
+ 
+             // Paper - revert 1.17 chunk system changes
+@@ -1275,7 +1277,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+         CompletableFuture<CompoundTag> chunkSaveFuture = this.level.asyncChunkTaskManager.getChunkSaveFuture(pos.x, pos.z);
+         // Paper start
+         ChunkHolder playerChunk = getUpdatingChunkIfPresent(pos.toLong());
+-        int chunkPriority = playerChunk != null ? playerChunk.requestedPriority : 33;
++        int chunkPriority = playerChunk != null ? playerChunk.requestedPriority : Util.MAX_VIEW_DISTANCE_PLUS_ONE; // Suki - max view distance environment variable
+         int priority = com.destroystokyo.paper.io.PrioritizedTaskQueue.NORMAL_PRIORITY;
+ 
+         if (chunkPriority <= 10) {
+@@ -1383,7 +1385,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+ 
+     protected void releaseLightTicket(ChunkPos pos) {
+         this.mainThreadExecutor.tell(Util.name(() -> {
+-            this.distanceManager.removeTicket(TicketType.LIGHT, pos, 33 + ChunkStatus.getDistance(ChunkStatus.LIGHT), pos);
++            this.distanceManager.removeTicket(TicketType.LIGHT, pos, Util.MAX_VIEW_DISTANCE_PLUS_ONE + ChunkStatus.getDistance(ChunkStatus.LIGHT), pos); // Suki - max view distance environment variable
+         }, () -> {
+             return "release light ticket " + pos;
+         }));
+@@ -1693,7 +1695,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+ 
+     // Suki start - per-player view distance
+     public void setVanillaWorldViewDistance(int vanillaWorldViewDistance) {
+-        int newVanillaWorldViewDistancePlusOne = Mth.clamp(vanillaWorldViewDistance + 1, (int) 3, (int) 33);
++        int newVanillaWorldViewDistancePlusOne = Mth.clamp(vanillaWorldViewDistance + 1, (int) 3, Util.MAX_VIEW_DISTANCE_PLUS_ONE); // Suki - max view distance environment variable
+ 
+         if (newVanillaWorldViewDistancePlusOne != this.vanillaWorldViewDistancePlusOne) {
+             int k = this.vanillaWorldViewDistancePlusOne;
+diff --git a/src/main/java/net/minecraft/server/level/DistanceManager.java b/src/main/java/net/minecraft/server/level/DistanceManager.java
+index 2cd84de2428e67928f105811118bea603d69785d..7caf0bd91338cb0b68f3495ca9ebcdc35542292f 100644
+--- a/src/main/java/net/minecraft/server/level/DistanceManager.java
++++ b/src/main/java/net/minecraft/server/level/DistanceManager.java
+@@ -30,6 +30,8 @@ import java.util.Set;
+ import java.util.concurrent.CompletableFuture;
+ import java.util.concurrent.Executor;
+ import javax.annotation.Nullable;
++
++import net.minecraft.Util;
+ import net.minecraft.core.SectionPos;
+ import net.minecraft.util.SortedArraySet;
+ import net.minecraft.util.thread.ProcessorHandle;
+@@ -43,10 +45,12 @@ public abstract class DistanceManager {
+ 
+     static final Logger LOGGER = LogUtils.getLogger();
+     private static final int ENTITY_TICKING_RANGE = 2;
+-    static final int PLAYER_TICKET_LEVEL = 33 + ChunkStatus.getDistance(ChunkStatus.FULL) - 2;
++    static final int PLAYER_TICKET_LEVEL = Util.MAX_VIEW_DISTANCE_PLUS_ONE + ChunkStatus.getDistance(ChunkStatus.FULL) - 2; // Suki - max view distance environment variable
+     private static final int INITIAL_TICKET_LIST_CAPACITY = 4;
+-    private static final int ENTITY_TICKING_LEVEL_THRESHOLD = 32;
+-    private static final int BLOCK_TICKING_LEVEL_THRESHOLD = 33;
++    // Suki start - max view distance environment variable
++    private static final int ENTITY_TICKING_LEVEL_THRESHOLD = Util.MAX_VIEW_DISTANCE;
++    private static final int BLOCK_TICKING_LEVEL_THRESHOLD = Util.MAX_VIEW_DISTANCE_PLUS_ONE;
++    // Suki end - max view distance environment variable
+     final Long2ObjectMap<ObjectSet<ServerPlayer>> playersPerChunk = new Long2ObjectOpenHashMap();
+     public final Long2ObjectOpenHashMap<SortedArraySet<Ticket<?>>> tickets = new Long2ObjectOpenHashMap();
+     //private final DistanceManager.ChunkTicketTracker ticketTracker = new DistanceManager.ChunkTicketTracker(); // Paper - replace ticket level propagator
+@@ -311,7 +315,7 @@ public abstract class DistanceManager {
+                 }
+                 ChunkHolder playerChunk = chunkMap.getUpdatingChunkIfPresent(i);
+                 if (!hasPlayer && playerChunk != null && playerChunk.isFullChunkReady()) {
+-                    Ticket<Long> delayUnload = new Ticket<Long>(TicketType.DELAY_UNLOAD, 33, i);
++                    Ticket<Long> delayUnload = new Ticket<Long>(TicketType.DELAY_UNLOAD, Util.MAX_VIEW_DISTANCE_PLUS_ONE, i); // Suki - max view distance environment variable
+                     delayUnload.delayUnloadBy = delayChunkUnloadsBy;
+                     delayUnload.setCreatedTick(this.ticketTickCounter);
+                     arraysetsorted.remove(delayUnload);
+@@ -352,7 +356,7 @@ public abstract class DistanceManager {
+ 
+     public <T> boolean addRegionTicketAtDistance(TicketType<T> tickettype, ChunkPos chunkcoordintpair, int i, T t0) {
+         // CraftBukkit end
+-        Ticket<T> ticket = new Ticket<>(tickettype, 33 - i, t0);
++        Ticket<T> ticket = new Ticket<>(tickettype, Util.MAX_VIEW_DISTANCE_PLUS_ONE - i, t0); // Suki - max view distance environment variable
+         long j = chunkcoordintpair.toLong();
+ 
+         boolean added = this.addTicket(j, ticket); // CraftBukkit
+@@ -367,7 +371,7 @@ public abstract class DistanceManager {
+ 
+     public <T> boolean removeRegionTicketAtDistance(TicketType<T> tickettype, ChunkPos chunkcoordintpair, int i, T t0) {
+         // CraftBukkit end
+-        Ticket<T> ticket = new Ticket<>(tickettype, 33 - i, t0);
++        Ticket<T> ticket = new Ticket<>(tickettype, Util.MAX_VIEW_DISTANCE_PLUS_ONE - i, t0); // Suki - max view distance environment variable
+         long j = chunkcoordintpair.toLong();
+ 
+         boolean removed = this.removeTicket(j, ticket); // CraftBukkit
+@@ -488,7 +492,7 @@ public abstract class DistanceManager {
+     // Paper end
+ 
+     protected void updateChunkForced(ChunkPos pos, boolean forced) {
+-        Ticket<ChunkPos> ticket = new Ticket<>(TicketType.FORCED, 31, pos);
++        Ticket<ChunkPos> ticket = new Ticket<>(TicketType.FORCED, Util.MAX_VIEW_DISTANCE_MINUS_ONE, pos); // Suki - max view distance environment variable
+         long i = pos.toLong();
+ 
+         if (forced) {
+@@ -530,7 +534,7 @@ public abstract class DistanceManager {
+     }
+ 
+     private int getPlayerTicketLevel() {
+-        return Math.max(0, 31 - this.simulationDistance);
++        return Math.max(0, Util.MAX_VIEW_DISTANCE_MINUS_ONE - this.simulationDistance); // Suki - max view distance environment variable
+     }
+ 
+     public boolean inEntityTickingRange(long chunkPos) {
+diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
+index 0c4e8372f79850eeac8f162601c0c01f16b4d668..08b8a9fc0093806e76a2e43f28fc8a3f0ad44396 100644
+--- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
++++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
+@@ -190,7 +190,7 @@ public class ServerChunkCache extends ChunkSource {
+ 
+     void getChunkAtAsynchronously(int chunkX, int chunkZ, int ticketLevel,
+                                   java.util.function.Consumer<ChunkAccess> consumer) {
+-        if (ticketLevel <= 33) {
++        if (ticketLevel <= Util.MAX_VIEW_DISTANCE_PLUS_ONE) { // Suki - max view distance environment variable
+             this.getFullChunkAsync(chunkX, chunkZ, (java.util.function.Consumer)consumer);
+             return;
+         }
+@@ -204,7 +204,7 @@ public class ServerChunkCache extends ChunkSource {
+ 
+     public final void getChunkAtAsynchronously(int chunkX, int chunkZ, ChunkStatus status, boolean gen, boolean allowSubTicketLevel, java.util.function.Consumer<ChunkAccess> onLoad) {
+         // try to fire sync
+-        int chunkStatusTicketLevel = 33 + ChunkStatus.getDistance(status);
++        int chunkStatusTicketLevel = Util.MAX_VIEW_DISTANCE_PLUS_ONE + ChunkStatus.getDistance(status); // Suki - max view distance environment variable
+         ChunkHolder playerChunk = this.chunkMap.getUpdatingChunkIfPresent(io.papermc.paper.util.CoordinateUtils.getChunkKey(chunkX, chunkZ));
+         if (playerChunk != null) {
+             ChunkStatus holderStatus = playerChunk.getChunkHolderStatus();
+@@ -561,7 +561,7 @@ public class ServerChunkCache extends ChunkSource {
+         // Paper end
+         ChunkPos chunkcoordintpair = new ChunkPos(chunkX, chunkZ);
+         long k = chunkcoordintpair.toLong();
+-        int l = 33 + ChunkStatus.getDistance(leastStatus);
++        int l = Util.MAX_VIEW_DISTANCE_PLUS_ONE + ChunkStatus.getDistance(leastStatus); // Suki - max view distance environment variable
+         ChunkHolder playerchunk = this.getVisibleChunkIfPresent(k);
+ 
+         // CraftBukkit start - don't add new ticket for currently unloading chunk
+@@ -616,7 +616,7 @@ public class ServerChunkCache extends ChunkSource {
+     @Override
+     public boolean hasChunk(int x, int z) {
+         ChunkHolder playerchunk = this.getVisibleChunkIfPresent((new ChunkPos(x, z)).toLong());
+-        int k = 33 + ChunkStatus.getDistance(ChunkStatus.FULL);
++        int k = Util.MAX_VIEW_DISTANCE_PLUS_ONE + ChunkStatus.getDistance(ChunkStatus.FULL); // Suki - max view distance environment variable
+ 
+         return !this.chunkAbsent(playerchunk, k);
+     }
+@@ -785,7 +785,7 @@ public class ServerChunkCache extends ChunkSource {
+                     continue;
+                 }
+ 
+-                int range = Math.min(event.getSpawnRadius(), 32); // limit to max view distance
++                int range = Math.min(event.getSpawnRadius(), Util.MAX_VIEW_DISTANCE); // limit to max view distance // Suki - max view distance environment variable
+                 int chunkX = net.minecraft.server.MCUtil.getChunkCoordinate(player.getX());
+                 int chunkZ = net.minecraft.server.MCUtil.getChunkCoordinate(player.getZ());
+ 
+diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
+index 3d2406faa5a5c7729b46577ce9f93f938685b73b..f06e31d2c76d6882384aff9ed7f4e7ef8763653e 100644
+--- a/src/main/java/net/minecraft/server/level/ServerLevel.java
++++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
+@@ -308,7 +308,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+ 
+         java.util.function.Consumer<net.minecraft.world.level.chunk.ChunkAccess> consumer = (net.minecraft.world.level.chunk.ChunkAccess chunk) -> {
+             if (chunk != null) {
+-                int ticketLevel = Math.max(33, chunkProvider.chunkMap.getUpdatingChunkIfPresent(chunk.getPos().toLong()).getTicketLevel());
++                int ticketLevel = Math.max(Util.MAX_VIEW_DISTANCE_PLUS_ONE, chunkProvider.chunkMap.getUpdatingChunkIfPresent(chunk.getPos().toLong()).getTicketLevel()); // Suki - max view distance environment variable
+                 ret.add(chunk);
+                 ticketLevels.add(ticketLevel);
+                 chunkProvider.addTicketAtLevel(TicketType.FUTURE_AWAIT, chunk.getPos(), ticketLevel, holderIdentifier);
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+index ce24922d05c365a535fa8257199c135983a26d80..190a7cfeb84c4a65d03c3473dd118ab939438f22 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+@@ -207,7 +207,7 @@ public class ServerPlayer extends Player {
+ 
+     // Suki start - per-player view distance
+ 
+-    private static int[] maxViewDistanceDueToTotalViewedChunks = {32, 32};
++    private static int[] maxViewDistanceDueToTotalViewedChunks = {Util.MAX_VIEW_DISTANCE, Util.MAX_VIEW_DISTANCE}; // Suki - max view distance environment variable
+ 
+     /**
+      * Does not change any state
+@@ -231,7 +231,7 @@ public class ServerPlayer extends Player {
+                 int playerViewDimensionUnderCandidateAssumption = playerViewDistanceUnderCandidateAssumption * 2 + 1;
+                 chunks += playerViewDimensionUnderCandidateAssumption * playerViewDimensionUnderCandidateAssumption;
+             }
+-            if (candidateViewDistance > 2 && (chunks > maxTotalChunks || candidateViewDistance > 32)) {
++            if (candidateViewDistance > 2 && (chunks > maxTotalChunks || candidateViewDistance > Util.MAX_VIEW_DISTANCE)) { // Suki - max view distance environment variable
+                 candidateViewDistance--;
+                 if (increase) {
+                     continue;
+@@ -370,7 +370,7 @@ public class ServerPlayer extends Player {
+                     trackViewDistance = Math.min(trackViewDistance, ServerPlayer.maxViewDistanceDueToTotalViewedChunks[type]);
+                 }
+                 // Clamp to possible values
+-                trackViewDistance = Mth.clamp(trackViewDistance, 2, 32);
++                trackViewDistance = Mth.clamp(trackViewDistance, 2, Util.MAX_VIEW_DISTANCE); // Suki - max view distance environment variable
+ 
+                 this.level.timings.computeTrackViewDistance.stopTiming();
+ 
+@@ -399,7 +399,7 @@ public class ServerPlayer extends Player {
+                     seeViewDistance = Math.min(seeViewDistance, ServerPlayer.maxViewDistanceDueToTotalViewedChunks[type]);
+                 }
+                 // Clamp to possible values
+-                seeViewDistance = Mth.clamp(seeViewDistance, 2, 32);
++                seeViewDistance = Mth.clamp(seeViewDistance, 2, Util.MAX_VIEW_DISTANCE); // Suki - max view distance environment variable
+ 
+                 this.level.timings.computeSeeViewDistance.stopTiming();
+ 
+@@ -428,7 +428,7 @@ public class ServerPlayer extends Player {
+                     }
+                 }
+                 // Clamp to possible values
+-                loadViewDistance = Mth.clamp(loadViewDistance, 3, 33);
++                loadViewDistance = Mth.clamp(loadViewDistance, 3, Util.MAX_VIEW_DISTANCE_PLUS_ONE); // Suki - max view distance environment variable
+ 
+                 this.level.timings.computeLoadViewDistance.stopTiming();
+ 
+diff --git a/src/main/java/net/minecraft/server/level/TickingTracker.java b/src/main/java/net/minecraft/server/level/TickingTracker.java
+index 3a75cef0660dacf0e6993b61e4e6f1dc2d9dbde6..da09afa2601d8f94e2ad4550be2767420fecc180 100644
+--- a/src/main/java/net/minecraft/server/level/TickingTracker.java
++++ b/src/main/java/net/minecraft/server/level/TickingTracker.java
+@@ -7,6 +7,8 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+ import java.util.ArrayList;
+ import java.util.List;
++
++import net.minecraft.Util;
+ import net.minecraft.util.SortedArraySet;
+ import net.minecraft.world.level.ChunkPos;
+ 
+@@ -16,8 +18,10 @@ public class TickingTracker extends ChunkTracker {
+     private final Long2ObjectOpenHashMap<SortedArraySet<Ticket<?>>> tickets = new Long2ObjectOpenHashMap<>();
+ 
+     public TickingTracker() {
+-        super(34, 16, 256);
+-        this.chunks.defaultReturnValue((byte)33);
++        // Suki start - max view distance environment variable
++        super(Util.MAX_VIEW_DISTANCE_PLUS_TWO, Util.MAX_VIEW_DISTANCE_PLUS_ONE / 2, Util.MAX_VIEW_DISTANCE_PLUS_ONE * Util.MAX_VIEW_DISTANCE_PLUS_ONE / 4);
++        this.chunks.defaultReturnValue((byte) Util.MAX_VIEW_DISTANCE_PLUS_ONE);
++        // Suki end - max view distance environment variable
+     }
+ 
+     private SortedArraySet<Ticket<?>> getTickets(long pos) {
+@@ -27,7 +31,7 @@ public class TickingTracker extends ChunkTracker {
+     }
+ 
+     private int getTicketLevelAt(SortedArraySet<Ticket<?>> ticket) {
+-        return ticket.isEmpty() ? 34 : ticket.first().getTicketLevel();
++        return ticket.isEmpty() ? Util.MAX_VIEW_DISTANCE_PLUS_TWO : ticket.first().getTicketLevel(); // Suki - max view distance environment variable
+     }
+ 
+     public void addTicket(long pos, Ticket<?> ticket) {
+@@ -65,7 +69,7 @@ public class TickingTracker extends ChunkTracker {
+         for(Long2ObjectMap.Entry<SortedArraySet<Ticket<?>>> entry : this.tickets.long2ObjectEntrySet()) {
+             for(Ticket<?> ticket : entry.getValue()) {
+                 if (ticket.getType() == TicketType.PLAYER) {
+-                    list.add(Pair.of(ticket, entry.getLongKey()));
++                    list.add(Pair.of((Ticket<ChunkPos>) ticket, entry.getLongKey()));
+                 }
+             }
+         }
+@@ -98,7 +102,7 @@ public class TickingTracker extends ChunkTracker {
+ 
+     @Override
+     protected void setLevel(long id, int level) {
+-        if (level > 33) {
++        if (level > Util.MAX_VIEW_DISTANCE_PLUS_ONE) { // Suki - max view distance environment variable
+             this.chunks.remove(id);
+         } else {
+             this.chunks.put(id, (byte)level);
+diff --git a/src/main/java/org/spigotmc/SpigotWorldConfig.java b/src/main/java/org/spigotmc/SpigotWorldConfig.java
+index cbb0aad53128b8e301a468272ea927d3975eb7a1..c67beaafe1ddaed721dfa95005766f446214b722 100644
+--- a/src/main/java/org/spigotmc/SpigotWorldConfig.java
++++ b/src/main/java/org/spigotmc/SpigotWorldConfig.java
+@@ -1,6 +1,8 @@
+ package org.spigotmc;
+ 
+ import java.util.List;
++
++import net.minecraft.Util;
+ import org.bukkit.Bukkit;
+ import org.bukkit.configuration.file.YamlConfiguration;
+ 
+@@ -176,7 +178,7 @@ public class SpigotWorldConfig
+             this.viewDistance = Bukkit.getViewDistance();
+         }
+ 
+-        this.viewDistance = Math.max( Math.min( viewDistance, 32 ), 3 );
++        this.viewDistance = Math.max( Math.min( viewDistance, Util.MAX_VIEW_DISTANCE ), 3 ); // Suki - max view distance environment variable
+         this.log( "View Distance: " + this.viewDistance );
+     }
+ 

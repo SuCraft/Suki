@@ -165,10 +165,10 @@ index a7e73ee9eb69774e40a5f878a174e790e509b0a1..53e8754f932ea8fbdc8a82df863df757
              if (
                  // has view distance stayed the same?
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 5038a4bc25ae67f9cf6cd4c01c6a7cc9355850af..42e553a04deaff73d7d6630aedca4ceb84dedea7 100644
+index cdef6e69e140251c97df14c340bcf2309052ce18..2c9fa6dbc4eed4effb09c6b64a3f024438e2fa18 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -310,6 +310,33 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -321,6 +321,33 @@ public class GlobalConfiguration extends ConfigurationPart {
  
      // Suki end - per-player track and see view distance
  
@@ -349,7 +349,7 @@ index 1e853a5ceec97c0edef3950f7300622dd8b8b758..0026ff47f3193b433074abfaec9f1e27
  
      public void untrackChunk(ChunkPos chunkPos, boolean concernsTracking) {
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 780e834ef6a0338f654dd16cba6e935375129380..191aff6231c8458e284c04f5f9fbf742679cd247 100644
+index b9345aa6996d90f8c474a439cf48d772005969d0..739fc288976d58119db3459063c8760d27c8810c 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -3635,12 +3635,14 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic

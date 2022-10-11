@@ -5,10 +5,10 @@ Subject: [PATCH] Configurable TPS catch-up time
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 42e553a04deaff73d7d6630aedca4ceb84dedea7..7c7ad9828d2bd1b17cdf5f69d2a3de465895ef18 100644
+index 2c9fa6dbc4eed4effb09c6b64a3f024438e2fa18..0ea54703e07504d419a07c4137e283708b4ca867 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -337,6 +337,21 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -348,6 +348,21 @@ public class GlobalConfiguration extends ConfigurationPart {
  
      // Suki end - network-constrained chunk sending
  

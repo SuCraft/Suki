@@ -54,7 +54,7 @@
         <sup style="color: #999999;">Configurable</sup> Don't kick players for timing out.
     </li>
     <li>
-        Further reach distance is accepted from players to prevent block placements failing due to lag.
+        <sup style="color: #999999;">Configurable</sup> Further reach distance is accepted from players to prevent block placements failing due to lag.
     </li>
 </ul>
 
