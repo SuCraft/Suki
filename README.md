@@ -217,6 +217,9 @@ In order to distribute and use this server software, you need a paperclip file:
 ./gradlew applyPatches && ./gradlew createReobfPaperclipJar
 ```
 
+<span style="line-height: 26pt;">Configuration options for Suki:</span>
+&nbsp;&nbsp;&nbsp;<span style="font-size: 16pt; line-height:12pt;">&bull;</span>&nbsp;&nbsp;Global configuration: in `config/paper-global.yml`<br>&nbsp;&nbsp;&nbsp;<span style="font-size: 16pt; line-height:12pt;">&bull;</span>&nbsp;&nbsp;Per-world configuration: defaults in `config/paper-world-defaults.yml` and specific overrides for a world in `<world>/paper-world.yml`
+
 ## License
 Patches are licensed under GPL-3.0.  
 All other non-binary files are licensed under MIT.
