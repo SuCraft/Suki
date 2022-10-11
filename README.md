@@ -9,7 +9,7 @@
 
 ## Features
 
-#### Inherited
+<h3>Inherited</h3>
 
 - Fork of **[Mirai](https://github.com/etil2jz/Mirai)**, with notably:
     - Fork of **[Pufferfish](https://github.com/pufferfish-gg/Pufferfish)** for the best performance.
@@ -21,7 +21,7 @@
 &nbsp;
 - Patches from **[EmpireCraft](https://github.com/starlis/empirecraft)** improving performance, gameplay and fixing inconsistencies.
 
-#### Performance
+<h3>Performance</h3>
 
 <ul>
     <b>Smoother entity activation</b>
@@ -73,7 +73,6 @@
         <sup style="color: #999999;">Configurable</sup> Fairly adapt the maximum view distances of all players automatically based on each player's client view distance and the configured total number of chunks the server can handle.
     </li>
 </ul>
-
 
 <ul>
     <b>Mask short TPS dips</b>
@@ -133,7 +132,7 @@
     </ul>
 </ul>
 
-#### Content
+<h3>Content</h3>
 
 <ul>
     <b>Additions</b>
@@ -176,7 +175,7 @@
     </li>
 </ul>
 
-#### Miscellaneous
+<h3>Miscellaneous</h3>
 
 <ul>
     <b>Privacy for administrators</b>
@@ -217,8 +216,9 @@ In order to distribute and use this server software, you need a paperclip file:
 ./gradlew applyPatches && ./gradlew createReobfPaperclipJar
 ```
 
-<span style="line-height: 26pt;">Configuration options for Suki:</span>
-&nbsp;&nbsp;&nbsp;<span style="font-size: 16pt; line-height:12pt;">&bull;</span>&nbsp;&nbsp;Global configuration: in `config/paper-global.yml`<br>&nbsp;&nbsp;&nbsp;<span style="font-size: 16pt; line-height:12pt;">&bull;</span>&nbsp;&nbsp;Per-world configuration: defaults in `config/paper-world-defaults.yml` and specific overrides for a world in `<world>/paper-world.yml`
+Configuration options for Suki:
+- Global configuration: in `config/paper-global.yml`
+- Per-world configuration: defaults in `config/paper-world-defaults.yml` and specific overrides for a world in `<world>/paper-world.yml`
 
 ## License
 Patches are licensed under GPL-3.0.  
