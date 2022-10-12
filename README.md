@@ -100,7 +100,7 @@
             <br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Default</i>: 4
             <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Recommended</i>: minimum the number of CPU cores, maximum the number of CPU threads
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Recommended</i>: number of CPU cores
         </li>
         <li>
             <code>suki.threads.tracker</code>
@@ -109,7 +109,7 @@
             <br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Default</i>: 4
             <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Recommended</i>: minimum the number of CPU cores, maximum the number of CPU threads
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Recommended</i>: number of CPU cores
         </li>
         <li>
             <code>suki.threads.upgradeworld</code>
@@ -167,7 +167,7 @@
         </ul>
     </li>
     <li>
-        Enchantment compatibilities:
+        <sup style="color: #999999;">Configurable</sup> Enchantment compatibilities:
         <ul>
             <li>Looting on a Bow, Crossbow and Trident</li>
             <li>Protection and Thorns on an Elytra</li>
