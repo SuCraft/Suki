@@ -215,10 +215,10 @@ index 6be8c28bfdeca098d0c785c2cf121b5a6c9a91be..58b6dbc841d2cafa8fc704e9acbfbdda
          }
          protected LongOpenHashSet getChunksToBeSent(final boolean concernsTracking) {
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index bc02850206ab6fd69f98df358095714790dda213..42c33c5e23443f75758e27950255e692b460657d 100644
+index a24c58a4a42d6948e869544af9ebfd5c775d03ab..60f9681ec7d02b829e5d4b7af19a431464735a62 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -39,6 +39,18 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -38,6 +38,18 @@ public class GlobalConfiguration extends ConfigurationPart {
      @Setting(Configuration.VERSION_FIELD)
      public int version = CURRENT_VERSION;
  
@@ -2589,7 +2589,7 @@ index 60ba00eb6daeeb9b97281f9380d373af3cc29402..28392b0e65258ec791817bcf6a861a0a
          // this.setPlayerList(new DedicatedPlayerList(this, this.registryHolder, this.playerDataStorage)); // Spigot - moved up
          server.loadPlugins();
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 907e6ee49a703021a3af7ecc53c70f518eea181e..0539661e026d9cc4058856ebf35094e04845d158 100644
+index d8f320c6db0970d5d54a240756e2ebbb0831d366..fb3c87b5237e0c0009cd6bf3ff896ce529b76a99 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -64,6 +64,7 @@ import net.minecraft.CrashReport;
@@ -2611,7 +2611,7 @@ index 907e6ee49a703021a3af7ecc53c70f518eea181e..0539661e026d9cc4058856ebf35094e0
  import org.slf4j.Logger;
  import org.bukkit.craftbukkit.generator.CustomChunkGenerator;
  import org.bukkit.entity.Player;
-@@ -1712,7 +1715,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -1714,7 +1717,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
      }
      // Paper end - replace player loader system
  
@@ -2620,7 +2620,7 @@ index 907e6ee49a703021a3af7ecc53c70f518eea181e..0539661e026d9cc4058856ebf35094e0
          if (player.level == this.level) {
              if (newWithinViewDistance && !oldWithinViewDistance) {
                  ChunkHolder playerchunk = this.getVisibleChunkIfPresent(pos.toLong());
-@@ -2020,6 +2023,66 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -2022,6 +2025,66 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
          int j = SectionPos.blockToSectionCoord(player.getBlockZ());
          SectionPos sectionposition = player.getLastSectionPos();
          SectionPos sectionposition1 = SectionPos.of((EntityAccess) player);
@@ -2687,7 +2687,7 @@ index 907e6ee49a703021a3af7ecc53c70f518eea181e..0539661e026d9cc4058856ebf35094e0
          long k = sectionposition.chunk().toLong();
          long l = sectionposition1.chunk().toLong();
          boolean flag = this.playerMap.ignored(player);
-@@ -2330,13 +2393,16 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -2332,13 +2395,16 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
      // Paper end - Fix MC-162253
  
      // Paper start - Anti-Xray - Bypass
@@ -2706,7 +2706,7 @@ index 907e6ee49a703021a3af7ecc53c70f518eea181e..0539661e026d9cc4058856ebf35094e0
              // Paper start - Fix MC-162253
              final int viewDistance = getVanillaWorldViewDistance(); // Suki - per-player view distance
              final int playerChunkX = player.getBlockX() >> 4;
-@@ -2376,7 +2442,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -2378,7 +2444,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
                  }
              }
              // Paper end - Fix MC-162253
@@ -3033,10 +3033,10 @@ index ce24922d05c365a535fa8257199c135983a26d80..5cb8056e66ca1c5cf3475e192a417130
 +
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
-index 615ae506972ee0f7df842d18b3060577cb5272e1..d946e44c0c85b09441209a15ae5a73c5fc801da7 100644
+index 232172ef678982c26d7712d2830e679d1282e5c8..4fc4dfc2049dac686086190d5c775e4adb4bcf34 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
-@@ -59,6 +59,7 @@ public class ServerPlayerGameMode {
+@@ -61,6 +61,7 @@ public class ServerPlayerGameMode {
      private boolean isDestroyingBlock;
      private int destroyProgressStart;
      private BlockPos destroyPos;
@@ -3044,7 +3044,7 @@ index 615ae506972ee0f7df842d18b3060577cb5272e1..d946e44c0c85b09441209a15ae5a73c5
      private int gameTicks;
      private boolean hasDelayedDestroy;
      private BlockPos delayedDestroyPos;
-@@ -153,7 +154,16 @@ public class ServerPlayerGameMode {
+@@ -155,7 +156,16 @@ public class ServerPlayerGameMode {
                  this.lastSentState = -1;
                  this.isDestroyingBlock = false;
              } else {
@@ -3062,7 +3062,7 @@ index 615ae506972ee0f7df842d18b3060577cb5272e1..d946e44c0c85b09441209a15ae5a73c5
              }
          }
  
-@@ -304,6 +314,7 @@ public class ServerPlayerGameMode {
+@@ -306,6 +316,7 @@ public class ServerPlayerGameMode {
  
                      this.isDestroyingBlock = true;
                      this.destroyPos = pos.immutable();
@@ -3071,7 +3071,7 @@ index 615ae506972ee0f7df842d18b3060577cb5272e1..d946e44c0c85b09441209a15ae5a73c5
  
                      this.level.destroyBlockProgress(this.player.getId(), pos, k);
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 7bc0f0ec1fb6ed7cc21e02eb0e93a965173a767b..972855ebd3fce6afdefa3cd6056f7aed86e91149 100644
+index d177143b17bfb0c9f52ec979316dd082755dfd50..0d0eac95280251dce06faad6cb6c23eacbcbe5be 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -159,6 +159,7 @@ import net.minecraft.world.entity.player.Inventory;
