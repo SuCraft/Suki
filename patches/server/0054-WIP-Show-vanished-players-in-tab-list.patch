@@ -5,10 +5,10 @@ Subject: [PATCH] (WIP) Show vanished players in tab list
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 68d1722faf79afbda9d3cdeb8618dd34d82dacfb..a24c58a4a42d6948e869544af9ebfd5c775d03ab 100644
+index 290d5f7efa7317a8405cffac7f22e466dac98b5c..9ee11d5f8c7dcd9439d12eca2f834e2c573d0903 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -437,6 +437,18 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -534,6 +534,18 @@ public class GlobalConfiguration extends ConfigurationPart {
  
      // Suki end - hide game modes
  

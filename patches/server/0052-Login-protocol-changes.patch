@@ -5,10 +5,10 @@ Subject: [PATCH] Login protocol changes
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 0ea54703e07504d419a07c4137e283708b4ca867..548c95baa0cba1ed93e25087b8e2bb2bb84dccd2 100644
+index dc353b347fee6a5aa81ba8c39df7dd49bb1b0abb..d137b42dae2c16c92b0e3453dff3a5b17944abf2 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -363,6 +363,41 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -460,6 +460,41 @@ public class GlobalConfiguration extends ConfigurationPart {
  
      // Suki end - configurable TPS catch-up time
  
@@ -215,10 +215,10 @@ index 03f17e568d41f5a4ac3c4bcb72e2fc39a02d7cd5..0cfc83b7e674af0508f2f25413a48e77
                          profile = asyncEvent.getPlayerProfile();
                          profile.complete(true); // Paper - setPlayerProfileAPI
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 717678f25848f43078c4d277baddbca6e92e7e34..4a10f5c57a5a46b54eee4e1811a8433449f688bc 100644
+index 35cf8aca936df9bcb68f983df81f3e6cb1509758..a75c1d567e44e5a1087823bcc652228e34bb34e6 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -1833,6 +1833,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -1851,6 +1851,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
      }
      // Paper end
  

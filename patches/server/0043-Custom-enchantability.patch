@@ -4,6 +4,114 @@ Date: Sun, 19 Jun 2022 22:33:29 +0200
 Subject: [PATCH] Custom enchantability
 
 
+diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+index 2c9fa6dbc4eed4effb09c6b64a3f024438e2fa18..d8485f1a5f4d3ca0554670cdf8e829514b1e7860 100644
+--- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
++++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+@@ -348,6 +348,103 @@ public class GlobalConfiguration extends ConfigurationPart {
+ 
+     // Suki end - network-constrained chunk sending
+ 
++    // Suki start - custom enchantability
++
++    public Enchantability enchantability;
++
++    public class Enchantability extends ConfigurationPart {
++
++        public Protection protection;
++
++        public class Protection extends ConfigurationPart {
++
++            public boolean elytra = false;
++            public boolean shield = false;
++
++        }
++
++        public Thorns thorns;
++
++        public class Thorns extends ConfigurationPart {
++
++            public boolean elytra = false;
++            public boolean shield = false;
++
++        }
++
++        public Looting looting;
++
++        public class Looting extends ConfigurationPart {
++
++            public boolean bow = false;
++            public boolean crossbow = false;
++            public boolean trident = false;
++            public boolean axe = false;
++            public boolean pickaxe = false;
++            public boolean shovel = false;
++            public boolean hoe = false;
++
++        }
++
++        public class MeleeDamage extends ConfigurationPart {
++
++            public boolean pickaxe;
++            public boolean shovel;
++            public boolean hoe;
++
++        }
++
++        public Sharpness sharpness;
++
++        public class Sharpness extends MeleeDamage {}
++
++        public Smite smite;
++
++        public class Smite extends MeleeDamage {}
++
++        public BaneOfArthropods baneOfArthropods;
++
++        public class BaneOfArthropods extends MeleeDamage {}
++
++        public class MeleeEffect extends ConfigurationPart {
++
++            public boolean axe = false;
++            public boolean pickaxe = false;
++            public boolean shovel = false;
++            public boolean hoe = false;
++
++        }
++
++        public Knockback knockback;
++
++        public class Knockback extends MeleeEffect {}
++
++        public FireAspect fireAspect;
++
++        public class FireAspect extends MeleeEffect {}
++
++        public Efficiency efficiency;
++
++        public class Efficiency extends ConfigurationPart {
++            public boolean sword;
++        }
++
++        public Fortune fortune;
++
++        public class Fortune extends ConfigurationPart {
++            public boolean sword;
++        }
++
++        public SilkTouch silkTouch;
++
++        public class SilkTouch extends ConfigurationPart {
++            public boolean sword;
++        }
++
++    }
++
++    // Suki end - custom enchantability
++
+     public Messages messages;
+ 
+     public class Messages extends ConfigurationPart {
 diff --git a/src/main/java/net/minecraft/server/commands/EnchantCommand.java b/src/main/java/net/minecraft/server/commands/EnchantCommand.java
 index 7c012f1e37b0085c0939797b0dae8996b4953ab8..7dbd1a69909efbad2da3731a935c2556d957fed0 100644
 --- a/src/main/java/net/minecraft/server/commands/EnchantCommand.java
@@ -422,12 +530,13 @@ index e694a256a72479cff28b65a86ce31a8ca0b1eba6..599798d218c05b22e5a39e525477cfdb
                      if (power >= enchantment.getMinCost(i) && power <= enchantment.getMaxCost(i)) {
                          list.add(new EnchantmentInstance(enchantment, i));
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java b/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java
-index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..df55acd9c61c1f6221f87eb81f2e0472e93c9724 100644
+index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..41fc6e34091c25a3034cf710d23b746fdc972cd4 100644
 --- a/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java
 +++ b/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java
-@@ -1,43 +1,234 @@
+@@ -1,43 +1,352 @@
  package net.minecraft.world.item.enchantment;
  
++import io.papermc.paper.configuration.GlobalConfiguration;
  import net.minecraft.core.Registry;
 +import net.minecraft.tags.ItemTags;
  import net.minecraft.world.entity.EquipmentSlot;
@@ -441,21 +550,162 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..df55acd9c61c1f6221f87eb81f2e0472
 -    public static final Enchantment ALL_DAMAGE_PROTECTION = Enchantments.register("protection", new ProtectionEnchantment(Enchantment.Rarity.COMMON, ProtectionEnchantment.Type.ALL, Enchantments.ARMOR_SLOTS));
 -    public static final Enchantment FIRE_PROTECTION = Enchantments.register("fire_protection", new ProtectionEnchantment(Enchantment.Rarity.UNCOMMON, ProtectionEnchantment.Type.FIRE, Enchantments.ARMOR_SLOTS));
 +    // Suki start - custom enchantability
++
++    /**
++     * Can be added to elytras and shields via the enchanting table or anvil (or command)
++     */
++    public static final boolean canProtectionEnchant(ItemStack stack, EnchantmentSource source) {
++        if (source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
++            if ((GlobalConfiguration.get().enchantability.protection.elytra && stack.is(Items.ELYTRA)) ||
++                (GlobalConfiguration.get().enchantability.protection.shield && stack.is(Items.SHIELD))) {
++                return true;
++            }
++        }
++        return false;
++    }
++
++    /**
++     * Can be added to elytras and shields via the enchanting table or anvil (or command)
++     */
++    public static final boolean canThornsEnchant(ItemStack stack, EnchantmentSource source) {
++        if (source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
++            if ((GlobalConfiguration.get().enchantability.thorns.elytra && stack.is(Items.ELYTRA)) ||
++                (GlobalConfiguration.get().enchantability.thorns.shield && stack.is(Items.SHIELD))) {
++                return true;
++            }
++        }
++        return false;
++    }
++
++    /**
++     * Can be added to bows, crossbows, tridents, axes, pickaxes, shovels and hoes via the enchanting table or anvil (or command)
++     */
++    public static final boolean canLootingEnchant(ItemStack stack, EnchantmentSource source) {
++        if (source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
++            if ((GlobalConfiguration.get().enchantability.looting.bow && stack.is(Items.BOW)) ||
++                (GlobalConfiguration.get().enchantability.looting.crossbow && stack.is(Items.CROSSBOW)) ||
++                (GlobalConfiguration.get().enchantability.looting.trident && stack.is(Items.TRIDENT)) ||
++                (GlobalConfiguration.get().enchantability.looting.axe && stack.is(ItemTags.AXES)) ||
++                (GlobalConfiguration.get().enchantability.looting.pickaxe && stack.is(ItemTags.PICKAXES)) ||
++                (GlobalConfiguration.get().enchantability.looting.shovel && stack.is(ItemTags.SHOVELS)) ||
++                (GlobalConfiguration.get().enchantability.looting.hoe && stack.is(ItemTags.HOES))) {
++                return true;
++            }
++        }
++        return false;
++    }
++
++    /**
++     * Can be added to pickaxes, shovels and hoes via the enchanting table or anvil (or command)
++     */
++    public static final boolean canMeleeDamageEnchant(ItemStack stack, EnchantmentSource source, GlobalConfiguration.Enchantability.MeleeDamage configuration) {
++        if (source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
++            if ((configuration.pickaxe && stack.is(ItemTags.PICKAXES)) ||
++                (configuration.shovel && stack.is(ItemTags.SHOVELS)) ||
++                (configuration.hoe && stack.is(ItemTags.HOES))) {
++                return true;
++            }
++        }
++        return false;
++    }
++
++    /**
++     * @see #canMeleeDamageEnchant(ItemStack, EnchantmentSource, GlobalConfiguration.Enchantability.MeleeDamage)
++     */
++    public static final boolean canSharpnessEnchant(ItemStack stack, EnchantmentSource source) {
++        return canMeleeDamageEnchant(stack, source, GlobalConfiguration.get().enchantability.sharpness);
++    }
++
++    /**
++     * @see #canMeleeDamageEnchant(ItemStack, EnchantmentSource, GlobalConfiguration.Enchantability.MeleeDamage)
++     */
++    public static final boolean canSmiteEnchant(ItemStack stack, EnchantmentSource source) {
++        return canMeleeDamageEnchant(stack, source, GlobalConfiguration.get().enchantability.smite);
++    }
++
++    /**
++     * @see #canMeleeDamageEnchant(ItemStack, EnchantmentSource, GlobalConfiguration.Enchantability.MeleeDamage)
++     */
++    public static final boolean canBaneOfArthropodsEnchant(ItemStack stack, EnchantmentSource source) {
++        return canMeleeDamageEnchant(stack, source, GlobalConfiguration.get().enchantability.baneOfArthropods);
++    }
++
++    /**
++     * Can be added to axes, pickaxes, shovels and hoes via the enchanting table or anvil (or command)
++     */
++    public static final boolean canMeleeEffectEnchant(ItemStack stack, EnchantmentSource source, GlobalConfiguration.Enchantability.MeleeEffect configuration) {
++        if (source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
++            if ((configuration.axe && stack.is(ItemTags.AXES)) ||
++                (configuration.pickaxe && stack.is(ItemTags.PICKAXES)) ||
++                (configuration.shovel && stack.is(ItemTags.SHOVELS)) ||
++                (configuration.hoe && stack.is(ItemTags.HOES))) {
++                return true;
++            }
++        }
++        return false;
++    }
++
++    /**
++     * @see #canMeleeEffectEnchant(ItemStack, EnchantmentSource, GlobalConfiguration.Enchantability.MeleeEffect)
++     */
++    public static final boolean canKnockbackEnchant(ItemStack stack, EnchantmentSource source) {
++        return canMeleeEffectEnchant(stack, source, GlobalConfiguration.get().enchantability.knockback);
++    }
++
++    /**
++     * @see #canMeleeEffectEnchant(ItemStack, EnchantmentSource, GlobalConfiguration.Enchantability.MeleeEffect)
++     */
++    public static final boolean canFireAspectEnchant(ItemStack stack, EnchantmentSource source) {
++        return canMeleeEffectEnchant(stack, source, GlobalConfiguration.get().enchantability.fireAspect);
++    }
++
++    /**
++     * Can be added to swords via the anvil (or command)
++     */
++    public static final boolean canEfficiencyEnchant(ItemStack stack, EnchantmentSource source) {
++        if (source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
++            if ((GlobalConfiguration.get().enchantability.efficiency.sword && stack.is(ItemTags.SWORDS))) {
++                return true;
++            }
++        }
++        return false;
++    }
++
++    /**
++     * Can be added to swords via the anvil (or command)
++     */
++    public static final boolean canFortuneEnchant(ItemStack stack, EnchantmentSource source) {
++        if (source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
++            if ((GlobalConfiguration.get().enchantability.fortune.sword && stack.is(ItemTags.SWORDS))) {
++                return true;
++            }
++        }
++        return false;
++    }
++
++    /**
++     * Can be added to swords via the anvil (or command)
++     */
++    public static final boolean canSilkTouchEnchant(ItemStack stack, EnchantmentSource source) {
++        if (source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
++            if ((GlobalConfiguration.get().enchantability.silkTouch.sword && stack.is(ItemTags.SWORDS))) {
++                return true;
++            }
++        }
++        return false;
++    }
++
 +    private static final EquipmentSlot[] ARMOR_AND_OFFHAND_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.OFFHAND};
 +    public static final Enchantment ALL_DAMAGE_PROTECTION = Enchantments.register("protection", new ProtectionEnchantment(Enchantment.Rarity.COMMON, ProtectionEnchantment.Type.ALL, Enchantments.ARMOR_AND_OFFHAND_SLOTS) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to elytras and shields via the enchanting table or anvil (or command)
-+                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(Items.ELYTRA) || stack.is(Items.SHIELD)));
++            return super.canEnchant(stack, source) || canProtectionEnchant(stack, source);
 +        }
 +    });
 +    public static final Enchantment FIRE_PROTECTION = Enchantments.register("fire_protection", new ProtectionEnchantment(Enchantment.Rarity.UNCOMMON, ProtectionEnchantment.Type.FIRE, Enchantments.ARMOR_AND_OFFHAND_SLOTS) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to elytras and shields via the enchanting table or anvil (or command)
-+                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(Items.ELYTRA) || stack.is(Items.SHIELD)));
++            return super.canEnchant(stack, source) || canProtectionEnchant(stack, source);
 +        }
 +    });
 +    // Suki end - custom enchantability
@@ -466,17 +716,13 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..df55acd9c61c1f6221f87eb81f2e0472
 +    public static final Enchantment BLAST_PROTECTION = Enchantments.register("blast_protection", new ProtectionEnchantment(Enchantment.Rarity.RARE, ProtectionEnchantment.Type.EXPLOSION, Enchantments.ARMOR_AND_OFFHAND_SLOTS) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to elytras and shields via the enchanting table or anvil (or command)
-+                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(Items.ELYTRA) || stack.is(Items.SHIELD)));
++            return super.canEnchant(stack, source) || canProtectionEnchant(stack, source);
 +        }
 +    });
 +    public static final Enchantment PROJECTILE_PROTECTION = Enchantments.register("projectile_protection", new ProtectionEnchantment(Enchantment.Rarity.UNCOMMON, ProtectionEnchantment.Type.PROJECTILE, Enchantments.ARMOR_AND_OFFHAND_SLOTS) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to elytras and shields via the enchanting table or anvil (or command)
-+                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(Items.ELYTRA) || stack.is(Items.SHIELD)));
++            return super.canEnchant(stack, source) || canProtectionEnchant(stack, source);
 +        }
 +    });
 +    // Suki end - custom enchantability
@@ -487,9 +733,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..df55acd9c61c1f6221f87eb81f2e0472
 +    public static final Enchantment THORNS = Enchantments.register("thorns", new ThornsEnchantment(Enchantment.Rarity.VERY_RARE, Enchantments.ARMOR_AND_OFFHAND_SLOTS) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to elytras and shields via the enchanting table or anvil (or command)
-+                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(Items.ELYTRA) || stack.is(Items.SHIELD)));
++            return super.canEnchant(stack, source) || canThornsEnchant(stack, source);
 +        }
 +    });
 +    // Suki end - custom enchantability
@@ -508,9 +752,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..df55acd9c61c1f6221f87eb81f2e0472
 +    public static final Enchantment SHARPNESS = Enchantments.register("sharpness", new DamageEnchantment(Enchantment.Rarity.COMMON, 0, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to pickaxes, shovels and hoes via the enchanting table or anvil (or command)
-+                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(ItemTags.PICKAXES) || stack.is(ItemTags.SHOVELS) || stack.is(ItemTags.HOES)));
++            return super.canEnchant(stack, source) || canSharpnessEnchant(stack, source);
 +        }
 +        @Override
 +        public boolean checkCompatibility(Enchantment other) {
@@ -524,9 +766,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..df55acd9c61c1f6221f87eb81f2e0472
 +    public static final Enchantment SMITE = Enchantments.register("smite", new DamageEnchantment(Enchantment.Rarity.UNCOMMON, 1, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to pickaxes, shovels and hoes via the enchanting table or anvil (or command)
-+                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(ItemTags.PICKAXES) || stack.is(ItemTags.SHOVELS) || stack.is(ItemTags.HOES)));
++            return super.canEnchant(stack, source) || canSmiteEnchant(stack, source);
 +        }
 +        @Override
 +        public boolean checkCompatibility(Enchantment other) {
@@ -540,9 +780,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..df55acd9c61c1f6221f87eb81f2e0472
 +    public static final Enchantment BANE_OF_ARTHROPODS = Enchantments.register("bane_of_arthropods", new DamageEnchantment(Enchantment.Rarity.UNCOMMON, 2, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to pickaxes, shovels and hoes via the enchanting table or anvil (or command)
-+                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(ItemTags.PICKAXES) || stack.is(ItemTags.SHOVELS) || stack.is(ItemTags.HOES)));
++            return super.canEnchant(stack, source) || canBaneOfArthropodsEnchant(stack, source);
 +        }
 +        @Override
 +        public boolean checkCompatibility(Enchantment other) {
@@ -556,31 +794,25 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..df55acd9c61c1f6221f87eb81f2e0472
 +    public static final Enchantment KNOCKBACK = Enchantments.register("knockback", new KnockbackEnchantment(Enchantment.Rarity.UNCOMMON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to pickaxes, shovels and hoes via the enchanting table or anvil (or command)
-+                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(ItemTags.PICKAXES) || stack.is(ItemTags.SHOVELS) || stack.is(ItemTags.HOES))) ||
++            return super.canEnchant(stack, source) || canKnockbackEnchant(stack, source) ||
 +                // Can spawn on top of pickaxes in generated loot or as a weapon held by mobs
-+                ((source == EnchantmentSource.GENERATED_LOOT || source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && stack.is(ItemTags.PICKAXES)) ||
++                ((source == EnchantmentSource.GENERATED_LOOT || source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && (GlobalConfiguration.get().enchantability.knockback.pickaxe && stack.is(ItemTags.PICKAXES))) ||
 +                // Can spawn on top of shovels as a weapon held by mobs
-+                ((source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && stack.is(ItemTags.SHOVELS));
++                ((source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && (GlobalConfiguration.get().enchantability.knockback.shovel && stack.is(ItemTags.SHOVELS)));
 +        }
 +    });
 +    public static final Enchantment FIRE_ASPECT = Enchantments.register("fire_aspect", new FireAspectEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to pickaxes, shovels and hoes via the enchanting table or anvil (or command)
-+                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(ItemTags.PICKAXES) || stack.is(ItemTags.SHOVELS) || stack.is(ItemTags.HOES))) ||
++            return super.canEnchant(stack, source) || canFireAspectEnchant(stack, source) ||
 +                // Can spawn on top of shovels in generated loot or as a weapon held by mobs
-+                ((source == EnchantmentSource.GENERATED_LOOT || source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && stack.is(ItemTags.SHOVELS));
++                ((source == EnchantmentSource.GENERATED_LOOT || source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && (GlobalConfiguration.get().enchantability.fireAspect.shovel && stack.is(ItemTags.SHOVELS)));
 +        }
 +    });
 +    public static final Enchantment MOB_LOOTING = Enchantments.register("looting", new LootBonusEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to tridents, bows, crossbows, pickaxes, shovels and hoes via the enchanting table or anvil (or command)
-+                ((source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && (stack.is(Items.TRIDENT) || stack.is(Items.BOW) || stack.is(Items.CROSSBOW) || stack.is(ItemTags.PICKAXES) || stack.is(ItemTags.SHOVELS) || stack.is(ItemTags.HOES)));
++            return super.canEnchant(stack, source) || canLootingEnchant(stack, source);
 +        }
 +        @Override
 +        public boolean checkCompatibility(Enchantment other) {
@@ -599,17 +831,13 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..df55acd9c61c1f6221f87eb81f2e0472
 +    public static final Enchantment BLOCK_EFFICIENCY = Enchantments.register("efficiency", new DiggingEnchantment(Enchantment.Rarity.COMMON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to swords via the anvil (or command)
-+                ((source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && stack.is(ItemTags.SWORDS));
++            return super.canEnchant(stack, source) || canEfficiencyEnchant(stack, source);
 +        }
 +    });
 +    public static final Enchantment SILK_TOUCH = Enchantments.register("silk_touch", new UntouchingEnchantment(Enchantment.Rarity.VERY_RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to swords via the anvil (or command)
-+                ((source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && stack.is(ItemTags.SWORDS));
++            return super.canEnchant(stack, source) || canSilkTouchEnchant(stack, source);
 +        }
 +        @Override
 +        public boolean checkCompatibility(Enchantment other) {
@@ -627,9 +855,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..df55acd9c61c1f6221f87eb81f2e0472
 +    public static final Enchantment BLOCK_FORTUNE = Enchantments.register("fortune", new LootBonusEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
 +        @Override
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
-+            return super.canEnchant(stack, source) ||
-+                // Can be added to swords via the anvil (or command)
-+                ((source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) && stack.is(ItemTags.SWORDS));
++            return super.canEnchant(stack, source) || canFortuneEnchant(stack, source);
 +        }
 +        @Override
 +        public boolean checkCompatibility(Enchantment other) {

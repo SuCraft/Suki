@@ -5,7 +5,7 @@ Subject: [PATCH] Custom enchantability
 
 
 diff --git a/src/main/java/org/bukkit/enchantments/Enchantment.java b/src/main/java/org/bukkit/enchantments/Enchantment.java
-index 69a048eb4e48c92db70c3d6b6aa4ae96326b9705..1c706954992e3334396c3d9dea574a9094f64bca 100644
+index 69a048eb4e48c92db70c3d6b6aa4ae96326b9705..96ae5396632274273012ae0636d56f2d2c9a1823 100644
 --- a/src/main/java/org/bukkit/enchantments/Enchantment.java
 +++ b/src/main/java/org/bukkit/enchantments/Enchantment.java
 @@ -2,6 +2,8 @@ package org.bukkit.enchantments;
@@ -17,7 +17,7 @@ index 69a048eb4e48c92db70c3d6b6aa4ae96326b9705..1c706954992e3334396c3d9dea574a90
  import org.bukkit.Keyed;
  import org.bukkit.NamespacedKey;
  import org.bukkit.inventory.ItemStack;
-@@ -284,17 +286,37 @@ public abstract class Enchantment implements Keyed, net.kyori.adventure.translat
+@@ -284,17 +286,55 @@ public abstract class Enchantment implements Keyed, net.kyori.adventure.translat
       */
      public abstract boolean conflictsWith(@NotNull Enchantment other);
  
@@ -51,6 +51,24 @@ index 69a048eb4e48c92db70c3d6b6aa4ae96326b9705..1c706954992e3334396c3d9dea574a90
 +     * @return True if the enchantment may be applied in vanilla, otherwise False
 +     */
 +    public abstract boolean canEnchantItemInVanilla(@NotNull ItemStack item);
++
++    /**
++     * Checks if this Enchantment may be applied to the given {@link
++     * ItemStack} in vanilla.
++     * <p>
++     * This does not check if it conflicts with any enchantments already
++     * applied to the item.
++     * </p>
++     *
++     * @param item Item to test
++     * @return True if the enchantment may be applied in vanilla, otherwise False
++     * @deprecated Use {@link #canEnchantItemInVanilla(ItemStack)}
++     * @see #canEnchantItemInVanilla(ItemStack)
++     */
++    @Deprecated
++    public boolean canEnchantItem(@NotNull ItemStack item) {
++        return this.canEnchantItemInVanilla(item);
++    }
 +
 +    // Suki end - custom enchantability
 +
