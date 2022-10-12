@@ -202,7 +202,7 @@ index 80a2dfb266ae1221680a7b24fee2f7e2a8330b7d..ff840c1f92e7562766c5fbea8baa30f2
  
      public LevelChunk[] getNearbyChunks() {
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index 6be8c28bfdeca098d0c785c2cf121b5a6c9a91be..58b6dbc841d2cafa8fc704e9acbfbdda1e62ddf6 100644
+index d0ff525251e1a32d137ec35a252ed7969c8cd286..3317cf92c22bde758ae999ae9050a860d4f8a2d5 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -925,7 +925,7 @@ public final class PlayerChunkLoader {
@@ -215,7 +215,7 @@ index 6be8c28bfdeca098d0c785c2cf121b5a6c9a91be..58b6dbc841d2cafa8fc704e9acbfbdda
          }
          protected LongOpenHashSet getChunksToBeSent(final boolean concernsTracking) {
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index a24c58a4a42d6948e869544af9ebfd5c775d03ab..60f9681ec7d02b829e5d4b7af19a431464735a62 100644
+index 9ee11d5f8c7dcd9439d12eca2f834e2c573d0903..e90582b0339de069de688fa6aa46440793a630a6 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -38,6 +38,18 @@ public class GlobalConfiguration extends ConfigurationPart {
@@ -2746,7 +2746,7 @@ index 09be313aefd5dda15bd4db6ee0324b2aec879744..0d1640a07ee883e47537d475b4f35591
          this.positionCodec.setBase(entity.trackingPosition());
          this.yRotp = Mth.floor(entity.getYRot() * 256.0F / 360.0F);
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index ce24922d05c365a535fa8257199c135983a26d80..5cb8056e66ca1c5cf3475e192a41713064bdd6ef 100644
+index 190a7cfeb84c4a65d03c3473dd118ab939438f22..336d4a6fd0ec828b68b285690836db58e2b03ec1 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -1,6 +1,5 @@
@@ -6897,7 +6897,7 @@ index d0e5755dfef1fc095afb4574ac42d971a96dfaf4..db7a6f854c0ffacd8efe6a00de19eda9
  
      // Yatopia start
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index fe8433163a775aa19569b3681b5108b5d0b6c016..ecaf2a1b5f869f975df13e37dab8f6e722c784df 100644
+index 655ad7fc5dec26ca2928a526b34fe4637ec13af6..40f8dfba9a486a67f181399bbfebe4380a780db8 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 @@ -67,6 +67,7 @@ import net.minecraft.world.phys.HitResult;
@@ -6929,7 +6929,7 @@ index fe8433163a775aa19569b3681b5108b5d0b6c016..ecaf2a1b5f869f975df13e37dab8f6e7
              // Paper end
          }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 4a10f5c57a5a46b54eee4e1811a8433449f688bc..b63e2c278238bb2c5cf6e04c6dd7b915809c8adb 100644
+index a75c1d567e44e5a1087823bcc652228e34bb34e6..85feafadce75d8beaa68925e5d3840d1215b2c54 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -27,6 +27,8 @@ import java.util.WeakHashMap;
@@ -6949,7 +6949,7 @@ index 4a10f5c57a5a46b54eee4e1811a8433449f688bc..b63e2c278238bb2c5cf6e04c6dd7b915
  import org.bukkit.event.player.PlayerShowEntityEvent;
  import org.bukkit.event.player.PlayerTeleportEvent;
  import org.bukkit.event.player.PlayerUnregisterChannelEvent;
-@@ -2558,6 +2561,39 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -2576,6 +2579,39 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
      public void setResourcePackStatus(org.bukkit.event.player.PlayerResourcePackStatusEvent.Status status) {
          this.resourcePackStatus = status;
      }
