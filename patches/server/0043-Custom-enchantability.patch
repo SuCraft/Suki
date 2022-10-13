@@ -5,10 +5,18 @@ Subject: [PATCH] Custom enchantability
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 2c9fa6dbc4eed4effb09c6b64a3f024438e2fa18..d8485f1a5f4d3ca0554670cdf8e829514b1e7860 100644
+index 2c9fa6dbc4eed4effb09c6b64a3f024438e2fa18..ee772e43675dfd4227af810e9101d47037faab18 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -348,6 +348,103 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
+ import net.minecraft.world.level.GameType;
+ import org.bukkit.Bukkit; // Pufferfish
+ import org.checkerframework.checker.nullness.qual.Nullable;
++import org.checkerframework.checker.units.qual.A;
+ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+ import org.spongepowered.configurate.objectmapping.meta.Comment;
+ import org.spongepowered.configurate.objectmapping.meta.Required;
+@@ -348,6 +349,96 @@ public class GlobalConfiguration extends ConfigurationPart {
  
      // Suki end - network-constrained chunk sending
  
@@ -50,27 +58,32 @@ index 2c9fa6dbc4eed4effb09c6b64a3f024438e2fa18..d8485f1a5f4d3ca0554670cdf8e82951
 +
 +        }
 +
-+        public class MeleeDamage extends ConfigurationPart {
-+
-+            public boolean pickaxe;
-+            public boolean shovel;
-+            public boolean hoe;
-+
-+        }
-+
 +        public Sharpness sharpness;
++        public Smite smite;
++        public BaneOfArthropods baneOfArthropods;
 +
 +        public class Sharpness extends MeleeDamage {}
 +
-+        public Smite smite;
-+
 +        public class Smite extends MeleeDamage {}
-+
-+        public BaneOfArthropods baneOfArthropods;
 +
 +        public class BaneOfArthropods extends MeleeDamage {}
 +
-+        public class MeleeEffect extends ConfigurationPart {
++        public abstract class MeleeDamage extends ConfigurationPart {
++
++            public boolean pickaxe = false;
++            public boolean shovel = false;
++            public boolean hoe = false;
++
++        }
++
++        public Knockback knockback;
++        public FireAspect fireAspect;
++
++        public class Knockback extends MeleeEffect {}
++
++        public class FireAspect extends MeleeEffect {}
++
++        public abstract class MeleeEffect extends ConfigurationPart {
 +
 +            public boolean axe = false;
 +            public boolean pickaxe = false;
@@ -79,30 +92,18 @@ index 2c9fa6dbc4eed4effb09c6b64a3f024438e2fa18..d8485f1a5f4d3ca0554670cdf8e82951
 +
 +        }
 +
-+        public Knockback knockback;
-+
-+        public class Knockback extends MeleeEffect {}
-+
-+        public FireAspect fireAspect;
-+
-+        public class FireAspect extends MeleeEffect {}
-+
 +        public Efficiency efficiency;
-+
-+        public class Efficiency extends ConfigurationPart {
-+            public boolean sword;
-+        }
-+
 +        public Fortune fortune;
-+
-+        public class Fortune extends ConfigurationPart {
-+            public boolean sword;
-+        }
-+
 +        public SilkTouch silkTouch;
 +
-+        public class SilkTouch extends ConfigurationPart {
-+            public boolean sword;
++        public class Efficiency extends AdditionalSwordEnchantment {}
++
++        public class Fortune extends AdditionalSwordEnchantment {}
++
++        public class SilkTouch extends AdditionalSwordEnchantment {}
++
++        public abstract class AdditionalSwordEnchantment extends ConfigurationPart {
++            public boolean sword = false;
 +        }
 +
 +    }

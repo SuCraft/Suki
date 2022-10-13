@@ -5,7 +5,7 @@ Subject: [PATCH] Hide player game modes
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index d137b42dae2c16c92b0e3453dff3a5b17944abf2..290d5f7efa7317a8405cffac7f22e466dac98b5c 100644
+index 281b830ab3d2a44903201bfaef4dd851520cfe21..0891eb5a3cd87421d3a982429b887936f48bb0e1 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 @@ -11,6 +11,7 @@ import net.minecraft.network.protocol.game.ServerboundPlaceRecipePacket;
@@ -14,9 +14,9 @@ index d137b42dae2c16c92b0e3453dff3a5b17944abf2..290d5f7efa7317a8405cffac7f22e466
  import org.bukkit.Bukkit; // Pufferfish
 +import org.bukkit.GameMode;
  import org.checkerframework.checker.nullness.qual.Nullable;
+ import org.checkerframework.checker.units.qual.A;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
- import org.spongepowered.configurate.objectmapping.meta.Comment;
-@@ -495,6 +496,44 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -489,6 +490,44 @@ public class GlobalConfiguration extends ConfigurationPart {
  
      // Suki end - login protocol
  

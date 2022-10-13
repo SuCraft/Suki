@@ -5,10 +5,10 @@ Subject: [PATCH] Configurable TPS catch-up time
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index d8485f1a5f4d3ca0554670cdf8e829514b1e7860..dc353b347fee6a5aa81ba8c39df7dd49bb1b0abb 100644
+index ee772e43675dfd4227af810e9101d47037faab18..3ec80e5b58dfe4a0853fadb8f6b14215d3ab9187 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -445,6 +445,21 @@ public class GlobalConfiguration extends ConfigurationPart {
+@@ -439,6 +439,21 @@ public class GlobalConfiguration extends ConfigurationPart {
  
      // Suki end - custom enchantability
  
