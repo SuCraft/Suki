@@ -1,0 +1,47 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 23:26:35 +0200
+Subject: [PATCH] Optimize harmless explosions
+
+This patch is based on patch from the EmpireCraft fork (https://github.com/starlis/empirecraft) by Aikar.
+
+diff --git a/src/main/java/net/minecraft/world/level/Explosion.java b/src/main/java/net/minecraft/world/level/Explosion.java
+index 01477e7240f9e33d08d416a7d40ee10f3e5d4abf..48a0b474a2c21cc90df5ceda5ea68b0e43561281 100644
+--- a/src/main/java/net/minecraft/world/level/Explosion.java
++++ b/src/main/java/net/minecraft/world/level/Explosion.java
+@@ -152,6 +152,7 @@ public class Explosion {
+         int i;
+         int j;
+ 
++        if (this.fire || this.blockInteraction != BlockInteraction.NONE) { // Suki - optimize explosions - don't run block processing if neither flag is set
+         for (int k = 0; k < 16; ++k) {
+             for (i = 0; i < 16; ++i) {
+                 for (j = 0; j < 16; ++j) {
+@@ -191,8 +192,8 @@ public class Explosion {
+                                 if (!io.papermc.paper.configuration.GlobalConfiguration.get().unsupportedSettings.allowHeadlessPistons && iblockdata.getBlock() == Blocks.MOVING_PISTON) {
+                                     BlockEntity extension = this.level.getBlockEntity(blockposition);
+                                     if (extension instanceof net.minecraft.world.level.block.piston.PistonMovingBlockEntity blockEntity && blockEntity.isSourcePiston()) {
+-                                       net.minecraft.core.Direction direction = iblockdata.getValue(net.minecraft.world.level.block.piston.PistonHeadBlock.FACING);
+-                                       set.add(blockposition.relative(direction.getOpposite()));
++                                        net.minecraft.core.Direction direction = iblockdata.getValue(net.minecraft.world.level.block.piston.PistonHeadBlock.FACING);
++                                        set.add(blockposition.relative(direction.getOpposite()));
+                                     }
+                                 }
+                                 // Paper end
+@@ -206,6 +207,7 @@ public class Explosion {
+                 }
+             }
+         }
++        } // Suki - optimize explosions - don't run block processing if neither flag is set
+ 
+         this.toBlow.addAll(set);
+         float f2 = this.radius * 2.0F;
+@@ -296,7 +298,7 @@ public class Explosion {
+         boolean flag1 = this.blockInteraction != Explosion.BlockInteraction.NONE;
+ 
+         if (particles) {
+-            if (this.radius >= 2.0F && flag1) {
++            if (this.radius >= 2.0F) {
+                 this.level.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+             } else {
+                 this.level.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
