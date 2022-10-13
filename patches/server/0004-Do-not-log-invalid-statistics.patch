@@ -1,0 +1,73 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 21:30:41 +0200
+Subject: [PATCH] Do not log invalid statistics
+
+This patch is based on patch from the EmpireCraft fork (https://github.com/starlis/empirecraft) by Aikar.
+
+diff --git a/src/main/java/net/minecraft/stats/ServerStatsCounter.java b/src/main/java/net/minecraft/stats/ServerStatsCounter.java
+index c59f98ca3adfdd90cdc5999aeadbb0834efedc0f..270704b11f680ee47910b36a389f06aeb27174a0 100644
+--- a/src/main/java/net/minecraft/stats/ServerStatsCounter.java
++++ b/src/main/java/net/minecraft/stats/ServerStatsCounter.java
+@@ -36,6 +36,7 @@ import net.minecraft.util.datafix.DataFixTypes;
+ import net.minecraft.world.entity.player.Player;
+ import org.apache.commons.io.FileUtils;
+ import org.slf4j.Logger;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ 
+ public class ServerStatsCounter extends StatsCounter {
+ 
+@@ -134,15 +135,27 @@ public class ServerStatsCounter extends StatsCounter {
+                                             Util.ifElse(this.getStat(statisticwrapper, s2), (statistic) -> {
+                                                 this.stats.put(statistic, nbttagcompound2.getInt(s2));
+                                             }, () -> {
+-                                                ServerStatsCounter.LOGGER.warn("Invalid statistic in {}: Don't know what {} is", this.file, s2);
++                                                // Suki start - less console logs
++                                                if (SukiGlobalConfiguration.get().consoleLogs.invalidStatistics) {
++                                                    ServerStatsCounter.LOGGER.warn("Invalid statistic in {}: Don't know what {} is", this.file, s2);
++                                                }
++                                                // Suki end - less console logs
+                                             });
+                                         } else {
+-                                            ServerStatsCounter.LOGGER.warn("Invalid statistic value in {}: Don't know what {} is for key {}", new Object[]{this.file, nbttagcompound2.get(s2), s2});
++                                            // Suki start - less console logs
++                                            if (SukiGlobalConfiguration.get().consoleLogs.invalidStatistics) {
++                                                ServerStatsCounter.LOGGER.warn("Invalid statistic value in {}: Don't know what {} is for key {}", new Object[]{this.file, nbttagcompound2.get(s2), s2});
++                                            }
++                                            // Suki end - less console logs
+                                         }
+                                     }
+ 
+                                 }, () -> {
+-                                    ServerStatsCounter.LOGGER.warn("Invalid statistic type in {}: Don't know what {} is", this.file, s1);
++                                    // Suki start - less console logs
++                                    if (SukiGlobalConfiguration.get().consoleLogs.invalidStatistics) {
++                                        ServerStatsCounter.LOGGER.warn("Invalid statistic type in {}: Don't know what {} is", this.file, s1);
++                                    }
++                                    // Suki end - less console logs
+                                 });
+                             }
+                         }
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index f7b0908c23827956d68a2170629e05e7ff97297f..5af348796fefbfc5ae6c4c9867e33ca9e039e631 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -20,12 +20,14 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+     @Setting(Configuration.VERSION_FIELD)
+     public int version = CURRENT_VERSION;
+ 
+-    public GlobalDummyPart globalDummyPart;
++    // Suki start - less console logs
+ 
+-    public class GlobalDummyPart extends ConfigurationPart {
+-
+-        int globalDummyValue = 0;
++    public ConsoleLogs consoleLogs;
+ 
++    public class ConsoleLogs extends ConfigurationPart {
++        public boolean invalidStatistics = true;
+     }
+ 
++    // Suki end - less console logs
++
+ }
