@@ -1,0 +1,41 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 22:19:42 +0200
+Subject: [PATCH] Change invalid pool element level to info
+
+This patch is based on patch from the EmpireCraft fork (https://github.com/starlis/empirecraft) by chickeneer.
+
+diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/PoolElementStructurePiece.java b/src/main/java/net/minecraft/world/level/levelgen/structure/PoolElementStructurePiece.java
+index d2b4654a9095a678bbc9e004af969cf54da0fcab..1479e70c23ae1201af1807cbab080a0fe33013a6 100644
+--- a/src/main/java/net/minecraft/world/level/levelgen/structure/PoolElementStructurePiece.java
++++ b/src/main/java/net/minecraft/world/level/levelgen/structure/PoolElementStructurePiece.java
+@@ -24,6 +24,7 @@ import net.minecraft.world.level.levelgen.structure.pools.JigsawJunction;
+ import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+ import org.slf4j.Logger;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ 
+ public class PoolElementStructurePiece extends StructurePiece {
+     private static final Logger LOGGER = LogUtils.getLogger();
+@@ -49,7 +50,7 @@ public class PoolElementStructurePiece extends StructurePiece {
+         this.position = new BlockPos(nbt.getInt("PosX"), nbt.getInt("PosY"), nbt.getInt("PosZ"));
+         this.groundLevelDelta = nbt.getInt("ground_level_delta");
+         DynamicOps<Tag> dynamicOps = RegistryOps.create(NbtOps.INSTANCE, context.registryAccess());
+-        this.element = StructurePoolElement.CODEC.parse(dynamicOps, nbt.getCompound("pool_element")).resultOrPartial(LOGGER::error).orElseThrow(() -> {
++        this.element = StructurePoolElement.CODEC.parse(dynamicOps, nbt.getCompound("pool_element")).resultOrPartial(SukiGlobalConfiguration.get().consoleLogs.changeInvalidPoolElementLevelToInfo ? LOGGER::info : LOGGER::error).orElseThrow(() -> { // Suki - less console logs
+             return new IllegalStateException("Invalid pool element found");
+         });
+         this.rotation = Rotation.valueOf(nbt.getString("rotation"));
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index 3a6da322461e4e49c288a084168cf451bcba3a4e..7d88230180caba09a175b6aab2ec9285bc2ecac7 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -35,6 +35,8 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+             public boolean notSecure = true;
+         }
+ 
++        public boolean changeInvalidPoolElementLevelToInfo = false;
++
+     }
+ 
+     // Suki end - less console logs
