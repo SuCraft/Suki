@@ -1,0 +1,66 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 21:50:13 +0200
+Subject: [PATCH] Remove [Not Secure] chat marker
+
+
+diff --git a/src/main/java/io/papermc/paper/adventure/ChatProcessor.java b/src/main/java/io/papermc/paper/adventure/ChatProcessor.java
+index 28ddab1121e314e82bf764fd89f36714bd7445f8..c4da2200bb7a62ec86081cf839cb0d0fae1e6711 100644
+--- a/src/main/java/io/papermc/paper/adventure/ChatProcessor.java
++++ b/src/main/java/io/papermc/paper/adventure/ChatProcessor.java
+@@ -39,6 +39,7 @@ import org.bukkit.event.player.PlayerChatEvent;
+ import org.checkerframework.checker.nullness.qual.NonNull;
+ import org.checkerframework.checker.nullness.qual.Nullable;
+ import org.checkerframework.framework.qual.DefaultQualifier;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ 
+ import static net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection;
+ 
+@@ -313,7 +314,7 @@ public final class ChatProcessor {
+ 
+         private void sendToServer(final ChatType.Bound chatType, final @Nullable Function<Audience, net.minecraft.network.chat.Component> msgFunction) {
+             final PlayerChatMessage toConsoleMessage = msgFunction == null ? ChatProcessor.this.message : ChatProcessor.this.message.withUnsignedContent(msgFunction.apply(ChatProcessor.this.server.console));
+-            ChatProcessor.this.server.logChatMessage(toConsoleMessage.serverContent(), chatType, ChatProcessor.this.server.getPlayerList().verifyChatTrusted(toConsoleMessage, ChatProcessor.this.player.asChatSender()) ? null : "Not Secure");
++            ChatProcessor.this.server.logChatMessage(toConsoleMessage.serverContent(), chatType, !SukiGlobalConfiguration.get().consoleLogs.chatMessages.notSecure || ChatProcessor.this.server.getPlayerList().verifyChatTrusted(toConsoleMessage, ChatProcessor.this.player.asChatSender()) ? null : "Not Secure"); // Suki - less console logs
+         }
+ 
+         record ConstantFunction(net.minecraft.network.chat.Component component) implements Function<Audience, net.minecraft.network.chat.Component> {
+diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
+index bded25d3d87ee8c6e90874275e9d1ab3fd65a26b..b211fbdda02b824b98061f8fc498e0ae6b6baa2e 100644
+--- a/src/main/java/net/minecraft/server/players/PlayerList.java
++++ b/src/main/java/net/minecraft/server/players/PlayerList.java
+@@ -120,6 +120,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
+ import org.bukkit.event.player.PlayerLoginEvent;
+ import org.bukkit.event.player.PlayerQuitEvent;
+ import org.bukkit.event.player.PlayerRespawnEvent;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ // CraftBukkit end
+ 
+ public abstract class PlayerList {
+@@ -1451,7 +1452,7 @@ public abstract class PlayerList {
+         // Paper end
+         boolean flag = this.verifyChatTrusted(message, sourceProfile);
+ 
+-        this.server.logChatMessage((unsignedFunction == null ? message : message.withUnsignedContent(unsignedFunction.apply(this.server.console))).serverContent(), params, flag ? null : "Not Secure"); // Paper
++        this.server.logChatMessage((unsignedFunction == null ? message : message.withUnsignedContent(unsignedFunction.apply(this.server.console))).serverContent(), params, flag || !SukiGlobalConfiguration.get().consoleLogs.chatMessages.notSecure ? null : "Not Secure"); // Paper // Suki - less console logs
+         OutgoingPlayerChatMessage outgoingplayerchatmessage = OutgoingPlayerChatMessage.create(message);
+         boolean flag1 = message.isFullyFiltered();
+         boolean flag2 = false;
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index 7cbe234799dae5bc0123b19d1a34b5103638bbb9..fbeb85151885069cfb95fcffe4f25a920a4aa2f7 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -27,11 +27,12 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+     public class ConsoleLogs extends ConfigurationPart {
+ 
+         public boolean invalidStatistics = true;
+-        
++
+         public ChatMessages chatMessages;
+ 
+         public class ChatMessages extends ConfigurationPart {
+             public boolean empty = true;
++            public boolean notSecure = true;
+         }
+ 
+     }
