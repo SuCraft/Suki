@@ -230,8 +230,6 @@ Configuration options for Suki:
 - Per-world configuration: defaults in `config/paper-world-defaults.yml` and specific overrides for a world in `<world>/paper-world.yml`
 
 ## License
-Patches are licensed under GPL-3.0.  
-All other non-binary files are licensed under MIT.
-No license is given for binary files; all copyright rights reserved.
+Patches are licensed under GPL-3.0. No license is given for the Suki image; all copyright rights reserved. All other files are licensed under MIT.
 
 Made with <span style="color: #e25555;">&#9829;</span> on Earth.
