@@ -1,0 +1,26 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 20:55:09 +0200
+Subject: [PATCH] Suki configuration and commands
+
+
+diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
+index f25e6808c9ce7276c3e49c6ad03eda5ffa35e5f8..b20d8f106d1acda91826425547d2761060eecca1 100644
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -1946,6 +1946,15 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+         {
+             throw new UnsupportedOperationException("Not supported yet.");
+         }
++
++        // Suki start - Suki configuration
++        @NotNull
++        public org.bukkit.configuration.file.YamlConfiguration getSukiConfig()
++        {
++            throw new UnsupportedOperationException("Not supported yet.");
++        }
++        // Suki end - Suki configuration
++
+         // Paper end
+ 
+         // Mirai start

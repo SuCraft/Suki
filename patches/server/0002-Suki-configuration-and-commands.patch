@@ -1,0 +1,1043 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 18:09:28 +0200
+Subject: [PATCH] Suki configuration and commands
+
+
+diff --git a/src/main/java/io/papermc/paper/configuration/ConfigurationPart.java b/src/main/java/io/papermc/paper/configuration/ConfigurationPart.java
+index 7a4a7a654fe2516ed894a68f2657344df9d70f4c..0a501c3ba5382dae230122066c131de631edff0d 100644
+--- a/src/main/java/io/papermc/paper/configuration/ConfigurationPart.java
++++ b/src/main/java/io/papermc/paper/configuration/ConfigurationPart.java
+@@ -1,6 +1,6 @@
+ package io.papermc.paper.configuration;
+ 
+-abstract class ConfigurationPart {
++public abstract class ConfigurationPart { // Suki - Suki configuration
+ 
+     public static abstract class Post extends ConfigurationPart {
+ 
+diff --git a/src/main/java/io/papermc/paper/configuration/Configurations.java b/src/main/java/io/papermc/paper/configuration/Configurations.java
+index 31325994ab441c59a4c0bd9f3f9db3d9440375d0..7aa269fd15ed706b069c0a0a1abf8eb97f5c8591 100644
+--- a/src/main/java/io/papermc/paper/configuration/Configurations.java
++++ b/src/main/java/io/papermc/paper/configuration/Configurations.java
+@@ -4,7 +4,10 @@ import io.leangen.geantyref.TypeToken;
+ import io.papermc.paper.configuration.constraint.Constraint;
+ import io.papermc.paper.configuration.constraint.Constraints;
+ import net.minecraft.resources.ResourceLocation;
++import net.minecraft.server.MinecraftServer;
+ import net.minecraft.server.level.ServerLevel;
++import org.bukkit.configuration.ConfigurationSection;
++import org.bukkit.configuration.file.YamlConfiguration;
+ import org.checkerframework.checker.nullness.qual.Nullable;
+ import org.jetbrains.annotations.MustBeInvokedByOverriders;
+ import org.spongepowered.configurate.CommentedConfigurationNode;
+@@ -15,6 +18,8 @@ import org.spongepowered.configurate.objectmapping.ObjectMapper;
+ import org.spongepowered.configurate.serialize.SerializationException;
+ import org.spongepowered.configurate.util.CheckedFunction;
+ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
++import org.sucraft.suki.configuration.SukiConfigurations;
++import org.sucraft.suki.configuration.SukiWorldConfiguration;
+ 
+ import java.io.IOException;
+ import java.lang.reflect.Type;
+@@ -84,7 +89,7 @@ public abstract class Configurations<G, W> {
+         };
+     }
+ 
+-    static <T> CheckedFunction<ConfigurationNode, T, SerializationException> reloader(Class<T> type, T instance) {
++    public static <T> CheckedFunction<ConfigurationNode, T, SerializationException> reloader(Class<T> type, T instance) { // Suki - Suki configuration
+         return node -> {
+             ObjectMapper.Factory factory = (ObjectMapper.Factory) Objects.requireNonNull(node.options().serializers().get(type));
+             ObjectMapper.Mutable<T> mutable = (ObjectMapper.Mutable<T>) factory.get(type);
+@@ -133,7 +138,7 @@ public abstract class Configurations<G, W> {
+         final YamlConfigurationLoader loader = result.loader();
+         final ConfigurationNode node = loader.load();
+         if (result.isNewFile()) { // add version to new files
+-            node.node(Configuration.VERSION_FIELD).raw(WorldConfiguration.CURRENT_VERSION);
++            node.node(Configuration.VERSION_FIELD).raw(getWorldConfigurationCurrentVersion()); // Suki - Suki configuration
+         }
+         this.applyWorldConfigTransformations(contextMap, node);
+         final W instance = node.require(this.worldConfigClass);
+@@ -192,7 +197,7 @@ public abstract class Configurations<G, W> {
+             .build();
+         final ConfigurationNode worldNode = worldLoader.load();
+         if (newFile) { // set the version field if new file
+-            worldNode.node(Configuration.VERSION_FIELD).set(WorldConfiguration.CURRENT_VERSION);
++            worldNode.node(Configuration.VERSION_FIELD).set(getWorldConfigurationCurrentVersion()); // Suki - Suki configuration
+         }
+         this.applyWorldConfigTransformations(contextMap, worldNode);
+         this.applyDefaultsAwareWorldConfigTransformations(contextMap, worldNode, defaultsNode);
+@@ -293,4 +298,21 @@ public abstract class Configurations<G, W> {
+             return "ContextKey{" + this.name + "}";
+         }
+     }
++
++    // Suki start - Suki configuration
++
++    @Deprecated
++    public YamlConfiguration createLegacyObject(final MinecraftServer server) {
++        YamlConfiguration global = YamlConfiguration.loadConfiguration(this.globalFolder.resolve(this.globalConfigFileName).toFile());
++        ConfigurationSection worlds = global.createSection("__________WORLDS__________");
++        worlds.set("__defaults__", YamlConfiguration.loadConfiguration(this.globalFolder.resolve(this.defaultWorldConfigFileName).toFile()));
++        for (ServerLevel level : server.getAllLevels()) {
++            worlds.set(level.getWorld().getName(), YamlConfiguration.loadConfiguration(getWorldConfigFile(level).toFile()));
++        }
++        return global;
++    }
++
++    public abstract int getWorldConfigurationCurrentVersion();
++    // Suki end - Suki configuration
++
+ }
+diff --git a/src/main/java/io/papermc/paper/configuration/InnerClassFieldDiscoverer.java b/src/main/java/io/papermc/paper/configuration/InnerClassFieldDiscoverer.java
+index a0aa1f1a7adf986d500a2135aa42e138aa3c4f08..bc3907beb2aa63259300e8960039bd59397d071e 100644
+--- a/src/main/java/io/papermc/paper/configuration/InnerClassFieldDiscoverer.java
++++ b/src/main/java/io/papermc/paper/configuration/InnerClassFieldDiscoverer.java
+@@ -5,6 +5,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
+ import org.spongepowered.configurate.objectmapping.FieldDiscoverer;
+ import org.spongepowered.configurate.serialize.SerializationException;
+ import org.spongepowered.configurate.util.CheckedSupplier;
++import org.sucraft.suki.configuration.SukiWorldConfiguration;
+ 
+ import java.lang.reflect.AnnotatedType;
+ import java.lang.reflect.Constructor;
+@@ -17,7 +18,7 @@ import java.util.Map;
+ 
+ import static io.leangen.geantyref.GenericTypeReflector.erase;
+ 
+-final class InnerClassFieldDiscoverer implements FieldDiscoverer<Map<Field, Object>> {
++public final class InnerClassFieldDiscoverer implements FieldDiscoverer<Map<Field, Object>> { // Suki - Suki configuration
+ 
+     private final Map<Class<?>, Object> instanceMap = new HashMap<>();
+     private final Map<Class<?>, Object> overrides;
+@@ -136,7 +137,19 @@ final class InnerClassFieldDiscoverer implements FieldDiscoverer<Map<Field, Obje
+         return new InnerClassFieldDiscoverer(overrides);
+     }
+ 
+-    static FieldDiscoverer<?> globalConfig() {
++    // Suki start - Suki configuration
++    public static FieldDiscoverer<?> sukiWorldConfig(Configurations.ContextMap contextMap) {
++        final Map<Class<?>, Object> overrides = Map.of(
++            SukiWorldConfiguration.class, new SukiWorldConfiguration(
++                contextMap.require(PaperConfigurations.SPIGOT_WORLD_CONFIG_CONTEXT_KEY).get(),
++                contextMap.require(Configurations.WORLD_KEY)
++            )
++        );
++        return new InnerClassFieldDiscoverer(overrides);
++    }
++    // Suki end - Suki configuration
++
++    public static FieldDiscoverer<?> globalConfig() { // Suki - Suki configuration
+         return new InnerClassFieldDiscoverer(Collections.emptyMap());
+     }
+ }
+diff --git a/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java b/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java
+index b2e961bbd33c6ecb7f049365b7aff6c5caa262ff..8e56d1824c8d6e983e89b92073f9bdc252e6a7cb 100644
+--- a/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java
++++ b/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java
+@@ -127,13 +127,13 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
+         See https://docs.papermc.io/paper/configuration for more information.
+         """;
+ 
+-    private static final Supplier<SpigotWorldConfig> SPIGOT_WORLD_DEFAULTS = Suppliers.memoize(() -> new SpigotWorldConfig(RandomStringUtils.randomAlphabetic(255)) {
++    public static final Supplier<SpigotWorldConfig> SPIGOT_WORLD_DEFAULTS = Suppliers.memoize(() -> new SpigotWorldConfig(RandomStringUtils.randomAlphabetic(255)) { // Suki - Suki configuration
+         @Override // override to ensure "verbose" is false
+         public void init() {
+             SpigotConfig.readConfig(SpigotWorldConfig.class, this);
+         }
+     });
+-    static final ContextKey<Supplier<SpigotWorldConfig>> SPIGOT_WORLD_CONFIG_CONTEXT_KEY = new ContextKey<>(new TypeToken<Supplier<SpigotWorldConfig>>() {}, "spigot world config");
++    public static final ContextKey<Supplier<SpigotWorldConfig>> SPIGOT_WORLD_CONFIG_CONTEXT_KEY = new ContextKey<>(new TypeToken<Supplier<SpigotWorldConfig>>() {}, "spigot world config"); // Suki - Suki configuration
+ 
+ 
+     public PaperConfigurations(final Path globalFolder) {
+@@ -290,7 +290,7 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
+         }
+     }
+ 
+-    private static ContextMap createWorldContextMap(ServerLevel level) {
++    public static ContextMap createWorldContextMap(ServerLevel level) { // Suki - Suki configuration
+         return createWorldContextMap(level.convertable.levelDirectory.path(), level.serverLevelData.getLevelName(), level.dimension().location(), level.spigotConfig);
+     }
+ 
+@@ -390,17 +390,6 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
+         return Files.exists(legacyConfig) && Files.isRegularFile(legacyConfig);
+     }
+ 
+-    @Deprecated
+-    public YamlConfiguration createLegacyObject(final MinecraftServer server) {
+-        YamlConfiguration global = YamlConfiguration.loadConfiguration(this.globalFolder.resolve(this.globalConfigFileName).toFile());
+-        ConfigurationSection worlds = global.createSection("__________WORLDS__________");
+-        worlds.set("__defaults__", YamlConfiguration.loadConfiguration(this.globalFolder.resolve(this.defaultWorldConfigFileName).toFile()));
+-        for (ServerLevel level : server.getAllLevels()) {
+-            worlds.set(level.getWorld().getName(), YamlConfiguration.loadConfiguration(getWorldConfigFile(level).toFile()));
+-        }
+-        return global;
+-    }
+-
+     @Deprecated
+     public static YamlConfiguration loadLegacyConfigFile(File configFile) throws Exception {
+         YamlConfiguration config = new YamlConfiguration();
+@@ -423,9 +412,16 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
+     }
+ 
+     // Symlinks are not correctly checked in createDirectories
+-    static void createDirectoriesSymlinkAware(Path path) throws IOException {
++    public static void createDirectoriesSymlinkAware(Path path) throws IOException { // Suki - Suki configuration
+         if (!Files.isDirectory(path)) {
+             Files.createDirectories(path);
+         }
+     }
++
++    // Suki start - Suki configuration
++    @Override
++    public int getWorldConfigurationCurrentVersion() {
++        return WorldConfiguration.CURRENT_VERSION;
++    }
++    // Suki end - Suki configuration
+ }
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 03694443ea1fde6718ed6acbccf81a5c6972e9a7..e68f3dbbc67e5352305e7f19944ea7c62e721e9d 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -293,6 +293,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+     public final double[] recentTps = new double[ 4 ]; // Purpur
+     // Spigot end
+     public final io.papermc.paper.configuration.PaperConfigurations paperConfigurations;
++    public final org.sucraft.suki.configuration.SukiConfigurations sukiConfigurations; // Suki - Suki configuration
+     public static long currentTickLong = 0L; // Paper
+ 
+     public volatile Thread shutdownThread; // Paper
+@@ -397,6 +398,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+         // Paper end
+         Runtime.getRuntime().addShutdownHook(new org.bukkit.craftbukkit.util.ServerShutdownThread(this));
+         this.paperConfigurations = services.paperConfigurations(); // Paper
++        this.sukiConfigurations = services.sukiConfigurations(); // Suki - Suki configuration
+     }
+     // CraftBukkit end
+ 
+diff --git a/src/main/java/net/minecraft/server/Services.java b/src/main/java/net/minecraft/server/Services.java
+index ef6ff78af2ae747e939895b82ee9d11c75012dcd..05d011ff1053fafd9b1d440911fbe123a54305ce 100644
+--- a/src/main/java/net/minecraft/server/Services.java
++++ b/src/main/java/net/minecraft/server/Services.java
+@@ -8,10 +8,10 @@ import net.minecraft.server.players.GameProfileCache;
+ import net.minecraft.util.SignatureValidator;
+ 
+ // Paper start
+-public record Services(MinecraftSessionService sessionService, SignatureValidator serviceSignatureValidator, GameProfileRepository profileRepository, GameProfileCache profileCache, @javax.annotation.Nullable io.papermc.paper.configuration.PaperConfigurations paperConfigurations) {
++public record Services(MinecraftSessionService sessionService, SignatureValidator serviceSignatureValidator, GameProfileRepository profileRepository, GameProfileCache profileCache, @javax.annotation.Nullable io.papermc.paper.configuration.PaperConfigurations paperConfigurations, @javax.annotation.Nullable org.sucraft.suki.configuration.SukiConfigurations sukiConfigurations) { // Suki - Suki configuration
+ 
+     public Services(MinecraftSessionService sessionService, SignatureValidator signatureValidator, GameProfileRepository profileRepository, GameProfileCache profileCache) {
+-        this(sessionService, signatureValidator, profileRepository, profileCache, null);
++        this(sessionService, signatureValidator, profileRepository, profileCache, null, null); // Suki - Suki configuration
+     }
+ 
+     @Override
+@@ -19,6 +19,12 @@ public record Services(MinecraftSessionService sessionService, SignatureValidato
+         return java.util.Objects.requireNonNull(this.paperConfigurations);
+     }
+     // Paper end
++    // Suki start - Suki configuration
++    @Override
++    public org.sucraft.suki.configuration.SukiConfigurations sukiConfigurations() {
++        return java.util.Objects.requireNonNull(this.sukiConfigurations);
++    }
++    // Suki end - Suki configuration
+     public static final String USERID_CACHE_FILE = "usercache.json"; // Paper - private -> public
+ 
+     public static Services create(YggdrasilAuthenticationService authenticationService, File rootDirectory, File userCacheFile, joptsimple.OptionSet optionSet) throws Exception { // Paper
+@@ -30,7 +36,11 @@ public record Services(MinecraftSessionService sessionService, SignatureValidato
+         final java.nio.file.Path legacyConfigPath = ((File) optionSet.valueOf("paper-settings")).toPath();
+         final java.nio.file.Path configDirPath = ((File) optionSet.valueOf("paper-settings-directory")).toPath();
+         io.papermc.paper.configuration.PaperConfigurations paperConfigurations = io.papermc.paper.configuration.PaperConfigurations.setup(legacyConfigPath, configDirPath, rootDirectory.toPath(), (File) optionSet.valueOf("spigot-settings"));
+-        return new Services(minecraftSessionService, signatureValidator, gameProfileRepository, gameProfileCache, paperConfigurations);
++        // Suki start - Suki configuration
++        final java.nio.file.Path sukiLegacyConfigPath = legacyConfigPath.resolveSibling("suki.yml");
++        org.sucraft.suki.configuration.SukiConfigurations sukiConfigurations = org.sucraft.suki.configuration.SukiConfigurations.setup(sukiLegacyConfigPath, configDirPath, rootDirectory.toPath(), (File) optionSet.valueOf("spigot-settings"));
++        return new Services(minecraftSessionService, signatureValidator, gameProfileRepository, gameProfileCache, paperConfigurations, sukiConfigurations);
++        // Suki end - Suki configuration
+         // Paper end
+     }
+ }
+diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+index 60ba00eb6daeeb9b97281f9380d373af3cc29402..e99aa5c5f0b221176bac8fdaeaafb1406b5e657c 100644
+--- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -213,6 +213,10 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         io.papermc.paper.util.ObfHelper.INSTANCE.getClass(); // Paper - load mappings for stacktrace deobf and etc.
+         paperConfigurations.initializeGlobalConfiguration();
+         paperConfigurations.initializeWorldDefaultsConfiguration();
++        // Suki start - Suki configuration
++        sukiConfigurations.initializeGlobalConfiguration();
++        sukiConfigurations.initializeWorldDefaultsConfiguration();
++        // Suki end - Suki configuration
+         // Paper start - moved up to right after PlayerList creation but before file load/save
+         if (this.convertOldUsers()) {
+             this.getProfileCache().save(false); // Paper
+@@ -222,6 +226,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         org.spigotmc.WatchdogThread.doStart(org.spigotmc.SpigotConfig.timeoutTime, org.spigotmc.SpigotConfig.restartOnCrash);
+         thread.start(); // Paper - start console thread after MinecraftServer.console & PaperConfig are initialized
+         io.papermc.paper.command.PaperCommands.registerCommands(this);
++        org.sucraft.suki.command.SukiCommands.registerCommands(this); // Suki - Suki commands
+         com.destroystokyo.paper.Metrics.PaperMetrics.startMetrics();
+         com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
+         io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
+diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
+index 3f749f33f9168455cfe14a6e6120f36b412205f3..e85b95fe0339dcc3f6a542984f0ac398b14f7173 100644
+--- a/src/main/java/net/minecraft/server/level/ServerLevel.java
++++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
+@@ -501,7 +501,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+     public ServerLevel(MinecraftServer minecraftserver, Executor executor, LevelStorageSource.LevelStorageAccess convertable_conversionsession, PrimaryLevelData iworlddataserver, ResourceKey<Level> resourcekey, LevelStem worlddimension, ChunkProgressListener worldloadlistener, boolean flag, long i, List<CustomSpawner> list, boolean flag1, org.bukkit.World.Environment env, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider) {
+         // Holder holder = worlddimension.typeHolder(); // CraftBukkit - decompile error
+         // Objects.requireNonNull(minecraftserver); // CraftBukkit - decompile error
+-        super(iworlddataserver, resourcekey, worlddimension.typeHolder(), minecraftserver::getProfiler, false, flag, i, minecraftserver.getMaxChainedNeighborUpdates(), gen, biomeProvider, env, spigotConfig -> minecraftserver.paperConfigurations.createWorldConfig(io.papermc.paper.configuration.PaperConfigurations.createWorldContextMap(convertable_conversionsession.levelDirectory.path(), iworlddataserver.getLevelName(), resourcekey.location(), spigotConfig)), executor); // Paper - Async-Anti-Xray - Pass executor
++        super(iworlddataserver, resourcekey, worlddimension.typeHolder(), minecraftserver::getProfiler, false, flag, i, minecraftserver.getMaxChainedNeighborUpdates(), gen, biomeProvider, env, spigotConfig -> minecraftserver.paperConfigurations.createWorldConfig(io.papermc.paper.configuration.PaperConfigurations.createWorldContextMap(convertable_conversionsession.levelDirectory.path(), iworlddataserver.getLevelName(), resourcekey.location(), spigotConfig)), spigotConfig -> minecraftserver.sukiConfigurations.createWorldConfig(io.papermc.paper.configuration.PaperConfigurations.createWorldContextMap(convertable_conversionsession.levelDirectory.path(), iworlddataserver.getLevelName(), resourcekey.location(), spigotConfig)), executor); // Paper - Async-Anti-Xray - Pass executor // Suki - Suki configuration
+         this.pvpMode = minecraftserver.isPvpAllowed();
+         this.convertable = convertable_conversionsession;
+         this.uuid = WorldUUID.getUUID(convertable_conversionsession.levelDirectory.path().toFile());
+diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
+index 4f79fb616d594c1d1456cf7efc938c6621fbee68..76832f628c4f0145003041f48a921521983ecc51 100644
+--- a/src/main/java/net/minecraft/world/level/Level.java
++++ b/src/main/java/net/minecraft/world/level/Level.java
+@@ -172,6 +172,12 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+         return this.paperConfig;
+     }
+     // Paper end
++    // Suki start - Suki configuration
++    private final org.sucraft.suki.configuration.SukiWorldConfiguration sukiConfig;
++    public org.sucraft.suki.configuration.SukiWorldConfiguration sukiConfig() {
++        return this.sukiConfig;
++    }
++    // Suki end - Suki configuration
+ 
+     public final com.destroystokyo.paper.antixray.ChunkPacketBlockController chunkPacketBlockController; // Paper - Anti-Xray
+     public final co.aikar.timings.WorldTimingsHandler timings; // Paper
+@@ -282,9 +288,10 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+     @Override public final int getHeight() { return this.height; }
+     // Pufferfish end
+ 
+-    protected Level(WritableLevelData worlddatamutable, ResourceKey<Level> resourcekey, Holder<DimensionType> holder, Supplier<ProfilerFiller> supplier, boolean flag, boolean flag1, long i, int j, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider, org.bukkit.World.Environment env, java.util.function.Function<org.spigotmc.SpigotWorldConfig, io.papermc.paper.configuration.WorldConfiguration> paperWorldConfigCreator, java.util.concurrent.Executor executor) { // Paper - Async-Anti-Xray - Pass executor
++    protected Level(WritableLevelData worlddatamutable, ResourceKey<Level> resourcekey, Holder<DimensionType> holder, Supplier<ProfilerFiller> supplier, boolean flag, boolean flag1, long i, int j, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider, org.bukkit.World.Environment env, java.util.function.Function<org.spigotmc.SpigotWorldConfig, io.papermc.paper.configuration.WorldConfiguration> paperWorldConfigCreator, java.util.function.Function<org.spigotmc.SpigotWorldConfig, org.sucraft.suki.configuration.SukiWorldConfiguration> sukiWorldConfigCreator, java.util.concurrent.Executor executor) { // Paper - Async-Anti-Xray - Pass executor // Suki - Suki configuration
+         this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName()); // Spigot
+         this.paperConfig = paperWorldConfigCreator.apply(this.spigotConfig); // Paper
++        this.sukiConfig = sukiWorldConfigCreator.apply(this.spigotConfig); // Suki - Suki configuration
+         this.generator = gen;
+         this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
+ 
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index f1045f33e4ef9e15746b6135f6e4f47d3bea2701..761f754e56f00b2de83cc433900ba893d34995c7 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -964,6 +964,7 @@ public final class CraftServer implements Server {
+ 
+         org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
+         this.console.paperConfigurations.reloadConfigs(this.console);
++        this.console.sukiConfigurations.reloadConfigs(this.console); // Suki - Suki configuration
+         for (ServerLevel world : this.console.getAllLevels()) {
+             // world.serverLevelData.setDifficulty(config.difficulty); // Paper - per level difficulty
+             world.setSpawnSettings(world.serverLevelData.getDifficulty() != Difficulty.PEACEFUL && config.spawnMonsters, config.spawnAnimals); // Paper - per level difficulty (from MinecraftServer#setDifficulty(ServerLevel, Difficulty, boolean))
+@@ -2743,6 +2744,14 @@ public final class CraftServer implements Server {
+             return CraftServer.this.console.paperConfigurations.createLegacyObject(CraftServer.this.console);
+         }
+ 
++        // Suki start - Suki configuration
++        @Override
++        public YamlConfiguration getSukiConfig()
++        {
++            return CraftServer.this.console.sukiConfigurations.createLegacyObject(CraftServer.this.console);
++        }
++        // Suki end - Suki configuration
++
+         @Override
+         public void restart() {
+             org.spigotmc.RestartCommand.restart();
+diff --git a/src/main/java/org/sucraft/suki/command/SukiCommand.java b/src/main/java/org/sucraft/suki/command/SukiCommand.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..9fdacb5b7bed75631e00b05ca3df92639546f6ef
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/command/SukiCommand.java
+@@ -0,0 +1,145 @@
++// Suki - /suki command
++
++package org.sucraft.suki.command;
++
++import io.papermc.paper.command.CommandUtil;
++import it.unimi.dsi.fastutil.Pair;
++import net.minecraft.Util;
++import org.bukkit.Bukkit;
++import org.bukkit.Location;
++import org.bukkit.command.Command;
++import org.bukkit.command.CommandSender;
++import org.bukkit.permissions.Permission;
++import org.bukkit.permissions.PermissionDefault;
++import org.bukkit.plugin.PluginManager;
++import org.checkerframework.checker.nullness.qual.NonNull;
++import org.checkerframework.checker.nullness.qual.Nullable;
++import org.checkerframework.framework.qual.DefaultQualifier;
++import org.sucraft.suki.command.subcommand.ReloadCommand;
++import org.sucraft.suki.command.subcommand.VersionCommand;
++
++import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.Collections;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Locale;
++import java.util.Map;
++import java.util.Set;
++import java.util.stream.Collectors;
++
++import static net.kyori.adventure.text.Component.text;
++import static net.kyori.adventure.text.format.NamedTextColor.RED;
++
++@DefaultQualifier(NonNull.class)
++public final class SukiCommand extends Command {
++    static final String BASE_PERM = "suki.command.suki.";
++    // subcommand label -> subcommand
++    private static final Map<String, SukiSubcommand> SUBCOMMANDS = Util.make(() -> {
++        final Map<Set<String>, SukiSubcommand> commands = new HashMap<>();
++
++        commands.put(Set.of("reload"), new ReloadCommand());
++        commands.put(Set.of("version"), new VersionCommand());
++
++        return commands.entrySet().stream()
++            .flatMap(entry -> entry.getKey().stream().map(s -> Map.entry(s, entry.getValue())))
++            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
++    });
++    // alias -> subcommand label
++    private static final Map<String, String> ALIASES = Util.make(() -> {
++        final Map<String, Set<String>> aliases = new HashMap<>();
++
++        aliases.put("version", Set.of("ver"));
++
++        return aliases.entrySet().stream()
++            .flatMap(entry -> entry.getValue().stream().map(s -> Map.entry(s, entry.getKey())))
++            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
++    });
++
++    public SukiCommand(final String name) {
++        super(name);
++        this.description = "Suki related commands";
++        this.usageMessage = "/suki [" + String.join(" | ", SUBCOMMANDS.keySet()) + "]";
++        final List<String> permissions = new ArrayList<>();
++        permissions.add("suki.command.suki");
++        permissions.addAll(SUBCOMMANDS.keySet().stream().map(s -> BASE_PERM + s).toList());
++        this.setPermission(String.join(";", permissions));
++        final PluginManager pluginManager = Bukkit.getServer().getPluginManager();
++        for (final String perm : permissions) {
++            pluginManager.addPermission(new Permission(perm, PermissionDefault.OP));
++        }
++    }
++
++    private static boolean testPermission(final CommandSender sender, final String permission) {
++        if (sender.hasPermission(BASE_PERM + permission) || sender.hasPermission("suki.command.suki")) {
++            return true;
++        }
++        sender.sendMessage(Bukkit.permissionMessage());
++        return false;
++    }
++
++    @Override
++    public List<String> tabComplete(
++        final CommandSender sender,
++        final String alias,
++        final String[] args,
++        final @Nullable Location location
++    ) throws IllegalArgumentException {
++        if (args.length <= 1) {
++            return CommandUtil.getListMatchingLast(sender, args, SUBCOMMANDS.keySet());
++        }
++
++        final @Nullable Pair<String, SukiSubcommand> subCommand = resolveCommand(args[0]);
++        if (subCommand != null) {
++            return subCommand.second().tabComplete(sender, subCommand.first(), Arrays.copyOfRange(args, 1, args.length));
++        }
++
++        return Collections.emptyList();
++    }
++
++    @Override
++    public boolean execute(
++        final CommandSender sender,
++        final String commandLabel,
++        final String[] args
++    ) {
++        if (!testPermission(sender)) {
++            return true;
++        }
++
++        if (args.length == 0) {
++            sender.sendMessage(text("Usage: " + this.usageMessage, RED));
++            return false;
++        }
++        final @Nullable Pair<String, SukiSubcommand> subCommand = resolveCommand(args[0]);
++
++        if (subCommand == null) {
++            sender.sendMessage(text("Usage: " + this.usageMessage, RED));
++            return false;
++        }
++
++        if (!testPermission(sender, subCommand.first())) {
++            return true;
++        }
++        final String[] choppedArgs = Arrays.copyOfRange(args, 1, args.length);
++        return subCommand.second().execute(sender, subCommand.first(), choppedArgs);
++    }
++
++    private static @Nullable Pair<String, SukiSubcommand> resolveCommand(String label) {
++        label = label.toLowerCase(Locale.ENGLISH);
++        @Nullable SukiSubcommand subCommand = SUBCOMMANDS.get(label);
++        if (subCommand == null) {
++            final @Nullable String command = ALIASES.get(label);
++            if (command != null) {
++                label = command;
++                subCommand = SUBCOMMANDS.get(command);
++            }
++        }
++
++        if (subCommand != null) {
++            return Pair.of(label, subCommand);
++        }
++
++        return null;
++    }
++}
+diff --git a/src/main/java/org/sucraft/suki/command/SukiCommands.java b/src/main/java/org/sucraft/suki/command/SukiCommands.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..01545d1ce279e199e69c09e7d8c391337e930afa
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/command/SukiCommands.java
+@@ -0,0 +1,31 @@
++// Suki - Suki commands
++
++package org.sucraft.suki.command;
++
++import io.papermc.paper.command.MSPTCommand;
++import io.papermc.paper.command.PaperCommand;
++import net.minecraft.server.MinecraftServer;
++import org.bukkit.command.Command;
++import org.checkerframework.checker.nullness.qual.NonNull;
++import org.checkerframework.framework.qual.DefaultQualifier;
++
++import java.util.HashMap;
++import java.util.Map;
++
++@DefaultQualifier(NonNull.class)
++public final class SukiCommands {
++
++    private SukiCommands() {
++    }
++
++    private static final Map<String, Command> COMMANDS = new HashMap<>();
++    static {
++        COMMANDS.put("suki", new SukiCommand("suki"));
++    }
++
++    public static void registerCommands(final MinecraftServer server) {
++        COMMANDS.forEach((s, command) -> {
++            server.server.getCommandMap().register(s, "Suki", command);
++        });
++    }
++}
+diff --git a/src/main/java/org/sucraft/suki/command/SukiSubcommand.java b/src/main/java/org/sucraft/suki/command/SukiSubcommand.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..8afaad936500b3dc7568ad57f119f1e7660a3120
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/command/SukiSubcommand.java
+@@ -0,0 +1,19 @@
++// Suki - Suki commands
++
++package org.sucraft.suki.command;
++
++import org.bukkit.command.CommandSender;
++import org.checkerframework.checker.nullness.qual.NonNull;
++import org.checkerframework.framework.qual.DefaultQualifier;
++
++import java.util.Collections;
++import java.util.List;
++
++@DefaultQualifier(NonNull.class)
++public interface SukiSubcommand {
++    boolean execute(CommandSender sender, String subCommand, String[] args);
++
++    default List<String> tabComplete(final CommandSender sender, final String subCommand, final String[] args) {
++        return Collections.emptyList();
++    }
++}
+diff --git a/src/main/java/org/sucraft/suki/command/subcommand/ReloadCommand.java b/src/main/java/org/sucraft/suki/command/subcommand/ReloadCommand.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..18bc7908f31897d955cf1d5a036728688c502d99
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/command/subcommand/ReloadCommand.java
+@@ -0,0 +1,35 @@
++// Suki - /suki command
++
++package org.sucraft.suki.command.subcommand;
++
++import net.minecraft.server.MinecraftServer;
++import org.bukkit.command.Command;
++import org.bukkit.command.CommandSender;
++import org.bukkit.craftbukkit.CraftServer;
++import org.checkerframework.checker.nullness.qual.NonNull;
++import org.checkerframework.framework.qual.DefaultQualifier;
++import org.sucraft.suki.command.SukiSubcommand;
++
++import static net.kyori.adventure.text.Component.text;
++import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
++import static net.kyori.adventure.text.format.NamedTextColor.RED;
++
++@DefaultQualifier(NonNull.class)
++public final class ReloadCommand implements SukiSubcommand {
++    @Override
++    public boolean execute(final CommandSender sender, final String subCommand, final String[] args) {
++        this.doReload(sender);
++        return true;
++    }
++
++    private void doReload(final CommandSender sender) {
++        Command.broadcastCommandMessage(sender, text("Please note that this command is not supported and may cause issues.", RED));
++        Command.broadcastCommandMessage(sender, text("If you encounter any issues please use the /stop command to restart your server.", RED));
++
++        MinecraftServer server = ((CraftServer) sender.getServer()).getServer();
++        server.sukiConfigurations.reloadConfigs(server);
++        server.server.reloadCount++;
++
++        Command.broadcastCommandMessage(sender, text("Suki config reload complete.", GREEN));
++    }
++}
+diff --git a/src/main/java/org/sucraft/suki/command/subcommand/VersionCommand.java b/src/main/java/org/sucraft/suki/command/subcommand/VersionCommand.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..da669f80719df48260a43cfa616d3d05f325374a
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/command/subcommand/VersionCommand.java
+@@ -0,0 +1,23 @@
++// Suki - /suki command
++
++package org.sucraft.suki.command.subcommand;
++
++import net.minecraft.server.MinecraftServer;
++import org.bukkit.command.Command;
++import org.bukkit.command.CommandSender;
++import org.checkerframework.checker.nullness.qual.NonNull;
++import org.checkerframework.checker.nullness.qual.Nullable;
++import org.checkerframework.framework.qual.DefaultQualifier;
++import org.sucraft.suki.command.SukiSubcommand;
++
++@DefaultQualifier(NonNull.class)
++public final class VersionCommand implements SukiSubcommand {
++    @Override
++    public boolean execute(final CommandSender sender, final String subCommand, final String[] args) {
++        final @Nullable Command ver = MinecraftServer.getServer().server.getCommandMap().getCommand("version");
++        if (ver != null) {
++            ver.execute(sender, "suki", me.titaniumtown.Constants.EMPTY_string_arr); // JettPack
++        }
++        return true;
++    }
++}
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiConfigurations.java b/src/main/java/org/sucraft/suki/configuration/SukiConfigurations.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..4ce648be802bb93192fc636d3b1c2e7a1fca93b6
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/configuration/SukiConfigurations.java
+@@ -0,0 +1,296 @@
++// Suki - Suki configuration
++
++package org.sucraft.suki.configuration;
++
++import com.google.common.collect.Table;
++import com.mojang.logging.LogUtils;
++import io.leangen.geantyref.TypeToken;
++import io.papermc.paper.configuration.Configuration;
++import io.papermc.paper.configuration.ConfigurationPart;
++import io.papermc.paper.configuration.Configurations;
++import io.papermc.paper.configuration.InnerClassFieldDiscoverer;
++import io.papermc.paper.configuration.NestedSetting;
++import io.papermc.paper.configuration.PaperConfigurations;
++import io.papermc.paper.configuration.legacy.RequiresSpigotInitialization;
++import io.papermc.paper.configuration.serializer.ComponentSerializer;
++import io.papermc.paper.configuration.serializer.EnumValueSerializer;
++import io.papermc.paper.configuration.serializer.FastutilMapSerializer;
++import io.papermc.paper.configuration.serializer.PacketClassSerializer;
++import io.papermc.paper.configuration.serializer.StringRepresentableSerializer;
++import io.papermc.paper.configuration.serializer.TableSerializer;
++import io.papermc.paper.configuration.serializer.collections.MapSerializer;
++import io.papermc.paper.configuration.serializer.registry.RegistryHolderSerializer;
++import io.papermc.paper.configuration.serializer.registry.RegistryValueSerializer;
++import io.papermc.paper.configuration.transformation.Transformations;
++import io.papermc.paper.configuration.type.BooleanOrDefault;
++import io.papermc.paper.configuration.type.DoubleOrDefault;
++import io.papermc.paper.configuration.type.Duration;
++import io.papermc.paper.configuration.type.EngineMode;
++import io.papermc.paper.configuration.type.IntOrDefault;
++import io.papermc.paper.configuration.type.fallback.FallbackValueSerializer;
++import it.unimi.dsi.fastutil.objects.Reference2IntMap;
++import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
++import it.unimi.dsi.fastutil.objects.Reference2LongMap;
++import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
++import net.minecraft.core.Registry;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.level.ServerLevel;
++import net.minecraft.world.entity.EntityType;
++import net.minecraft.world.item.Item;
++import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
++import org.slf4j.Logger;
++import org.spongepowered.configurate.ConfigurateException;
++import org.spongepowered.configurate.ConfigurationNode;
++import org.spongepowered.configurate.ConfigurationOptions;
++import org.spongepowered.configurate.NodePath;
++import org.spongepowered.configurate.objectmapping.ObjectMapper;
++import org.spongepowered.configurate.transformation.ConfigurationTransformation;
++import org.spongepowered.configurate.transformation.TransformAction;
++import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
++
++import java.io.File;
++import java.io.IOException;
++import java.lang.reflect.Type;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import java.util.Collections;
++import java.util.List;
++import java.util.function.Function;
++
++import static io.leangen.geantyref.GenericTypeReflector.erase;
++
++@SuppressWarnings("Convert2Diamond")
++public class SukiConfigurations extends Configurations<SukiGlobalConfiguration, SukiWorldConfiguration> {
++
++    private static final Logger LOGGER = LogUtils.getLogger();
++    static final String GLOBAL_CONFIG_FILE_NAME = "suki-global.yml";
++    static final String WORLD_DEFAULTS_CONFIG_FILE_NAME = "suki-world-defaults.yml";
++    static final String WORLD_CONFIG_FILE_NAME = "suki-world.yml";
++    public static final String CONFIG_DIR = "config";
++
++    private static final String GLOBAL_HEADER = String.format("""
++            This is the global configuration file for Suki.
++            As you can see, there's a lot to configure. Some options may impact gameplay, so use
++            with caution, and make sure you know what each option does before configuring.
++
++            If you need help with the configuration or have any questions related to Suki,
++            join us in our Discord for SuCraft, or check the GitHub Wiki pages.
++
++            The world configuration options are inside
++            their respective world folder. The files are named %s
++
++            Wiki: https://github.com/SuCraft/Suki/wiki
++            Discord: https://discord.com/invite/pbsPkpUjG4""", WORLD_CONFIG_FILE_NAME);
++
++    private static final String WORLD_DEFAULTS_HEADER = """
++            This is the world defaults configuration file for Suki.
++            As you can see, there's a lot to configure. Some options may impact gameplay, so use
++            with caution, and make sure you know what each option does before configuring.
++
++            If you need help with the configuration or have any questions related to Suki,
++            join us in our Discord for SuCraft, or check the GitHub Wiki pages.
++
++            Configuration options here apply to all worlds, unless you specify overrides inside
++            the world-specific config file inside each world folder.
++
++            Wiki: https://github.com/SuCraft/Suki/wiki
++            Discord: https://discord.com/invite/pbsPkpUjG4""";
++
++    private static final Function<ContextMap, String> WORLD_HEADER = map -> String.format("""
++        This is a world configuration file for Suki.
++        This file may start empty but can be filled with settings to override ones in the %s/%s
++        
++        World: %s (%s)""",
++        CONFIG_DIR,
++        WORLD_DEFAULTS_CONFIG_FILE_NAME,
++        map.require(WORLD_NAME),
++        map.require(WORLD_KEY)
++    );
++
++    private static final String MOVED_NOTICE = """
++        The global and world default configuration files have moved to %s
++        and the world-specific configuration file has been moved inside
++        the respective world folder.
++        
++        See https://github.com/SuCraft/Suki/wiki for more information.
++        """;
++
++    public SukiConfigurations(final Path globalFolder) {
++        super(globalFolder, SukiGlobalConfiguration.class, SukiWorldConfiguration.class, GLOBAL_CONFIG_FILE_NAME, WORLD_DEFAULTS_CONFIG_FILE_NAME, WORLD_CONFIG_FILE_NAME);
++    }
++
++    @Override
++    protected YamlConfigurationLoader.Builder createLoaderBuilder() {
++        return super.createLoaderBuilder()
++            .defaultOptions(SukiConfigurations::defaultOptions);
++    }
++
++    private static ConfigurationOptions defaultOptions(ConfigurationOptions options) {
++        return options.serializers(builder -> builder
++            .register(MapSerializer.TYPE, new MapSerializer(false))
++            .register(new EnumValueSerializer())
++            .register(new ComponentSerializer())
++        );
++    }
++
++    @Override
++    protected ObjectMapper.Factory.Builder createGlobalObjectMapperFactoryBuilder() {
++        return defaultGlobalFactoryBuilder(super.createGlobalObjectMapperFactoryBuilder());
++    }
++
++    private static ObjectMapper.Factory.Builder defaultGlobalFactoryBuilder(ObjectMapper.Factory.Builder builder) {
++        return builder.addDiscoverer(InnerClassFieldDiscoverer.globalConfig());
++    }
++
++    @Override
++    protected YamlConfigurationLoader.Builder createGlobalLoaderBuilder() {
++        return super.createGlobalLoaderBuilder()
++            .defaultOptions(SukiConfigurations::defaultGlobalOptions);
++    }
++
++    private static ConfigurationOptions defaultGlobalOptions(ConfigurationOptions options) {
++        return options
++            .header(GLOBAL_HEADER)
++            .serializers(builder -> builder.register(new PacketClassSerializer()));
++    }
++
++    @Override
++    public SukiGlobalConfiguration initializeGlobalConfiguration() throws ConfigurateException {
++        SukiGlobalConfiguration configuration = super.initializeGlobalConfiguration();
++        SukiGlobalConfiguration.set(configuration);
++        return configuration;
++    }
++
++    @Override
++    protected ContextMap.Builder createDefaultContextMap() {
++        return super.createDefaultContextMap()
++            .put(PaperConfigurations.SPIGOT_WORLD_CONFIG_CONTEXT_KEY, PaperConfigurations.SPIGOT_WORLD_DEFAULTS);
++    }
++
++    @Override
++    protected ObjectMapper.Factory.Builder createWorldObjectMapperFactoryBuilder(final ContextMap contextMap) {
++        return super.createWorldObjectMapperFactoryBuilder(contextMap)
++            .addNodeResolver(new RequiresSpigotInitialization.Factory(contextMap.require(PaperConfigurations.SPIGOT_WORLD_CONFIG_CONTEXT_KEY).get()))
++            .addNodeResolver(new NestedSetting.Factory())
++            .addDiscoverer(InnerClassFieldDiscoverer.sukiWorldConfig(contextMap));
++    }
++
++    @Override
++    protected YamlConfigurationLoader.Builder createWorldConfigLoaderBuilder(final ContextMap contextMap) {
++        return super.createWorldConfigLoaderBuilder(contextMap)
++            .defaultOptions(options -> options
++                .header(contextMap.require(WORLD_NAME).equals(WORLD_DEFAULTS) ? WORLD_DEFAULTS_HEADER : WORLD_HEADER.apply(contextMap))
++                .serializers(serializers -> serializers
++                    .register(new TypeToken<Reference2IntMap<?>>() {}, new FastutilMapSerializer.SomethingToPrimitive<Reference2IntMap<?>>(Reference2IntOpenHashMap::new, Integer.TYPE))
++                    .register(new TypeToken<Reference2LongMap<?>>() {}, new FastutilMapSerializer.SomethingToPrimitive<Reference2LongMap<?>>(Reference2LongOpenHashMap::new, Long.TYPE))
++                    .register(new TypeToken<Table<?, ?, ?>>() {}, new TableSerializer())
++                    .register(new StringRepresentableSerializer())
++                    .register(IntOrDefault.SERIALIZER)
++                    .register(DoubleOrDefault.SERIALIZER)
++                    .register(BooleanOrDefault.SERIALIZER)
++                    .register(Duration.SERIALIZER)
++                    .register(EngineMode.SERIALIZER)
++                    .register(FallbackValueSerializer.create(contextMap.require(PaperConfigurations.SPIGOT_WORLD_CONFIG_CONTEXT_KEY).get(), MinecraftServer::getServer))
++                    .register(new RegistryValueSerializer<>(new TypeToken<EntityType<?>>() {}, Registry.ENTITY_TYPE_REGISTRY, true))
++                    .register(new RegistryValueSerializer<>(Item.class, Registry.ITEM_REGISTRY, true))
++                    .register(new RegistryHolderSerializer<>(new TypeToken<ConfiguredFeature<?, ?>>() {}, Registry.CONFIGURED_FEATURE_REGISTRY, false))
++                    .register(new RegistryHolderSerializer<>(Item.class, Registry.ITEM_REGISTRY, true))
++                )
++            );
++    }
++
++    @Override
++    protected void applyWorldConfigTransformations(final ContextMap contextMap, final ConfigurationNode node) throws ConfigurateException {
++        final ConfigurationNode version = node.node(Configuration.VERSION_FIELD);
++        final String world = contextMap.require(WORLD_NAME);
++        if (version.virtual()) {
++            LOGGER.warn("The Suki world config file for " + world + " didn't have a version set, assuming latest");
++            version.raw(SukiWorldConfiguration.CURRENT_VERSION);
++        }
++        if (SukiRemovedConfigurations.REMOVED_WORLD_PATHS.length > 0) {
++            ConfigurationTransformation.Builder builder = ConfigurationTransformation.builder();
++            for (NodePath path : SukiRemovedConfigurations.REMOVED_WORLD_PATHS) {
++                builder.addAction(path, TransformAction.remove());
++            }
++            builder.build().apply(node);
++        }
++        // ADD FUTURE TRANSFORMS HERE
++    }
++
++    @Override
++    protected void applyGlobalConfigTransformations(ConfigurationNode node) throws ConfigurateException {
++        if (SukiRemovedConfigurations.REMOVED_GLOBAL_PATHS.length > 0) {
++            ConfigurationTransformation.Builder builder = ConfigurationTransformation.builder();
++            for (NodePath path : SukiRemovedConfigurations.REMOVED_GLOBAL_PATHS) {
++                builder.addAction(path, TransformAction.remove());
++            }
++            builder.build().apply(node);
++        }
++        // ADD FUTURE TRANSFORMS HERE
++    }
++
++    private static final List<Transformations.DefaultsAware> DEFAULT_AWARE_TRANSFORMATIONS = Collections.emptyList();
++
++    @Override
++    protected void applyDefaultsAwareWorldConfigTransformations(final ContextMap contextMap, final ConfigurationNode worldNode, final ConfigurationNode defaultsNode) throws ConfigurateException {
++        final ConfigurationTransformation.Builder builder = ConfigurationTransformation.builder();
++        // ADD FUTURE TRANSFORMS HERE (these transforms run after the defaults have been merged into the node)
++        DEFAULT_AWARE_TRANSFORMATIONS.forEach(transform -> transform.apply(builder, contextMap, defaultsNode));
++
++        ConfigurationTransformation transformation;
++        try {
++            transformation = builder.build(); // build throws IAE if no actions were provided (bad zml)
++        } catch (IllegalArgumentException ignored) {
++            return;
++        }
++        transformation.apply(worldNode);
++    }
++
++    @Override
++    public SukiWorldConfiguration createWorldConfig(final ContextMap contextMap) {
++        final String levelName = contextMap.require(WORLD_NAME);
++        try {
++            return super.createWorldConfig(contextMap);
++        } catch (IOException exception) {
++            throw new RuntimeException("Could not create Suki world config for " + levelName, exception);
++        }
++    }
++
++    @Override
++    protected boolean isConfigType(final Type type) {
++        return ConfigurationPart.class.isAssignableFrom(erase(type));
++    }
++
++    public void reloadConfigs(MinecraftServer server) {
++        try {
++            this.initializeGlobalConfiguration(reloader(this.globalConfigClass, SukiGlobalConfiguration.get()));
++            this.initializeWorldDefaultsConfiguration();
++            for (ServerLevel level : server.getAllLevels()) {
++                this.createWorldConfig(PaperConfigurations.createWorldContextMap(level), reloader(this.worldConfigClass, level.sukiConfig()));
++            }
++        } catch (Exception ex) {
++            throw new RuntimeException("Could not reload Suki configuration files", ex);
++        }
++    }
++
++    public static SukiConfigurations setup(final Path legacyConfig, final Path configDir, final Path worldFolder, final File spigotConfig) throws Exception {
++        final Path legacy = Files.isSymbolicLink(legacyConfig) ? Files.readSymbolicLink(legacyConfig) : legacyConfig;
++        final Path replacementFile = legacy.resolveSibling(legacyConfig.getFileName() + "-README.txt");
++        if (Files.notExists(replacementFile)) {
++            Files.createFile(replacementFile);
++            Files.writeString(replacementFile, String.format(MOVED_NOTICE, configDir.toAbsolutePath()));
++        }
++        try {
++            PaperConfigurations.createDirectoriesSymlinkAware(configDir);
++            return new SukiConfigurations(configDir);
++        } catch (final IOException ex) {
++            throw new RuntimeException("Could not setup SukiConfigurations", ex);
++        }
++    }
++
++    @Override
++    public int getWorldConfigurationCurrentVersion() {
++        return SukiWorldConfiguration.CURRENT_VERSION;
++    }
++
++}
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..62c507222c959b7de9fe5496e56f648eeb6f476b
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -0,0 +1,31 @@
++// Suki - Suki configuration
++
++package org.sucraft.suki.configuration;
++
++import io.papermc.paper.configuration.Configuration;
++import io.papermc.paper.configuration.ConfigurationPart;
++import org.spongepowered.configurate.objectmapping.meta.Setting;
++
++@SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
++public class SukiGlobalConfiguration extends ConfigurationPart {
++    static final int CURRENT_VERSION = 1;
++    private static SukiGlobalConfiguration instance;
++    public static SukiGlobalConfiguration get() {
++        return instance;
++    }
++    static void set(SukiGlobalConfiguration instance) {
++        SukiGlobalConfiguration.instance = instance;
++    }
++
++    @Setting(Configuration.VERSION_FIELD)
++    public int version = CURRENT_VERSION;
++
++    public GlobalDummyPart globalDummyPart;
++
++    public class GlobalDummyPart extends ConfigurationPart {
++
++        int globalDummyValue = 0;
++
++    }
++
++}
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiRemovedConfigurations.java b/src/main/java/org/sucraft/suki/configuration/SukiRemovedConfigurations.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..556068b7eacd69ad2b15e695af82adbe9136a22d
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/configuration/SukiRemovedConfigurations.java
+@@ -0,0 +1,15 @@
++// Suki - Suki configuration
++
++package org.sucraft.suki.configuration;
++
++import org.spongepowered.configurate.NodePath;
++
++import static org.spongepowered.configurate.NodePath.path;
++
++interface SukiRemovedConfigurations {
++
++    NodePath[] REMOVED_WORLD_PATHS = {};
++
++    NodePath[] REMOVED_GLOBAL_PATHS = {};
++
++}
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..1ac852159f980b6238be3f14e261913847e07d45
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -0,0 +1,41 @@
++// Suki - Suki configuration
++
++package org.sucraft.suki.configuration;
++
++import com.mojang.logging.LogUtils;
++import io.papermc.paper.configuration.Configuration;
++import io.papermc.paper.configuration.ConfigurationPart;
++import io.papermc.paper.configuration.PaperConfigurations;
++import net.minecraft.resources.ResourceLocation;
++import org.slf4j.Logger;
++import org.spigotmc.SpigotWorldConfig;
++import org.spongepowered.configurate.objectmapping.meta.Setting;
++
++@SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
++public class SukiWorldConfiguration extends ConfigurationPart {
++    private static final Logger LOGGER = LogUtils.getLogger();
++    public static final int CURRENT_VERSION = 1;
++
++    private transient final SpigotWorldConfig spigotConfig;
++    private transient final ResourceLocation worldKey;
++    public SukiWorldConfiguration(SpigotWorldConfig spigotConfig, ResourceLocation worldKey) {
++        this.spigotConfig = spigotConfig;
++        this.worldKey = worldKey;
++    }
++
++    public boolean isDefault() {
++        return this.worldKey.equals(PaperConfigurations.WORLD_DEFAULTS_KEY);
++    }
++
++    @Setting(Configuration.VERSION_FIELD)
++    public int version = CURRENT_VERSION;
++
++    public WorldDummyPart worldDummyPart;
++
++    public class WorldDummyPart extends ConfigurationPart {
++
++        int worldDummyValue = 0;
++
++    }
++
++}
