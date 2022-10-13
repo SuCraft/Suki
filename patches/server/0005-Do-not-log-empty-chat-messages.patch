@@ -1,0 +1,51 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 21:40:00 +0200
+Subject: [PATCH] Do not log empty chat messages
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 508ccef19a5f7a23be9c941ea34ddc26257af6f8..cc90b221d008127cf0f156683c29cadbde2ba836 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -243,6 +243,7 @@ import org.bukkit.inventory.CraftingInventory;
+ import org.bukkit.inventory.EquipmentSlot;
+ import org.bukkit.inventory.InventoryView;
+ import org.bukkit.inventory.SmithingInventory;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ // CraftBukkit end
+ 
+ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, TickablePacketListener, ServerGamePacketListener {
+@@ -2610,7 +2611,11 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         // CraftBukkit start
+         String s = message.signedContent().plain();
+         if (s.isEmpty()) {
+-            ServerGamePacketListenerImpl.LOGGER.warn(this.player.getScoreboardName() + " tried to send an empty message");
++            // Suki start - less console logs
++            if (SukiGlobalConfiguration.get().consoleLogs.chatMessages.empty) {
++                ServerGamePacketListenerImpl.LOGGER.warn(this.player.getScoreboardName() + " tried to send an empty message");
++            }
++            // Suki end - less console logs
+         } else if (this.getCraftPlayer().isConversing()) {
+             final String conversationInput = s;
+             this.server.processQueue.add(new Runnable() {
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index 00f7c05ee01f59867d3f74f80a25f8d85793add8..00e164b1ac4badfafb034261035e3f5f84a6de1e 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -25,7 +25,15 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+     public ConsoleLogs consoleLogs;
+ 
+     public class ConsoleLogs extends ConfigurationPart {
++
+         public boolean invalidStatistics = true;
++        
++        public ChatMessages chatMessages;
++
++        public class ChatMessages extends ConfigurationPart {
++            public boolean empty = true;
++        }
++
+     }
+ 
+     // Suki end - less console logs
