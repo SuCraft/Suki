@@ -1,0 +1,146 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 21:57:17 +0200
+Subject: [PATCH] No signed chat
+
+This patch is based on the plugin FreedomChat (https://github.com/e-im/FreedomChat) by Oharass.
+
+diff --git a/src/main/java/net/minecraft/network/chat/OutgoingPlayerChatMessage.java b/src/main/java/net/minecraft/network/chat/OutgoingPlayerChatMessage.java
+index bd82f0316df85b621c1970ff30bbbec0d2712ccd..06e34306ce1ac6d7eb8c81e4ee0f88093bcc0c4b 100644
+--- a/src/main/java/net/minecraft/network/chat/OutgoingPlayerChatMessage.java
++++ b/src/main/java/net/minecraft/network/chat/OutgoingPlayerChatMessage.java
+@@ -8,6 +8,7 @@ import net.minecraft.network.protocol.game.ClientboundPlayerChatHeaderPacket;
+ import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
+ import net.minecraft.server.level.ServerPlayer;
+ import net.minecraft.server.players.PlayerList;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ 
+ public interface OutgoingPlayerChatMessage {
+     Component serverContent();
+@@ -52,7 +53,7 @@ public interface OutgoingPlayerChatMessage {
+             if (!playerChatMessage.isFullyFiltered()) {
+                 RegistryAccess registryAccess = sender.level.registryAccess();
+                 ChatType.BoundNetwork boundNetwork = params.toNetwork(registryAccess);
+-                sender.connection.send(new ClientboundPlayerChatPacket(playerChatMessage, boundNetwork));
++                sender.connection.send(SukiGlobalConfiguration.get().signedChat.enabled ? new ClientboundPlayerChatPacket(playerChatMessage, boundNetwork) : ClientboundPlayerChatPacket.createUnsigned(sender, playerChatMessage, boundNetwork)); // Suki - no signed chat
+                 sender.connection.addPendingMessage(playerChatMessage);
+             }
+ 
+@@ -91,9 +92,15 @@ public interface OutgoingPlayerChatMessage {
+                 this.playersWithFullMessage.add(sender);
+                 RegistryAccess registryAccess = sender.level.registryAccess();
+                 ChatType.BoundNetwork boundNetwork = params.toNetwork(registryAccess);
+-                sender.connection.send(new ClientboundPlayerChatPacket(playerChatMessage, boundNetwork), PacketSendListener.exceptionallySend(() -> {
+-                    return new ClientboundPlayerChatHeaderPacket(this.message);
+-                }));
++                // Suki start - no signed chat
++                if (SukiGlobalConfiguration.get().signedChat.enabled) {
++                    sender.connection.send(new ClientboundPlayerChatPacket(playerChatMessage, boundNetwork), PacketSendListener.exceptionallySend(() -> {
++                        return new ClientboundPlayerChatHeaderPacket(this.message);
++                    }));
++                } else {
++                    sender.connection.send(ClientboundPlayerChatPacket.createUnsigned(sender, playerChatMessage, boundNetwork));
++                }
++                // Suki end - no signed chat
+                 sender.connection.addPendingMessage(playerChatMessage);
+             }
+ 
+diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerChatPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerChatPacket.java
+index 0b818969d74eae05e2d2adfdbc38e513972c61a1..bb2b995c90af00299efadcc27339f932e3cad286 100644
+--- a/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerChatPacket.java
++++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerChatPacket.java
+@@ -4,8 +4,11 @@ import java.util.Optional;
+ import net.minecraft.core.RegistryAccess;
+ import net.minecraft.network.FriendlyByteBuf;
+ import net.minecraft.network.chat.ChatType;
++import net.minecraft.network.chat.Component;
+ import net.minecraft.network.chat.PlayerChatMessage;
+ import net.minecraft.network.protocol.Packet;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.level.ServerPlayer;
+ 
+ public record ClientboundPlayerChatPacket(PlayerChatMessage message, ChatType.BoundNetwork chatType) implements Packet<ClientGamePacketListener> {
+     public ClientboundPlayerChatPacket(FriendlyByteBuf buf) {
+@@ -31,4 +34,22 @@ public record ClientboundPlayerChatPacket(PlayerChatMessage message, ChatType.Bo
+     public Optional<ChatType.Bound> resolveChatType(RegistryAccess dynamicRegistryManager) {
+         return this.chatType.resolve(dynamicRegistryManager);
+     }
++
++    // Suki start - no signed chat
++
++    public static Packet<ClientGamePacketListener> createUnsigned(ServerPlayer player, PlayerChatMessage message, ChatType.BoundNetwork chatType) {
++        // Based on FreedomChat: ru.bk.oharass.freedomchat.FreedomChat.on(PlayerJoinEvent)
++        final Component content = message.unsignedContent().orElse(message.signedContent().decorated());
++
++        final Optional<ChatType.Bound> ctbo = chatType.resolve(player.level.registryAccess());
++        if (ctbo.isEmpty()) {
++            MinecraftServer.LOGGER.warn("Processing packet with unknown ChatType " + chatType.chatType(), new Throwable());
++            return new ClientboundPlayerChatPacket(message, chatType);
++        }
++        final Component decoratedContent = ctbo.orElseThrow().decorate(content);
++        return new ClientboundSystemChatPacket(decoratedContent, false);
++    }
++
++    // Suki end - no signed chat
++
+ }
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+index ac64ed3d6c64caa5c548f350f141e2fee5c2e736..c52bf7796e28015c74c88cbc8983170803378bbd 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+@@ -174,6 +174,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
+ import org.bukkit.event.player.PlayerTeleportEvent;
+ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+ import org.bukkit.inventory.MainHand;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ // CraftBukkit end
+ 
+ public class ServerPlayer extends Player {
+@@ -1898,7 +1899,7 @@ public class ServerPlayer extends Player {
+     }
+ 
+     public void sendChatHeader(SignedMessageHeader header, MessageSignature headerSignature, byte[] bodyDigest) {
+-        if (this.acceptsChatMessages()) {
++        if (SukiGlobalConfiguration.get().signedChat.enabled && this.acceptsChatMessages()) { // Suki - no signed chat
+             this.connection.send(new ClientboundPlayerChatHeaderPacket(header, headerSignature, bodyDigest));
+         }
+ 
+@@ -1962,7 +1963,7 @@ public class ServerPlayer extends Player {
+     }
+ 
+     public void sendServerStatus(ServerStatus metadata) {
+-        this.connection.send(new ClientboundServerDataPacket(metadata.getDescription(), metadata.getFavicon(), metadata.previewsChat(), metadata.enforcesSecureChat()));
++        this.connection.send(new ClientboundServerDataPacket(metadata.getDescription(), metadata.getFavicon(), (SukiGlobalConfiguration.get().signedChat.enabled || SukiGlobalConfiguration.get().signedChat.ifDisabled.useChatPreview) ? metadata.previewsChat() : false, (SukiGlobalConfiguration.get().signedChat.enabled || !SukiGlobalConfiguration.get().signedChat.ifDisabled.hideInsecurePopup) ? metadata.enforcesSecureChat() : true)); // Suki - no signed chat
+     }
+ 
+     @Override
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index 0ca63b6e5ee8c9cd4ce3234625b018e439751b19..a2087416332793be24121851d5a952fecbaa0f59 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -39,4 +39,25 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+     // Suki end - less console logs
+ 
++    // Suki start - no signed chat
++
++    public SignedChat signedChat;
++
++    public class SignedChat extends ConfigurationPart {
++
++        public boolean enabled = true;
++
++        public IfDisabled ifDisabled;
++
++        public class IfDisabled extends ConfigurationPart {
++
++            public boolean useChatPreview = false;
++            public boolean hideInsecurePopup = true;
++
++        }
++
++    }
++
++    // Suki end - no signed chat
++
+ }
