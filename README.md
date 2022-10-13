@@ -7,19 +7,28 @@
   [![Discord](https://img.shields.io/discord/363647798949969922?color=5865F2&label=discord&style=for-the-badge)](https://discord.com/invite/pbsPkpUjG4)
 </div>
 
+## About
+
+Suki is a Paper server fork for SuCraft, a survival server since August 2011. As such, it must be stable and high performance.
+
+Suki is a fork of [Mirai](https://github.com/etil2jz/Mirai), which includes various reasonably stable improvements from [Pufferfish](https://github.com/pufferfish-gg/Pufferfish), [Petal](https://github.com/Bloom-host/Petal), [Lithium](https://github.com/CaffeineMC/lithium-fabric) and more. To maintain stability, Suki may not always update from upstream right away if changes to Mirai have not been tested.
+
+Suki adds unique performance mechanics specially geared towards getting the most out of your hardware for a community server.
+
 ## Features
 
 <h3>Inherited</h3>
 
-- Fork of **[Mirai](https://github.com/etil2jz/Mirai)**, with notably:
+- Fork of **[Mirai](https://github.com/etil2jz/Mirai)**:
     - Fork of **[Pufferfish](https://github.com/pufferfish-gg/Pufferfish)** for the best performance.
-    - Contains **[Lithium](https://github.com/CaffeineMC/lithium-fabric)** patches which respect Vanilla parity.
-    - Async Pathfinding and Multithreaded Entity Tracker from **[Petal](https://github.com/Bloom-host/Petal)** which drastically reduce entity load.
+    - Contains **[Lithium](https://github.com/CaffeineMC/lithium-fabric)** patches which respect vanilla parity.
+    - Async pathfinding and multithreaded entity tracker from **[Petal](https://github.com/Bloom-host/Petal)** which drastically reduce entity load.
     - Reduced bandwidth consumption and CPU usage from avoiding sending useless packets in certain situations.
     - Bug fixes for several Minecraft issues.
-    - Faster process for Vanilla methods.\
+    - Faster process for vanilla methods.\
 &nbsp;
-- Patches from **[EmpireCraft](https://github.com/starlis/empirecraft)** improving performance, gameplay and fixing inconsistencies.
+- From **[EmpireCraft](https://github.com/starlis/empirecraft)**:
+    - Hoppers and villagers pick up items from the ground less frequently.
 
 <h3>Performance</h3>
 
