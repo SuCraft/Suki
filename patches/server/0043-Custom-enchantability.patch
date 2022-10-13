@@ -530,18 +530,22 @@ index e694a256a72479cff28b65a86ce31a8ca0b1eba6..599798d218c05b22e5a39e525477cfdb
                      if (power >= enchantment.getMinCost(i) && power <= enchantment.getMaxCost(i)) {
                          list.add(new EnchantmentInstance(enchantment, i));
 diff --git a/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java b/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java
-index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..41fc6e34091c25a3034cf710d23b746fdc972cd4 100644
+index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..b1306caf5543eebf60494c607e490d927615cde3 100644
 --- a/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java
 +++ b/src/main/java/net/minecraft/world/item/enchantment/Enchantments.java
-@@ -1,43 +1,352 @@
+@@ -1,43 +1,356 @@
  package net.minecraft.world.item.enchantment;
  
 +import io.papermc.paper.configuration.GlobalConfiguration;
  import net.minecraft.core.Registry;
-+import net.minecraft.tags.ItemTags;
  import net.minecraft.world.entity.EquipmentSlot;
++import net.minecraft.world.item.AxeItem;
++import net.minecraft.world.item.HoeItem;
 +import net.minecraft.world.item.ItemStack;
 +import net.minecraft.world.item.Items;
++import net.minecraft.world.item.PickaxeItem;
++import net.minecraft.world.item.ShovelItem;
++import net.minecraft.world.item.SwordItem;
 +import org.sucraft.suki.enchantments.EnchantmentSource;
  
  public class Enchantments {
@@ -585,10 +589,10 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..41fc6e34091c25a3034cf710d23b746f
 +            if ((GlobalConfiguration.get().enchantability.looting.bow && stack.is(Items.BOW)) ||
 +                (GlobalConfiguration.get().enchantability.looting.crossbow && stack.is(Items.CROSSBOW)) ||
 +                (GlobalConfiguration.get().enchantability.looting.trident && stack.is(Items.TRIDENT)) ||
-+                (GlobalConfiguration.get().enchantability.looting.axe && stack.is(ItemTags.AXES)) ||
-+                (GlobalConfiguration.get().enchantability.looting.pickaxe && stack.is(ItemTags.PICKAXES)) ||
-+                (GlobalConfiguration.get().enchantability.looting.shovel && stack.is(ItemTags.SHOVELS)) ||
-+                (GlobalConfiguration.get().enchantability.looting.hoe && stack.is(ItemTags.HOES))) {
++                (GlobalConfiguration.get().enchantability.looting.axe && stack.getItem() instanceof AxeItem) ||
++                (GlobalConfiguration.get().enchantability.looting.pickaxe && stack.getItem() instanceof PickaxeItem) ||
++                (GlobalConfiguration.get().enchantability.looting.shovel && stack.getItem() instanceof ShovelItem) ||
++                (GlobalConfiguration.get().enchantability.looting.hoe && stack.getItem() instanceof HoeItem)) {
 +                return true;
 +            }
 +        }
@@ -600,9 +604,9 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..41fc6e34091c25a3034cf710d23b746f
 +     */
 +    public static final boolean canMeleeDamageEnchant(ItemStack stack, EnchantmentSource source, GlobalConfiguration.Enchantability.MeleeDamage configuration) {
 +        if (source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
-+            if ((configuration.pickaxe && stack.is(ItemTags.PICKAXES)) ||
-+                (configuration.shovel && stack.is(ItemTags.SHOVELS)) ||
-+                (configuration.hoe && stack.is(ItemTags.HOES))) {
++            if ((configuration.pickaxe && stack.getItem() instanceof PickaxeItem) ||
++                (configuration.shovel && stack.getItem() instanceof ShovelItem) ||
++                (configuration.hoe && stack.getItem() instanceof HoeItem)) {
 +                return true;
 +            }
 +        }
@@ -635,10 +639,10 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..41fc6e34091c25a3034cf710d23b746f
 +     */
 +    public static final boolean canMeleeEffectEnchant(ItemStack stack, EnchantmentSource source, GlobalConfiguration.Enchantability.MeleeEffect configuration) {
 +        if (source == EnchantmentSource.ENCHANTING_TABLE || source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
-+            if ((configuration.axe && stack.is(ItemTags.AXES)) ||
-+                (configuration.pickaxe && stack.is(ItemTags.PICKAXES)) ||
-+                (configuration.shovel && stack.is(ItemTags.SHOVELS)) ||
-+                (configuration.hoe && stack.is(ItemTags.HOES))) {
++            if ((configuration.axe && stack.getItem() instanceof AxeItem) ||
++                (configuration.pickaxe && stack.getItem() instanceof PickaxeItem) ||
++                (configuration.shovel && stack.getItem() instanceof ShovelItem) ||
++                (configuration.hoe && stack.getItem() instanceof HoeItem)) {
 +                return true;
 +            }
 +        }
@@ -664,7 +668,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..41fc6e34091c25a3034cf710d23b746f
 +     */
 +    public static final boolean canEfficiencyEnchant(ItemStack stack, EnchantmentSource source) {
 +        if (source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
-+            if ((GlobalConfiguration.get().enchantability.efficiency.sword && stack.is(ItemTags.SWORDS))) {
++            if (GlobalConfiguration.get().enchantability.efficiency.sword && stack.getItem() instanceof SwordItem) {
 +                return true;
 +            }
 +        }
@@ -676,7 +680,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..41fc6e34091c25a3034cf710d23b746f
 +     */
 +    public static final boolean canFortuneEnchant(ItemStack stack, EnchantmentSource source) {
 +        if (source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
-+            if ((GlobalConfiguration.get().enchantability.fortune.sword && stack.is(ItemTags.SWORDS))) {
++            if (GlobalConfiguration.get().enchantability.fortune.sword && stack.getItem() instanceof SwordItem) {
 +                return true;
 +            }
 +        }
@@ -688,7 +692,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..41fc6e34091c25a3034cf710d23b746f
 +     */
 +    public static final boolean canSilkTouchEnchant(ItemStack stack, EnchantmentSource source) {
 +        if (source == EnchantmentSource.ANVIL || source == EnchantmentSource.ENCHANT_COMMAND) {
-+            if ((GlobalConfiguration.get().enchantability.silkTouch.sword && stack.is(ItemTags.SWORDS))) {
++            if (GlobalConfiguration.get().enchantability.silkTouch.sword && stack.getItem() instanceof SwordItem) {
 +                return true;
 +            }
 +        }
@@ -796,9 +800,9 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..41fc6e34091c25a3034cf710d23b746f
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
 +            return super.canEnchant(stack, source) || canKnockbackEnchant(stack, source) ||
 +                // Can spawn on top of pickaxes in generated loot or as a weapon held by mobs
-+                ((source == EnchantmentSource.GENERATED_LOOT || source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && (GlobalConfiguration.get().enchantability.knockback.pickaxe && stack.is(ItemTags.PICKAXES))) ||
++                ((source == EnchantmentSource.GENERATED_LOOT || source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && (GlobalConfiguration.get().enchantability.knockback.pickaxe && stack.getItem() instanceof PickaxeItem)) ||
 +                // Can spawn on top of shovels as a weapon held by mobs
-+                ((source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && (GlobalConfiguration.get().enchantability.knockback.shovel && stack.is(ItemTags.SHOVELS)));
++                ((source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && (GlobalConfiguration.get().enchantability.knockback.shovel && stack.getItem() instanceof ShovelItem));
 +        }
 +    });
 +    public static final Enchantment FIRE_ASPECT = Enchantments.register("fire_aspect", new FireAspectEnchantment(Enchantment.Rarity.RARE, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
@@ -806,7 +810,7 @@ index be33c4c28bbc0bf80cbf2921664fcc4aaa465950..41fc6e34091c25a3034cf710d23b746f
 +        public boolean canEnchant(ItemStack stack, EnchantmentSource source) {
 +            return super.canEnchant(stack, source) || canFireAspectEnchant(stack, source) ||
 +                // Can spawn on top of shovels in generated loot or as a weapon held by mobs
-+                ((source == EnchantmentSource.GENERATED_LOOT || source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && (GlobalConfiguration.get().enchantability.fireAspect.shovel && stack.is(ItemTags.SHOVELS)));
++                ((source == EnchantmentSource.GENERATED_LOOT || source == EnchantmentSource.SPAWNED_MOB_MAIN_HAND || source == EnchantmentSource.SPAWNED_SKELETON_TRAP_MAIN_HAND) && (GlobalConfiguration.get().enchantability.fireAspect.shovel && stack.getItem() instanceof ShovelItem));
 +        }
 +    });
 +    public static final Enchantment MOB_LOOTING = Enchantments.register("looting", new LootBonusEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND}) {
