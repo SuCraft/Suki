@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Fri, 14 Oct 2022 11:47:25 +0200
+Subject: [PATCH] Flush after more packets
+
+
+diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
+index 27162c850f996ac11cda0a07917fa0adbde4fa24..f9129f9a53033545efc577a21feb3e2ba8742318 100644
+--- a/src/main/java/net/minecraft/network/Connection.java
++++ b/src/main/java/net/minecraft/network/Connection.java
+@@ -410,7 +410,15 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+     private void sendPacket(Packet<?> packet, @Nullable PacketSendListener callbacks, Boolean flushConditional) {
+         this.packetWrites.getAndIncrement(); // must be befeore using canFlush
+         boolean effectiveFlush = flushConditional == null ? this.canFlush : flushConditional.booleanValue();
+-        final boolean flush = effectiveFlush || packet instanceof net.minecraft.network.protocol.game.ClientboundKeepAlivePacket || packet instanceof ClientboundDisconnectPacket; // no delay for certain packets
++        // Suki start - flush after more packets
++        final boolean flush = effectiveFlush ||
++            packet instanceof net.minecraft.network.protocol.game.ClientboundKeepAlivePacket ||
++            packet instanceof ClientboundDisconnectPacket ||
++            packet instanceof net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket ||
++            packet instanceof net.minecraft.network.protocol.game.ClientboundForgetLevelChunkPacket ||
++            packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket ||
++            packet instanceof net.minecraft.network.protocol.game.ClientboundMapItemDataPacket; // no delay for certain packets
++        // Suki end - flush after more packets
+         // Paper end - add flush parameter
+         ConnectionProtocol enumprotocol = ConnectionProtocol.getProtocolForPacket(packet);
+         ConnectionProtocol enumprotocol1 = this.getCurrentProtocol();
