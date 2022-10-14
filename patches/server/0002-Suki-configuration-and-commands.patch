@@ -938,7 +938,7 @@ index 0000000000000000000000000000000000000000..4ce648be802bb93192fc636d3b1c2e7a
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..4ff48d207f12c50f1f0843cdc965daff9225d9c0
+index 0000000000000000000000000000000000000000..63dc95b366ad49491203ae230f2c28f53e15a2d7
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -0,0 +1,31 @@
@@ -952,7 +952,7 @@ index 0000000000000000000000000000000000000000..4ff48d207f12c50f1f0843cdc965daff
 +
 +@SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
 +public class SukiGlobalConfiguration extends ConfigurationPart {
-+    static final int CURRENT_VERSION = 9;
++    static final int CURRENT_VERSION = 10;
 +    private static SukiGlobalConfiguration instance;
 +    public static SukiGlobalConfiguration get() {
 +        return instance;

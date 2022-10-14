@@ -1,0 +1,67 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Tue, 20 Sep 2022 03:14:49 +0200
+Subject: [PATCH] Configurable TPS catch-up
+
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index e68f3dbbc67e5352305e7f19944ea7c62e721e9d..5c9cf19ac19d989b857f094d36fc9ab71cfb60c6 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -13,6 +13,7 @@ import com.mojang.authlib.GameProfileRepository;
+ import com.mojang.authlib.minecraft.MinecraftSessionService;
+ import com.mojang.datafixers.DataFixer;
+ import com.mojang.logging.LogUtils;
++import io.papermc.paper.configuration.GlobalConfiguration;
+ import it.unimi.dsi.fastutil.longs.LongIterator;
+ import java.awt.image.BufferedImage;
+ import java.io.BufferedWriter;
+@@ -181,6 +182,7 @@ import org.bukkit.event.server.ServerLoadEvent;
+ // CraftBukkit end
+ 
+ import co.aikar.timings.MinecraftTimings; // Paper
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ 
+ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnable> implements CommandSource, AutoCloseable { // Patina
+ 
+@@ -1207,7 +1209,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+                 lastTickTime = java.time.Duration.ofNanos(System.nanoTime() - tickStart); // Yatopia
+                 this.profiler.popPush("nextTickWait");
+                 this.mayHaveDelayedTasks = true;
+-                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + 50L, this.nextTickTime);
++                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + SukiGlobalConfiguration.get().tpsCatchup.max, this.nextTickTime); // Suki - configurable TPS catch-up
+                 this.waitUntilNextTick();
+                 this.profiler.pop();
+                 this.endMetricsRecordingTick();
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index 1b3c5393760bcc41f23b52faeb0eca8a9feae918..424a79436654dfa1f68de1396700742edd721ee6 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -4,7 +4,6 @@ package org.sucraft.suki.configuration;
+ 
+ import io.papermc.paper.configuration.Configuration;
+ import io.papermc.paper.configuration.ConfigurationPart;
+-import io.papermc.paper.configuration.GlobalConfiguration;
+ import org.spongepowered.configurate.objectmapping.meta.Setting;
+ 
+ @SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
+@@ -126,4 +125,19 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+     // Suki end - configurable keep-alive
+ 
++    // Suki start - configurable TPS catch-up
++
++    public TpsCatchup tpsCatchup;
++
++    public class TpsCatchup extends ConfigurationPart {
++
++        /**
++         * In milliseconds (default 50)
++         */
++        public int max = 50;
++
++    }
++
++    // Suki end - configurable TPS catch-up
++
+ }
