@@ -1,0 +1,48 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 9 Jun 2022 02:09:22 +0200
+Subject: [PATCH] Configurable minimum health after starving
+
+
+diff --git a/src/main/java/net/minecraft/world/food/FoodData.java b/src/main/java/net/minecraft/world/food/FoodData.java
+index 2934b6de1f1fb914a532ee20184df99d1acd8e65..f1006d5b181482628383c265965d0201164f88e1 100644
+--- a/src/main/java/net/minecraft/world/food/FoodData.java
++++ b/src/main/java/net/minecraft/world/food/FoodData.java
+@@ -100,7 +100,7 @@ public class FoodData {
+         } else if (this.foodLevel <= 0) {
+             ++this.tickTimer;
+             if (this.tickTimer >= this.starvationRate) { // CraftBukkit - add regen rate manipulation
+-                if (player.getHealth() > 10.0F || enumdifficulty == Difficulty.HARD || player.getHealth() > 1.0F && enumdifficulty == Difficulty.NORMAL) {
++                if ((player.level.sukiConfig().difficultyChanges.minimumHealthAfterStarving < 0.0F || player.getHealth() > player.level.sukiConfig().difficultyChanges.minimumHealthAfterStarving) && (player.getHealth() > 10.0F || enumdifficulty == Difficulty.HARD || player.getHealth() > 1.0F && enumdifficulty == Difficulty.NORMAL)) { // Suki - minimum health after starving
+                     player.hurt(DamageSource.STARVE, 1.0F);
+                 }
+ 
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 3e83fa45116d584c1177fd053b57e035280252c9..422ce4361d4667c2d31547c61f05fc91cef8e3c9 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -176,11 +176,24 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+     public DifficultyChanges difficultyChanges;
+ 
+     public class DifficultyChanges extends ConfigurationPart {
++
+         public boolean zombieReinforcementsOnAllDifficulties = false; // Suki - zombies can call for reinforcements on all difficulties
+         public boolean raidsAreAlwaysHard = false; // Suki - raids are always hard
+         public boolean caveSpidersHavePoisonOnEasyDifficulty = false; // Suki - cave spiders have poison on easy difficulty
+         public boolean witherEffectFromWitherSkullsOnEasyDifficulty = false; // Suki - wither effect from wither skulls on easy difficulty
+         public boolean lightningSpawnsFire = true; // Suki - configurable lightning fire
++
++        // Suki start - minimum health after starving
++
++        /**
++         * -1 indicates no minimum (it may still be limited by the difficulty)
++         * <br>
++         * Valid values are -1 or a nonnegative floating-point number
++         */
++        public float minimumHealthAfterStarving = -1f;
++
++        // Suki end - minimum health after starving
++
+     }
+ 
+     // Suki end - difficulty changes

@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 9 Jun 2022 01:37:34 +0200
+Subject: [PATCH] Cave spider poison on easy difficulty
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java b/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java
+index d980b906d9206560741576fa4153c57212f307a0..76effcae20845705c9040e202401bcc73ff50a90 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java
++++ b/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java
+@@ -34,7 +34,7 @@ public class CaveSpider extends Spider {
+             if (target instanceof LivingEntity) {
+                 byte b0 = 0;
+ 
+-                if (this.level.getDifficulty() == Difficulty.NORMAL) {
++                if (this.level.getDifficulty() == Difficulty.NORMAL || (this.level.getDifficulty() == Difficulty.EASY && this.level.sukiConfig().difficultyChanges.caveSpidersHavePoisonOnEasyDifficulty)) { // Suki - cave spiders have poison on easy difficulty
+                     b0 = 7;
+                 } else if (this.level.getDifficulty() == Difficulty.HARD) {
+                     b0 = 15;
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 560d13b0f2ca870138c81633ffbaf9d34d235450..d0106690fb8e6617017beb59759198d31884f7b1 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -178,6 +178,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+     public class DifficultyChanges extends ConfigurationPart {
+         public boolean zombieReinforcementsOnAllDifficulties = false; // Suki - zombies can call for reinforcements on all difficulties
+         public boolean raidsAreAlwaysHard = false; // Suki - raids are always hard
++        public boolean caveSpidersHavePoisonOnEasyDifficulty = false; // Suki - cave spiders have poison on easy difficulty
+     }
+ 
+     // Suki end - difficulty changes
