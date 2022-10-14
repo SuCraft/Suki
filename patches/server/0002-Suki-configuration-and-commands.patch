@@ -351,6 +351,18 @@ index f1045f33e4ef9e15746b6135f6e4f47d3bea2701..761f754e56f00b2de83cc433900ba893
          @Override
          public void restart() {
              org.spigotmc.RestartCommand.restart();
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
+index 8e06bc11fb28baee3407bbfe9d7b3689d6f85ff2..ce1190a6b0fb1e4f00e0d573edd42e2456c7e1e2 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
+@@ -5,6 +5,7 @@ import org.bukkit.util.permissions.DefaultPermissions;
+ 
+ public final class CraftDefaultPermissions {
+     private static final String ROOT = "minecraft";
++    private static final String SUKI_ROOT = "suki"; // Suki - Suki permissions
+ 
+     private CraftDefaultPermissions() {}
+ 
 diff --git a/src/main/java/org/sucraft/suki/command/SukiCommand.java b/src/main/java/org/sucraft/suki/command/SukiCommand.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..9fdacb5b7bed75631e00b05ca3df92639546f6ef
@@ -938,7 +950,7 @@ index 0000000000000000000000000000000000000000..4ce648be802bb93192fc636d3b1c2e7a
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..394ad24b8bd4ade119f2bb5632132d563aaf50bd
+index 0000000000000000000000000000000000000000..0f8d2e81dd8c5e4290e04aac3fcef7bf1bda1102
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -0,0 +1,31 @@
@@ -952,7 +964,7 @@ index 0000000000000000000000000000000000000000..394ad24b8bd4ade119f2bb5632132d56
 +
 +@SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
 +public class SukiGlobalConfiguration extends ConfigurationPart {
-+    static final int CURRENT_VERSION = 11;
++    static final int CURRENT_VERSION = 12;
 +    private static SukiGlobalConfiguration instance;
 +    public static SukiGlobalConfiguration get() {
 +        return instance;
@@ -996,7 +1008,7 @@ index 0000000000000000000000000000000000000000..556068b7eacd69ad2b15e695af82adbe
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..bc18d6ff1bd70c57fc54bd0d6743554ddfc000bd
+index 0000000000000000000000000000000000000000..60e6bdb9cae8e8d3a4e5dcb53b4f986868240c97
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -0,0 +1,41 @@
@@ -1016,7 +1028,7 @@ index 0000000000000000000000000000000000000000..bc18d6ff1bd70c57fc54bd0d6743554d
 +@SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
 +public class SukiWorldConfiguration extends ConfigurationPart {
 +    private static final Logger LOGGER = LogUtils.getLogger();
-+    public static final int CURRENT_VERSION = 9;
++    public static final int CURRENT_VERSION = 10;
 +
 +    private transient final SpigotWorldConfig spigotConfig;
 +    private transient final ResourceLocation worldKey;

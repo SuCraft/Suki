@@ -1,0 +1,477 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Tue, 18 Jan 2022 21:44:58 +0100
+Subject: [PATCH] Use debug stick, break barriers and lights in survival
+
+
+diff --git a/src/main/java/net/minecraft/core/Direction.java b/src/main/java/net/minecraft/core/Direction.java
+index 445f21c3764d148de937f558e3f087ae2006733d..c630a6b3f36aedd05085c495ac20853ef1e33884 100644
+--- a/src/main/java/net/minecraft/core/Direction.java
++++ b/src/main/java/net/minecraft/core/Direction.java
+@@ -650,7 +650,7 @@ public enum Direction implements StringRepresentable {
+         HORIZONTAL(new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST}, new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Z}),
+         VERTICAL(new Direction[]{Direction.UP, Direction.DOWN}, new Direction.Axis[]{Direction.Axis.Y});
+ 
+-        private final Direction[] faces;
++        public final Direction[] faces; // Suki - survival debug stick
+         private final Direction.Axis[] axis;
+ 
+         private Plane(Direction[] facingArray, Direction.Axis[] axisArray) {
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
+index f42a7bf4c7151a7021e7eade2e34e551e35d7e10..7529071c971d58dabc6faf86b4145e176102d14f 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
+@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
+ import java.util.Objects;
+ import javax.annotation.Nullable;
+ 
+-import io.papermc.paper.configuration.GlobalConfiguration;
+ import net.minecraft.world.InteractionHand;
+ import net.minecraft.world.InteractionResult;
+ import net.minecraft.world.InteractionResultHolder;
+@@ -12,6 +11,7 @@ import net.minecraft.world.MenuProvider;
+ import net.minecraft.world.entity.EquipmentSlot;
+ import net.minecraft.world.item.DoubleHighBlockItem;
+ import net.minecraft.world.item.ItemStack;
++import net.minecraft.world.item.Items;
+ import net.minecraft.world.item.context.UseOnContext;
+ import net.minecraft.world.level.GameType;
+ import net.minecraft.world.level.Level;
+@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+ import net.minecraft.world.phys.BlockHitResult;
+ import net.minecraft.world.phys.Vec3;
++import org.bukkit.craftbukkit.util.permissions.CraftDefaultPermissions;
+ import org.slf4j.Logger;
+ 
+ // CraftBukkit start
+@@ -34,7 +35,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+ import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
+ import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+ import net.minecraft.server.MinecraftServer;
+-import net.minecraft.server.network.ServerGamePacketListenerImpl;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.CakeBlock;
+ import net.minecraft.world.level.block.DoorBlock;
+@@ -212,7 +212,37 @@ public class ServerPlayerGameMode {
+                 }
+                 // CraftBukkit end
+ 
++                // Suki start - survival debug stick, survival barrier blocks, survival light blocks
++                boolean canCreativeDestroy = false;
++                // Check for creative
+                 if (this.isCreative()) {
++                    canCreativeDestroy = true;
++                } else {
++                    if (this.isSurvival()) {
++                        // Check for survival debug stick
++                        boolean isUsingSurvivalDebugStick = false;
++                        if (player.getBukkitEntity().hasPermission(CraftDefaultPermissions.survivalDebugStick) || player.getBukkitEntity().hasPermission(CraftDefaultPermissions.alwaysDebugStick)) {
++                            if (player.getItemInHand(InteractionHand.MAIN_HAND).is(Items.DEBUG_STICK)) {
++                                isUsingSurvivalDebugStick = true;
++                            }
++                        }
++                        if (isUsingSurvivalDebugStick) {
++                            canCreativeDestroy = true;
++                        } else {
++                            // Check for breaking barrier
++                            if (player.level.sukiConfig().breakBlocksInSurvival.barrierIfHoldingBarrier && player.getItemInHand(InteractionHand.MAIN_HAND).is(Items.BARRIER) && this.level.getBlockState(pos).is(Blocks.BARRIER)) {
++                                canCreativeDestroy = true;
++                            } else {
++                                // Check for breaking light
++                                if (player.level.sukiConfig().breakBlocksInSurvival.lightIfHoldingLight && player.getItemInHand(InteractionHand.MAIN_HAND).is(Items.LIGHT) && this.level.getBlockState(pos).is(Blocks.LIGHT)) {
++                                    canCreativeDestroy = true;
++                                }
++                            }
++                        }
++                    }
++                }
++                if (canCreativeDestroy) {
++                    // Suki end - survival debug stick, survival barrier blocks, survival light blocks
+                     this.destroyAndAck(pos, sequence, "creative destroy");
+                     return;
+                 }
+diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
+index b029ae19db2bfde9b08950f41ba8a09e8e4091a0..74f97dd52dac57911c77189d5af318394bf20409 100644
+--- a/src/main/java/net/minecraft/world/entity/player/Player.java
++++ b/src/main/java/net/minecraft/world/entity/player/Player.java
+@@ -116,6 +116,7 @@ import net.minecraft.world.phys.Vec3;
+ import net.minecraft.world.scores.PlayerTeam;
+ import net.minecraft.world.scores.Scoreboard;
+ import org.slf4j.Logger;
++// CraftBukkit start
+ import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+ import org.bukkit.craftbukkit.event.CraftEventFactory;
+ import org.bukkit.craftbukkit.util.CraftVector;
+diff --git a/src/main/java/net/minecraft/world/item/DebugStickItem.java b/src/main/java/net/minecraft/world/item/DebugStickItem.java
+index 09124f20d00d5631fa52e84cc0e8645caaa80e35..3f9b03ea8467d6408168b9688e7034e645d959a8 100644
+--- a/src/main/java/net/minecraft/world/item/DebugStickItem.java
++++ b/src/main/java/net/minecraft/world/item/DebugStickItem.java
+@@ -1,8 +1,18 @@
+ // mc-dev import
+ package net.minecraft.world.item;
+ 
++import java.util.Arrays;
+ import java.util.Collection;
++import java.util.HashMap;
++import java.util.HashSet;
++import java.util.Map;
++import java.util.Set;
++import java.util.UUID;
++import java.util.function.Predicate;
+ import javax.annotation.Nullable;
++
++import it.unimi.dsi.fastutil.objects.Object2LongMap;
++import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+ import net.minecraft.Util;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.Registry;
+@@ -15,10 +25,55 @@ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.item.context.UseOnContext;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.LevelAccessor;
++import net.minecraft.world.level.block.AbstractFurnaceBlock;
++import net.minecraft.world.level.block.AnvilBlock;
++import net.minecraft.world.level.block.AttachedStemBlock;
++import net.minecraft.world.level.block.BambooBlock;
++import net.minecraft.world.level.block.BannerBlock;
++import net.minecraft.world.level.block.BarrelBlock;
++import net.minecraft.world.level.block.BeehiveBlock;
+ import net.minecraft.world.level.block.Block;
++import net.minecraft.world.level.block.CampfireBlock;
++import net.minecraft.world.level.block.CarvedPumpkinBlock;
++import net.minecraft.world.level.block.ChorusPlantBlock;
++import net.minecraft.world.level.block.DaylightDetectorBlock;
++import net.minecraft.world.level.block.DetectorRailBlock;
++import net.minecraft.world.level.block.DiodeBlock;
++import net.minecraft.world.level.block.DispenserBlock;
++import net.minecraft.world.level.block.EnderChestBlock;
++import net.minecraft.world.level.block.FenceBlock;
++import net.minecraft.world.level.block.FenceGateBlock;
++import net.minecraft.world.level.block.GlazedTerracottaBlock;
++import net.minecraft.world.level.block.GrindstoneBlock;
++import net.minecraft.world.level.block.HopperBlock;
++import net.minecraft.world.level.block.HugeMushroomBlock;
++import net.minecraft.world.level.block.IronBarsBlock;
++import net.minecraft.world.level.block.LecternBlock;
++import net.minecraft.world.level.block.LoomBlock;
++import net.minecraft.world.level.block.NetherPortalBlock;
++import net.minecraft.world.level.block.NoteBlock;
++import net.minecraft.world.level.block.ObserverBlock;
++import net.minecraft.world.level.block.PoweredRailBlock;
++import net.minecraft.world.level.block.RailBlock;
++import net.minecraft.world.level.block.RedstoneLampBlock;
++import net.minecraft.world.level.block.RodBlock;
++import net.minecraft.world.level.block.RotatedPillarBlock;
++import net.minecraft.world.level.block.SkullBlock;
++import net.minecraft.world.level.block.SnowyDirtBlock;
++import net.minecraft.world.level.block.StairBlock;
++import net.minecraft.world.level.block.StandingSignBlock;
++import net.minecraft.world.level.block.StonecutterBlock;
++import net.minecraft.world.level.block.TrappedChestBlock;
++import net.minecraft.world.level.block.VineBlock;
++import net.minecraft.world.level.block.WallBlock;
++import net.minecraft.world.level.block.WallSkullBlock;
++import net.minecraft.world.level.block.piston.PistonBaseBlock;
+ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.level.block.state.StateDefinition;
+ import net.minecraft.world.level.block.state.properties.Property;
++import org.bukkit.GameMode;
++import org.bukkit.craftbukkit.util.permissions.CraftDefaultPermissions;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ 
+ public class DebugStickItem extends Item {
+ 
+@@ -56,36 +111,69 @@ public class DebugStickItem extends Item {
+         return InteractionResult.sidedSuccess(world.isClientSide);
+     }
+ 
++    // Suki start - survival debug stick
++    private final Object2LongMap<UUID> lastSwitchPropertyTimestamp = new Object2LongOpenHashMap<>();
++
+     private boolean handleInteraction(Player player, BlockState state, LevelAccessor world, BlockPos pos, boolean update, ItemStack stack) {
+-        if (!player.canUseGameMasterBlocks() && !(player.getAbilities().instabuild && player.getBukkitEntity().hasPermission("minecraft.debugstick")) && !player.getBukkitEntity().hasPermission("minecraft.debugstick.always")) { // Spigot
++        boolean canUseDebugStickUnlimited = player.canUseGameMasterBlocks()
++            || (player.getAbilities().instabuild && player.getBukkitEntity().hasPermission(CraftDefaultPermissions.debugStick)) // Spigot
++            || player.getBukkitEntity().hasPermission(CraftDefaultPermissions.alwaysDebugStick); // Spigot
++        boolean canUseDebugStickAtAll = canUseDebugStickUnlimited
++            || player.getBukkitEntity().hasPermission(CraftDefaultPermissions.survivalDebugStick);
++        if (!canUseDebugStickAtAll) {
+             return false;
+         } else {
+             Block block = state.getBlock();
+             StateDefinition<Block, BlockState> blockstatelist = block.getStateDefinition();
+-            Collection<Property<?>> collection = blockstatelist.getProperties();
++            Collection<Property<?>> allProperties = blockstatelist.getProperties();
++            Collection<Property<?>> changeableProperties = canUseDebugStickUnlimited
++                ? allProperties
++                : allProperties.stream().filter(property -> canChangePropertyInSurvivallike(block, property)).toList();
+             String s = Registry.BLOCK.getKey(block).toString();
+ 
+-            if (collection.isEmpty()) {
++            if (changeableProperties.isEmpty()) {
+                 DebugStickItem.message(player, Component.translatable(this.getDescriptionId() + ".empty", s));
+                 return false;
+             } else {
+                 CompoundTag nbttagcompound = stack.getOrCreateTagElement("DebugProperty");
+                 String s1 = nbttagcompound.getString(s);
+                 Property<?> iblockstate = blockstatelist.getProperty(s1);
++                if (!changeableProperties.contains(iblockstate)) {
++                    iblockstate = null;
++                }
+ 
+                 if (update) {
+                     if (iblockstate == null) {
+-                        iblockstate = (Property) collection.iterator().next();
++                        iblockstate = (Property) changeableProperties.iterator().next();
++                    }
++
++                    @Nullable Set<?> possibleValues = canUseDebugStickUnlimited ? null : getChangeablePropertyValuesInSurvivallike(block, iblockstate);
++                    if (possibleValues != null && !possibleValues.contains(state.getValue(iblockstate))) {
++                        DebugStickItem.message(player, Component.translatable(this.getDescriptionId() + ".update", iblockstate.getName(), DebugStickItem.getNameHelper(state, iblockstate)));
++                        return true;
+                     }
+ 
+-                    BlockState iblockdata1 = DebugStickItem.cycleState(state, iblockstate, player.isSecondaryUseActive());
++                    BlockState iblockdata1 = DebugStickItem.cycleState(state, iblockstate, possibleValues, player.isSecondaryUseActive());
+ 
+                     world.setBlock(pos, iblockdata1, 18);
+                     DebugStickItem.message(player, Component.translatable(this.getDescriptionId() + ".update", iblockstate.getName(), DebugStickItem.getNameHelper(iblockdata1, iblockstate)));
+                 } else {
+-                    iblockstate = (Property) DebugStickItem.getRelative(collection, iblockstate, player.isSecondaryUseActive());
++                    if (player.getBukkitEntity().getGameMode() == GameMode.SURVIVAL) {
++                        if (System.currentTimeMillis() <= lastSwitchPropertyTimestamp.getOrDefault(player.getUUID(), 0L) + SukiGlobalConfiguration.get().survivalDebugStick.switchPropertyTimeout) {
++                            return true;
++                        }
++                        lastSwitchPropertyTimestamp.put(player.getUUID(), System.currentTimeMillis());
++                    }
++                    if (iblockstate == null) {
++                        iblockstate = (Property) changeableProperties.iterator().next();
++                    } else {
++                        iblockstate = (Property) DebugStickItem.getRelative(changeableProperties, iblockstate, player.isSecondaryUseActive());
++                    }
+                     String s2 = iblockstate.getName();
+ 
++                    if (iblockstate == null) {
++                        iblockstate = (Property) changeableProperties.iterator().next();
++                    }
+                     nbttagcompound.putString(s, s2);
+                     DebugStickItem.message(player, Component.translatable(this.getDescriptionId() + ".select", s2, DebugStickItem.getNameHelper(state, iblockstate)));
+                 }
+@@ -95,9 +183,13 @@ public class DebugStickItem extends Item {
+         }
+     }
+ 
+-    private static <T extends Comparable<T>> BlockState cycleState(BlockState state, Property<T> property, boolean inverse) {
+-        return (BlockState) state.setValue(property, DebugStickItem.getRelative(property.getPossibleValues(), state.getValue(property), inverse)); // CraftBukkit - decompile error
++    /**
++     * @param possibleValues If null, will assume all existing values are possible
++     */
++    private static <T extends Comparable<T>> BlockState cycleState(BlockState state, Property<T> property, @Nullable Collection<?> possibleValues, boolean inverse) {
++        return (BlockState) state.setValue(property, DebugStickItem.getRelative(possibleValues == null ? property.getPossibleValues() : (Collection<T>) possibleValues, state.getValue(property), inverse)); // CraftBukkit - decompile error
+     }
++    // Suki end - survival debug stick
+ 
+     private static <T> T getRelative(Iterable<T> elements, @Nullable T current, boolean inverse) {
+         return inverse ? Util.findPreviousInIterable(elements, current) : Util.findNextInIterable(elements, current);
+@@ -110,4 +202,123 @@ public class DebugStickItem extends Item {
+     private static <T extends Comparable<T>> String getNameHelper(BlockState state, Property<T> property) {
+         return property.getName(state.getValue(property));
+     }
++
++    // Suki start - survival debug stick
++    private static final Map<Block, Map<Property<?>, Set<Object>>> changeablePropertyValues;
++    private static <T extends Comparable<T>> void registerChangeablePropertyValues(Block[] blocks, Property<T> property, Collection<T> values) {
++        if (blocks.length == 0) return;
++        if (values.isEmpty()) return;
++        for (Block block : blocks) {
++            Map<Property<?>, Set<Object>> changeablePropertyValuesForBlock = changeablePropertyValues.computeIfAbsent(block, it -> new HashMap<>(1));
++            Set<Object> existingValues = changeablePropertyValuesForBlock.computeIfAbsent(property, it -> new HashSet<>(1));
++            existingValues.addAll(values);
++        }
++    }
++    private static <T extends Comparable<T>> void registerChangeablePropertyValues(Block[] blocks, Property<T> property, T[] values) {
++        registerChangeablePropertyValues(blocks, property, Arrays.asList(values));
++    }
++    private static <B extends Block, T extends Comparable<T>> void registerChangeablePropertyWithAllValues(Block[] blocks, Property<?> property) {
++        registerChangeablePropertyValues(blocks, (Property<T>) property, ((Property<T>) property).getPossibleValues());
++    }
++    @SafeVarargs
++    private static <T extends Comparable<T>> void registerChangeablePropertiesWithAllValues(Block[] blocks, Property<?>... properties) {
++        Arrays.stream(properties).forEach(property -> registerChangeablePropertyWithAllValues(blocks, property));
++    }
++    private static <T extends Comparable<T>> void registerChangeablePropertyValues(Predicate<Block> blockPredicate, Property<T> property, Collection<T> values) {
++        registerChangeablePropertyValues(Registry.BLOCK.stream().filter(blockPredicate).toArray(Block[]::new), property, values);
++    }
++    private static <T extends Comparable<T>> void registerChangeablePropertyValues(Predicate<Block> blockPredicate, Property<T> property, T[] values) {
++        registerChangeablePropertyValues(blockPredicate, property, Arrays.asList(values));
++    }
++    private static <B extends Block, T extends Comparable<T>> void registerChangeablePropertyWithAllValues(Predicate<Block> blockPredicate, Property<?> property) {
++        registerChangeablePropertyValues(blockPredicate, (Property<T>) property, ((Property<T>) property).getPossibleValues());
++    }
++    @SafeVarargs
++    private static <T extends Comparable<T>> void registerChangeablePropertiesWithAllValues(Predicate<Block> blockPredicate, Property<?>... properties) {
++        Arrays.stream(properties).forEach(property -> registerChangeablePropertyWithAllValues(blockPredicate, property));
++    }
++    private static <B extends Block, T extends Comparable<T>> void registerChangeablePropertyValues(Class<B> blockType, Property<T> property, Collection<T> values) {
++        registerChangeablePropertyValues(blockType::isInstance, property, values);
++    }
++    private static <B extends Block, T extends Comparable<T>> void registerChangeablePropertyValues(Class<B> blockType, Property<T> property, T[] values) {
++        registerChangeablePropertyValues(blockType, property, Arrays.asList(values));
++    }
++    private static <B extends Block, T extends Comparable<T>> void registerChangeablePropertyWithAllValues(Class<B> blockType, Property<?> property) {
++        registerChangeablePropertyValues(blockType, (Property<T>) property, ((Property<T>) property).getPossibleValues());
++    }
++    @SafeVarargs
++    private static <B extends Block, T extends Comparable<T>> void registerChangeablePropertiesWithAllValues(Class<B> blockType, Property<?>... properties) {
++        Arrays.stream(properties).forEach(property -> registerChangeablePropertyWithAllValues(blockType, property));
++    }
++    static {
++        changeablePropertyValues = new HashMap<>(0);
++        registerChangeablePropertiesWithAllValues(GlazedTerracottaBlock.class, GlazedTerracottaBlock.FACING);
++        registerChangeablePropertiesWithAllValues(SnowyDirtBlock.class, SnowyDirtBlock.SNOWY);
++        registerChangeablePropertiesWithAllValues(RotatedPillarBlock.class, RotatedPillarBlock.AXIS);
++        registerChangeablePropertiesWithAllValues(NetherPortalBlock.class, NetherPortalBlock.AXIS);
++        registerChangeablePropertiesWithAllValues(HugeMushroomBlock.class, HugeMushroomBlock.DOWN, HugeMushroomBlock.EAST, HugeMushroomBlock.NORTH, HugeMushroomBlock.SOUTH, HugeMushroomBlock.UP, HugeMushroomBlock.WEST);
++        registerChangeablePropertiesWithAllValues(ChorusPlantBlock.class, ChorusPlantBlock.DOWN, ChorusPlantBlock.EAST, ChorusPlantBlock.NORTH, ChorusPlantBlock.SOUTH, ChorusPlantBlock.UP, ChorusPlantBlock.WEST);
++        registerChangeablePropertiesWithAllValues(FenceBlock.class, FenceBlock.EAST, FenceBlock.NORTH, FenceBlock.SOUTH, FenceBlock.WEST);
++        registerChangeablePropertiesWithAllValues(IronBarsBlock.class, IronBarsBlock.EAST, IronBarsBlock.NORTH, IronBarsBlock.SOUTH, IronBarsBlock.WEST);
++        registerChangeablePropertiesWithAllValues(WallBlock.class, WallBlock.EAST_WALL, WallBlock.NORTH_WALL, WallBlock.SOUTH_WALL, WallBlock.WEST_WALL);
++        registerChangeablePropertiesWithAllValues(VineBlock.class, VineBlock.EAST, VineBlock.NORTH, VineBlock.SOUTH, VineBlock.WEST);
++        registerChangeablePropertiesWithAllValues(GrindstoneBlock.class, GrindstoneBlock.FACE, GrindstoneBlock.FACING);
++        registerChangeablePropertiesWithAllValues(BarrelBlock.class, BarrelBlock.FACING, BarrelBlock.OPEN);
++        registerChangeablePropertiesWithAllValues(DispenserBlock.class, DispenserBlock.FACING);
++        registerChangeablePropertiesWithAllValues(RodBlock.class, RodBlock.FACING);
++        registerChangeablePropertiesWithAllValues(ObserverBlock.class, ObserverBlock.FACING);
++        registerChangeablePropertiesWithAllValues(AnvilBlock.class, AnvilBlock.FACING);
++        registerChangeablePropertiesWithAllValues(FenceGateBlock.class, FenceGateBlock.FACING, FenceGateBlock.IN_WALL);
++        registerChangeablePropertiesWithAllValues(WallSkullBlock.class, WallSkullBlock.FACING);
++        registerChangeablePropertiesWithAllValues(AttachedStemBlock.class, AttachedStemBlock.FACING);
++        registerChangeablePropertiesWithAllValues(BeehiveBlock.class, BeehiveBlock.FACING);
++        registerChangeablePropertiesWithAllValues(AbstractFurnaceBlock.class, AbstractFurnaceBlock.FACING, AbstractFurnaceBlock.LIT);
++        registerChangeablePropertiesWithAllValues(CampfireBlock.class, CampfireBlock.FACING);
++        registerChangeablePropertiesWithAllValues(CarvedPumpkinBlock.class, CarvedPumpkinBlock.FACING);
++        registerChangeablePropertiesWithAllValues(EnderChestBlock.class, EnderChestBlock.FACING);
++        registerChangeablePropertiesWithAllValues(LecternBlock.class, LecternBlock.FACING);
++        registerChangeablePropertiesWithAllValues(LoomBlock.class, LoomBlock.FACING);
++        registerChangeablePropertiesWithAllValues(DiodeBlock.class, DiodeBlock.FACING);
++        registerChangeablePropertiesWithAllValues(PistonBaseBlock.class, PistonBaseBlock.FACING, PistonBaseBlock.EXTENDED);
++        registerChangeablePropertiesWithAllValues(StonecutterBlock.class, StonecutterBlock.FACING);
++        registerChangeablePropertiesWithAllValues(TrappedChestBlock.class, TrappedChestBlock.FACING);
++        registerChangeablePropertiesWithAllValues(HopperBlock.class, HopperBlock.FACING);
++        registerChangeablePropertiesWithAllValues(NoteBlock.class, NoteBlock.INSTRUMENT, NoteBlock.NOTE);
++        registerChangeablePropertiesWithAllValues(DaylightDetectorBlock.class, DaylightDetectorBlock.INVERTED);
++        registerChangeablePropertiesWithAllValues(BambooBlock.class, BambooBlock.LEAVES, BambooBlock.AGE);
++        registerChangeablePropertiesWithAllValues(RedstoneLampBlock.class, RedstoneLampBlock.LIT);
++        registerChangeablePropertiesWithAllValues(BannerBlock.class, BannerBlock.ROTATION);
++        registerChangeablePropertiesWithAllValues(SkullBlock.class, SkullBlock.ROTATION);
++        registerChangeablePropertiesWithAllValues(StandingSignBlock.class, StandingSignBlock.ROTATION);
++        registerChangeablePropertiesWithAllValues(StairBlock.class, StairBlock.SHAPE);
++        registerChangeablePropertiesWithAllValues(PoweredRailBlock.class, PoweredRailBlock.SHAPE);
++        registerChangeablePropertiesWithAllValues(DetectorRailBlock.class, DetectorRailBlock.SHAPE);
++        registerChangeablePropertiesWithAllValues(RailBlock.class, RailBlock.SHAPE);
++    }
++
++    public static boolean canChangeBlockInSurvivallike(Block block) {
++        Map<Property<?>, Set<Object>> changeablePropertyValuesForBlock = changeablePropertyValues.get(block);
++        if (changeablePropertyValuesForBlock == null) {
++            return false;
++        }
++        return changeablePropertyValuesForBlock.entrySet().stream().anyMatch(entry -> !entry.getValue().isEmpty());
++    }
++
++    public static @Nullable Set<Object> getChangeablePropertyValuesInSurvivallike(Block block, Property<?> property) {
++        Map<Property<?>, Set<Object>> changeablePropertyValuesForBlock = changeablePropertyValues.get(block);
++        if (changeablePropertyValuesForBlock == null) {
++            return null;
++        }
++        return changeablePropertyValuesForBlock.get(property);
++    }
++
++    public static boolean canChangePropertyInSurvivallike(Block block, Property<?> property) {
++        Set<Object> values = getChangeablePropertyValuesInSurvivallike(block, property);
++        if (values == null) {
++            return false;
++        }
++        return !values.isEmpty();
++    }
++    // Suki end - survival debug stick
++
+ }
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
+index ce1190a6b0fb1e4f00e0d573edd42e2456c7e1e2..2ed905294da98cb671800ad6bf6e61479fdeddbf 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
+@@ -7,6 +7,12 @@ public final class CraftDefaultPermissions {
+     private static final String ROOT = "minecraft";
+     private static final String SUKI_ROOT = "suki"; // Suki - Suki permissions
+ 
++    // Suki start - survival debug stick
++    public static Permission debugStick;
++    public static Permission alwaysDebugStick;
++    public static Permission survivalDebugStick;
++    // Suki end - survival debug stick
++
+     private CraftDefaultPermissions() {}
+ 
+     public static void registerCorePermissions() {
+@@ -15,8 +21,11 @@ public final class CraftDefaultPermissions {
+         // Spigot start
+         DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".nbt.place", "Gives the user the ability to place restricted blocks with NBT in creative", org.bukkit.permissions.PermissionDefault.OP, parent);
+         DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".nbt.copy", "Gives the user the ability to copy NBT in creative", org.bukkit.permissions.PermissionDefault.TRUE, parent);
+-        DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".debugstick", "Gives the user the ability to use the debug stick in creative", org.bukkit.permissions.PermissionDefault.OP, parent);
+-        DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".debugstick.always", "Gives the user the ability to use the debug stick in all game modes", org.bukkit.permissions.PermissionDefault.FALSE/* , parent */); // Paper - should not have this parent, as it's not a "vanilla" utility
++        // Suki start - survival debug stick
++        debugStick = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".debugstick", "Gives the user the ability to use the debug stick in creative", org.bukkit.permissions.PermissionDefault.OP, parent);
++        alwaysDebugStick = DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".debugstick.always", "Gives the user the ability to use the debug stick in all game modes", org.bukkit.permissions.PermissionDefault.FALSE, parent);
++        survivalDebugStick = DefaultPermissions.registerPermission(CraftDefaultPermissions.SUKI_ROOT + ".debugstick.survival", "Gives the user the ability to partially use the debug stick in all game modes, with the only usages allowed being those compatible with survival mode gameplay", org.bukkit.permissions.PermissionDefault.FALSE, parent);
++        // Suki end - survival debug stick
+         DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".commandblock", "Gives the user the ability to use command blocks.", org.bukkit.permissions.PermissionDefault.OP, parent); // Paper
+         // Spigot end
+         parent.recalculatePermissibles();
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index a35a68fed4829d40cbbf1323c51ee36b934d163d..5ab29a2cb928cdd6f612a9054948c879b327b69e 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -151,5 +151,19 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+     // Suki end - hide plugins
+ 
++    // Suki start - survival debug stick
++
++    public SurvivalDebugStick survivalDebugStick;
++
++    public class SurvivalDebugStick extends ConfigurationPart {
++
++        /**
++         * In milliseconds
++         */
++        public int switchPropertyTimeout = 300;
++
++    }
++
++    // Suki end - survival debug stick
+ 
+ }
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 9a5143057588c733cab76638e492d8b14385f649..8aaf41185f89f64fa618546c1d9ae91bf9c322ef 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -158,4 +158,17 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ 
+     // Suki end - increase max interaction distance
+ 
++    // Suki start - breakable barrier blocks, breakable light blocks
++
++    public BreakBlocksInSurvival breakBlocksInSurvival;
++
++    public class BreakBlocksInSurvival extends ConfigurationPart {
++
++        public boolean barrierIfHoldingBarrier = false;
++        public boolean lightIfHoldingLight = false;
++
++    }
++
++    // Suki end - breakable barrier blocks, breakable light blocks
++
+ }
