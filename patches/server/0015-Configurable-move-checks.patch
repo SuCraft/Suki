@@ -1,0 +1,159 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Sat, 29 Jan 2022 17:15:37 +0100
+Subject: [PATCH] Configurable move checks
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 16b6e97c060f17b9a2d3bbfe770e0e2a9ecec92c..dbeede666d22c589a1439cf1a736931131211cfd 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -668,9 +668,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+                 }
+                 // Paper end
+ 
+-                if (d10 - d9 > Math.max(100.0D, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && !this.isSingleplayerOwner()) {
++                // Suki start - configurable move checks
++                if (player.level.sukiConfig().moveChecks.tooQuickly.vehicle && d10 - d9 > Math.max(100.0D, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && !this.isSingleplayerOwner()) {
+                 // CraftBukkit end
+-                    ServerGamePacketListenerImpl.LOGGER.warn("{} (vehicle of {}) moved too quickly! {},{},{}", new Object[]{entity.getName().getString(), this.player.getName().getString(), d6, d7, d8});
++                    if (SukiGlobalConfiguration.get().consoleLogs.moveChecks.tooQuickly.vehicle) {
++                        ServerGamePacketListenerImpl.LOGGER.warn("{} (vehicle of {}) moved too quickly! {},{},{}", new Object[]{entity.getName().getString(), this.player.getName().getString(), d6, d7, d8});
++                    }
++                    // Suki start - configurable move checks
+                     this.connection.send(new ClientboundMoveVehiclePacket(entity));
+                     return;
+                 }
+@@ -696,9 +700,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+                 d10 = d6 * d6 + d7 * d7 + d8 * d8;
+                 boolean flag2 = false;
+ 
+-                if (d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold) { // Spigot
++                // Suki start - configurable move checks
++                if (player.level.sukiConfig().moveChecks.wrongly.vehicle && d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold) { // Spigot
+                     flag2 = true; // Paper - diff on change, this should be moved wrongly
+-                    ServerGamePacketListenerImpl.LOGGER.warn("{} (vehicle of {}) moved wrongly! {}", new Object[]{entity.getName().getString(), this.player.getName().getString(), Math.sqrt(d10)});
++                    if (SukiGlobalConfiguration.get().consoleLogs.moveChecks.wrongly.vehicle) {
++                        ServerGamePacketListenerImpl.LOGGER.warn("{} (vehicle of {}) moved wrongly! {}", new Object[]{entity.getName().getString(), this.player.getName().getString(), Math.sqrt(d10)});
++                    }
++                    // Suki end - configurable move checks
+                 }
+                 Location curPos = this.getCraftPlayer().getLocation(); // Spigot
+ 
+@@ -1492,9 +1500,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+                             if (!this.player.isChangingDimension() && (!this.player.getLevel().getGameRules().getBoolean(GameRules.RULE_DISABLE_ELYTRA_MOVEMENT_CHECK) || !this.player.isFallFlying())) {
+                                 float f2 = this.player.isFallFlying() ? 300.0F : 100.0F;
+ 
+-                                if (d11 - d10 > Math.max(f2, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && !this.isSingleplayerOwner()) {
++                                // Suki start - configurable move checks
++                                if (this.player.getLevel().sukiConfig().moveChecks.tooQuickly.self && d11 - d10 > Math.max(f2, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && !this.isSingleplayerOwner()) {
+                                 // CraftBukkit end
+-                                    ServerGamePacketListenerImpl.LOGGER.warn("{} moved too quickly! {},{},{}", new Object[]{this.player.getName().getString(), d7, d8, d9});
++                                    if (SukiGlobalConfiguration.get().consoleLogs.moveChecks.tooQuickly.self) {
++                                        ServerGamePacketListenerImpl.LOGGER.warn("{} moved too quickly! {},{},{}", new Object[]{this.player.getName().getString(), d7, d8, d9});
++                                    }
++                                    // Suki end - configurable move checks
+                                     this.teleport(this.player.getX(), this.player.getY(), this.player.getZ(), this.player.getYRot(), this.player.getXRot());
+                                     return;
+                                 }
+@@ -1560,9 +1572,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+                             d11 = d7 * d7 + d8 * d8 + d9 * d9;
+                             boolean flag2 = false;
+ 
+-                            if (!this.player.isChangingDimension() && d11 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !this.player.isSleeping() && !this.player.gameMode.isCreative() && this.player.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) { // Spigot
++                            // Suki - configurable move checks
++                            if (!this.player.isChangingDimension() && this.player.getLevel().sukiConfig().moveChecks.wrongly.self && d11 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !this.player.isSleeping() && !this.player.gameMode.isCreative() && this.player.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) { // Spigot
+                                 flag2 = true; // Paper - diff on change, this should be moved wrongly
+-                                ServerGamePacketListenerImpl.LOGGER.warn("{} moved wrongly!", this.player.getName().getString());
++                                if (SukiGlobalConfiguration.get().consoleLogs.moveChecks.wrongly.self) {
++                                    ServerGamePacketListenerImpl.LOGGER.warn("{} moved wrongly!", this.player.getName().getString());
++                                }
++                                // Suki - configurable move checks
+                             }
+ 
+                             this.player.absMoveTo(d0, d1, d2, f, f1);
+diff --git a/src/main/java/org/spigotmc/SpigotConfig.java b/src/main/java/org/spigotmc/SpigotConfig.java
+index 5d162f59fc5ef9adf7fa762b137bbcfca745d9c5..36f7fdd1835afa2b4ee634aebc767447bbce2c9a 100644
+--- a/src/main/java/org/spigotmc/SpigotConfig.java
++++ b/src/main/java/org/spigotmc/SpigotConfig.java
+@@ -341,7 +341,7 @@ public class SpigotConfig
+     public static double movedWronglyThreshold;
+     private static void movedWronglyThreshold()
+     {
+-        SpigotConfig.movedWronglyThreshold = SpigotConfig.getDouble( "settings.moved-wrongly-threshold", 0.0625D );
++        SpigotConfig.movedWronglyThreshold = SpigotConfig.getDouble("settings.moved-wrongly-threshold", 0.0625D);
+     }
+ 
+     public static double movedTooQuicklyMultiplier;
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index bce220fb349f3a0b28e5f200c594d637e3fa0b34..ba00e5a2009241bd06b9699e241e47450b79298a 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -39,6 +39,30 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+         public boolean invalidClientViewDistance = true; // Suki - allow invalid client view distance
+ 
++        public MoveChecks moveChecks;
++
++        public class MoveChecks extends ConfigurationPart {
++
++            public TooQuickly tooQuickly;
++
++            public class TooQuickly extends ConfigurationPart {
++
++                public boolean self = true;
++                public boolean vehicle = true;
++
++            }
++
++            public Wrongly wrongly;
++
++            public class Wrongly extends ConfigurationPart {
++
++                public boolean self = true;
++                public boolean vehicle = true;
++
++            }
++
++        }
++
+     }
+ 
+     // Suki end - less console logs
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index e51b87d7c9215d5ae1e6e3cb0b3177d3507aa046..08bb0b03e0afa1e1cc576db03c63beb4b59f96c0 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -104,4 +104,32 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ 
+     // Suki end - only refresh lootables for players
+ 
++    // Suki start - configurable move checks
++
++    public MoveChecks moveChecks;
++
++    public class MoveChecks extends ConfigurationPart {
++
++        public TooQuickly tooQuickly;
++
++        public class TooQuickly extends ConfigurationPart {
++
++            public boolean self = true;
++            public boolean vehicle = true;
++
++        }
++
++        public Wrongly wrongly;
++
++        public class Wrongly extends ConfigurationPart {
++
++            public boolean self = true;
++            public boolean vehicle = true;
++
++        }
++
++    }
++
++    // Suki end - configurable move checks
++
+ }

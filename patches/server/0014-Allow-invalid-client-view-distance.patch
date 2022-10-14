@@ -4,18 +4,6 @@ Date: Thu, 9 Jun 2022 21:13:19 +0200
 Subject: [PATCH] Allow invalid client view distance
 
 
-diff --git a/src/main/java/net/minecraft/network/ConnectionProtocol.java b/src/main/java/net/minecraft/network/ConnectionProtocol.java
-index aec921477e035095d569eab3335175b93a65e672..dfd60b369a8dfaedce9970c56a89560bc929c0a9 100644
---- a/src/main/java/net/minecraft/network/ConnectionProtocol.java
-+++ b/src/main/java/net/minecraft/network/ConnectionProtocol.java
-@@ -132,7 +132,6 @@ import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
- import net.minecraft.network.protocol.game.ServerboundChatPacket;
- import net.minecraft.network.protocol.game.ServerboundChatPreviewPacket;
- import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
--import net.minecraft.network.protocol.game.ServerboundClientInformationPacket;
- import net.minecraft.network.protocol.game.ServerboundCommandSuggestionPacket;
- import net.minecraft.network.protocol.game.ServerboundContainerButtonClickPacket;
- import net.minecraft.network.protocol.game.ServerboundContainerClickPacket;
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
 index 177306cc9c6092a9da9c4889ff9e7ca620a5ec8f..604fc0bedd43700957272a9e88d17c011fdbe267 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
@@ -133,7 +121,7 @@ index cc90b221d008127cf0f156683c29cadbde2ba836..16b6e97c060f17b9a2d3bbfe770e0e2a
          // Paper end - do not accept invalid information
          this.player.updateOptions(packet);
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 77f1c013cacc2c31895ccbd4ba9094aa5f58aebd..9a7dda4c1a84b7a63dfa13747c990514e1507c5d 100644
+index e6c592e5edb82a04a4bca3e116b6b54a29aac6e8..bce220fb349f3a0b28e5f200c594d637e3fa0b34 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -37,6 +37,8 @@ public class SukiGlobalConfiguration extends ConfigurationPart {

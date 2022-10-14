@@ -26,7 +26,7 @@ index 13e749a3c40f0b2cc002f13675a9a56eedbefdac..01ea0068e1c5a2bf0ad18bfa58bc98a7
              LootTable lootTable = this.level.getServer().getLootTables().get(this.lootTable);
              if (player instanceof ServerPlayer) {
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index c328aad104b77b0138e50fd27a87b21f08e43d73..4300e4395733e2dcfc29175176c84b81eb0bdcb0 100644
+index 37e4877bf4fb6af8ee0422830ccf01f281b2664e..e51b87d7c9215d5ae1e6e3cb0b3177d3507aa046 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -94,4 +94,14 @@ public class SukiWorldConfiguration extends ConfigurationPart {
@@ -41,6 +41,6 @@ index c328aad104b77b0138e50fd27a87b21f08e43d73..4300e4395733e2dcfc29175176c84b81
 +        public boolean onlyRefreshForPlayers = false;
 +    }
 +
-+    // Suki end - onlyRefreshLootablesForPlayers
++    // Suki end - only refresh lootables for players
 +
  }
