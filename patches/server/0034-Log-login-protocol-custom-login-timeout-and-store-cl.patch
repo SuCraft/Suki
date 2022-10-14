@@ -1,0 +1,291 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Mon, 3 Oct 2022 16:46:09 +0200
+Subject: [PATCH] Log login protocol, custom login timeout and store
+ client-provided UUID
+
+
+diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+index 0130e2c3c047055fbea9c3d893a9b4593fa10ed2..efd5beaeddbd4337dd0cc8362b68cf630e1d97ff 100644
+--- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
++++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+@@ -8,6 +8,7 @@ import net.kyori.adventure.text.Component;
+ import net.kyori.adventure.text.format.NamedTextColor;
+ import net.minecraft.network.protocol.Packet;
+ import net.minecraft.network.protocol.game.ServerboundPlaceRecipePacket;
++import net.minecraft.server.level.ServerPlayer;
+ import org.bukkit.Bukkit; // Pufferfish
+ import org.checkerframework.checker.nullness.qual.Nullable;
+ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
+index f9129f9a53033545efc577a21feb3e2ba8742318..7187c57fb9c7b9f5b04728d942e4de1dade525d7 100644
+--- a/src/main/java/net/minecraft/network/Connection.java
++++ b/src/main/java/net/minecraft/network/Connection.java
+@@ -20,7 +20,6 @@ import io.netty.channel.epoll.EpollSocketChannel;
+ import io.netty.channel.local.LocalChannel;
+ import io.netty.channel.local.LocalServerChannel;
+ import io.netty.channel.nio.NioEventLoopGroup;
+-import io.netty.channel.socket.SocketChannel;
+ import io.netty.channel.socket.nio.NioSocketChannel;
+ import io.netty.handler.timeout.ReadTimeoutHandler;
+ import io.netty.handler.timeout.TimeoutException;
+@@ -28,9 +27,9 @@ import io.netty.util.AttributeKey;
+ import java.net.InetSocketAddress;
+ import java.net.SocketAddress;
+ import java.util.Queue;
++import java.util.UUID;
+ import java.util.concurrent.RejectedExecutionException;
+ import javax.annotation.Nullable;
+-import javax.crypto.Cipher;
+ import net.minecraft.Util;
+ import net.minecraft.network.chat.Component;
+ import net.minecraft.network.chat.MutableComponent;
+@@ -172,6 +171,12 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+     }
+     // Paper end - packet limiter
+ 
++    // Suki start - login protocol - client-provided UUID API
++
++    public @Nullable UUID lastReceivedLoginStartUUID = null;
++
++    // Suki end - login protocol - client-provided UUID API
++
+     public Connection(PacketFlow side) {
+         this.receiving = side;
+     }
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+index 10c4ee674ab11a407a3e6c3a80924633fc9811da..b03190b5f79afaf8265cfce0144b7fa09cfce5ca 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+@@ -12,6 +12,7 @@ import java.util.List;
+ import java.util.Objects;
+ import java.util.Optional;
+ import java.util.OptionalInt;
++import java.util.UUID;
+ import javax.annotation.Nullable;
+ import net.minecraft.BlockUtil;
+ import net.minecraft.ChatFormatting;
+@@ -2443,6 +2444,15 @@ public class ServerPlayer extends Player {
+         return this.getBukkitEntity().getScoreboard().getHandle();
+     }
+ 
++    // Suki start - login protocol - client-provided UUID API
++
++    @Nullable
++    public UUID getClientProvidedUUID() {
++        return this.connection.connection.lastReceivedLoginStartUUID;
++    }
++
++    // Suki end - login protocol - client-provided UUID API
++
+     public void reset() {
+         float exp = 0;
+         boolean keepInventory = this.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY);
+diff --git a/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java
+index ac254e4fe3973a8cb3321e96c651847e387d9f0e..ed1db61d04b1f81c52300c9f85b962120a7e5855 100644
+--- a/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java
+@@ -1,10 +1,10 @@
+ package net.minecraft.server.network;
+ 
++import com.mojang.logging.LogUtils;
+ import net.minecraft.SharedConstants;
+ import net.minecraft.network.Connection;
+ import net.minecraft.network.ConnectionProtocol;
+ import net.minecraft.network.chat.Component;
+-import net.minecraft.network.chat.MutableComponent;
+ import net.minecraft.network.protocol.handshake.ClientIntentionPacket;
+ import net.minecraft.network.protocol.handshake.ServerHandshakePacketListener;
+ import net.minecraft.network.protocol.login.ClientboundLoginDisconnectPacket;
+@@ -15,10 +15,9 @@ import java.net.InetAddress;
+ //import java.util.HashMap; // Dionysus
+ // CraftBukkit end
+ // Dionysus start
+-import it.unimi.dsi.fastutil.objects.Object2LongMap;
+ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+-import java.util.Iterator;
+-import java.util.Map;
++import org.slf4j.Logger;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ // Dionysus end
+ 
+ public class ServerHandshakePacketListenerImpl implements ServerHandshakePacketListener {
+@@ -36,6 +35,7 @@ public class ServerHandshakePacketListenerImpl implements ServerHandshakePacketL
+     private final MinecraftServer server;
+     private final Connection connection;
+     private static final boolean BYPASS_HOSTCHECK = Boolean.getBoolean("Paper.bypassHostCheck"); // Paper
++    private static final Logger LOGGER = LogUtils.getLogger(); // Suki - login protocol - log handshakes to console
+ 
+     public ServerHandshakePacketListenerImpl(MinecraftServer server, Connection connection) {
+         this.server = server;
+@@ -47,6 +47,11 @@ public class ServerHandshakePacketListenerImpl implements ServerHandshakePacketL
+         switch (packet.getIntention()) {
+             case LOGIN:
+                 this.connection.setProtocol(ConnectionProtocol.LOGIN);
++                // Suki start - login protocol - log handshakes to console
++                if (SukiGlobalConfiguration.get().consoleLogs.loginProtocol.packets.handshake) {
++                    ServerHandshakePacketListenerImpl.LOGGER.info("Received handshake packet from '" + this.connection.getRemoteAddress() + "': host name = '" + packet.getHostName() + "', port = " + packet.getPort() + ", protocol version = " + packet.getProtocolVersion());
++                }
++                // Suki end - login protocol - log handshakes to console
+                 // CraftBukkit start - Connection throttle
+                 try {
+                     if (!(this.connection.channel.localAddress() instanceof io.netty.channel.unix.DomainSocketAddress)) { // Paper - the connection throttle is useless when you have a Unix domain socket
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index 03f17e568d41f5a4ac3c4bcb72e2fc39a02d7cd5..7065e59c4dbb3aa1ea4da3e47b1b72c33d599af6 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -10,12 +10,12 @@ import java.net.InetSocketAddress;
+ import java.net.SocketAddress;
+ import java.security.PrivateKey;
+ import java.time.Duration;
++import java.util.Optional;
+ import java.util.UUID;
+ import java.util.concurrent.atomic.AtomicInteger;
+ import javax.annotation.Nullable;
+-import javax.crypto.Cipher;
+ import javax.crypto.SecretKey;
+-import net.minecraft.DefaultUncaughtExceptionHandler;
++
+ import net.minecraft.core.UUIDUtil;
+ import net.minecraft.network.Connection;
+ import net.minecraft.network.PacketSendListener;
+@@ -45,6 +45,7 @@ import org.slf4j.Logger;
+ import org.bukkit.craftbukkit.util.Waitable;
+ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+ import org.bukkit.event.player.PlayerPreLoginEvent;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ // CraftBukkit end
+ 
+ public class ServerLoginPacketListenerImpl implements TickablePacketListener, ServerLoginPacketListener {
+@@ -101,7 +102,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+             }
+         }
+ 
+-        if (this.tick++ == 600) {
++        if (this.tick++ == SukiGlobalConfiguration.get().loginProtocol.slowLoginTimeout) { // Suki - login protocol - configurable slow login timeout
+             this.disconnect(Component.translatable("multiplayer.disconnect.slow_login"));
+         }
+ 
+@@ -196,6 +197,11 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+         } else {
+             this.state = ServerLoginPacketListenerImpl.State.ACCEPTED;
+             if (this.server.getCompressionThreshold() >= 0 && !this.connection.isMemoryConnection()) {
++                // Suki start - login protocol - log Set Compression packets to console
++                if (SukiGlobalConfiguration.get().consoleLogs.loginProtocol.packets.setCompression) {
++                    ServerLoginPacketListenerImpl.LOGGER.info("Sent set compression packet to '" + this.connection.getRemoteAddress() + "' (with player = '" + s.getName() + "'): compression threshold = " + this.server.getCompressionThreshold());
++                }
++                // Suki end - login protocol - log Set Compression packets to console
+                 this.connection.send(new ClientboundLoginCompressionPacket(this.server.getCompressionThreshold()), PacketSendListener.thenRun(() -> {
+                     this.connection.setupCompression(this.server.getCompressionThreshold(), true);
+                 }));
+@@ -293,10 +299,20 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+         this.profilePublicKeyData = (ProfilePublicKey.Data) packet.publicKey().orElse(null); // CraftBukkit - decompile error
+         GameProfile gameprofile = this.server.getSingleplayerProfile();
+ 
++        // Suki start - login protocol - log Login Start packets to console
++        if (SukiGlobalConfiguration.get().consoleLogs.loginProtocol.packets.loginStart) {
++            ServerLoginPacketListenerImpl.LOGGER.info("Received login start packet from '" + this.connection.getRemoteAddress() + "': name = " + Optional.ofNullable(packet.name()).map(name -> "'" + name + "'").orElse("(none)") + ", UUID = " + Optional.ofNullable(packet.profileId()).flatMap($ -> $).map(UUID::toString).orElse("(none)") + ", public key present = " + Optional.ofNullable(packet.publicKey()).flatMap($ -> $).isPresent());
++        }
++        // Suki end - login protocol - log Login Start packets to console
++
+         if (gameprofile != null && packet.name().equalsIgnoreCase(gameprofile.getName())) {
+             this.gameProfile = gameprofile;
+             this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
+         } else {
++            // Suki start - login protocol - client-provided UUID API
++            //noinspection ConstantConditions
++            this.connection.lastReceivedLoginStartUUID = Optional.ofNullable(packet.profileId()).flatMap($ -> $).orElse(null);
++            // Suki end - login protocol - client-provided UUID API
+             this.gameProfile = new GameProfile((UUID) null, packet.name());
+             if (this.server.usesAuthentication() && !this.connection.isMemoryConnection()) {
+                 this.state = ServerLoginPacketListenerImpl.State.KEY;
+@@ -441,7 +457,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+ 
+                         // Paper start
+                         com.destroystokyo.paper.profile.PlayerProfile profile = com.destroystokyo.paper.profile.CraftPlayerProfile.asBukkitMirror(ServerLoginPacketListenerImpl.this.gameProfile);
+-                        AsyncPlayerPreLoginEvent asyncEvent = new AsyncPlayerPreLoginEvent(playerName, address, rawAddress, uniqueId, profile, ServerLoginPacketListenerImpl.this.hostname); // Paper - add rawAddress & hostname
++                        AsyncPlayerPreLoginEvent asyncEvent = new AsyncPlayerPreLoginEvent(playerName, address, rawAddress, uniqueId, profile, ServerLoginPacketListenerImpl.this.hostname, ServerLoginPacketListenerImpl.this.connection.lastReceivedLoginStartUUID); // Paper - add rawAddress & hostname // Suki - login protocol - client-provided UUID API
+                         server.getPluginManager().callEvent(asyncEvent);
+                         profile = asyncEvent.getPlayerProfile();
+                         profile.complete(true); // Paper - setPlayerProfileAPI
+diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
+index 84bce377e1a9b9358dddd15455b8d849b4a3ae36..60c37b0e71dd2b1b859d23a49f218142d2a92485 100644
+--- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
++++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
+@@ -1831,6 +1831,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+     }
+     // Paper end
+ 
++    // Suki start - login protocol - client-provided UUID API
++
++    @Override
++    @Nullable
++    public UUID getClientProvidedUUID() {
++        return this.getHandle().getClientProvidedUUID();
++    }
++
++    // Suki end - login protocol - client-provided UUID API
++
+     public void onEntityRemove(Entity entity) {
+         this.hiddenEntities.remove(entity.getUUID());
+     }
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index d27dc76e067782b8e302b2d86738a5d955e64cf0..087e90e9d714f16b4aa0860a8b6a88499b2523ba 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -20,7 +20,7 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+     @Setting(Configuration.VERSION_FIELD)
+     public int version = CURRENT_VERSION;
+ 
+-    // Suki start - less console logs
++    // Suki start - less console logs, login protocol - log login protocol
+ 
+     public ConsoleLogs consoleLogs;
+ 
+@@ -63,9 +63,25 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+         }
+ 
++        public LoginProtocol loginProtocol;
++
++        public class LoginProtocol extends ConfigurationPart {
++
++            public Packets packets;
++
++            public class Packets extends ConfigurationPart {
++
++                public boolean handshake = false; // Suki - login protocol - log handshakes to console
++                public boolean loginStart = false; // Suki - login protocol - log Login Start packets to console
++                public boolean setCompression = false; // Suki - login protocol - log Set Compression packets to console
++
++            }
++
++        }
++
+     }
+ 
+-    // Suki end - less console logs
++    // Suki end - less console logs, login protocol - log login protocol
+ 
+     // Suki start - no signed chat
+ 
+@@ -166,4 +182,19 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+     // Suki end - survival debug stick
+ 
++    // Suki start - configurable login timeout
++
++    public LoginProtocol loginProtocol;
++
++    public class LoginProtocol extends ConfigurationPart {
++
++        /**
++         * In ticks
++         */
++        public int slowLoginTimeout = 600;
++
++    }
++
++    // Suki end - configurable login timeout
++
+ }
