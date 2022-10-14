@@ -1,0 +1,108 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Tue, 20 Sep 2022 01:29:11 +0200
+Subject: [PATCH] Configurable keep-alive
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 79ef8872445559058847d94447054f16c89dc814..b5caf4c74864b03c4cb351e3b2747cb956ac7880 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -7,7 +7,6 @@ import com.mojang.brigadier.StringReader;
+ import com.mojang.brigadier.exceptions.CommandSyntaxException;
+ import com.mojang.datafixers.util.Pair;
+ import com.mojang.logging.LogUtils;
+-import io.papermc.paper.configuration.GlobalConfiguration;
+ import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
+ import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+@@ -410,7 +409,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         // Purpur start
+         if (wtf.etil.mirai.MiraiConfig.useAlternateKeepAlive) {
+             if (elapsedTime >= 1000L) { // 1 second
+-                if (!processedDisconnect && keepAlives.size() > KEEPALIVE_LIMIT) {
++                if (!processedDisconnect && keepAlives.size() > KEEPALIVE_LIMIT && SukiGlobalConfiguration.get().keepalive.kickPlayerFor.lateResponse) { // Suki - configurable keep-alive - no disconnect on late or wrong keep-alive
+                     LOGGER.warn("{} was kicked due to keepalive timeout!", player.getName());
+                     disconnect(Component.translatable("disconnect.timeout"));
+                 } else {
+@@ -422,13 +421,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         } else
+         // Purpur end
+ 
+-        if (this.keepAlivePending) {
++        if (this.keepAlivePending && SukiGlobalConfiguration.get().keepalive.kickPlayerFor.lateResponse) { // Suki - configurable keep-alive - no disconnect on late or wrong keep-alive
+             if (!this.processedDisconnect && elapsedTime >= KEEPALIVE_LIMIT) { // check keepalive limit, don't fire if already disconnected
+                 ServerGamePacketListenerImpl.LOGGER.warn("{} was kicked due to keepalive timeout!", this.player.getScoreboardName()); // more info
+-                this.disconnect(Component.translatable("disconnect.timeout", me.titaniumtown.Constants.EMPTY_object_arr), org.bukkit.event.player.PlayerKickEvent.Cause.TIMEOUT); // Paper - kick event cause // JettPack
++                this.disconnect(Component.translatable("disconnect.timeout"), org.bukkit.event.player.PlayerKickEvent.Cause.TIMEOUT); // Paper - kick event cause
+             }
+         } else {
+-            if (elapsedTime >= 15000L) { // 15 seconds
++            if (elapsedTime >= SukiGlobalConfiguration.get().keepalive.sendInterval) { // Suki - configurable keep-alive
+                 this.keepAlivePending = true;
+                 this.keepAliveTime = currentTime;
+                 this.keepAliveChallenge = currentTime;
+@@ -3668,11 +3667,16 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+             this.player.latency = (this.player.latency * 3 + i) / 4;
+             this.keepAlivePending = false;
+         } else if (!this.isSingleplayerOwner()) {
+-            // Paper start - This needs to be handled on the main thread for plugins
+-            server.submit(() -> {
+-            this.disconnect(Component.translatable("disconnect.timeout"), org.bukkit.event.player.PlayerKickEvent.Cause.TIMEOUT); // Paper - kick event cause
+-            });
+-            // Paper end
++            // Suki start - configurable keep-alive no disconnect on late or wrong keep-alive
++            // Do not disconnect when keepalive challenge is wrong
++            if (!((packet.getId() == this.keepAliveChallenge || !SukiGlobalConfiguration.get().keepalive.kickPlayerFor.wrongResponseId) && (this.keepAlivePending || !SukiGlobalConfiguration.get().keepalive.kickPlayerFor.unexpectedResponse))) {
++                // Paper start - This needs to be handled on the main thread for plugins
++                server.submit(() -> {
++                    this.disconnect(Component.translatable("disconnect.timeout"), org.bukkit.event.player.PlayerKickEvent.Cause.TIMEOUT); // Paper - kick event cause
++                });
++                // Paper end
++            }
++            // Suki end - configurable keep-alive - no disconnect on late or wrong keep-alive
+         }
+ 
+     }
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index 497ad4c8132b2aaf14ad669d9cff7424eee56dc1..eb776ee516d7d99a6d4d933332f8d9b59e768ad9 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -4,6 +4,7 @@ package org.sucraft.suki.configuration;
+ 
+ import io.papermc.paper.configuration.Configuration;
+ import io.papermc.paper.configuration.ConfigurationPart;
++import io.papermc.paper.configuration.GlobalConfiguration;
+ import org.spongepowered.configurate.objectmapping.meta.Setting;
+ 
+ @SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
+@@ -100,4 +101,29 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+     // Suki end - allow invalid client view distance
+ 
++    // Suki start - configurable keep-alive
++
++    public Keepalive keepalive;
++
++    public class Keepalive extends ConfigurationPart {
++
++        /**
++         * In milliseconds
++         */
++        public int sendInterval = 15000; // 15 seconds
++
++        public KickPlayerFor kickPlayerFor;
++
++        public class KickPlayerFor extends ConfigurationPart {
++
++            public boolean lateResponse = true;
++            public boolean wrongResponseId = true;
++            public boolean unexpectedResponse = true;
++
++        }
++
++    }
++
++    // Suki end - configurable keep-alive
++
+ }
