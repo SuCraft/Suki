@@ -987,17 +987,15 @@ index 0000000000000000000000000000000000000000..0f8d2e81dd8c5e4290e04aac3fcef7bf
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiRemovedConfigurations.java b/src/main/java/org/sucraft/suki/configuration/SukiRemovedConfigurations.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..556068b7eacd69ad2b15e695af82adbe9136a22d
+index 0000000000000000000000000000000000000000..b4fd4190b899d4dea9420074d96e6431c2a3fafb
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiRemovedConfigurations.java
-@@ -0,0 +1,15 @@
+@@ -0,0 +1,13 @@
 +// Suki - Suki configuration
 +
 +package org.sucraft.suki.configuration;
 +
 +import org.spongepowered.configurate.NodePath;
-+
-+import static org.spongepowered.configurate.NodePath.path;
 +
 +interface SukiRemovedConfigurations {
 +
