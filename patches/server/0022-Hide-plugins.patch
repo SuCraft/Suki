@@ -1,0 +1,96 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Fri, 10 Jun 2022 01:30:18 +0200
+Subject: [PATCH] Hide plugins
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index 761f754e56f00b2de83cc433900ba893d34995c7..d86ca64b3ffdccee6dfd2eb09453ad31e963d318 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -16,6 +16,7 @@ import com.mojang.serialization.Lifecycle;
+ import io.netty.buffer.ByteBuf;
+ import io.netty.buffer.ByteBufOutputStream;
+ import io.netty.buffer.Unpooled;
++import io.papermc.paper.configuration.GlobalConfiguration;
+ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+ import java.awt.image.BufferedImage;
+ import java.io.File;
+@@ -240,6 +241,7 @@ import org.bukkit.scoreboard.Criteria;
+ import org.bukkit.structure.StructureManager;
+ import org.bukkit.util.StringUtil;
+ import org.bukkit.util.permissions.DefaultPermissions;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ import org.yaml.snakeyaml.Yaml;
+ import org.yaml.snakeyaml.constructor.SafeConstructor;
+ import org.yaml.snakeyaml.error.MarkedYAMLException;
+@@ -593,6 +595,18 @@ public final class CraftServer implements Server {
+     }
+     // Paper end
+ 
++    // Suki start - hide plugins
++    @Override
++    public boolean getHidePluginsIfNoPermission() {
++        return SukiGlobalConfiguration.get().plugins.hideIfNoPermission;
++    }
++
++    @Override
++    public boolean getShowLegacyPluginAsterisk() {
++        return SukiGlobalConfiguration.get().plugins.showLegacyAsterisk;
++    }
++    // Suki end - hide plugins
++
+     @Override
+     public List<CraftPlayer> getOnlinePlayers() {
+         return this.playerView;
+diff --git a/src/main/java/org/bukkit/craftbukkit/help/SimpleHelpMap.java b/src/main/java/org/bukkit/craftbukkit/help/SimpleHelpMap.java
+index 40b66adcb5aac64212b1937dc506ebb60f2eed83..37ac972e8879070219c2b4ad273ff3044ae6317b 100644
+--- a/src/main/java/org/bukkit/craftbukkit/help/SimpleHelpMap.java
++++ b/src/main/java/org/bukkit/craftbukkit/help/SimpleHelpMap.java
+@@ -11,6 +11,8 @@ import java.util.Map;
+ import java.util.Set;
+ import java.util.TreeMap;
+ import java.util.TreeSet;
++
++import org.bukkit.Bukkit;
+ import org.bukkit.command.Command;
+ import org.bukkit.command.CommandExecutor;
+ import org.bukkit.command.MultipleCommandAlias;
+@@ -25,6 +27,7 @@ import org.bukkit.help.HelpTopic;
+ import org.bukkit.help.HelpTopicComparator;
+ import org.bukkit.help.HelpTopicFactory;
+ import org.bukkit.help.IndexHelpTopic;
++import org.bukkit.plugin.PluginBase;
+ 
+ /**
+  * Standard implementation of {@link HelpMap} for CraftBukkit servers.
+@@ -169,7 +172,7 @@ public class SimpleHelpMap implements HelpMap {
+         this.fillPluginIndexes(pluginIndexes, this.server.getCommandMap().getCommands());
+ 
+         for (Map.Entry<String, Set<HelpTopic>> entry : pluginIndexes.entrySet()) {
+-            this.addTopic(new IndexHelpTopic(entry.getKey(), "All commands for " + entry.getKey(), null, entry.getValue(), "Below is a list of all " + entry.getKey() + " commands:"));
++            this.addTopic(new IndexHelpTopic(entry.getKey(), "All commands for " + entry.getKey(), Bukkit.getServer().getHidePluginsIfNoPermission() ? PluginBase.getSeePluginPermissionName(entry.getKey()) : null, entry.getValue(), "Below is a list of all " + entry.getKey() + " commands:")); // Suki - hide plugins
+         }
+ 
+         // Amend help topics from the help.yml file
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index d9f91637a80bcde12d8825792b24e92fd623d824..819da74edfe1045789623d4c7ec15c87af5ebb73 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -140,4 +140,16 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+     // Suki end - configurable TPS catch-up
+ 
++    // Suki start - hide plugins
++
++    public Plugins plugins;
++
++    public class Plugins extends ConfigurationPart {
++        public boolean hideIfNoPermission = false;
++        public boolean showLegacyAsterisk = true;
++    }
++
++    // Suki end - hide plugins
++
++
+ }
