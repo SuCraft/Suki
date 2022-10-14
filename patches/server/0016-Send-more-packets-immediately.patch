@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Fri, 14 Oct 2022 11:45:02 +0200
+Subject: [PATCH] Send more packets immediately
+
+
+diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
+index 969968cfcf2c2ed019fab3407b22d4974926bdd2..27162c850f996ac11cda0a07917fa0adbde4fa24 100644
+--- a/src/main/java/net/minecraft/network/Connection.java
++++ b/src/main/java/net/minecraft/network/Connection.java
+@@ -355,7 +355,11 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+                 packet instanceof net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket ||
+                 packet instanceof net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket ||
+                 packet instanceof net.minecraft.network.protocol.game.ClientboundClearTitlesPacket ||
+-                packet instanceof net.minecraft.network.protocol.game.ClientboundBossEventPacket;
++                // Suki start - send more packets immediately
++                packet instanceof net.minecraft.network.protocol.game.ClientboundBossEventPacket ||
++                packet instanceof net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket ||
++                packet instanceof net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
++            // Suki end - send more packets immediately
+         }
+         // Paper end
+     }
