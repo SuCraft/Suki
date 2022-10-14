@@ -1006,7 +1006,7 @@ index 0000000000000000000000000000000000000000..b4fd4190b899d4dea9420074d96e6431
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..4604b1b1fb9e76d0318488b311b3946ba0c181f6
+index 0000000000000000000000000000000000000000..cf7e6946e8a15a4077fb6f7802a4f7f8cc5d5e50
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -0,0 +1,41 @@
@@ -1026,7 +1026,7 @@ index 0000000000000000000000000000000000000000..4604b1b1fb9e76d0318488b311b3946b
 +@SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
 +public class SukiWorldConfiguration extends ConfigurationPart {
 +    private static final Logger LOGGER = LogUtils.getLogger();
-+    public static final int CURRENT_VERSION = 11;
++    public static final int CURRENT_VERSION = 12;
 +
 +    private transient final SpigotWorldConfig spigotConfig;
 +    private transient final ResourceLocation worldKey;

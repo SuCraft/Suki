@@ -1,0 +1,125 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 22 Sep 2022 13:09:54 +0200
+Subject: [PATCH] Configurable villager reputation changes
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/npc/Villager.java b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+index 839e6a8819dfbfe8c54e116b5f5b23ded94e7ca1..3ea11bac3865102dab0ade99dacf8a54b9536c2e 100644
+--- a/src/main/java/net/minecraft/world/entity/npc/Villager.java
++++ b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+@@ -1000,26 +1000,51 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+ 
+     @Override
+     public void onReputationEventFrom(ReputationEventType interaction, Entity entity) {
++
++        // Suki start - configurable villager reputation changes
++
+         if (interaction == ReputationEventType.ZOMBIE_VILLAGER_CURED) {
+             // Paper start - fix MC-181190
+             if (level.paperConfig().fixes.fixCuringZombieVillagerDiscountExploit) {
+                 final GossipContainer.EntityGossips playerReputation = this.getGossips().getReputations().get(entity.getUUID());
+                 if (playerReputation != null) {
+-                    playerReputation.remove(GossipType.MAJOR_POSITIVE);
+-                    playerReputation.remove(GossipType.MINOR_POSITIVE);
++                    if (level.sukiConfig().difficultyChanges.villagerReputationChanges.cured.majorPositive > 0) {
++                        playerReputation.remove(GossipType.MAJOR_POSITIVE);
++                    }
++                    if (level.sukiConfig().difficultyChanges.villagerReputationChanges.cured.minorPositive > 0) {
++                        playerReputation.remove(GossipType.MINOR_POSITIVE);
++                    }
+                 }
+             }
+             // Paper end
+-            this.gossips.add(entity.getUUID(), GossipType.MAJOR_POSITIVE, 20);
+-            this.gossips.add(entity.getUUID(), GossipType.MINOR_POSITIVE, 25);
++            if (level.sukiConfig().difficultyChanges.villagerReputationChanges.cured.majorPositive > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MAJOR_POSITIVE, level.sukiConfig().difficultyChanges.villagerReputationChanges.cured.majorPositive);
++            }
++            if (level.sukiConfig().difficultyChanges.villagerReputationChanges.cured.minorPositive > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MINOR_POSITIVE, level.sukiConfig().difficultyChanges.villagerReputationChanges.cured.minorPositive);
++            }
+         } else if (interaction == ReputationEventType.TRADE) {
+-            this.gossips.add(entity.getUUID(), GossipType.TRADING, 2);
++            if (level.sukiConfig().difficultyChanges.villagerReputationChanges.trade.trading > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.TRADING, level.sukiConfig().difficultyChanges.villagerReputationChanges.trade.trading);
++            }
+         } else if (interaction == ReputationEventType.VILLAGER_HURT) {
+-            this.gossips.add(entity.getUUID(), GossipType.MINOR_NEGATIVE, 25);
++            if (level.sukiConfig().difficultyChanges.villagerReputationChanges.villagerHurt.majorNegative > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MAJOR_NEGATIVE, level.sukiConfig().difficultyChanges.villagerReputationChanges.villagerHurt.majorNegative);
++            }
++            if (level.sukiConfig().difficultyChanges.villagerReputationChanges.villagerHurt.minorNegative > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MINOR_NEGATIVE, level.sukiConfig().difficultyChanges.villagerReputationChanges.villagerHurt.minorNegative);
++            }
+         } else if (interaction == ReputationEventType.VILLAGER_KILLED) {
+-            this.gossips.add(entity.getUUID(), GossipType.MAJOR_NEGATIVE, 25);
++            if (level.sukiConfig().difficultyChanges.villagerReputationChanges.villagerKilled.majorNegative > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MAJOR_NEGATIVE, level.sukiConfig().difficultyChanges.villagerReputationChanges.villagerKilled.majorNegative);
++            }
++            if (level.sukiConfig().difficultyChanges.villagerReputationChanges.villagerKilled.minorNegative > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MINOR_NEGATIVE, level.sukiConfig().difficultyChanges.villagerReputationChanges.villagerKilled.minorNegative);
++            }
+         }
+ 
++        // Suki end - configurable villager reputation changes
++
+     }
+ 
+     @Override
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index cd3c9b8d8c0e7f16b3f0a9a2f4943aee30ff70b5..48a0b5697770dc46209f81985f80a0d1de518cdd 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -195,6 +195,51 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ 
+         // Suki end - minimum health after starving
+ 
++        // Suki start - configurable villager reputation changes
++
++        public VillagerReputationChanges villagerReputationChanges;
++
++        public class VillagerReputationChanges extends ConfigurationPart {
++
++            public Cured cured;
++
++            public class Cured extends ConfigurationPart {
++
++                public int majorPositive = 20;
++                public int minorPositive = 25;
++
++            }
++
++            public Trade trade;
++
++            public class Trade extends ConfigurationPart {
++
++                public int trading = 2;
++
++            }
++
++            public VillagerHurt villagerHurt;
++
++            public class VillagerHurt extends ConfigurationPart {
++
++                public int majorNegative = 0;
++                public int minorNegative = 25;
++
++            }
++
++            public VillagerKilled villagerKilled;
++
++            public class VillagerKilled extends ConfigurationPart {
++
++                public int majorNegative = 25;
++                public int minorNegative = 0;
++
++            }
++
++        }
++
++        // Suki end - configurable villager reputation changes
++
+     }
+ 
+     // Suki end - difficulty changes
