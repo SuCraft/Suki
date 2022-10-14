@@ -1,0 +1,164 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 9 Jun 2022 21:13:19 +0200
+Subject: [PATCH] Allow invalid client view distance
+
+
+diff --git a/src/main/java/net/minecraft/network/ConnectionProtocol.java b/src/main/java/net/minecraft/network/ConnectionProtocol.java
+index aec921477e035095d569eab3335175b93a65e672..dfd60b369a8dfaedce9970c56a89560bc929c0a9 100644
+--- a/src/main/java/net/minecraft/network/ConnectionProtocol.java
++++ b/src/main/java/net/minecraft/network/ConnectionProtocol.java
+@@ -132,7 +132,6 @@ import net.minecraft.network.protocol.game.ServerboundChatCommandPacket;
+ import net.minecraft.network.protocol.game.ServerboundChatPacket;
+ import net.minecraft.network.protocol.game.ServerboundChatPreviewPacket;
+ import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
+-import net.minecraft.network.protocol.game.ServerboundClientInformationPacket;
+ import net.minecraft.network.protocol.game.ServerboundCommandSuggestionPacket;
+ import net.minecraft.network.protocol.game.ServerboundContainerButtonClickPacket;
+ import net.minecraft.network.protocol.game.ServerboundContainerClickPacket;
+diff --git a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
+index 177306cc9c6092a9da9c4889ff9e7ca620a5ec8f..604fc0bedd43700957272a9e88d17c011fdbe267 100644
+--- a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
++++ b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
+@@ -6,10 +6,21 @@ import net.minecraft.world.entity.HumanoidArm;
+ import net.minecraft.world.entity.player.ChatVisiblity;
+ 
+ public record ServerboundClientInformationPacket(String language, int viewDistance, ChatVisiblity chatVisibility, boolean chatColors, int modelCustomisation, HumanoidArm mainHand, boolean textFilteringEnabled, boolean allowsListing) implements Packet<ServerGamePacketListener> {
+-    public final String language;
+-    public final int viewDistance;
++
+     public static final int MAX_LANGUAGE_LENGTH = 16;
+ 
++    // Suki start - allow invalid client view distance
++    public static final int MAX_USED_VIEW_DISTANCE = Byte.MAX_VALUE;
++
++    public int getAcceptableViewDistance() {
++        if (viewDistance < 0) {
++            // While the type of the field is a 32-bit int here, the type used in the packet is a signed 8-bit byte, so any values below 0 likely represent values above 127 in the client (some mods allow view distances of 128 or higher)
++            return MAX_USED_VIEW_DISTANCE;
++        }
++        return Math.min(viewDistance, MAX_USED_VIEW_DISTANCE);
++    }
++    // Suki end - allow invalid client view distance
++
+     public ServerboundClientInformationPacket(FriendlyByteBuf buf) {
+         this(buf.readUtf(16), buf.readByte(), buf.readEnum(ChatVisiblity.class), buf.readBoolean(), buf.readUnsignedByte(), buf.readEnum(HumanoidArm.class), buf.readBoolean(), buf.readBoolean());
+     }
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+index c52bf7796e28015c74c88cbc8983170803378bbd..10c4ee674ab11a407a3e6c3a80924633fc9811da 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+@@ -90,7 +90,6 @@ import net.minecraft.stats.ServerStatsCounter;
+ import net.minecraft.stats.Stat;
+ import net.minecraft.stats.Stats;
+ import net.minecraft.util.Mth;
+-import net.minecraft.util.RandomSource;
+ import net.minecraft.util.Unit;
+ import net.minecraft.world.damagesource.DamageSource;
+ import net.minecraft.world.damagesource.EntityDamageSource;
+@@ -1916,23 +1915,25 @@ public class ServerPlayer extends Player {
+     public String locale = null; // CraftBukkit - add, lowercase // Paper - default to null
+     public java.util.Locale adventure$locale = java.util.Locale.US; // Paper
+     public void updateOptions(ServerboundClientInformationPacket packet) {
+-        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), packet.language, packet.viewDistance, com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT).callEvent(); // Paper - settings event
++        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), packet.language(), packet.getAcceptableViewDistance(), com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT).callEvent(); // Paper - settings event // Suki - allow invalid client view distance
+         // CraftBukkit start
+         if (getMainArm() != packet.mainHand()) {
+             PlayerChangedMainHandEvent event = new PlayerChangedMainHandEvent(this.getBukkitEntity(), getMainArm() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT);
+             this.server.server.getPluginManager().callEvent(event);
+         }
+-        if (this.locale == null || !this.locale.equals(packet.language)) { // Paper - check for null
+-            PlayerLocaleChangeEvent event = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packet.language);
++        // Suki start - allow invalid client view distance
++        if (this.locale == null || !this.locale.equals(packet.language())) { // Paper - check for null
++            PlayerLocaleChangeEvent event = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packet.language());
++            // Suki end - allow invalid client view distance
+             this.server.server.getPluginManager().callEvent(event);
+-            this.server.server.getPluginManager().callEvent(new com.destroystokyo.paper.event.player.PlayerLocaleChangeEvent(this.getBukkitEntity(), this.locale, packet.language)); // Paper
++            this.server.server.getPluginManager().callEvent(new com.destroystokyo.paper.event.player.PlayerLocaleChangeEvent(this.getBukkitEntity(), this.locale, packet.language())); // Paper // Suki - do not use invalid client view distance
+         }
+-        this.locale = packet.language;
++        this.locale = packet.language(); // Suki - allow invalid client view distance
+         // Paper start
+         this.adventure$locale = net.kyori.adventure.translation.Translator.parseLocale(this.locale);
+         this.connection.connection.channel.attr(PaperAdventure.LOCALE_ATTRIBUTE).set(this.adventure$locale);
+         // Paper end
+-        this.clientViewDistance = packet.viewDistance;
++        this.clientViewDistance = packet.getAcceptableViewDistance(); // Suki - allow invalid client view distance
+         // CraftBukkit end
+         this.chatVisibility = packet.chatVisibility();
+         this.canChatColor = packet.chatColors();
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index cc90b221d008127cf0f156683c29cadbde2ba836..16b6e97c060f17b9a2d3bbfe770e0e2a9ecec92c 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -175,7 +175,6 @@ import net.minecraft.world.level.block.entity.CommandBlockEntity;
+ import net.minecraft.world.level.block.entity.JigsawBlockEntity;
+ import net.minecraft.world.level.block.entity.SignBlockEntity;
+ import net.minecraft.world.level.block.entity.StructureBlockEntity;
+-import net.minecraft.world.level.block.state.BlockBehaviour;
+ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.phys.AABB;
+ import net.minecraft.world.phys.BlockHitResult;
+@@ -224,8 +223,6 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
+ import org.bukkit.event.inventory.InventoryType.SlotType;
+ import org.bukkit.event.inventory.SmithItemEvent;
+ import org.bukkit.event.player.AsyncPlayerChatEvent;
+-import org.bukkit.event.player.PlayerAnimationEvent;
+-import org.bukkit.event.player.PlayerAnimationType;
+ import org.bukkit.event.player.PlayerChatEvent;
+ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+@@ -3684,9 +3681,19 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         PacketUtils.ensureRunningOnSameThread(packet, this, this.player.getLevel());
+         // Paper start - do not accept invalid information
+         if (packet.viewDistance() < 0) {
+-            LOGGER.warn("Disconnecting " + this.player.getScoreboardName() + " for invalid view distance: " + packet.viewDistance());
+-            this.disconnect("Invalid client settings", PlayerKickEvent.Cause.ILLEGAL_ACTION);
+-            return;
++            // Suki start - allow invalid client view distance
++            if (SukiGlobalConfiguration.get().viewDistance.allowInvalidClientViewDistance) {
++                if (SukiGlobalConfiguration.get().consoleLogs.invalidClientViewDistance) {
++                    LOGGER.warn(this.player.getScoreboardName() + " sent an invalid view distance: " + packet.viewDistance());
++                }
++            } else {
++                if (SukiGlobalConfiguration.get().consoleLogs.invalidClientViewDistance) {
++                    LOGGER.warn("Disconnecting " + this.player.getScoreboardName() + " for invalid client view distance: " + packet.viewDistance());
++                }
++                this.disconnect("Invalid client settings (view distance)", PlayerKickEvent.Cause.ILLEGAL_ACTION);
++                return;
++            }
++            // Suki end - allow invalid client view distance
+         }
+         // Paper end - do not accept invalid information
+         this.player.updateOptions(packet);
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index 77f1c013cacc2c31895ccbd4ba9094aa5f58aebd..9a7dda4c1a84b7a63dfa13747c990514e1507c5d 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -37,6 +37,8 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+         public boolean changeInvalidPoolElementLevelToInfo = false;
+ 
++        public boolean invalidClientViewDistance = true; // Suki - allow invalid client view distance
++
+     }
+ 
+     // Suki end - less console logs
+@@ -62,4 +64,16 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+     // Suki end - no signed chat
+ 
++    // Suki start - allow invalid client view distance
++
++    public ViewDistance viewDistance;
++
++    public class ViewDistance extends ConfigurationPart {
++
++        public boolean allowInvalidClientViewDistance = false;
++
++    }
++
++    // Suki end - allow invalid client view distance
++
+ }
