@@ -950,7 +950,7 @@ index 0000000000000000000000000000000000000000..4ce648be802bb93192fc636d3b1c2e7a
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..75d5a3910905c48735b9fe05a67f50efe85863c4
+index 0000000000000000000000000000000000000000..e9b72a474f521d4f0f76035d554a57fda5d29097
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -0,0 +1,31 @@
@@ -964,7 +964,7 @@ index 0000000000000000000000000000000000000000..75d5a3910905c48735b9fe05a67f50ef
 +
 +@SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
 +public class SukiGlobalConfiguration extends ConfigurationPart {
-+    static final int CURRENT_VERSION = 14;
++    static final int CURRENT_VERSION = 15;
 +    private static SukiGlobalConfiguration instance;
 +    public static SukiGlobalConfiguration get() {
 +        return instance;
@@ -1006,7 +1006,7 @@ index 0000000000000000000000000000000000000000..b4fd4190b899d4dea9420074d96e6431
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..d3611fdd6109b5b54665a4fbd62cacaaf1412388
+index 0000000000000000000000000000000000000000..6317d347152d8fff0a61f6eedbb562a12101301d
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -0,0 +1,41 @@
@@ -1026,7 +1026,7 @@ index 0000000000000000000000000000000000000000..d3611fdd6109b5b54665a4fbd62cacaa
 +@SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
 +public class SukiWorldConfiguration extends ConfigurationPart {
 +    private static final Logger LOGGER = LogUtils.getLogger();
-+    public static final int CURRENT_VERSION = 15;
++    public static final int CURRENT_VERSION = 16;
 +
 +    private transient final SpigotWorldConfig spigotConfig;
 +    private transient final ResourceLocation worldKey;
