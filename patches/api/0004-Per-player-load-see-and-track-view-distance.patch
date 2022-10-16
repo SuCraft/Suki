@@ -1,0 +1,170 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 27 Jan 2022 15:13:02 +0100
+Subject: [PATCH] Per-player load, see and track view distance
+
+
+diff --git a/src/main/java/org/bukkit/World.java b/src/main/java/org/bukkit/World.java
+index e8c0c853eb52d1473c20231660355f77b1f7e016..c8c9addb2a5304e303556a9b53eb9ca1e7bd4f3a 100644
+--- a/src/main/java/org/bukkit/World.java
++++ b/src/main/java/org/bukkit/World.java
+@@ -3910,14 +3910,21 @@ public interface World extends RegionAccessor, WorldInfo, PluginMessageRecipient
+      */
+     int getSendViewDistance();
+ 
++    // Suki start - per-player view distance
+     /**
++     * <strike>
+      * Sets the sending view distance for this world.
+      * <p>
+      * Sending view distance is the view distance where chunks will load in for players in this world.
+      * </p>
+-     * @param viewDistance view distance in [2, 32] or -1
++     * </strike>
++     * In Suki, has no effect
++     * @param viewDistance <strike>view distance in [2, 32] or -1</strike> unused
++     * @deprecated Has no effect
+      */
++    @Deprecated
+     void setSendViewDistance(int viewDistance);
++    // Suki end - per-player view distance
+     // Paper end - view distance api
+ 
+     // Spigot start
+diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
+index d74ad7bb07050e2a1c86f2d59a241aad9291641e..4e8355d0fb1f6b08f31a58770a2228d0afcfd41d 100644
+--- a/src/main/java/org/bukkit/entity/Player.java
++++ b/src/main/java/org/bukkit/entity/Player.java
+@@ -2270,20 +2270,32 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+      */
+     public void setAffectsSpawning(boolean affects);
+ 
++    // Suki start - per-player view distance
+     /**
++     * <strike>
+      * Gets the view distance for this player
++     * </strike>
++     * <br>
++     * In Suki, returns the load view distance for this player
+      *
+-     * @return the player's view distance
+-     * @see org.bukkit.World#getViewDistance()
++     * @return the player's load view distance
++     * @deprecated Use {@link #getLoadViewDistance()}
++     * @see #getLoadViewDistance()
+      */
++    @Deprecated
+     public int getViewDistance();
+ 
+     /**
++     * <strike>
+      * Sets the view distance for this player
++     * </strike>
++     * <br>
++     * In Suki, has no effect
+      *
+-     * @param viewDistance the player's view distance
+-     * @see org.bukkit.World#setViewDistance(int)
++     * @param viewDistance <strike>the player's view distance</strike> unused
++     * @deprecated Has no effect
+      */
++    @Deprecated
+     public void setViewDistance(int viewDistance);
+ 
+     /**
+@@ -2299,48 +2311,88 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+      * @param simulationDistance the player's new simulation distance
+      */
+     public void setSimulationDistance(int simulationDistance);
+-    
++
+     /**
++     * <strike>
+      * Gets the no-ticking view distance for this player.
+      * <p>
+      * No-tick view distance is the view distance where chunks will load, however the chunks and their entities will not
+      * be set to tick.
+      * </p>
+-     * @return The no-tick view distance for this player.
+-     * @deprecated Use {@link #getViewDistance()}
++     * </strike>
++     * In Suki, returns the load view distance for this player
++     * @return The <strike>no-tick</strike> load view distance for this player.
++     * @deprecated Use {@link #getLoadViewDistance()}
++     * @see #getLoadViewDistance()
+      */
+     @Deprecated
+     public int getNoTickViewDistance();
+ 
+     /**
++     * <strike>
+      * Sets the no-ticking view distance for this player.
+      * <p>
+      * No-tick view distance is the view distance where chunks will load, however the chunks and their entities will not
+      * be set to tick.
+      * </p>
+-     * @param viewDistance view distance in [2, 32] or -1
+-     * @deprecated Use {@link #setViewDistance(int)}
++     * </strike>
++     * In Suki, has no effect
++     * @param viewDistance <strike>view distance in [2, 32] or -1</strike> unused
++     * @deprecated Has no effect
+      */
+     @Deprecated
+     public void setNoTickViewDistance(int viewDistance);
+ 
+     /**
++     * <strike>
+      * Gets the sending view distance for this player.
+      * <p>
+      * Sending view distance is the view distance where chunks will load in for players.
+      * </p>
+-     * @return The sending view distance for this player.
++     * </strike>
++     * In Suki, returns the see view distance for this player
++     * @return The <strike>sending</strike> see view distance for this player.
++     * @deprecated Use {@link #getSeeViewDistance()}
++     * @see #getSeeViewDistance
+      */
++    @Deprecated
+     public int getSendViewDistance();
+ 
+     /**
++     * <strike>
+      * Sets the sending view distance for this player.
+      * <p>
+      * Sending view distance is the view distance where chunks will load in for players.
+      * </p>
+-     * @param viewDistance view distance in [2, 32] or -1
++     * </strike>
++     * In Suki, has no effect
++     * @param viewDistance <strike>view distance in [2, 32] or -1</strike> unused
++     * @deprecated Has no effect
+      */
++    @Deprecated
+     public void setSendViewDistance(int viewDistance);
++
++    /**
++     * Gets the track view distance for this player
++     *
++     * @return the player's track view distance
++     */
++    public int getTrackViewDistance();
++
++    /**
++     * Gets the see view distance for this player
++     *
++     * @return the player's see view distance
++     */
++    public int getSeeViewDistance();
++
++    /**
++     * Gets the load view distance for this player
++     *
++     * @return the player's load view distance
++     */
++    public int getLoadViewDistance();
++    // Suki end - per-player view distance
+     // Paper end
+ 
+     /**
