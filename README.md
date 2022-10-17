@@ -11,7 +11,7 @@
 
 Suki is a [Paper](https://github.com/PaperMC/Paper) server fork for SuCraft, a survival server since August 2011. As such, it must be stable and high performance.
 
-Suki is a fork of [Mirai](https://github.com/etil2jz/Mirai), which includes various reasonably stable improvements from [Pufferfish](https://github.com/pufferfish-gg/Pufferfish), [Petal](https://github.com/Bloom-host/Petal), [Lithium](https://github.com/CaffeineMC/lithium-fabric) and more. To maintain stability, Suki may not always update from upstream right away if changes to Mirai have not been tested.
+Suki is a direct fork of [Mirai](https://github.com/etil2jz/Mirai), which includes various reasonably stable improvements from [Pufferfish](https://github.com/pufferfish-gg/Pufferfish), [Petal](https://github.com/Bloom-host/Petal), [Lithium](https://github.com/CaffeineMC/lithium-fabric) and more. To maintain stability, Suki may not always update from upstream right away if changes to Mirai have not been tested.
 
 Suki adds unique performance mechanics specially geared towards getting the most out of your hardware for a community server.
 
@@ -19,9 +19,9 @@ Suki adds unique performance mechanics specially geared towards getting the most
 
 ## Features
 
-<h3>Inherited from Mirai</h3>
+<h3>Inherited</h3>
 
-- Fork of **[Pufferfish](https://github.com/pufferfish-gg/Pufferfish)** for the best performance.
+- Fork of **[Mirai](https://github.com/etil2jz/Mirai)**, **[Pufferfish](https://github.com/pufferfish-gg/Pufferfish)** for the best performance.
 - Contains **[Lithium](https://github.com/CaffeineMC/lithium-fabric)** patches which respect vanilla parity.
 - Async pathfinding and multithreaded entity tracker from **[Petal](https://github.com/Bloom-host/Petal)** which drastically reduce entity load.
 - Reduced bandwidth consumption and CPU usage from avoiding sending useless packets in certain situations.
@@ -56,7 +56,7 @@ Suki adds unique performance mechanics specially geared towards getting the most
     </li>
 </ul>
 <ul>
-    <b>Accurate async thread usage</b> <a href="https://github.com/SuCraft/Suki/wiki/Features#accurate-async-cpu-usage">(&#10141; Wiki)</a>
+    <b>Accurate async CPU usage</b> <a href="https://github.com/SuCraft/Suki/wiki/Features#accurate-async-cpu-usage">(&#10141; Wiki)</a>
     <li>
     Environment variables that give you full control over the number of CPU cores/threads used for async tasks, such as chunk loading, entity tracking and async plugin tasks.
     </li>
