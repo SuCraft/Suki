@@ -885,7 +885,7 @@ index 236c9aea9ffc36269e5c32eacc9f1fd6bd039c88..5d56865ec4d3512df835d13ac6113851
       * Get a NamespacedKey from the supplied string with a default namespace if
       * a namespace is not defined. This is a utility method meant to fetch a
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 9a0af1b76191a49f9e00a645224bbcc73eda45c8..b3a25e44c746de2cb3d62cdd436534ab52707e7e 100644
+index 9ac05fc3775e39badeca42bfc2fb9d3ca0f88243..557521eda5e42b3821ee40c36f3e39ea349674fe 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
 @@ -12,6 +12,7 @@ import java.util.Map;
@@ -909,7 +909,7 @@ index 9a0af1b76191a49f9e00a645224bbcc73eda45c8..b3a25e44c746de2cb3d62cdd436534ab
      /**
       * Get a list of all recipes for a given item. The stack size is ignored
       * in comparisons. If the durability is -1, it will match any data value.
-@@ -2153,5 +2160,16 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2162,5 +2169,16 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       * @return the potion brewer
       */
      @NotNull org.bukkit.potion.PotionBrewer getPotionBrewer();
