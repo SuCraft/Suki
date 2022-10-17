@@ -2785,7 +2785,7 @@ index 09be313aefd5dda15bd4db6ee0324b2aec879744..0d1640a07ee883e47537d475b4f35591
          this.positionCodec.setBase(entity.trackingPosition());
          this.yRotp = Mth.floor(entity.getYRot() * 256.0F / 360.0F);
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index a53d974d3982e62d83e6fc043232c83aaa2d203e..f910aac7fec7a6168a9a1548bc8fd93be2c52563 100644
+index 0ae4b02f256082d7e67d2aef96e7ab6c6a3daa66..e15a859fb60d89f317478ce91072971ec3f90fd8 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -8,14 +8,21 @@ import com.mojang.logging.LogUtils;
@@ -2859,7 +2859,7 @@ index a53d974d3982e62d83e6fc043232c83aaa2d203e..f910aac7fec7a6168a9a1548bc8fd93b
      private BlockPos respawnPosition;
 @@ -548,7 +562,7 @@ public class ServerPlayer extends Player {
  
-     private int maxNumberOfChunkPacketsInTransitBasedOnConnection = SukiGlobalConfiguration.get().networkConstrainedChunkSending.maxChunkPacketsInTransit.initial;
+     private int maxNumberOfChunkPacketsInTransitBasedOnConnection = SukiGlobalConfiguration.get().networkConstrainedChunkSending.initialMaxChunkPacketsInTransit;
      // Keep track of chunk packets in transit
 -    private final ArrayDeque<ChunkPacketInTransit> chunkInitializationPacketsInTransitKeepaliveIds = new ArrayDeque<>();
 +    public final ArrayDeque<ChunkPacketInTransit> chunkInitializationPacketsInTransitKeepaliveIds = new ArrayDeque<>(); // Suki - custom blocks and items
@@ -6881,7 +6881,7 @@ index aef7198ca8b781d02204098811086b25050ab262..b499428caa585b203fb44ad944886383
          ImmutableMap<ResourceLocation, LootTable> immutablemap = builder.build();
          LootContextParamSet lootcontextparameterset = LootContextParamSets.ALL_PARAMS;
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index c92116cb87c1c6468f6c1102fd8ec846f9c14812..06bf2bd406cf809e82203ef223e379b1aa9d2e4d 100644
+index ad5ee3d530becf1f6cff5529af1c5ea865e09d2a..4c104334f0b206fd339594c5333dd8e7b4c053f0 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -42,6 +42,7 @@ import java.util.Optional;
@@ -15709,10 +15709,10 @@ index 0000000000000000000000000000000000000000..1e4df1a6352ec2fac270fee29de325e3
 +
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index fa6c5a1f08507db5538d21e6af1a796c574ef3f6..cd0cacc971dcfa77109b7a7c6336211aa0507ed3 100644
+index 747537f3493e78df3af0e820e178d12dfa5d5622..cd027cf61a1820382dd99a9463366a2064405750 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -414,4 +414,16 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -410,4 +410,16 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - hide game modes
  

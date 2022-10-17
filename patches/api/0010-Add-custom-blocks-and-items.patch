@@ -5,7 +5,7 @@ Subject: [PATCH] Add custom blocks and items
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 994e81359154fc52392fe64cbe5f17a7a67e66c0..6cb3bdcf6ca967b010d2793747d7169ad737bf50 100644
+index d77ed18ed4409bd7c6d0b42fea5d6e501cf2e4a4..a5b2ae8a75ca2f4f6c3279adad0795062c7f12f3 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
 @@ -12,6 +12,7 @@ import java.util.Map;
@@ -31,7 +31,7 @@ index 994e81359154fc52392fe64cbe5f17a7a67e66c0..6cb3bdcf6ca967b010d2793747d7169a
      /**
       * Get a list of all recipes for a given item. The stack size is ignored
       * in comparisons. If the durability is -1, it will match any data value.
-@@ -2446,6 +2455,23 @@ public final class Bukkit {
+@@ -2448,6 +2457,23 @@ public final class Bukkit {
      public static @NotNull org.bukkit.potion.PotionBrewer getPotionBrewer() {
          return server.getPotionBrewer();
      }
@@ -885,7 +885,7 @@ index 236c9aea9ffc36269e5c32eacc9f1fd6bd039c88..5d56865ec4d3512df835d13ac6113851
       * Get a NamespacedKey from the supplied string with a default namespace if
       * a namespace is not defined. This is a utility method meant to fetch a
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 9ac05fc3775e39badeca42bfc2fb9d3ca0f88243..557521eda5e42b3821ee40c36f3e39ea349674fe 100644
+index 011a9944aadb759697a289a7178dcea8659f772d..e797510cc7370512f01b39bb27f6007b09d88766 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
 @@ -12,6 +12,7 @@ import java.util.Map;
