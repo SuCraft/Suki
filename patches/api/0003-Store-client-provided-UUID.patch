@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: MartijnMuijsers <martijnmuijsers@live.nl>
 Date: Mon, 3 Oct 2022 20:33:38 +0200
-Subject: [PATCH] Login protocol changes
+Subject: [PATCH] Store client-provided UUID
 
 
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
