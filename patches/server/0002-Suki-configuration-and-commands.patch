@@ -4,6 +4,20 @@ Date: Thu, 13 Oct 2022 18:09:28 +0200
 Subject: [PATCH] Suki configuration and commands
 
 
+diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
+index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..78bfb0cefd767ef7bc9f1b000a50ac3483edd6ab 100644
+--- a/src/main/java/co/aikar/timings/TimingsExport.java
++++ b/src/main/java/co/aikar/timings/TimingsExport.java
+@@ -243,7 +243,8 @@ public class TimingsExport extends Thread {
+             pair("bukkit", mapAsJSON(Bukkit.spigot().getBukkitConfig(), null)),
+             pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Pufferfish
+             pair("pufferfish", mapAsJSON(gg.pufferfish.pufferfish.PufferfishConfig.getConfigCopy(), null)), // Pufferfish // Mirai
+-            pair("mirai", mapAsJSON(wtf.etil.mirai.MiraiConfig.getConfigCopy(), null)) // Mirai
++            pair("mirai", mapAsJSON(wtf.etil.mirai.MiraiConfig.getConfigCopy(), null)), // Mirai // Suki - Suki configuration
++            pair("suki", mapAsJSON(Bukkit.spigot().getSukiConfig(), null)) // Suki - Suki configuration
+         ));
+ 
+         new TimingsExport(listeners, parent, history).start();
 diff --git a/src/main/java/io/papermc/paper/configuration/ConfigurationPart.java b/src/main/java/io/papermc/paper/configuration/ConfigurationPart.java
 index 7a4a7a654fe2516ed894a68f2657344df9d70f4c..0a501c3ba5382dae230122066c131de631edff0d 100644
 --- a/src/main/java/io/papermc/paper/configuration/ConfigurationPart.java
