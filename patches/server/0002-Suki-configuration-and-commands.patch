@@ -325,7 +325,7 @@ index 4f79fb616d594c1d1456cf7efc938c6621fbee68..76832f628c4f0145003041f48a921521
          this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index f1045f33e4ef9e15746b6135f6e4f47d3bea2701..761f754e56f00b2de83cc433900ba893d34995c7 100644
+index 2bbf1fd287a88c8b5375a4e8079fe07fe1cece3f..8ef4eff507caa899252f94a607c92de68ce4d36e 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -964,6 +964,7 @@ public final class CraftServer implements Server {
@@ -950,7 +950,7 @@ index 0000000000000000000000000000000000000000..4ce648be802bb93192fc636d3b1c2e7a
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..eefccd131613f2837bb7d0e3889d5a784c67a840
+index 0000000000000000000000000000000000000000..ba7c3818d17db725e6c39f4e0837b1fd1a3d0dfb
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -0,0 +1,31 @@
@@ -964,7 +964,7 @@ index 0000000000000000000000000000000000000000..eefccd131613f2837bb7d0e3889d5a78
 +
 +@SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
 +public class SukiGlobalConfiguration extends ConfigurationPart {
-+    static final int CURRENT_VERSION = 17;
++    static final int CURRENT_VERSION = 18;
 +    private static SukiGlobalConfiguration instance;
 +    public static SukiGlobalConfiguration get() {
 +        return instance;

@@ -5,7 +5,7 @@ Subject: [PATCH] Hide plugins
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 761f754e56f00b2de83cc433900ba893d34995c7..d86ca64b3ffdccee6dfd2eb09453ad31e963d318 100644
+index 8ef4eff507caa899252f94a607c92de68ce4d36e..a5da9d5c11077c6f902d1d939f67f87694a6dc29 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -16,6 +16,7 @@ import com.mojang.serialization.Lifecycle;
@@ -74,12 +74,12 @@ index 40b66adcb5aac64212b1937dc506ebb60f2eed83..37ac972e8879070219c2b4ad273ff304
  
          // Amend help topics from the help.yml file
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index d9f91637a80bcde12d8825792b24e92fd623d824..819da74edfe1045789623d4c7ec15c87af5ebb73 100644
+index 2698acf366032c21647fec963423470cb5939f24..75f5a17b3413ba11bfcdccc5479fcde56b476ae4 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -140,4 +140,16 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
-     // Suki end - configurable TPS catch-up
+     // Suki end - TPS options
  
 +    // Suki start - hide plugins
 +
