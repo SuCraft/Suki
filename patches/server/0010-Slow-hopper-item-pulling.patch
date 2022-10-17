@@ -6,7 +6,7 @@ Subject: [PATCH] Slow hopper item pulling
 This patch is based on patch from the EmpireCraft fork (https://github.com/starlis/empirecraft) by Aikar.
 
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index 3fbcd5e5d83b4451d2bf169971aa23ae5402184b..812e3fef555a98e8c715c0a32cb825bfacf22985 100644
+index 3fbcd5e5d83b4451d2bf169971aa23ae5402184b..2a8981ca6b8cde78b1d85029f33f17ebec95fe84 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 @@ -19,11 +19,13 @@ import net.minecraft.world.entity.Entity;
@@ -38,7 +38,7 @@ index 3fbcd5e5d83b4451d2bf169971aa23ae5402184b..812e3fef555a98e8c715c0a32cb825bf
 +        if (level.sukiConfig().itemPickup.hopper.tickRate == 1) {
 +            return;
 +        }
-+        if (this.isAlive() && this.onGround && this.age < level.sukiConfig().itemPickup.hopper.minecartImmunity.detection.maxAge && this.age % level.sukiConfig().itemPickup.hopper.minecartImmunity.detection.tickRate == 0) {
++        if (level.sukiConfig().itemPickup.hopper.minecartImmunity.duration >= 0 && this.isAlive() && this.onGround && (level.sukiConfig().itemPickup.hopper.minecartImmunity.detection.maxAge == -1 || this.age < level.sukiConfig().itemPickup.hopper.minecartImmunity.detection.maxAge) && this.age % level.sukiConfig().itemPickup.hopper.minecartImmunity.detection.tickRate == 0) {
 +            AABB aabb = this.getBoundingBox().inflate(level.sukiConfig().itemPickup.hopper.minecartImmunity.detection.horizontalDistance, level.sukiConfig().itemPickup.hopper.minecartImmunity.detection.verticalDistance, level.sukiConfig().itemPickup.hopper.minecartImmunity.detection.horizontalDistance);
 +            for (Entity entity : this.level.getEntities(this, aabb)) {
 +                if (entity instanceof MinecartHopper) {
@@ -161,7 +161,7 @@ index 698a0ac71cf9fb409d609a81cc2958121260a46d..3f480290d5e0b376de1b9fa0fe2194b6
  
      // Paper - method unused as logic is inlined above
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index a1ba14a056d10d9d0d29cc0d09ad8513d7983214..2f1abf2b6e3e1e7930a783c5023e5d257afd7105 100644
+index 04f8382680fb6f26e64ecbd0a921cdbfb857c4f6..248dca86bce146e06a39d1ad63a5f4d119691981 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -50,4 +50,42 @@ public class SukiWorldConfiguration extends ConfigurationPart {
