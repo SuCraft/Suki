@@ -205,7 +205,7 @@ index 37a6894fba46eb8b091d88e9ab73b801d6ba6213..60c40bf42045a3ebc59349a23cafcc8e
  import org.spigotmc.SpigotWorldConfig;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..f31b137b7c32f0dc90878f73c1424c81bd6c2a3d 100644
+index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..bd14d73c553bfdd27f01ac7db5d5c639aaba4724 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -7,6 +7,7 @@ import com.mojang.datafixers.util.Either;
@@ -244,7 +244,7 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..f31b137b7c32f0dc90878f73c1424c81
 +
 +    private final Object networkConstrainedSendingLock = new Object();
 +
-+    private int maxNumberOfChunkPacketsInTransitBasedOnConnection = SukiGlobalConfiguration.get().networkConstrainedChunkSending.maxChunkPacketsInTransit.initial;
++    private int maxNumberOfChunkPacketsInTransitBasedOnConnection = SukiGlobalConfiguration.get().networkConstrainedChunkSending.initialMaxChunkPacketsInTransit;
 +    // Keep track of chunk packets in transit
 +    private final ArrayDeque<ChunkPacketInTransit> chunkInitializationPacketsInTransitKeepaliveIds = new ArrayDeque<>();
 +
@@ -452,10 +452,10 @@ index b5caf4c74864b03c4cb351e3b2747cb956ac7880..a7014ef7d826cebdd38d7ea5fb6caa61
      public void handlePlayerAbilities(ServerboundPlayerAbilitiesPacket packet) {
          PacketUtils.ensureRunningOnSameThread(packet, this, this.player.getLevel());
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 99e7b168fb13722ec208cb8d8c024ffe9795d543..79f3089e712e21a4ab08169b0b683357a37ce078 100644
+index 5e6cb591307b7f3712d6862aef53e69952af7dd1..39ae5e40c7facba64383eedca4b713db485e336b 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -246,4 +246,32 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -246,4 +246,28 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - configurable login timeout
  
@@ -465,11 +465,7 @@ index 99e7b168fb13722ec208cb8d8c024ffe9795d543..79f3089e712e21a4ab08169b0b683357
 +
 +    public class NetworkConstrainedChunkSending extends ConfigurationPart {
 +
-+        public transient MaxChunkPacketsInTransit maxChunkPacketsInTransit;
-+
-+        public class MaxChunkPacketsInTransit extends ConfigurationPart {
-+            public transient int initial = 12;
-+        }
++        public transient int initialMaxChunkPacketsInTransit = 12;
 +
 +        /**
 +         * In milliseconds
@@ -489,7 +485,7 @@ index 99e7b168fb13722ec208cb8d8c024ffe9795d543..79f3089e712e21a4ab08169b0b683357
 +
  }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 525595ba24619722bbac6872084f1fae3eb2d5c6..abbda9dd7a79ef49b9bd1739d322b871aebb9e31 100644
+index 533e80ad6193b4f983ebf7b3c3b0a526d1cc9047..f8e9f30e76c4a57f9718a700263acf4099e868d6 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -554,4 +554,26 @@ public class SukiWorldConfiguration extends ConfigurationPart {
