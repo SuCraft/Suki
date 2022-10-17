@@ -5,10 +5,72 @@ Subject: [PATCH] Suki configuration and commands
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..78bfb0cefd767ef7bc9f1b000a50ac3483edd6ab 100644
+index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..7153af98854e518b2c46225c2564fdf1939a7afa 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
-@@ -243,7 +243,8 @@ public class TimingsExport extends Thread {
+@@ -29,6 +29,7 @@ import net.kyori.adventure.text.event.ClickEvent;
+ import net.kyori.adventure.text.format.NamedTextColor;
+ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+ import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.dedicated.DedicatedServer;
+ import org.apache.commons.lang.StringUtils;
+ import org.bukkit.Bukkit;
+ import org.bukkit.Material;
+@@ -238,12 +239,62 @@ public class TimingsExport extends Thread {
+ 
+         // Information on the users Config
+ 
++        // Suki start - Suki configuration - include vanilla server.properties in timings
++
++        var vanillaServerSettingsJSON = new JSONObject();
++        {
++            var server = (DedicatedServer) MinecraftServer.getServer();
++            var properties = server.getProperties();
++            vanillaServerSettingsJSON.put("enable-command-block", String.valueOf(properties.enableCommandBlock));
++            vanillaServerSettingsJSON.put("gamemode", String.valueOf(properties.gamemode));
++            vanillaServerSettingsJSON.put("enforce-secure-profile", String.valueOf(properties.enforceSecureProfile));
++            vanillaServerSettingsJSON.put("pvp", String.valueOf(properties.pvp));
++            vanillaServerSettingsJSON.put("generate-structures", String.valueOf(properties.worldGenProperties.generateStructures()));
++            vanillaServerSettingsJSON.put("max-chained-neighbor-updates", String.valueOf(properties.maxChainedNeighborUpdates));
++            vanillaServerSettingsJSON.put("difficulty", String.valueOf(properties.difficulty));
++            vanillaServerSettingsJSON.put("network-compression-threshold", String.valueOf(properties.networkCompressionThreshold));
++            vanillaServerSettingsJSON.put("max-tick-time", String.valueOf(properties.maxTickTime));
++            properties.serverResourcePackInfo.ifPresent(it -> vanillaServerSettingsJSON.put("require-resource-pack", String.valueOf(it.isRequired())));
++            vanillaServerSettingsJSON.put("max-players", String.valueOf(properties.maxPlayers));
++            vanillaServerSettingsJSON.put("use-native-transport", String.valueOf(properties.useNativeTransport));
++            vanillaServerSettingsJSON.put("online-mode", String.valueOf(properties.onlineMode));
++            vanillaServerSettingsJSON.put("enable-status", String.valueOf(properties.enableStatus));
++            vanillaServerSettingsJSON.put("allow-flight", String.valueOf(properties.allowFlight));
++            vanillaServerSettingsJSON.put("view-distance", String.valueOf(properties.viewDistance));
++            vanillaServerSettingsJSON.put("allow-nether", String.valueOf(properties.allowNether));
++            vanillaServerSettingsJSON.put("sync-chunk-writes", String.valueOf(properties.syncChunkWrites));
++            vanillaServerSettingsJSON.put("op-permission-level", String.valueOf(properties.opPermissionLevel));
++            vanillaServerSettingsJSON.put("prevent-proxy-connections", String.valueOf(properties.preventProxyConnections));
++            vanillaServerSettingsJSON.put("hide-online-players", String.valueOf(properties.hideOnlinePlayers));
++            vanillaServerSettingsJSON.put("entity-broadcast-range-percentage", String.valueOf(properties.entityBroadcastRangePercentage));
++            vanillaServerSettingsJSON.put("simulation-distance", String.valueOf(properties.simulationDistance));
++            vanillaServerSettingsJSON.put("player-idle-timeout", String.valueOf(properties.playerIdleTimeout));
++            vanillaServerSettingsJSON.put("debug", String.valueOf(properties.debug));
++            vanillaServerSettingsJSON.put("force-gamemode", String.valueOf(properties.forceGameMode));
++            vanillaServerSettingsJSON.put("rate-limit", String.valueOf(properties.rateLimitPacketsPerSecond));
++            vanillaServerSettingsJSON.put("hardcore", String.valueOf(properties.hardcore));
++            vanillaServerSettingsJSON.put("white-list", String.valueOf(properties.whiteList));
++            vanillaServerSettingsJSON.put("spawn-npcs", String.valueOf(properties.spawnNpcs));
++            vanillaServerSettingsJSON.put("previews-chat", String.valueOf(properties.previewsChat));
++            vanillaServerSettingsJSON.put("spawn-animals", String.valueOf(properties.spawnAnimals));
++            vanillaServerSettingsJSON.put("function-permission-level", String.valueOf(properties.functionPermissionLevel));
++            vanillaServerSettingsJSON.put("level-type", properties.worldGenProperties.levelType());
++            vanillaServerSettingsJSON.put("spawn-monsters", String.valueOf(properties.spawnMonsters));
++            vanillaServerSettingsJSON.put("enforce-whitelist", String.valueOf(properties.enforceWhitelist));
++            vanillaServerSettingsJSON.put("spawn-protection", String.valueOf(properties.spawnProtection));
++            vanillaServerSettingsJSON.put("max-world-size", String.valueOf(properties.maxWorldSize));
++        }
++
++        // Suki end - Suki configuration - include vanilla server.properties in timings
++
+         parent.put("config", createObject(
++            pair("server.properties", vanillaServerSettingsJSON), // Suki - Suki configuration- include vanilla server.properties in timings
+             pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
              pair("bukkit", mapAsJSON(Bukkit.spigot().getBukkitConfig(), null)),
              pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Pufferfish
              pair("pufferfish", mapAsJSON(gg.pufferfish.pufferfish.PufferfishConfig.getConfigCopy(), null)), // Pufferfish // Mirai
@@ -296,6 +358,19 @@ index 60ba00eb6daeeb9b97281f9380d373af3cc29402..e99aa5c5f0b221176bac8fdaeaafb140
          com.destroystokyo.paper.Metrics.PaperMetrics.startMetrics();
          com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
          io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
+diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java
+index 3e4a3915cdf29fc964e0314ce01d156dd2f4f873..19214a855ce4b7610a21c9514e81ebc51abdb10a 100644
+--- a/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java
++++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java
+@@ -96,7 +96,7 @@ public class DedicatedServerProperties extends Settings<DedicatedServerPropertie
+     public final Settings<DedicatedServerProperties>.MutableValue<Integer> playerIdleTimeout;
+     public final Settings<DedicatedServerProperties>.MutableValue<Boolean> whiteList;
+     public final boolean enforceSecureProfile;
+-    private final DedicatedServerProperties.WorldGenProperties worldGenProperties;
++    public final DedicatedServerProperties.WorldGenProperties worldGenProperties; // Suki - Suki configuration- include vanilla server.properties in timings
+     @Nullable
+     private WorldGenSettings worldGenSettings;
+ 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
 index 3f749f33f9168455cfe14a6e6120f36b412205f3..e85b95fe0339dcc3f6a542984f0ac398b14f7173 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
