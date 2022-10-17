@@ -2132,7 +2132,7 @@ index 60c37b0e71dd2b1b859d23a49f218142d2a92485..a75c1d567e44e5a1087823bcc652228e
      @Override
      public <T> T getClientOption(com.destroystokyo.paper.ClientOption<T> type) {
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 3a74eabaa5c477e9514c28e0b878fc0352d8fb47..a78d8484034097a12c967a40af11cf37a25297c4 100644
+index a7e2ce3c3a4dc6694286127a7122d42838a5eaff..99e7b168fb13722ec208cb8d8c024ffe9795d543 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -4,6 +4,7 @@ package org.sucraft.suki.configuration;
@@ -2212,7 +2212,7 @@ index 3a74eabaa5c477e9514c28e0b878fc0352d8fb47..a78d8484034097a12c967a40af11cf37
      // Suki start - configurable keep-alive
  
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 32320046d7a8ddd63901bdbe892728e876e70dba..1dbb8c52a07b313322dbf0c9ba38b2a40afecd5b 100644
+index 00c7513a4e075bbbdeb7d620dd8230c6325a7210..525595ba24619722bbac6872084f1fae3eb2d5c6 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -8,6 +8,9 @@ import io.papermc.paper.configuration.ConfigurationPart;
@@ -2225,7 +2225,7 @@ index 32320046d7a8ddd63901bdbe892728e876e70dba..1dbb8c52a07b313322dbf0c9ba38b2a4
  import org.slf4j.Logger;
  import org.spigotmc.SpigotWorldConfig;
  import org.spongepowered.configurate.objectmapping.meta.Setting;
-@@ -385,5 +388,160 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -395,5 +398,160 @@ public class SukiWorldConfiguration extends ConfigurationPart {
  
      // Suki end - more entity activation configuration
  

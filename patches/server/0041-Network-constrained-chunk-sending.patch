@@ -489,10 +489,10 @@ index 99e7b168fb13722ec208cb8d8c024ffe9795d543..79f3089e712e21a4ab08169b0b683357
 +
  }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 467b28702f3b51fa1d61345c011e969a9465b6cc..8b583339518f675f79e73000169ed826906aceed 100644
+index 525595ba24619722bbac6872084f1fae3eb2d5c6..abbda9dd7a79ef49b9bd1739d322b871aebb9e31 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -544,4 +544,26 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -554,4 +554,26 @@ public class SukiWorldConfiguration extends ConfigurationPart {
  
      // Suki end - per-player view distance
  
