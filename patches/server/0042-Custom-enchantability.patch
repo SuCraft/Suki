@@ -957,10 +957,10 @@ index 09b6475b77ebc7f43c13861aa2af26e2f6e6a8b5..ed97c55780e9e99dd6b6fa3933b53850
      public net.kyori.adventure.text.event.HoverEvent<net.kyori.adventure.text.event.HoverEvent.ShowItem> asHoverEvent(final ItemStack item, final java.util.function.UnaryOperator<net.kyori.adventure.text.event.HoverEvent.ShowItem> op) {
          final net.minecraft.nbt.CompoundTag tag = CraftItemStack.asNMSCopy(item).getTag();
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 18dc034143d421fe83401dc4d69f4a00a17f3a76..032d2b55f68c1f4e7ecdbe1970698518c8ea8ac4 100644
+index 612173201b22bf0e79e87e590a2c383a49f48d9f..e8e61246de9d0a054f6d6d3b517bfeff07b31ea9 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -274,4 +274,94 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -274,4 +274,102 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - network-constrained chunk sending
  
@@ -975,7 +975,11 @@ index 18dc034143d421fe83401dc4d69f4a00a17f3a76..032d2b55f68c1f4e7ecdbe1970698518
 +        public class Protection extends ConfigurationPart {
 +
 +            public boolean elytra = false;
-+            public boolean shield = false;
++
++            /**
++             * Not functional yet
++             */
++            public transient boolean shield = false;
 +
 +        }
 +
@@ -984,7 +988,11 @@ index 18dc034143d421fe83401dc4d69f4a00a17f3a76..032d2b55f68c1f4e7ecdbe1970698518
 +        public class Thorns extends ConfigurationPart {
 +
 +            public boolean elytra = false;
-+            public boolean shield = false;
++
++            /**
++             * Not functional yet
++             */
++            public transient boolean shield = false;
 +
 +        }
 +
