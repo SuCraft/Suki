@@ -5,7 +5,7 @@ Subject: [PATCH] Hide plugins
 
 
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index b20d8f106d1acda91826425547d2761060eecca1..9ac05fc3775e39badeca42bfc2fb9d3ca0f88243 100644
+index a55acc7b338f34bd7d8443ada50d25e4f9414967..011a9944aadb759697a289a7178dcea8659f772d 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
 @@ -123,6 +123,12 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
