@@ -465,12 +465,6 @@ index 99e7b168fb13722ec208cb8d8c024ffe9795d543..79f3089e712e21a4ab08169b0b683357
 +
 +    public class NetworkConstrainedChunkSending extends ConfigurationPart {
 +
-+        public transient MaxChunkPacketsInTransit maxChunkPacketsInTransit;
-+
-+        public class MaxChunkPacketsInTransit extends ConfigurationPart {
-+            public transient int initial = 12;
-+        }
-+
 +        /**
 +         * In milliseconds
 +         * <br>
@@ -505,6 +499,8 @@ index 525595ba24619722bbac6872084f1fae3eb2d5c6..abbda9dd7a79ef49b9bd1739d322b871
 +        public MaxChunkPacketsInTransit maxChunkPacketsInTransit;
 +
 +        public class MaxChunkPacketsInTransit extends ConfigurationPart {
++
++            public transient int initial = 12;
 +
 +            public transient int min = -1;
 +
