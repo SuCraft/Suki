@@ -11,7 +11,7 @@
 
 Suki is a [Paper](https://github.com/PaperMC/Paper) server fork for SuCraft, a survival server since August 2011. As such, it must be stable and high performance.
 
-Suki is a fork of [Mirai](https://github.com/etil2jz/Mirai), which includes various reasonably stable improvements from [Pufferfish](https://github.com/pufferfish-gg/Pufferfish), [Petal](https://github.com/Bloom-host/Petal), [Lithium](https://github.com/CaffeineMC/lithium-fabric) and more. To maintain stability, Suki may not always update from upstream right away if changes to Mirai have not been tested.
+Suki is a direct fork of [Mirai](https://github.com/etil2jz/Mirai), which includes various reasonably stable improvements from [Pufferfish](https://github.com/pufferfish-gg/Pufferfish), [Petal](https://github.com/Bloom-host/Petal), [Lithium](https://github.com/CaffeineMC/lithium-fabric) and more. To maintain stability, Suki may not always update from upstream right away if changes to Mirai have not been tested.
 
 Suki adds unique performance mechanics specially geared towards getting the most out of your hardware for a community server.
 
