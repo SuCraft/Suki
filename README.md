@@ -19,9 +19,9 @@ Suki adds unique performance mechanics specially geared towards getting the most
 
 ## Features
 
-<h3>Inherited from Mirai</h3>
+<h3>Inherited</h3>
 
-- Fork of **[Pufferfish](https://github.com/pufferfish-gg/Pufferfish)** for the best performance.
+- Fork of **[Mirai](https://github.com/etil2jz/Mirai)**, **[Pufferfish](https://github.com/pufferfish-gg/Pufferfish)** for the best performance.
 - Contains **[Lithium](https://github.com/CaffeineMC/lithium-fabric)** patches which respect vanilla parity.
 - Async pathfinding and multithreaded entity tracker from **[Petal](https://github.com/Bloom-host/Petal)** which drastically reduce entity load.
 - Reduced bandwidth consumption and CPU usage from avoiding sending useless packets in certain situations.
