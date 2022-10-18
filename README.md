@@ -56,7 +56,7 @@ Suki adds unique performance mechanics specially geared towards getting the most
     </li>
 </ul>
 <ul>
-    <b>Accurate async thread usage</b> <a href="https://github.com/SuCraft/Suki/wiki/Features#accurate-async-cpu-usage">(&#10141; Wiki)</a>
+    <b>Accurate async CPU usage</b> <a href="https://github.com/SuCraft/Suki/wiki/Features#accurate-async-cpu-usage">(&#10141; Wiki)</a>
     <li>
     Environment variables that give you full control over the number of CPU cores/threads used for async tasks, such as chunk loading, entity tracking and async plugin tasks.
     </li>
