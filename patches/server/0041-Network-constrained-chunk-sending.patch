@@ -5,7 +5,7 @@ Subject: [PATCH] Network-constrained chunk sending
 
 
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..92d61fc90e34a49fdfcdee0d5b7dc8f19bcc597a 100644
+index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..e13edea17e5c9ef034c4adb5ee207c335433437a 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -25,7 +25,9 @@ import org.bukkit.entity.Player;
@@ -77,7 +77,7 @@ index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..92d61fc90e34a49fdfcdee0d5b7dc8f1
          this.chunkSendWaitQueue.remove(loaderData);
          synchronized (this.sendingChunkCounts) {
              final int count = this.sendingChunkCounts.removeInt(loaderData);
-@@ -562,6 +574,32 @@ public final class PlayerChunkLoader {
+@@ -562,6 +574,28 @@ public final class PlayerChunkLoader {
          if (time < nextChunkSend) {
              return;
          }
@@ -87,17 +87,13 @@ index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..92d61fc90e34a49fdfcdee0d5b7dc8f1
 +        while (transmittingWaitQueueIterator.hasNext()) {
 +            PlayerLoaderData data = transmittingWaitQueueIterator.next();
 +            ChunkPriorityHolder firstQueuedSend;
-+            try {
-+                firstQueuedSend = data.getSendQueue(true).first();
-+            } catch (NoSuchElementException e){
-+                firstQueuedSend = null;
++            {
++                var trackSendQueue = data.getSendQueue(true);
++                firstQueuedSend = trackSendQueue.isEmpty() ? null : trackSendQueue.first();
 +            }
 +            if (firstQueuedSend == null) {
-+                try {
-+                    firstQueuedSend = data.getSendQueue(false).first();
-+                } catch (NoSuchElementException e) {
-+                    firstQueuedSend = null;
-+                }
++                var seeSendQueue = data.getSendQueue(false);
++                firstQueuedSend = seeSendQueue.isEmpty() ? null : seeSendQueue.first();
 +            }
 +            if (firstQueuedSend != null) {
 +                if (data.player.canSendChunkInitializationPacketNow(new ChunkPos(firstQueuedSend.chunkX, firstQueuedSend.chunkZ))) {
@@ -110,26 +106,22 @@ index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..92d61fc90e34a49fdfcdee0d5b7dc8f1
          // drain entries from wait queue
          while (!this.chunkSendWaitQueue.isEmpty()) {
              final PlayerLoaderData data = this.chunkSendWaitQueue.first();
-@@ -599,13 +637,25 @@ public final class PlayerChunkLoader {
+@@ -599,13 +633,21 @@ public final class PlayerChunkLoader {
              final PlayerLoaderData data = this.chunkSendQueue.removeFirst();
  
              // Suki start - per-player track and see view distance
 -            ChunkPriorityHolder queuedSend = data.getSendQueue(true).pollFirst();
 +
 +            ChunkPriorityHolder queuedSend;
-+            try {
-+                queuedSend = data.getSendQueue(true).pollFirst();
-+            } catch (NoSuchElementException e){
-+                queuedSend = null;
++            {
++                var trackSendQueue = data.getSendQueue(true);
++                queuedSend = trackSendQueue.isEmpty() ? null : trackSendQueue.pollFirst();
 +            }
              boolean concernsTracking = true;
              if (queuedSend == null) {
 -                queuedSend = data.getSendQueue(false).pollFirst();
-+                try {
-+                    queuedSend = data.getSendQueue(false).pollFirst();
-+                } catch (NoSuchElementException e) {
-+                    queuedSend = null;
-+                }
++                var seeSendQueue = data.getSendQueue(false);
++                queuedSend = seeSendQueue.isEmpty() ? null : seeSendQueue.pollFirst();
                  concernsTracking = false;
              }
 +
@@ -138,7 +130,7 @@ index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..92d61fc90e34a49fdfcdee0d5b7dc8f1
              if (queuedSend == null) {
                  concurrentChunkSends.getAndDecrement(); // we never sent, so decrease
                  // stop iterating over players who have nothing to send
-@@ -621,7 +671,7 @@ public final class PlayerChunkLoader {
+@@ -621,7 +663,7 @@ public final class PlayerChunkLoader {
              }
  
              data.nextChunkSendTarget = nextPlayerDeadline;
@@ -147,7 +139,7 @@ index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..92d61fc90e34a49fdfcdee0d5b7dc8f1
  
              synchronized (this.sendingChunkCounts) {
                  this.sendingChunkCounts.addTo(data, 1);
-@@ -1020,6 +1070,7 @@ public final class PlayerChunkLoader {
+@@ -1020,6 +1062,7 @@ public final class PlayerChunkLoader {
          }
  
          public void update() {
@@ -155,7 +147,7 @@ index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..92d61fc90e34a49fdfcdee0d5b7dc8f1
              // Suki start - per-player view distance
              this.player.level.timings.playerChunkLoaderUpdate.startTiming();
              final int loadViewDistance = this.player.getLoadViewDistance();
-@@ -1041,7 +1092,7 @@ public final class PlayerChunkLoader {
+@@ -1041,7 +1084,7 @@ public final class PlayerChunkLoader {
                      this.player.getAbilities().flying);
  
              // make sure we're in the send queue
@@ -452,7 +444,7 @@ index b5caf4c74864b03c4cb351e3b2747cb956ac7880..a7014ef7d826cebdd38d7ea5fb6caa61
      public void handlePlayerAbilities(ServerboundPlayerAbilitiesPacket packet) {
          PacketUtils.ensureRunningOnSameThread(packet, this, this.player.getLevel());
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 5e6cb591307b7f3712d6862aef53e69952af7dd1..39ae5e40c7facba64383eedca4b713db485e336b 100644
+index ba5f7382143a6f3e371167cec9b6749462a2b66d..4cdd6f6fc56c0dec0811f82019158e9dfc691e32 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -246,4 +246,28 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
