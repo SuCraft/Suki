@@ -5,10 +5,10 @@ Subject: [PATCH] Prevent block update client lag
 
 
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index e13edea17e5c9ef034c4adb5ee207c335433437a..544132c75754ead67c6985e7425d0f68b487394c 100644
+index 53c1a614f3164a4113d413d1df21a62d8f099b65..e101d5dd16b316e61b5ca0db026b33bac977385c 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-@@ -928,6 +928,20 @@ public final class PlayerChunkLoader {
+@@ -940,6 +940,20 @@ public final class PlayerChunkLoader {
              return concernsTracking ? this.sendQueueForTracking : this.sendQueueForSeeing;
          }
  
@@ -1014,10 +1014,10 @@ index 07d96cca04c9658291eea91e7b0a7f5a3fc9882e..e562a768ad400a6dca0f1546fb0dddbe
      }
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index bd14d73c553bfdd27f01ac7db5d5c639aaba4724..0676c11ce09633ceaaa90fc2c141b6294d2bf5bd 100644
+index 38f680c4d092c04acac208402ea12b60b1a22e4e..ac761ab0cb7ee585678e9a17fc4dc2e74bfdd1ee 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -617,6 +617,30 @@ public class ServerPlayer extends Player {
+@@ -620,6 +620,30 @@ public class ServerPlayer extends Player {
  
      }
  

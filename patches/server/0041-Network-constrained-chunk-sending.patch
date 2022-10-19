@@ -4,8 +4,51 @@ Date: Thu, 9 Jun 2022 01:17:32 +0200
 Subject: [PATCH] Network-constrained chunk sending
 
 
+diff --git a/src/main/java/co/aikar/timings/MinecraftTimings.java b/src/main/java/co/aikar/timings/MinecraftTimings.java
+index 9da5a6086323ff4c4fd62a035fa8f7efc3d92e38..d9b224efd0792a3309973fc0aeb013d76b1fb63a 100644
+--- a/src/main/java/co/aikar/timings/MinecraftTimings.java
++++ b/src/main/java/co/aikar/timings/MinecraftTimings.java
+@@ -50,6 +50,15 @@ public final class MinecraftTimings {
+ 
+     public static final Timing midTickChunkTasks = Timings.ofSafe("Mid Tick Chunk Tasks");
+ 
++    // Suki start - network-constrained chunk sending - PlayerChunkLoader timings
++    public static final Timing playerChunkLoaderMidTick = Timings.ofSafe("PlayerChunkLoader - Mid Tick");
++    public static final Timing playerChunkLoaderTrySendChunks = Timings.ofSafe("PlayerChunkLoader - trySendChunks");
++    public static final Timing playerChunkLoaderTryLoadChunks = Timings.ofSafe("PlayerChunkLoader - tryLoadChunks");
++    public static final Timing playerChunkLoaderPopulateChunkSendWaitQueue = Timings.ofSafe("PlayerChunkLoader - Populate chunkSendWaitQueue");
++    public static final Timing playerChunkLoaderPopulateChunkSendQueue = Timings.ofSafe("PlayerChunkLoader - Populate chunkSendQueue");
++    public static final Timing playerChunkLoaderSendChunks = Timings.ofSafe("PlayerChunkLoader - Send chunks");
++    // Suki end - network-constrained chunk sending - PlayerChunkLoader timings
++
+     private static final Map<Class<?>, String> taskNameCache = new MapMaker().weakKeys().makeMap();
+ 
+     private MinecraftTimings() {}
+diff --git a/src/main/java/co/aikar/timings/WorldTimingsHandler.java b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
+index d685867d69f95bff0c5677b89722ccf5ffea1f20..5ef90177392c06ff6e0e27df7e08ffd1fbb11601 100644
+--- a/src/main/java/co/aikar/timings/WorldTimingsHandler.java
++++ b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
+@@ -86,6 +86,8 @@ public class WorldTimingsHandler {
+     public final Timing chunkUnloadPOISerialization;
+     public final Timing chunkUnloadDataSave;
+ 
++    public final Timing removeOverdueChunkInitializationPacketsInTransit; // Suki - network-constrained chunk sending - timings
++
+     public WorldTimingsHandler(Level server) {
+         String name = ((PrimaryLevelData) server.getLevelData()).getLevelName() + " - ";
+ 
+@@ -166,6 +168,9 @@ public class WorldTimingsHandler {
+         chunkUnloadPrepareSave = Timings.ofSafe(name + "Chunk unload - Async Save Prepare");
+         chunkUnloadPOISerialization = Timings.ofSafe(name + "Chunk unload - POI Data Serialization");
+         chunkUnloadDataSave = Timings.ofSafe(name + "Chunk unload - Data Serialization");
++
++        removeOverdueChunkInitializationPacketsInTransit = Timings.ofSafe("Remove overdue chunk initialization packets in transit"); // Suki - network-constrained chunk sending - timings
++
+     }
+ 
+     public static Timing getTickList(ServerLevel worldserver, String timingsType) {
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..e13edea17e5c9ef034c4adb5ee207c335433437a 100644
+index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..53c1a614f3164a4113d413d1df21a62d8f099b65 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -25,7 +25,9 @@ import org.bukkit.entity.Player;
@@ -77,12 +120,18 @@ index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..e13edea17e5c9ef034c4adb5ee207c33
          this.chunkSendWaitQueue.remove(loaderData);
          synchronized (this.sendingChunkCounts) {
              final int count = this.sendingChunkCounts.removeInt(loaderData);
-@@ -562,6 +574,28 @@ public final class PlayerChunkLoader {
+@@ -558,11 +570,37 @@ public final class PlayerChunkLoader {
+     protected final Reference2IntOpenHashMap<PlayerLoaderData> sendingChunkCounts = new Reference2IntOpenHashMap<>();
+     private static long nextChunkSend;
+     private void trySendChunks() {
++        co.aikar.timings.MinecraftTimings.playerChunkLoaderTrySendChunks.startTiming(); try { // Suki - network-constrained chunk sending - PlayerChunkLoader timings
+         final long time = System.nanoTime();
          if (time < nextChunkSend) {
              return;
          }
 +        // Suki start - network-constrained chunk sending
 +        // drain entries from busy transmitting wait queue
++        co.aikar.timings.MinecraftTimings.playerChunkLoaderPopulateChunkSendWaitQueue.startTiming(); try { // Suki - network-constrained chunk sending - PlayerChunkLoader timings
 +        Iterator<PlayerLoaderData> transmittingWaitQueueIterator = this.transmittingWaitQueue.iterator();
 +        while (transmittingWaitQueueIterator.hasNext()) {
 +            PlayerLoaderData data = transmittingWaitQueueIterator.next();
@@ -102,11 +151,28 @@ index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..e13edea17e5c9ef034c4adb5ee207c33
 +                }
 +            }
 +        }
++        } finally { co.aikar.timings.MinecraftTimings.playerChunkLoaderPopulateChunkSendWaitQueue.stopTiming(); } // Suki - network-constrained chunk sending - PlayerChunkLoader timings
 +        // Suki end - network-constrained chunk sending
          // drain entries from wait queue
++        co.aikar.timings.MinecraftTimings.playerChunkLoaderPopulateChunkSendQueue.startTiming(); try { // Suki - network-constrained chunk sending - PlayerChunkLoader timings
          while (!this.chunkSendWaitQueue.isEmpty()) {
              final PlayerLoaderData data = this.chunkSendWaitQueue.first();
-@@ -599,13 +633,21 @@ public final class PlayerChunkLoader {
+ 
+@@ -574,11 +612,13 @@ public final class PlayerChunkLoader {
+ 
+             this.chunkSendQueue.add(data);
+         }
++        } finally { co.aikar.timings.MinecraftTimings.playerChunkLoaderPopulateChunkSendQueue.stopTiming(); } // Suki - network-constrained chunk sending - PlayerChunkLoader timings
+ 
+         if (this.chunkSendQueue.isEmpty()) {
+             return;
+         }
+ 
++        co.aikar.timings.MinecraftTimings.playerChunkLoaderSendChunks.startTiming(); try { // Suki - network-constrained chunk sending - PlayerChunkLoader timings
+         final int maxSends = this.getMaxConcurrentChunkSends();
+         final long nextPlayerDeadline = this.getTargetSendPerPlayerAddend() + time;
+         for (;;) {
+@@ -599,13 +639,21 @@ public final class PlayerChunkLoader {
              final PlayerLoaderData data = this.chunkSendQueue.removeFirst();
  
              // Suki start - per-player track and see view distance
@@ -130,7 +196,7 @@ index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..e13edea17e5c9ef034c4adb5ee207c33
              if (queuedSend == null) {
                  concurrentChunkSends.getAndDecrement(); // we never sent, so decrease
                  // stop iterating over players who have nothing to send
-@@ -621,7 +663,7 @@ public final class PlayerChunkLoader {
+@@ -621,7 +669,7 @@ public final class PlayerChunkLoader {
              }
  
              data.nextChunkSendTarget = nextPlayerDeadline;
@@ -139,15 +205,50 @@ index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..e13edea17e5c9ef034c4adb5ee207c33
  
              synchronized (this.sendingChunkCounts) {
                  this.sendingChunkCounts.addTo(data, 1);
-@@ -1020,6 +1062,7 @@ public final class PlayerChunkLoader {
+@@ -649,6 +697,8 @@ public final class PlayerChunkLoader {
+                 break;
+             }
          }
++        } finally { co.aikar.timings.MinecraftTimings.playerChunkLoaderSendChunks.stopTiming(); } // Suki - network-constrained chunk sending - PlayerChunkLoader timings
++        } finally { co.aikar.timings.MinecraftTimings.playerChunkLoaderTrySendChunks.stopTiming(); } // Suki - network-constrained chunk sending - PlayerChunkLoader timings
+     }
  
+     protected int concurrentChunkLoads;
+@@ -657,6 +707,7 @@ public final class PlayerChunkLoader {
+     // this interval ensures the rate is kept between ticks correctly
+     protected static final IntervalledCounter TICKET_ADDITION_COUNTER_LONG = new IntervalledCounter((long)(1.0e6 * 1000.0)); // 1000ms
+     private void tryLoadChunks() {
++        co.aikar.timings.MinecraftTimings.playerChunkLoaderTryLoadChunks.startTiming(); try { // Suki - network-constrained chunk sending - PlayerChunkLoader timings
+         if (this.chunkLoadQueue.isEmpty()) {
+             return;
+         }
+@@ -780,14 +831,17 @@ public final class PlayerChunkLoader {
+                 });
+             }
+         }
++        } finally { co.aikar.timings.MinecraftTimings.playerChunkLoaderTryLoadChunks.stopTiming(); } // Suki - network-constrained chunk sending - PlayerChunkLoader timings
+     }
+ 
+     public void tickMidTick() {
++        co.aikar.timings.MinecraftTimings.playerChunkLoaderMidTick.startTiming(); try { // Suki - network-constrained chunk sending - PlayerChunkLoader timings
+         // try to send more chunks
+         this.trySendChunks();
+ 
+         // try to queue more chunks to load
+         this.tryLoadChunks();
++        } finally { co.aikar.timings.MinecraftTimings.playerChunkLoaderMidTick.stopTiming(); } // Suki - network-constrained chunk sending - PlayerChunkLoader timings
+     }
+ 
+     static final class ChunkPriorityHolder {
+@@ -1022,6 +1076,7 @@ public final class PlayerChunkLoader {
          public void update() {
-+            this.player.removeOverdueChunkInitializationPacketsInTransit(); // Suki - network-constrained chunk sending
              // Suki start - per-player view distance
              this.player.level.timings.playerChunkLoaderUpdate.startTiming();
++            this.player.removeOverdueChunkInitializationPacketsInTransit(); // Suki - network-constrained chunk sending
              final int loadViewDistance = this.player.getLoadViewDistance();
-@@ -1041,7 +1084,7 @@ public final class PlayerChunkLoader {
+             // load view cannot be less-than tick view + 1
+             final int tickViewDistance = this.player.getTickingViewDistance();
+@@ -1041,7 +1096,7 @@ public final class PlayerChunkLoader {
                      this.player.getAbilities().flying);
  
              // make sure we're in the send queue
@@ -197,7 +298,7 @@ index 37a6894fba46eb8b091d88e9ab73b801d6ba6213..60c40bf42045a3ebc59349a23cafcc8e
  import org.spigotmc.SpigotWorldConfig;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..bd14d73c553bfdd27f01ac7db5d5c639aaba4724 100644
+index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..38f680c4d092c04acac208402ea12b60b1a22e4e 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -7,6 +7,7 @@ import com.mojang.datafixers.util.Either;
@@ -216,7 +317,7 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..bd14d73c553bfdd27f01ac7db5d5c639
  import it.unimi.dsi.fastutil.Pair;
  import it.unimi.dsi.fastutil.ints.IntIntPair;
  import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
-@@ -523,6 +525,100 @@ public class ServerPlayer extends Player {
+@@ -523,6 +525,103 @@ public class ServerPlayer extends Player {
      public final com.destroystokyo.paper.util.PooledHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> cachedSingleMobDistanceMap;
      // Paper end
  
@@ -260,7 +361,9 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..bd14d73c553bfdd27f01ac7db5d5c639
 +    }
 +
 +    public void removeOverdueChunkInitializationPacketsInTransit() {
-+        if (SukiGlobalConfiguration.get().networkConstrainedChunkSending.assumePacketsInTransitArrivedAfterTime <= 0) return;
++        this.level.timings.removeOverdueChunkInitializationPacketsInTransit.startTiming(); try { // Suki - network-constrained chunk sending - timings
++        if (SukiGlobalConfiguration.get().networkConstrainedChunkSending.assumePacketsInTransitArrivedAfterTime <= 0)
++            return;
 +        synchronized (this.networkConstrainedSendingLock) {
 +            while (!chunkInitializationPacketsInTransitKeepaliveIds.isEmpty()) {
 +                if (chunkInitializationPacketsInTransitKeepaliveIds.peekFirst().sentTimestamp < System.currentTimeMillis() - SukiGlobalConfiguration.get().networkConstrainedChunkSending.assumePacketsInTransitArrivedAfterTime) {
@@ -270,6 +373,7 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..bd14d73c553bfdd27f01ac7db5d5c639
 +                }
 +            }
 +        }
++        } finally { this.level.timings.removeOverdueChunkInitializationPacketsInTransit.stopTiming(); } // Suki - network-constrained chunk sending - timings
 +    }
 +
 +    /**
@@ -317,7 +421,7 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..bd14d73c553bfdd27f01ac7db5d5c639
      // CraftBukkit start
      public String displayName;
      public net.kyori.adventure.text.Component adventure$displayName; // Paper
-@@ -2516,6 +2612,7 @@ public class ServerPlayer extends Player {
+@@ -2516,6 +2615,7 @@ public class ServerPlayer extends Player {
              }
              // Paper end
          }
