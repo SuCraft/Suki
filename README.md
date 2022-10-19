@@ -36,7 +36,7 @@ Suki adds unique performance mechanics specially geared towards getting the most
         Separate view distance for tracked chunks and non-tracked chunks, allowing a view distance of 32 with very low CPU usage.
     </li>
     <li>
-        Fairly adapt the maximum view distances of all players automatically based on each player's client view distance and the configured total number of chunks the server can handle.
+        Automatically set the view distances of each player based on each client view distance and the configured total number of chunks the server can handle.
     </li>
     <li>
         Limit the chunks loaded and sent by the server based on the client view distance.
@@ -83,9 +83,9 @@ Suki adds unique performance mechanics specially geared towards getting the most
 </ul>
 
 <ul>
-    <b>Make up for short TPS dips</b> <a href="https://github.com/SuCraft/Suki/wiki/Features#tps-catchup">(&#10141; Wiki)</a>
+    <b>Configurable TPS oversleep</b> <a href="https://github.com/SuCraft/Suki/wiki/Features#tpsoversleep">(&#10141; Wiki)</a>
     <li>
-    Set a custom TPS catch-up time (to temporarily perform ticks faster than 20 TPS after TPS goes below 20).
+    Configure the minimum tick oversleep time (the time that is used to perform scheduled main thread tasks).
     </li>
 </ul>
 
