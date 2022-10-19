@@ -25,24 +25,30 @@ index 9da5a6086323ff4c4fd62a035fa8f7efc3d92e38..d9b224efd0792a3309973fc0aeb013d7
  
      private MinecraftTimings() {}
 diff --git a/src/main/java/co/aikar/timings/WorldTimingsHandler.java b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
-index d685867d69f95bff0c5677b89722ccf5ffea1f20..5ef90177392c06ff6e0e27df7e08ffd1fbb11601 100644
+index d685867d69f95bff0c5677b89722ccf5ffea1f20..1ce0493c5d1863a64662fb7977be5f696c7f3bab 100644
 --- a/src/main/java/co/aikar/timings/WorldTimingsHandler.java
 +++ b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
-@@ -86,6 +86,8 @@ public class WorldTimingsHandler {
+@@ -86,6 +86,11 @@ public class WorldTimingsHandler {
      public final Timing chunkUnloadPOISerialization;
      public final Timing chunkUnloadDataSave;
  
-+    public final Timing removeOverdueChunkInitializationPacketsInTransit; // Suki - network-constrained chunk sending - timings
++    // Suki start - network-constrained chunk sending - timings
++    public final Timing removeOverdueChunkInitializationPacketsInTransit;
++    public final Timing removePacketsInTransitUpToKeepaliveId;
++    // Suki end - network-constrained chunk sending - timings
 +
      public WorldTimingsHandler(Level server) {
          String name = ((PrimaryLevelData) server.getLevelData()).getLevelName() + " - ";
  
-@@ -166,6 +168,9 @@ public class WorldTimingsHandler {
+@@ -166,6 +171,12 @@ public class WorldTimingsHandler {
          chunkUnloadPrepareSave = Timings.ofSafe(name + "Chunk unload - Async Save Prepare");
          chunkUnloadPOISerialization = Timings.ofSafe(name + "Chunk unload - POI Data Serialization");
          chunkUnloadDataSave = Timings.ofSafe(name + "Chunk unload - Data Serialization");
 +
-+        removeOverdueChunkInitializationPacketsInTransit = Timings.ofSafe("Remove overdue chunk initialization packets in transit"); // Suki - network-constrained chunk sending - timings
++        // Suki start - network-constrained chunk sending - timings
++        removeOverdueChunkInitializationPacketsInTransit = Timings.ofSafe("Disregard overdue chunk packets");
++        removePacketsInTransitUpToKeepaliveId = Timings.ofSafe("Remove received chunk packets");
++        // Suki end - network-constrained chunk sending - timings
 +
      }
  
@@ -298,7 +304,7 @@ index 37a6894fba46eb8b091d88e9ab73b801d6ba6213..60c40bf42045a3ebc59349a23cafcc8e
  import org.spigotmc.SpigotWorldConfig;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..38f680c4d092c04acac208402ea12b60b1a22e4e 100644
+index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..0fa42b84a15e77e8b01917905bd0dabae4593e62 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -7,6 +7,7 @@ import com.mojang.datafixers.util.Either;
@@ -317,7 +323,7 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..38f680c4d092c04acac208402ea12b60
  import it.unimi.dsi.fastutil.Pair;
  import it.unimi.dsi.fastutil.ints.IntIntPair;
  import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
-@@ -523,6 +525,103 @@ public class ServerPlayer extends Player {
+@@ -523,6 +525,115 @@ public class ServerPlayer extends Player {
      public final com.destroystokyo.paper.util.PooledHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> cachedSingleMobDistanceMap;
      // Paper end
  
@@ -380,6 +386,10 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..38f680c4d092c04acac208402ea12b60
 +     * @return If this keepalive id was recognized as a fake one sent after a chunk initialization
 +     */
 +    public boolean removePacketsInTransitUpToKeepaliveId(long keepaliveId) {
++        if (!SukiGlobalConfiguration.get().networkConstrainedChunkSending.enabled) {
++            return false;
++        }
++        this.level.timings.removePacketsInTransitUpToKeepaliveId.startTiming(); try { // Suki - network-constrained chunk sending - timings
 +        synchronized (this.networkConstrainedSendingLock) {
 +            if (this.chunkInitializationPacketsInTransitKeepaliveIds.stream().anyMatch(it -> it.keepaliveId == keepaliveId)) {
 +                // This is a response to one of our fake keep-alive packets
@@ -395,9 +405,13 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..38f680c4d092c04acac208402ea12b60
 +            }
 +        }
 +        return false;
++        } finally { this.level.timings.removePacketsInTransitUpToKeepaliveId.stopTiming(); } // Suki - network-constrained chunk sending - timings
 +    }
 +
 +    public boolean canSendChunkInitializationPacketNow(ChunkPos chunk) {
++        if (!SukiGlobalConfiguration.get().networkConstrainedChunkSending.enabled) {
++            return true;
++        }
 +        if (getChessboardDistanceToChunk(chunk) <= SukiGlobalConfiguration.get().networkConstrainedChunkSending.ignoreNetworkConditionsForChunksWithinChessboardDistance) return true;
 +        synchronized (this.networkConstrainedSendingLock) {
 +            return this.chunkInitializationPacketsInTransitKeepaliveIds.size() < this.maxNumberOfChunkPacketsInTransitBasedOnConnection;
@@ -405,6 +419,10 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..38f680c4d092c04acac208402ea12b60
 +    }
 +
 +    public void sendKeepaliveForChunkInTransit() {
++
++        if (!SukiGlobalConfiguration.get().networkConstrainedChunkSending.enabled) {
++            return;
++        }
 +
 +        // Quickly write a keepalive packet after sending a chunk
 +        // Generate a keepalive challenge that is not the same as any real one (the real ones use the current system time itself)
@@ -421,7 +439,7 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..38f680c4d092c04acac208402ea12b60
      // CraftBukkit start
      public String displayName;
      public net.kyori.adventure.text.Component adventure$displayName; // Paper
-@@ -2516,6 +2615,7 @@ public class ServerPlayer extends Player {
+@@ -2516,6 +2627,7 @@ public class ServerPlayer extends Player {
              }
              // Paper end
          }
@@ -430,7 +448,7 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..38f680c4d092c04acac208402ea12b60
  
      public void untrackChunk(ChunkPos chunkPos, boolean concernsTracking) {
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index b5caf4c74864b03c4cb351e3b2747cb956ac7880..a7014ef7d826cebdd38d7ea5fb6caa613bc144f7 100644
+index b5caf4c74864b03c4cb351e3b2747cb956ac7880..cdf24b62d11ded92d7b6e550ab84e06dc2459777 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -7,6 +7,7 @@ import com.mojang.brigadier.StringReader;
@@ -464,12 +482,15 @@ index b5caf4c74864b03c4cb351e3b2747cb956ac7880..a7014ef7d826cebdd38d7ea5fb6caa61
              this.keepAlivePending = false;
          } else if (!this.isSingleplayerOwner()) {
              // Suki start - configurable keep-alive no disconnect on late or wrong keep-alive
-@@ -3681,6 +3685,82 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3681,6 +3685,85 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
  
      }
  
 +    // Suki start - network-constrained chunk sending
 +    private void updateMaxNumberOfPacketsInTransitAfterLatencyUpdate() {
++        if (!SukiGlobalConfiguration.get().networkConstrainedChunkSending.enabled) {
++            return;
++        }
 +//            // Player ping was updated: if it is too high we update the max number of chunk packets in transit
 +//            // TODO turn into configuration options
 +//            if (this.player.latency > 500) {
@@ -548,10 +569,10 @@ index b5caf4c74864b03c4cb351e3b2747cb956ac7880..a7014ef7d826cebdd38d7ea5fb6caa61
      public void handlePlayerAbilities(ServerboundPlayerAbilitiesPacket packet) {
          PacketUtils.ensureRunningOnSameThread(packet, this, this.player.getLevel());
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 218a9d910777e7d90b8712eb3b69bb584f9af448..142033e608024c1d93cd44327a39d58f14a17cd7 100644
+index 218a9d910777e7d90b8712eb3b69bb584f9af448..5208b98132ff81785d06cfef018cf52109ae3b03 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -257,4 +257,28 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -257,4 +257,30 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - configurable login timeout
  
@@ -560,6 +581,8 @@ index 218a9d910777e7d90b8712eb3b69bb584f9af448..142033e608024c1d93cd44327a39d58f
 +    public NetworkConstrainedChunkSending networkConstrainedChunkSending;
 +
 +    public class NetworkConstrainedChunkSending extends ConfigurationPart {
++
++        public boolean enabled = false;
 +
 +        public transient int initialMaxChunkPacketsInTransit = 12;
 +

@@ -222,7 +222,7 @@ index e33d03616979e3ddf8745514e2cdbe548dd784e6..09ca1113c2442576c9184dca9df0a9f9
          parent.recalculatePermissibles();
      }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index fed3a5181979acb98c0e82a41f4b78970ac148c2..6f36edc4d5916a0773cc95620559557d07a628f3 100644
+index c164d2515b69c5bc9e7da0a4b12d932e16ee4294..1bfa0cef1c64f55a281e4f2f2147fa4f7fdbc982 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -5,8 +5,12 @@ package org.sucraft.suki.configuration;
@@ -238,7 +238,7 @@ index fed3a5181979acb98c0e82a41f4b78970ac148c2..6f36edc4d5916a0773cc95620559557d
  @SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
  public class SukiGlobalConfiguration extends ConfigurationPart {
      static final int CURRENT_VERSION = 18;
-@@ -379,4 +383,42 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -381,4 +385,42 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - custom enchantability
  
