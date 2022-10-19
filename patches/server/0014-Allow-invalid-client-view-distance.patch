@@ -33,7 +33,7 @@ index 177306cc9c6092a9da9c4889ff9e7ca620a5ec8f..604fc0bedd43700957272a9e88d17c01
          this(buf.readUtf(16), buf.readByte(), buf.readEnum(ChatVisiblity.class), buf.readBoolean(), buf.readUnsignedByte(), buf.readEnum(HumanoidArm.class), buf.readBoolean(), buf.readBoolean());
      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index c52bf7796e28015c74c88cbc8983170803378bbd..10c4ee674ab11a407a3e6c3a80924633fc9811da 100644
+index 560aed20dddb3bd60911b7d3033ecdcb1bf9e725..f47022fba8c19e0a7ce3fa9158c5720582f859a2 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -90,7 +90,6 @@ import net.minecraft.stats.ServerStatsCounter;
@@ -44,7 +44,7 @@ index c52bf7796e28015c74c88cbc8983170803378bbd..10c4ee674ab11a407a3e6c3a80924633
  import net.minecraft.util.Unit;
  import net.minecraft.world.damagesource.DamageSource;
  import net.minecraft.world.damagesource.EntityDamageSource;
-@@ -1916,23 +1915,25 @@ public class ServerPlayer extends Player {
+@@ -1920,23 +1919,25 @@ public class ServerPlayer extends Player {
      public String locale = null; // CraftBukkit - add, lowercase // Paper - default to null
      public java.util.Locale adventure$locale = java.util.Locale.US; // Paper
      public void updateOptions(ServerboundClientInformationPacket packet) {
@@ -77,7 +77,7 @@ index c52bf7796e28015c74c88cbc8983170803378bbd..10c4ee674ab11a407a3e6c3a80924633
          this.chatVisibility = packet.chatVisibility();
          this.canChatColor = packet.chatColors();
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index cc90b221d008127cf0f156683c29cadbde2ba836..16b6e97c060f17b9a2d3bbfe770e0e2a9ecec92c 100644
+index 8669862af25b53e295070b468211c963dfbd171e..11fbe20291de082a7f802630aa18f03888c499e3 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -175,7 +175,6 @@ import net.minecraft.world.level.block.entity.CommandBlockEntity;
@@ -97,7 +97,7 @@ index cc90b221d008127cf0f156683c29cadbde2ba836..16b6e97c060f17b9a2d3bbfe770e0e2a
  import org.bukkit.event.player.PlayerChatEvent;
  import org.bukkit.event.player.PlayerCommandPreprocessEvent;
  import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-@@ -3684,9 +3681,19 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3689,9 +3686,19 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          PacketUtils.ensureRunningOnSameThread(packet, this, this.player.getLevel());
          // Paper start - do not accept invalid information
          if (packet.viewDistance() < 0) {
@@ -121,7 +121,7 @@ index cc90b221d008127cf0f156683c29cadbde2ba836..16b6e97c060f17b9a2d3bbfe770e0e2a
          // Paper end - do not accept invalid information
          this.player.updateOptions(packet);
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index e6c592e5edb82a04a4bca3e116b6b54a29aac6e8..bce220fb349f3a0b28e5f200c594d637e3fa0b34 100644
+index e6ec0d67e85395a69cd10b450c1703fc6ebcb99d..86305671fea5b36324075045355e3ba2be56ab77 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -37,6 +37,8 @@ public class SukiGlobalConfiguration extends ConfigurationPart {

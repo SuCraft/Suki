@@ -5,11 +5,11 @@ Subject: [PATCH] Custom enchantability
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 6f835d848bd5fe41f7dae92ea88d3d7cb8c1af8b..734f05ee6f4ff997403f900760037a4f474effa4 100644
+index 76810d7767b1a66315b006569654c718105ab4ee..c8398f9c8f670cff18af37db1383124778fdc706 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -12,6 +12,7 @@ import net.minecraft.network.protocol.game.ServerboundPlaceRecipePacket;
- import net.minecraft.server.level.ServerPlayer;
+@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.Packet;
+ import net.minecraft.network.protocol.game.ServerboundPlaceRecipePacket;
  import org.bukkit.Bukkit; // Pufferfish
  import org.checkerframework.checker.nullness.qual.Nullable;
 +import org.checkerframework.checker.units.qual.A;
@@ -38,7 +38,7 @@ index 7c012f1e37b0085c0939797b0dae8996b4953ab8..7dbd1a69909efbad2da3731a935c2556
                              ++i;
                          } else if (targets.size() == 1) {
 diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
-index 447c2ea9603f6482aead79dcb6c729e13cdaf975..6abc2b7be00ce4f8ba1ee3308fa27ed5293a78ba 100644
+index 830379d776a3457509171f4076a4fe0b12426116..6bd8ae075712a096e0a16e12e6ba337afb0fd432 100644
 --- a/src/main/java/net/minecraft/world/entity/Mob.java
 +++ b/src/main/java/net/minecraft/world/entity/Mob.java
 @@ -75,6 +75,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
@@ -49,7 +49,7 @@ index 447c2ea9603f6482aead79dcb6c729e13cdaf975..6abc2b7be00ce4f8ba1ee3308fa27ed5
  import org.bukkit.craftbukkit.event.CraftEventFactory;
  import org.bukkit.craftbukkit.entity.CraftLivingEntity;
  import org.bukkit.craftbukkit.util.permissions.CraftDefaultPermissions;
-@@ -1186,7 +1187,7 @@ public abstract class Mob extends LivingEntity {
+@@ -1192,7 +1193,7 @@ public abstract class Mob extends LivingEntity {
  
      protected void enchantSpawnedWeapon(RandomSource random, float power) {
          if (!this.getMainHandItem().isEmpty() && random.nextFloat() < 0.25F * power) {
@@ -58,7 +58,7 @@ index 447c2ea9603f6482aead79dcb6c729e13cdaf975..6abc2b7be00ce4f8ba1ee3308fa27ed5
          }
  
      }
-@@ -1195,7 +1196,7 @@ public abstract class Mob extends LivingEntity {
+@@ -1201,7 +1202,7 @@ public abstract class Mob extends LivingEntity {
          ItemStack itemstack = this.getItemBySlot(slot);
  
          if (!itemstack.isEmpty() && random.nextFloat() < 0.5F * power) {

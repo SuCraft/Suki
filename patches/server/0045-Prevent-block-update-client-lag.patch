@@ -5,7 +5,7 @@ Subject: [PATCH] Prevent block update client lag
 
 
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index b9ee63b0ebc4b337f9522cd7dbf1fe52fc0edf46..71b89d84361931fe28f7baa8193302adfcd56fa8 100644
+index 64a0baeaf49b3feb31c189b4289b3426cbf04d51..92125125e850cff9d44a3b955bc4b07a7023bf2a 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -940,6 +940,20 @@ public final class PlayerChunkLoader {
@@ -63,7 +63,7 @@ index 4a6b624df834217d7305ba42cab78fdf320ec64c..442b42e80ee9001f9610003c3eaeb7f7
      }
  
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index 4bc4cbb55b0a1040788d2e1e41ff58c7c0310292..b4210fc803030b850b999afcac2e50c0dd7e2723 100644
+index 2d209b9c3569325267f1564731f0b39c463db9e0..aec819e9a3493b4771acfd58117f3bcf0df5d906 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -30,24 +30,48 @@ import java.util.Queue;
@@ -969,7 +969,7 @@ index 4bc4cbb55b0a1040788d2e1e41ff58c7c0310292..b4210fc803030b850b999afcac2e50c0
      // Paper end
      public void disconnect(Component disconnectReason) {
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java
-index 652bea6868a03a5315965f79c76172fb9dbb93fb..70ca28f06d0e8541c1130ff7b1b0bce21872b649 100644
+index a0aeac9c29300a0cf6bad55133019e8c29f6cc1c..273f01bca9d1643358cbb990c5d94cc03aa398c7 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java
 @@ -14,9 +14,11 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -987,7 +987,7 @@ index 652bea6868a03a5315965f79c76172fb9dbb93fb..70ca28f06d0e8541c1130ff7b1b0bce2
      private final boolean suppressLightUpdates;
  
      public ClientboundSectionBlocksUpdatePacket(SectionPos sectionPos, ShortSet positions, LevelChunkSection section, boolean noLightingUpdates) {
-@@ -94,4 +96,5 @@ public class ClientboundSectionBlocksUpdatePacket implements Packet<ClientGamePa
+@@ -103,4 +105,5 @@ public class ClientboundSectionBlocksUpdatePacket implements Packet<ClientGamePa
      public boolean shouldSuppressLightUpdates() {
          return this.suppressLightUpdates;
      }
@@ -1014,10 +1014,10 @@ index 07d96cca04c9658291eea91e7b0a7f5a3fc9882e..e562a768ad400a6dca0f1546fb0dddbe
      }
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 325b24b88739c64b2bafec2c30c8d540452bf4d8..eb6cecce28530dc2e003fd7e45f98a322d13b4fa 100644
+index 6e773aade0a998fe05694aa667ebfe7df2d11032..7c62eeb539f474dfc6e205232dcc3cab8edf241f 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -646,6 +646,30 @@ public class ServerPlayer extends Player {
+@@ -645,6 +645,30 @@ public class ServerPlayer extends Player {
  
      }
  
@@ -1049,7 +1049,7 @@ index 325b24b88739c64b2bafec2c30c8d540452bf4d8..eb6cecce28530dc2e003fd7e45f98a32
  
      // CraftBukkit start
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 709a2496837101dc890af560c90798efc52a7dba..f8c2ca4cf83234fd03f16242c1e8e37e7bc742ae 100644
+index 037ee11af81ca65852de7fe403a88339babb51f7..4c396a76a060e3525be13ceda8e3e0821d7d2384 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -25,6 +25,8 @@ import java.util.Set;

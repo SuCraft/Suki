@@ -5,7 +5,7 @@ Subject: [PATCH] More entity activation configuration
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 7b1211b2d2e6a43763a80ea6ac7e43b6a83830f8..8aa45702f3033c2d5375e8eca1450b935b93b352 100644
+index 2c125cad7f50ef71be0f8fb69625a7109748296d..4bf254202da3a41c4179922a3533a816f8763f85 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -38,6 +38,7 @@ import org.bukkit.configuration.MemorySection;
@@ -60,7 +60,7 @@ index 7b1211b2d2e6a43763a80ea6ac7e43b6a83830f8..8aa45702f3033c2d5375e8eca1450b93
 @@ -294,7 +320,7 @@ public class TimingsExport extends Thread {
              pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Pufferfish
              pair("pufferfish", mapAsJSON(gg.pufferfish.pufferfish.PufferfishConfig.getConfigCopy(), null)), // Pufferfish // Mirai
-             pair("mirai", mapAsJSON(wtf.etil.mirai.MiraiConfig.getConfigCopy(), null)), // Mirai // Suki - Suki configuration
+             pair("mirai", mapAsJSON(dev.etil.mirai.MiraiConfig.getConfigCopy(), null)), // Mirai // Suki - Suki configuration
 -            pair("suki", mapAsJSON(Bukkit.spigot().getSukiConfig(), null)) // Suki - Suki configuration
 +            pair("suki", sukiConfigJSON) // Suki - Suki configuration // Suki - configurable ratio of skipped active entities - include computed fraction in timings
          ));

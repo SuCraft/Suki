@@ -5,10 +5,10 @@ Subject: [PATCH] Suki branding changes
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 994e81359154fc52392fe64cbe5f17a7a67e66c0..d77ed18ed4409bd7c6d0b42fea5d6e501cf2e4a4 100644
+index bfa71be59dd84459bd420ace2d6694e1d80aee81..36e8d4a28211e81ad019ef8d8f9e1834a205aea7 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -2415,8 +2415,10 @@ public final class Bukkit {
+@@ -2435,8 +2435,10 @@ public final class Bukkit {
      public static long getLastTickMs() {
          return server.getLastTickMs();
      }
@@ -22,10 +22,10 @@ index 994e81359154fc52392fe64cbe5f17a7a67e66c0..d77ed18ed4409bd7c6d0b42fea5d6e50
      // Yatopia end
  
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index f25e6808c9ce7276c3e49c6ad03eda5ffa35e5f8..73a340b2488dcb3676354276b0acb39351839aea 100644
+index 259209a999b80542a21ce6083301d3848d4006af..d3b1fe013576a63601043462c9750998bcf0866f 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2116,7 +2116,7 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2137,7 +2137,7 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       */
      @Deprecated
      default long getLastTickMs() {
@@ -34,7 +34,7 @@ index f25e6808c9ce7276c3e49c6ad03eda5ffa35e5f8..73a340b2488dcb3676354276b0acb393
      }
      /**
       * Returns the time in {@link java.time.Duration} the last tick took.
-@@ -2124,7 +2124,7 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2145,7 +2145,7 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       * @return duration
       */
      @NotNull

@@ -6,10 +6,10 @@ Subject: [PATCH] Log login protocol, custom login timeout and store
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 0130e2c3c047055fbea9c3d893a9b4593fa10ed2..efd5beaeddbd4337dd0cc8362b68cf630e1d97ff 100644
+index 76810d7767b1a66315b006569654c718105ab4ee..82063bc36ce21b9d47c050068b31db21ef30e163 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -8,6 +8,7 @@ import net.kyori.adventure.text.Component;
+@@ -7,6 +7,7 @@ import net.kyori.adventure.text.Component;
  import net.kyori.adventure.text.format.NamedTextColor;
  import net.minecraft.network.protocol.Packet;
  import net.minecraft.network.protocol.game.ServerboundPlaceRecipePacket;
@@ -18,7 +18,7 @@ index 0130e2c3c047055fbea9c3d893a9b4593fa10ed2..efd5beaeddbd4337dd0cc8362b68cf63
  import org.checkerframework.checker.nullness.qual.Nullable;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index f9129f9a53033545efc577a21feb3e2ba8742318..7187c57fb9c7b9f5b04728d942e4de1dade525d7 100644
+index 341a65a3862354245b4f132a6ff0992ddc24f51d..24602729598dd1adc3fd102e4dd2c9d2495b899d 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -20,7 +20,6 @@ import io.netty.channel.epoll.EpollSocketChannel;
@@ -54,7 +54,7 @@ index f9129f9a53033545efc577a21feb3e2ba8742318..7187c57fb9c7b9f5b04728d942e4de1d
          this.receiving = side;
      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 10c4ee674ab11a407a3e6c3a80924633fc9811da..b03190b5f79afaf8265cfce0144b7fa09cfce5ca 100644
+index f47022fba8c19e0a7ce3fa9158c5720582f859a2..0e25ec19ea151536de505c0cee2ba3179fc18e5c 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -12,6 +12,7 @@ import java.util.List;
@@ -65,7 +65,7 @@ index 10c4ee674ab11a407a3e6c3a80924633fc9811da..b03190b5f79afaf8265cfce0144b7fa0
  import javax.annotation.Nullable;
  import net.minecraft.BlockUtil;
  import net.minecraft.ChatFormatting;
-@@ -2443,6 +2444,15 @@ public class ServerPlayer extends Player {
+@@ -2447,6 +2448,15 @@ public class ServerPlayer extends Player {
          return this.getBukkitEntity().getScoreboard().getHandle();
      }
  
@@ -131,10 +131,10 @@ index ac254e4fe3973a8cb3321e96c651847e387d9f0e..ed1db61d04b1f81c52300c9f85b96212
                  try {
                      if (!(this.connection.channel.localAddress() instanceof io.netty.channel.unix.DomainSocketAddress)) { // Paper - the connection throttle is useless when you have a Unix domain socket
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index 03f17e568d41f5a4ac3c4bcb72e2fc39a02d7cd5..7065e59c4dbb3aa1ea4da3e47b1b72c33d599af6 100644
+index 455f67ea6b972f312469c93f1578b5b093af5a66..9428416d2d1361e2ab35e40589a074b461c4ea10 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-@@ -10,12 +10,12 @@ import java.net.InetSocketAddress;
+@@ -10,10 +10,10 @@ import java.net.InetSocketAddress;
  import java.net.SocketAddress;
  import java.security.PrivateKey;
  import java.time.Duration;
@@ -144,12 +144,9 @@ index 03f17e568d41f5a4ac3c4bcb72e2fc39a02d7cd5..7065e59c4dbb3aa1ea4da3e47b1b72c3
  import javax.annotation.Nullable;
 -import javax.crypto.Cipher;
  import javax.crypto.SecretKey;
--import net.minecraft.DefaultUncaughtExceptionHandler;
-+
- import net.minecraft.core.UUIDUtil;
- import net.minecraft.network.Connection;
- import net.minecraft.network.PacketSendListener;
-@@ -45,6 +45,7 @@ import org.slf4j.Logger;
+ 
+ import net.minecraft.DefaultUncaughtExceptionHandler;
+@@ -46,6 +46,7 @@ import org.slf4j.Logger;
  import org.bukkit.craftbukkit.util.Waitable;
  import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
  import org.bukkit.event.player.PlayerPreLoginEvent;
@@ -157,7 +154,7 @@ index 03f17e568d41f5a4ac3c4bcb72e2fc39a02d7cd5..7065e59c4dbb3aa1ea4da3e47b1b72c3
  // CraftBukkit end
  
  public class ServerLoginPacketListenerImpl implements TickablePacketListener, ServerLoginPacketListener {
-@@ -101,7 +102,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -102,7 +103,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
              }
          }
  
@@ -166,7 +163,7 @@ index 03f17e568d41f5a4ac3c4bcb72e2fc39a02d7cd5..7065e59c4dbb3aa1ea4da3e47b1b72c3
              this.disconnect(Component.translatable("multiplayer.disconnect.slow_login"));
          }
  
-@@ -196,6 +197,11 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -186,6 +187,11 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
          } else {
              this.state = ServerLoginPacketListenerImpl.State.ACCEPTED;
              if (this.server.getCompressionThreshold() >= 0 && !this.connection.isMemoryConnection()) {
@@ -178,7 +175,7 @@ index 03f17e568d41f5a4ac3c4bcb72e2fc39a02d7cd5..7065e59c4dbb3aa1ea4da3e47b1b72c3
                  this.connection.send(new ClientboundLoginCompressionPacket(this.server.getCompressionThreshold()), PacketSendListener.thenRun(() -> {
                      this.connection.setupCompression(this.server.getCompressionThreshold(), true);
                  }));
-@@ -293,10 +299,20 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -283,10 +289,20 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
          this.profilePublicKeyData = (ProfilePublicKey.Data) packet.publicKey().orElse(null); // CraftBukkit - decompile error
          GameProfile gameprofile = this.server.getSingleplayerProfile();
  
@@ -199,7 +196,7 @@ index 03f17e568d41f5a4ac3c4bcb72e2fc39a02d7cd5..7065e59c4dbb3aa1ea4da3e47b1b72c3
              this.gameProfile = new GameProfile((UUID) null, packet.name());
              if (this.server.usesAuthentication() && !this.connection.isMemoryConnection()) {
                  this.state = ServerLoginPacketListenerImpl.State.KEY;
-@@ -441,7 +457,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -429,7 +445,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
  
                          // Paper start
                          com.destroystokyo.paper.profile.PlayerProfile profile = com.destroystokyo.paper.profile.CraftPlayerProfile.asBukkitMirror(ServerLoginPacketListenerImpl.this.gameProfile);
@@ -209,10 +206,10 @@ index 03f17e568d41f5a4ac3c4bcb72e2fc39a02d7cd5..7065e59c4dbb3aa1ea4da3e47b1b72c3
                          profile = asyncEvent.getPlayerProfile();
                          profile.complete(true); // Paper - setPlayerProfileAPI
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 84bce377e1a9b9358dddd15455b8d849b4a3ae36..60c37b0e71dd2b1b859d23a49f218142d2a92485 100644
+index f81c16884f8e517ceccb832bdff8840f24d52982..7e2dbcb4e9784682a7ecc5af3c2051c83c7d7b09 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -1831,6 +1831,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -1881,6 +1881,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
      }
      // Paper end
  

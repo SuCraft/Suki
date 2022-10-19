@@ -54,7 +54,7 @@ index dda0f831d0e3768f5798705695742d0c9052f963..92adec4f5a81e94c81cbb96db878e942
  
      public static Timing getTickList(ServerLevel worldserver, String timingsType) {
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index 831dd74063fc576b9475fde96da7da71181fbb46..1b8ab77ffa907700b37f9edbfcd9b57b5448492c 100644
+index 2470f8fa111d60e7f106510783ccc2a18e52756f..64a0baeaf49b3feb31c189b4289b3426cbf04d51 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -25,7 +25,9 @@ import org.bukkit.entity.Player;
@@ -263,27 +263,8 @@ index 831dd74063fc576b9475fde96da7da71181fbb46..1b8ab77ffa907700b37f9edbfcd9b57b
  
              this.player.level.timings.playerChunkLoaderUpdateDecideWhetherToRecalculate.startTiming(); try { // Suki - per-player view distance
              if (
-diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 0130e2c3c047055fbea9c3d893a9b4593fa10ed2..6f835d848bd5fe41f7dae92ea88d3d7cb8c1af8b 100644
---- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-+++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -2,12 +2,14 @@ package io.papermc.paper.configuration;
- 
- import co.aikar.timings.MinecraftTimings;
- import com.destroystokyo.paper.io.chunk.ChunkTaskManager;
-+import com.google.common.graph.Network;
- import io.papermc.paper.configuration.constraint.Constraint;
- import io.papermc.paper.configuration.constraint.Constraints;
- import net.kyori.adventure.text.Component;
- import net.kyori.adventure.text.format.NamedTextColor;
- import net.minecraft.network.protocol.Packet;
- import net.minecraft.network.protocol.game.ServerboundPlaceRecipePacket;
-+import net.minecraft.server.level.ServerPlayer;
- import org.bukkit.Bukkit; // Pufferfish
- import org.checkerframework.checker.nullness.qual.Nullable;
- import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 diff --git a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
-index 37a6894fba46eb8b091d88e9ab73b801d6ba6213..60c40bf42045a3ebc59349a23cafcc8e8fa69cd3 100644
+index 3f2d8196b80f214b219c230e22feb7f7801886db..0326fa4bebbfa31974100d6dd1390d33d483553f 100644
 --- a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
 @@ -2,6 +2,7 @@ package io.papermc.paper.configuration;
@@ -294,7 +275,7 @@ index 37a6894fba46eb8b091d88e9ab73b801d6ba6213..60c40bf42045a3ebc59349a23cafcc8e
  import com.mojang.logging.LogUtils;
  import io.papermc.paper.configuration.constraint.Constraint;
  import io.papermc.paper.configuration.constraint.Constraints;
-@@ -34,6 +35,8 @@ import net.minecraft.world.item.Item;
+@@ -39,6 +40,8 @@ import net.minecraft.world.item.Item;
  import net.minecraft.world.item.Items;
  import net.minecraft.world.level.NaturalSpawner;
  import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -304,7 +285,7 @@ index 37a6894fba46eb8b091d88e9ab73b801d6ba6213..60c40bf42045a3ebc59349a23cafcc8e
  import org.spigotmc.SpigotWorldConfig;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index cc6d3cc740661b80322ed21f887aad0837fa7606..325b24b88739c64b2bafec2c30c8d540452bf4d8 100644
+index ff039f448a2da91184fec8b7808d3cfa7ec603fa..6e773aade0a998fe05694aa667ebfe7df2d11032 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -8,6 +8,7 @@ import com.mojang.datafixers.util.Either;
@@ -323,7 +304,7 @@ index cc6d3cc740661b80322ed21f887aad0837fa7606..325b24b88739c64b2bafec2c30c8d540
  import it.unimi.dsi.fastutil.Pair;
  import it.unimi.dsi.fastutil.ints.IntIntPair;
  import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
-@@ -537,6 +539,115 @@ public class ServerPlayer extends Player {
+@@ -536,6 +538,115 @@ public class ServerPlayer extends Player {
      public final com.destroystokyo.paper.util.PooledHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> cachedSingleMobDistanceMap;
      // Paper end
  
@@ -439,7 +420,7 @@ index cc6d3cc740661b80322ed21f887aad0837fa7606..325b24b88739c64b2bafec2c30c8d540
      // CraftBukkit start
      public String displayName;
      public net.kyori.adventure.text.Component adventure$displayName; // Paper
-@@ -2530,6 +2641,7 @@ public class ServerPlayer extends Player {
+@@ -2534,6 +2645,7 @@ public class ServerPlayer extends Player {
              }
              // Paper end
          }
@@ -448,7 +429,7 @@ index cc6d3cc740661b80322ed21f887aad0837fa7606..325b24b88739c64b2bafec2c30c8d540
  
      public void untrackChunk(ChunkPos chunkPos, boolean concernsTracking) {
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index b5caf4c74864b03c4cb351e3b2747cb956ac7880..cdf24b62d11ded92d7b6e550ab84e06dc2459777 100644
+index c7f4d86f028b6f3c5e6ef251f41a1d092d2e32ec..90be7d9e7337f4f25d7d14507d2d2910a2b6a9a5 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -7,6 +7,7 @@ import com.mojang.brigadier.StringReader;
@@ -459,13 +440,13 @@ index b5caf4c74864b03c4cb351e3b2747cb956ac7880..cdf24b62d11ded92d7b6e550ab84e06d
  import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
  import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
  import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-@@ -3650,12 +3651,14 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3655,12 +3656,14 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
  
      @Override
      public void handleKeepAlive(ServerboundKeepAlivePacket packet) {
 +        if (player.removePacketsInTransitUpToKeepaliveId(packet.getId())) return; // Suki - network-constrained chunk sending
          // Purpur start
-         if (wtf.etil.mirai.MiraiConfig.useAlternateKeepAlive) {
+         if (dev.etil.mirai.MiraiConfig.useAlternateKeepAlive) {
              long id = packet.getId();
              if (keepAlives.size() > 0 && keepAlives.contains(id)) {
                  int ping = (int) (Util.getMillis() - id);
@@ -474,7 +455,7 @@ index b5caf4c74864b03c4cb351e3b2747cb956ac7880..cdf24b62d11ded92d7b6e550ab84e06d
                  keepAlives.clear(); // we got a valid response, lets roll with it and forget the rest
              }
          } else
-@@ -3665,6 +3668,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3670,6 +3673,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
              int i = (int) (Util.getMillis() - this.keepAliveTime);
  
              this.player.latency = (this.player.latency * 3 + i) / 4;
@@ -482,7 +463,7 @@ index b5caf4c74864b03c4cb351e3b2747cb956ac7880..cdf24b62d11ded92d7b6e550ab84e06d
              this.keepAlivePending = false;
          } else if (!this.isSingleplayerOwner()) {
              // Suki start - configurable keep-alive no disconnect on late or wrong keep-alive
-@@ -3681,6 +3685,85 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3686,6 +3690,85 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
  
      }
  

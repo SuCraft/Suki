@@ -6,10 +6,10 @@ Subject: [PATCH] Never despawn entities due to distance
 This patch is based on patch from the EmpireCraft fork (https://github.com/starlis/empirecraft) by Aikar.
 
 diff --git a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
-index 4fb40aa91e0961f1974c74c88fa68359e4ad6b16..7709643fc5212bfff93eeba1b0e2b0d0ed12ca83 100644
+index a6d30f3213d30ba925926437ed4535319061213d..50851944dcd1d8177b271c32f2c603982c897aec 100644
 --- a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
 +++ b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
-@@ -595,6 +595,15 @@ public class WitherBoss extends Monster implements PowerableMob, RangedAttackMob
+@@ -594,6 +594,15 @@ public class WitherBoss extends Monster implements PowerableMob, RangedAttackMob
          return this.getHealth() <= this.getMaxHealth() / 2.0F;
      }
  
@@ -26,7 +26,7 @@ index 4fb40aa91e0961f1974c74c88fa68359e4ad6b16..7709643fc5212bfff93eeba1b0e2b0d0
      public MobType getMobType() {
          return MobType.UNDEAD;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 43f1a1795de3f98e4692b08d8b71c0abd714cddd..71ad30a3aba1492fe9aa029f7f12ed281553918d 100644
+index 7efcab76aeaaf0d9bd7ef52e6f32718a5c38794c..d6258f27d287583f7cfff45e609b46efae17ea79 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -30,12 +30,14 @@ public class SukiWorldConfiguration extends ConfigurationPart {

@@ -5,7 +5,7 @@ Subject: [PATCH] Do not log empty chat messages
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 508ccef19a5f7a23be9c941ea34ddc26257af6f8..cc90b221d008127cf0f156683c29cadbde2ba836 100644
+index c1f40592ee346e610d018542a65a79f2c9f5e8bd..8669862af25b53e295070b468211c963dfbd171e 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -243,6 +243,7 @@ import org.bukkit.inventory.CraftingInventory;
@@ -16,7 +16,7 @@ index 508ccef19a5f7a23be9c941ea34ddc26257af6f8..cc90b221d008127cf0f156683c29cadb
  // CraftBukkit end
  
  public class ServerGamePacketListenerImpl implements ServerPlayerConnection, TickablePacketListener, ServerGamePacketListener {
-@@ -2610,7 +2611,11 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2612,7 +2613,11 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          // CraftBukkit start
          String s = message.signedContent().plain();
          if (s.isEmpty()) {
@@ -27,10 +27,10 @@ index 508ccef19a5f7a23be9c941ea34ddc26257af6f8..cc90b221d008127cf0f156683c29cadb
 +            }
 +            // Suki end - less console logs
          } else if (this.getCraftPlayer().isConversing()) {
-             final String conversationInput = s;
-             this.server.processQueue.add(new Runnable() {
+             OutgoingPlayerChatMessage outgoing = OutgoingPlayerChatMessage.create(message);
+             outgoing.sendHeadersToRemainingPlayers(this.server.getPlayerList());
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 00f7c05ee01f59867d3f74f80a25f8d85793add8..00e164b1ac4badfafb034261035e3f5f84a6de1e 100644
+index 1a6b8d4c8d7965b26affd54894862ff7a133f638..66a9af55e7c26bfd989c9142866d72193ab83792 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -25,7 +25,15 @@ public class SukiGlobalConfiguration extends ConfigurationPart {

@@ -5,7 +5,7 @@ Subject: [PATCH] Utility methods for entity chunk and player level UUID
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index b03190b5f79afaf8265cfce0144b7fa09cfce5ca..5b467ea9ca01bea89bf5950d1111b6ed07ed9c41 100644
+index 0e25ec19ea151536de505c0cee2ba3179fc18e5c..13d4cc806d06ecaf4214b2e84c3c1af0f244dd33 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -1,19 +1,34 @@
@@ -75,9 +75,9 @@ index b03190b5f79afaf8265cfce0144b7fa09cfce5ca..5b467ea9ca01bea89bf5950d1111b6ed
  import net.minecraft.world.level.dimension.LevelStem;
  import net.minecraft.world.level.gameevent.GameEvent;
  import net.minecraft.world.level.portal.PortalInfo;
-@@ -357,6 +378,16 @@ public class ServerPlayer extends Player {
+@@ -361,6 +382,16 @@ public class ServerPlayer extends Player {
+         this.cachedSingleMobDistanceMap = new com.destroystokyo.paper.util.PooledHashSets.PooledObjectLinkedOpenHashSet<>(this); // Paper
      }
-     // Paper end
  
 +    // Suki start - utility functions for getting the player's level UUID
 +
@@ -93,7 +93,7 @@ index b03190b5f79afaf8265cfce0144b7fa09cfce5ca..5b467ea9ca01bea89bf5950d1111b6ed
      // If this is an issue, PRs are welcome
      public final BlockPos getSpawnPoint(ServerLevel worldserver) {
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index a21f7de5331fc31a291fe177e6e1e843c7895cee..326c9fbad6bd7b63051a49feed1d80b6e3a3f575 100644
+index 9f2d0ec15afb8192ea06bfdd473ffca42e887072..822f89ef29fbd7d52541a225f9a8ff2c43ce3e06 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -616,6 +616,26 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {

@@ -5,10 +5,10 @@ Subject: [PATCH] Suki configuration and commands
 
 
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 73a340b2488dcb3676354276b0acb39351839aea..a55acc7b338f34bd7d8443ada50d25e4f9414967 100644
+index d3b1fe013576a63601043462c9750998bcf0866f..a9132e866a0a889eae8b36d369a211311cfa5ee5 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1946,6 +1946,15 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1967,6 +1967,15 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          {
              throw new UnsupportedOperationException("Not supported yet.");
          }

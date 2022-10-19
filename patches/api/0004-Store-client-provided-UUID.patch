@@ -5,10 +5,10 @@ Subject: [PATCH] Store client-provided UUID
 
 
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index fedd1c0f93946f08a395413b68bf959ed4e6b3f4..d74ad7bb07050e2a1c86f2d59a241aad9291641e 100644
+index 593491cf755129f7e6a664cdab599a48390b0888..ee210425bd7196665d7848e28adb84492512f0eb 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -2521,6 +2521,12 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -2557,6 +2557,12 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
       */
      void setPlayerProfile(@NotNull com.destroystokyo.paper.profile.PlayerProfile profile);
  

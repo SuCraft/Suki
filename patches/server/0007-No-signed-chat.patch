@@ -85,7 +85,7 @@ index 0b818969d74eae05e2d2adfdbc38e513972c61a1..bb2b995c90af00299efadcc27339f932
 +
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index ac64ed3d6c64caa5c548f350f141e2fee5c2e736..c52bf7796e28015c74c88cbc8983170803378bbd 100644
+index abc86f95fdfc0e6dcb37c923d17a55c9b55b0fca..560aed20dddb3bd60911b7d3033ecdcb1bf9e725 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -174,6 +174,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
@@ -96,7 +96,7 @@ index ac64ed3d6c64caa5c548f350f141e2fee5c2e736..c52bf7796e28015c74c88cbc89831708
  // CraftBukkit end
  
  public class ServerPlayer extends Player {
-@@ -1898,7 +1899,7 @@ public class ServerPlayer extends Player {
+@@ -1902,7 +1903,7 @@ public class ServerPlayer extends Player {
      }
  
      public void sendChatHeader(SignedMessageHeader header, MessageSignature headerSignature, byte[] bodyDigest) {
@@ -105,7 +105,7 @@ index ac64ed3d6c64caa5c548f350f141e2fee5c2e736..c52bf7796e28015c74c88cbc89831708
              this.connection.send(new ClientboundPlayerChatHeaderPacket(header, headerSignature, bodyDigest));
          }
  
-@@ -1962,7 +1963,7 @@ public class ServerPlayer extends Player {
+@@ -1966,7 +1967,7 @@ public class ServerPlayer extends Player {
      }
  
      public void sendServerStatus(ServerStatus metadata) {
@@ -115,7 +115,7 @@ index ac64ed3d6c64caa5c548f350f141e2fee5c2e736..c52bf7796e28015c74c88cbc89831708
  
      @Override
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 0ca63b6e5ee8c9cd4ce3234625b018e439751b19..a2087416332793be24121851d5a952fecbaa0f59 100644
+index 08191dd20eb5346f0bcc3550d756183f4b1d7de7..52c18610bf67338521cce134f5676b1c9899fb2a 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -39,4 +39,25 @@ public class SukiGlobalConfiguration extends ConfigurationPart {

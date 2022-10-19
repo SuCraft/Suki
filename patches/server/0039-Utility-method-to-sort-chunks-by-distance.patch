@@ -5,7 +5,7 @@ Subject: [PATCH] Utility method to sort chunks by distance
 
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index a9f83218af1675a15505acafd67d79954a8ed38d..877afa898a35f1ef12543394f052bb18cdad4257 100644
+index 5d15402a1de322b479f52990b931015377bc3b47..3250f0f590ace90a5b9aa9dbac899f204955710c 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -14,6 +14,7 @@ import com.mojang.datafixers.util.Either;
@@ -44,7 +44,7 @@ index a9f83218af1675a15505acafd67d79954a8ed38d..877afa898a35f1ef12543394f052bb18
  import net.minecraft.CrashReport;
  import net.minecraft.CrashReportCategory;
  import net.minecraft.ReportedException;
-@@ -408,6 +416,63 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -287,6 +295,65 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
      }
      // Paper end
  
@@ -103,16 +103,18 @@ index a9f83218af1675a15505acafd67d79954a8ed38d..877afa898a35f1ef12543394f052bb18
 +            .map(Pair::first);
 +    }
 +
-+    // Suki end - sort chunks by distance
++//    boolean unloadingPlayerChunk = false; // Paper - do not allow ticket level changes while unloading chunks
 +
-     boolean unloadingPlayerChunk = false; // Paper - do not allow ticket level changes while unloading chunks
++    // Suki end - sort chunks by distance
++    
      public ChunkMap(ServerLevel world, LevelStorageSource.LevelStorageAccess session, DataFixer dataFixer, StructureTemplateManager structureTemplateManager, Executor executor, BlockableEventLoop<Runnable> mainThreadExecutor, LightChunkGetter chunkProvider, ChunkGenerator chunkGenerator, ChunkProgressListener worldGenerationProgressListener, ChunkStatusUpdateListener chunkStatusChangeListener, Supplier<DimensionDataStorage> persistentStateManagerFactory, int viewDistance, boolean dsync) {
          super(session.getDimensionPath(world.dimension()).resolve("region"), dataFixer, dsync);
+         // Paper - rewrite chunk system
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 5b467ea9ca01bea89bf5950d1111b6ed07ed9c41..32be488845de5ceb10dca6fddad87a60b243f747 100644
+index 13d4cc806d06ecaf4214b2e84c3c1af0f244dd33..4c35d884c7b959d9ea0aba927d962e16ad573185 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -388,6 +388,24 @@ public class ServerPlayer extends Player {
+@@ -392,6 +392,24 @@ public class ServerPlayer extends Player {
  
      // Suki end - utility functions for getting the player's level UUID
  

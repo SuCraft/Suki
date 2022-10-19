@@ -5,7 +5,7 @@ Subject: [PATCH] Per-player load, see and track view distance
 
 
 diff --git a/src/main/java/org/bukkit/World.java b/src/main/java/org/bukkit/World.java
-index e8c0c853eb52d1473c20231660355f77b1f7e016..c8c9addb2a5304e303556a9b53eb9ca1e7bd4f3a 100644
+index 9e71e519cda72a1e2a01474f238b97015ec5115e..ef25591178be5d56a3356ff88fc81576b1229473 100644
 --- a/src/main/java/org/bukkit/World.java
 +++ b/src/main/java/org/bukkit/World.java
 @@ -3910,14 +3910,21 @@ public interface World extends RegionAccessor, WorldInfo, PluginMessageRecipient
@@ -32,10 +32,10 @@ index e8c0c853eb52d1473c20231660355f77b1f7e016..c8c9addb2a5304e303556a9b53eb9ca1
  
      // Spigot start
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index d74ad7bb07050e2a1c86f2d59a241aad9291641e..4e8355d0fb1f6b08f31a58770a2228d0afcfd41d 100644
+index ee210425bd7196665d7848e28adb84492512f0eb..ea99f23c3754485f50d37ad3694a82e3de756891 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -2270,20 +2270,32 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -2306,20 +2306,32 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
       */
      public void setAffectsSpawning(boolean affects);
  
@@ -72,7 +72,7 @@ index d74ad7bb07050e2a1c86f2d59a241aad9291641e..4e8355d0fb1f6b08f31a58770a2228d0
      public void setViewDistance(int viewDistance);
  
      /**
-@@ -2299,48 +2311,88 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -2335,48 +2347,88 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
       * @param simulationDistance the player's new simulation distance
       */
      public void setSimulationDistance(int simulationDistance);

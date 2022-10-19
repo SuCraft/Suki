@@ -5,7 +5,7 @@ Subject: [PATCH] Place banners and items directly in head slot
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 2b909d159bea6892a5666179b53abe63c70981d7..5bb9325aa1b8ec0779c191582e877a455dfbb463 100644
+index bfa50273b6726e6f228ee235b1abf4d9d5145703..b9a2288e21fe31aab24dbb6e22aaa9b8aff1c184 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -120,6 +120,8 @@ import net.minecraft.world.phys.EntityHitResult;
@@ -17,7 +17,7 @@ index 2b909d159bea6892a5666179b53abe63c70981d7..5bb9325aa1b8ec0779c191582e877a45
  import org.slf4j.Logger;
  
  // CraftBukkit start
-@@ -4311,15 +4313,20 @@ public abstract class LivingEntity extends Entity {
+@@ -4340,15 +4342,20 @@ public abstract class LivingEntity extends Entity {
          }
      }
  
@@ -42,7 +42,7 @@ index 2b909d159bea6892a5666179b53abe63c70981d7..5bb9325aa1b8ec0779c191582e877a45
      }
  
 diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
-index c39ceda8e9314dd8338ade29d92baa0c8173d2c9..447c2ea9603f6482aead79dcb6c729e13cdaf975 100644
+index fe6ea0b8f40172e59ad0f84c440ceeddd9b2c001..830379d776a3457509171f4076a4fe0b12426116 100644
 --- a/src/main/java/net/minecraft/world/entity/Mob.java
 +++ b/src/main/java/net/minecraft/world/entity/Mob.java
 @@ -77,6 +77,7 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -53,7 +53,7 @@ index c39ceda8e9314dd8338ade29d92baa0c8173d2c9..447c2ea9603f6482aead79dcb6c729e1
  import org.bukkit.event.entity.CreatureSpawnEvent;
  import org.bukkit.event.entity.EntityCombustByEntityEvent;
  import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-@@ -679,7 +680,7 @@ public abstract class Mob extends LivingEntity {
+@@ -685,7 +686,7 @@ public abstract class Mob extends LivingEntity {
  
      public boolean equipItemIfPossible(ItemStack itemstack, ItemEntity entityitem) {
          // CraftBukkit end
@@ -62,7 +62,7 @@ index c39ceda8e9314dd8338ade29d92baa0c8173d2c9..447c2ea9603f6482aead79dcb6c729e1
          ItemStack itemstack1 = this.getItemBySlot(enumitemslot);
          boolean flag = this.canReplaceCurrentItem(itemstack, itemstack1);
  
-@@ -1238,7 +1239,7 @@ public abstract class Mob extends LivingEntity {
+@@ -1244,7 +1245,7 @@ public abstract class Mob extends LivingEntity {
  
      @Override
      public boolean canTakeItem(ItemStack stack) {
@@ -111,7 +111,7 @@ index 39c26f486d6392eb0a9b623cdb2161846357174b..3a3b328ba7513289f7a4071c0fa8f76e
          return !this.getItemBySlot(enumitemslot).isEmpty() ? false : enumitemslot == EquipmentSlot.MAINHAND && super.canTakeItem(stack);
      }
 diff --git a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
-index 150afceb491cfd254c0f1b84800e6df14cf26676..be521eec3f2d7303810ba7221cd210b628961ab4 100644
+index b136cdc13d94bc34c998a1986e0c93525356ac5c..34a74ad5059a3ec85e45ea7451578d010c381fd8 100644
 --- a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
 +++ b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
 @@ -201,7 +201,7 @@ public class ArmorStand extends LivingEntity {
@@ -133,7 +133,7 @@ index 150afceb491cfd254c0f1b84800e6df14cf26676..be521eec3f2d7303810ba7221cd210b6
                  if (itemstack.isEmpty()) {
                      net.minecraft.world.entity.EquipmentSlot enumitemslot1 = this.getClickedSlot(hitPos);
 diff --git a/src/main/java/net/minecraft/world/entity/monster/piglin/Piglin.java b/src/main/java/net/minecraft/world/entity/monster/piglin/Piglin.java
-index 9bde52b723237b1f0f945bc564009e3507993508..813b11bf5c5999d741916cfbbd0390b9c8e2cadc 100644
+index 23547da37a4178a32775285a1d697c369a7ffcd2..e391d1e5d1714609c5c8e4754d0432b153a7a008 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/piglin/Piglin.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/piglin/Piglin.java
 @@ -395,7 +395,7 @@ public class Piglin extends AbstractPiglin implements CrossbowAttackMob, Invento
@@ -146,7 +146,7 @@ index 9bde52b723237b1f0f945bc564009e3507993508..813b11bf5c5999d741916cfbbd0390b9
  
          return this.canReplaceCurrentItem(stack, itemstack1);
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index 74f97dd52dac57911c77189d5af318394bf20409..ab1ad8cb79ed550a1a7986a08e485bcfbe71c9df 100644
+index 3fdca067388e0b014e72ef672d176551c4bebbe0..7ef6d2b4bb7e94a5b81bceb99ddca7a7de5380f1 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -2272,7 +2272,7 @@ public abstract class Player extends LivingEntity {

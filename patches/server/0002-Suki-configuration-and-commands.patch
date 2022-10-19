@@ -5,7 +5,7 @@ Subject: [PATCH] Suki configuration and commands
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..7b1211b2d2e6a43763a80ea6ac7e43b6a83830f8 100644
+index 3491ee7e1dfeb130ffab57e9696b784220aeae67..2c125cad7f50ef71be0f8fb69625a7109748296d 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -29,6 +29,7 @@ import net.kyori.adventure.text.event.ClickEvent;
@@ -74,8 +74,8 @@ index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..7b1211b2d2e6a43763a80ea6ac7e43b6
              pair("bukkit", mapAsJSON(Bukkit.spigot().getBukkitConfig(), null)),
              pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Pufferfish
              pair("pufferfish", mapAsJSON(gg.pufferfish.pufferfish.PufferfishConfig.getConfigCopy(), null)), // Pufferfish // Mirai
--            pair("mirai", mapAsJSON(wtf.etil.mirai.MiraiConfig.getConfigCopy(), null)) // Mirai
-+            pair("mirai", mapAsJSON(wtf.etil.mirai.MiraiConfig.getConfigCopy(), null)), // Mirai // Suki - Suki configuration
+-            pair("mirai", mapAsJSON(dev.etil.mirai.MiraiConfig.getConfigCopy(), null)) // Mirai
++            pair("mirai", mapAsJSON(dev.etil.mirai.MiraiConfig.getConfigCopy(), null)), // Mirai // Suki - Suki configuration
 +            pair("suki", mapAsJSON(Bukkit.spigot().getSukiConfig(), null)) // Suki - Suki configuration
          ));
  
@@ -93,10 +93,10 @@ index 7a4a7a654fe2516ed894a68f2657344df9d70f4c..0a501c3ba5382dae230122066c131de6
      public static abstract class Post extends ConfigurationPart {
  
 diff --git a/src/main/java/io/papermc/paper/configuration/Configurations.java b/src/main/java/io/papermc/paper/configuration/Configurations.java
-index 31325994ab441c59a4c0bd9f3f9db3d9440375d0..7aa269fd15ed706b069c0a0a1abf8eb97f5c8591 100644
+index c2dca89291361d60cbf160cab77749cb0130035a..aedd5aec308dd206ce149e2b303323e5a8adb88e 100644
 --- a/src/main/java/io/papermc/paper/configuration/Configurations.java
 +++ b/src/main/java/io/papermc/paper/configuration/Configurations.java
-@@ -4,7 +4,10 @@ import io.leangen.geantyref.TypeToken;
+@@ -5,7 +5,10 @@ import io.leangen.geantyref.TypeToken;
  import io.papermc.paper.configuration.constraint.Constraint;
  import io.papermc.paper.configuration.constraint.Constraints;
  import net.minecraft.resources.ResourceLocation;
@@ -106,8 +106,8 @@ index 31325994ab441c59a4c0bd9f3f9db3d9440375d0..7aa269fd15ed706b069c0a0a1abf8eb9
 +import org.bukkit.configuration.file.YamlConfiguration;
  import org.checkerframework.checker.nullness.qual.Nullable;
  import org.jetbrains.annotations.MustBeInvokedByOverriders;
- import org.spongepowered.configurate.CommentedConfigurationNode;
-@@ -15,6 +18,8 @@ import org.spongepowered.configurate.objectmapping.ObjectMapper;
+ import org.slf4j.Logger;
+@@ -17,6 +20,8 @@ import org.spongepowered.configurate.objectmapping.ObjectMapper;
  import org.spongepowered.configurate.serialize.SerializationException;
  import org.spongepowered.configurate.util.CheckedFunction;
  import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -116,7 +116,7 @@ index 31325994ab441c59a4c0bd9f3f9db3d9440375d0..7aa269fd15ed706b069c0a0a1abf8eb9
  
  import java.io.IOException;
  import java.lang.reflect.Type;
-@@ -84,7 +89,7 @@ public abstract class Configurations<G, W> {
+@@ -88,7 +93,7 @@ public abstract class Configurations<G, W> {
          };
      }
  
@@ -125,7 +125,7 @@ index 31325994ab441c59a4c0bd9f3f9db3d9440375d0..7aa269fd15ed706b069c0a0a1abf8eb9
          return node -> {
              ObjectMapper.Factory factory = (ObjectMapper.Factory) Objects.requireNonNull(node.options().serializers().get(type));
              ObjectMapper.Mutable<T> mutable = (ObjectMapper.Mutable<T>) factory.get(type);
-@@ -133,7 +138,7 @@ public abstract class Configurations<G, W> {
+@@ -148,7 +153,7 @@ public abstract class Configurations<G, W> {
          final YamlConfigurationLoader loader = result.loader();
          final ConfigurationNode node = loader.load();
          if (result.isNewFile()) { // add version to new files
@@ -134,7 +134,7 @@ index 31325994ab441c59a4c0bd9f3f9db3d9440375d0..7aa269fd15ed706b069c0a0a1abf8eb9
          }
          this.applyWorldConfigTransformations(contextMap, node);
          final W instance = node.require(this.worldConfigClass);
-@@ -192,7 +197,7 @@ public abstract class Configurations<G, W> {
+@@ -207,7 +212,7 @@ public abstract class Configurations<G, W> {
              .build();
          final ConfigurationNode worldNode = worldLoader.load();
          if (newFile) { // set the version field if new file
@@ -143,7 +143,7 @@ index 31325994ab441c59a4c0bd9f3f9db3d9440375d0..7aa269fd15ed706b069c0a0a1abf8eb9
          }
          this.applyWorldConfigTransformations(contextMap, worldNode);
          this.applyDefaultsAwareWorldConfigTransformations(contextMap, worldNode, defaultsNode);
-@@ -293,4 +298,21 @@ public abstract class Configurations<G, W> {
+@@ -308,4 +313,21 @@ public abstract class Configurations<G, W> {
              return "ContextKey{" + this.name + "}";
          }
      }
@@ -208,10 +208,10 @@ index a0aa1f1a7adf986d500a2135aa42e138aa3c4f08..bc3907beb2aa63259300e8960039bd59
      }
  }
 diff --git a/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java b/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java
-index b2e961bbd33c6ecb7f049365b7aff6c5caa262ff..8e56d1824c8d6e983e89b92073f9bdc252e6a7cb 100644
+index e731de3ac158c5a4cff236c6f5001674cd488a77..06a6cecfa01c676285ea894c3ed77d0e2d96ba91 100644
 --- a/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java
 +++ b/src/main/java/io/papermc/paper/configuration/PaperConfigurations.java
-@@ -127,13 +127,13 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
+@@ -125,13 +125,13 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
          See https://docs.papermc.io/paper/configuration for more information.
          """;
  
@@ -227,7 +227,7 @@ index b2e961bbd33c6ecb7f049365b7aff6c5caa262ff..8e56d1824c8d6e983e89b92073f9bdc2
  
  
      public PaperConfigurations(final Path globalFolder) {
-@@ -290,7 +290,7 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
+@@ -293,7 +293,7 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
          }
      }
  
@@ -236,7 +236,7 @@ index b2e961bbd33c6ecb7f049365b7aff6c5caa262ff..8e56d1824c8d6e983e89b92073f9bdc2
          return createWorldContextMap(level.convertable.levelDirectory.path(), level.serverLevelData.getLevelName(), level.dimension().location(), level.spigotConfig);
      }
  
-@@ -390,17 +390,6 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
+@@ -394,17 +394,6 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
          return Files.exists(legacyConfig) && Files.isRegularFile(legacyConfig);
      }
  
@@ -254,7 +254,7 @@ index b2e961bbd33c6ecb7f049365b7aff6c5caa262ff..8e56d1824c8d6e983e89b92073f9bdc2
      @Deprecated
      public static YamlConfiguration loadLegacyConfigFile(File configFile) throws Exception {
          YamlConfiguration config = new YamlConfiguration();
-@@ -423,9 +412,16 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
+@@ -427,9 +416,16 @@ public class PaperConfigurations extends Configurations<GlobalConfiguration, Wor
      }
  
      // Symlinks are not correctly checked in createDirectories
@@ -273,7 +273,7 @@ index b2e961bbd33c6ecb7f049365b7aff6c5caa262ff..8e56d1824c8d6e983e89b92073f9bdc2
 +    // Suki end - Suki configuration
  }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 03694443ea1fde6718ed6acbccf81a5c6972e9a7..e68f3dbbc67e5352305e7f19944ea7c62e721e9d 100644
+index 1be2129db92fde50885c53b830cc2c285509b501..634e7fea7cd958f657d52befd511dc927dfb8ff8 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -293,6 +293,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
@@ -336,7 +336,7 @@ index ef6ff78af2ae747e939895b82ee9d11c75012dcd..05d011ff1053fafd9b1d440911fbe123
      }
  }
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 60ba00eb6daeeb9b97281f9380d373af3cc29402..e99aa5c5f0b221176bac8fdaeaafb1406b5e657c 100644
+index 7d7d88d2f920446a98c63229a351dc0dc07d454b..565e042fff20cb656977c4b9a02ff3e3553678b9 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -213,6 +213,10 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
@@ -372,10 +372,10 @@ index 3e4a3915cdf29fc964e0314ce01d156dd2f4f873..19214a855ce4b7610a21c9514e81ebc5
      private WorldGenSettings worldGenSettings;
  
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 3f749f33f9168455cfe14a6e6120f36b412205f3..e85b95fe0339dcc3f6a542984f0ac398b14f7173 100644
+index 9704b6420a15fbed8970ca3adac21bf2aaa3766d..6b1487c35dcad8b83c13f09106cce04f925ad41b 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -501,7 +501,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+@@ -530,7 +530,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
      public ServerLevel(MinecraftServer minecraftserver, Executor executor, LevelStorageSource.LevelStorageAccess convertable_conversionsession, PrimaryLevelData iworlddataserver, ResourceKey<Level> resourcekey, LevelStem worlddimension, ChunkProgressListener worldloadlistener, boolean flag, long i, List<CustomSpawner> list, boolean flag1, org.bukkit.World.Environment env, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider) {
          // Holder holder = worlddimension.typeHolder(); // CraftBukkit - decompile error
          // Objects.requireNonNull(minecraftserver); // CraftBukkit - decompile error
@@ -384,8 +384,20 @@ index 3f749f33f9168455cfe14a6e6120f36b412205f3..e85b95fe0339dcc3f6a542984f0ac398
          this.pvpMode = minecraftserver.isPvpAllowed();
          this.convertable = convertable_conversionsession;
          this.uuid = WorldUUID.getUUID(convertable_conversionsession.levelDirectory.path().toFile());
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index d6f1cbea24de82ada6083749f079401dbcca1ced..455f67ea6b972f312469c93f1578b5b093af5a66 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
+ import javax.annotation.Nullable;
+ import javax.crypto.Cipher;
+ import javax.crypto.SecretKey;
++
+ import net.minecraft.DefaultUncaughtExceptionHandler;
+ import net.minecraft.core.UUIDUtil;
+ import net.minecraft.network.Connection;
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index 4f79fb616d594c1d1456cf7efc938c6621fbee68..76832f628c4f0145003041f48a921521983ecc51 100644
+index 7fc3c9892d69d14de694d5328fe17a971019cc54..e8a7c938a065c9c68669eee84c77702a303266c9 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
 @@ -172,6 +172,12 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
@@ -414,10 +426,10 @@ index 4f79fb616d594c1d1456cf7efc938c6621fbee68..76832f628c4f0145003041f48a921521
          this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 2bbf1fd287a88c8b5375a4e8079fe07fe1cece3f..8ef4eff507caa899252f94a607c92de68ce4d36e 100644
+index d5d0116e49aa9cc5ace6d2e13eba4dceb68a5bbd..fbee98f461746cdce51df95b0fdf87a3a86190d0 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -964,6 +964,7 @@ public final class CraftServer implements Server {
+@@ -969,6 +969,7 @@ public final class CraftServer implements Server {
  
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
          this.console.paperConfigurations.reloadConfigs(this.console);
@@ -425,7 +437,7 @@ index 2bbf1fd287a88c8b5375a4e8079fe07fe1cece3f..8ef4eff507caa899252f94a607c92de6
          for (ServerLevel world : this.console.getAllLevels()) {
              // world.serverLevelData.setDifficulty(config.difficulty); // Paper - per level difficulty
              world.setSpawnSettings(world.serverLevelData.getDifficulty() != Difficulty.PEACEFUL && config.spawnMonsters, config.spawnAnimals); // Paper - per level difficulty (from MinecraftServer#setDifficulty(ServerLevel, Difficulty, boolean))
-@@ -2743,6 +2744,14 @@ public final class CraftServer implements Server {
+@@ -2748,6 +2749,14 @@ public final class CraftServer implements Server {
              return CraftServer.this.console.paperConfigurations.createLegacyObject(CraftServer.this.console);
          }
  
@@ -440,6 +452,19 @@ index 2bbf1fd287a88c8b5375a4e8079fe07fe1cece3f..8ef4eff507caa899252f94a607c92de6
          @Override
          public void restart() {
              org.spigotmc.RestartCommand.restart();
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+index b3f5b7e5ea44174bf2769e9b80d4e21f9438b77f..e598cd619830ba6a0ae5b2eee5939e0dd6f16e9a 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+@@ -430,7 +430,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+ 
+     @Override
+     public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
+-        return new wtf.etil.mirai.MiraiVersionFetcher(); // Mirai // Suki - branding changes // TODO Make Suki
++        return new dev.etil.mirai.MiraiVersionFetcher(); // Mirai // Suki - branding changes // TODO Make Suki
+     }
+ 
+     @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
 index 8e06bc11fb28baee3407bbfe9d7b3689d6f85ff2..ce1190a6b0fb1e4f00e0d573edd42e2456c7e1e2 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
@@ -737,10 +762,10 @@ index 0000000000000000000000000000000000000000..da669f80719df48260a43cfa616d3d05
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiConfigurations.java b/src/main/java/org/sucraft/suki/configuration/SukiConfigurations.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..4ce648be802bb93192fc636d3b1c2e7a1fca93b6
+index 0000000000000000000000000000000000000000..e7224346563ca750b00d958bdbf486b3166f09cf
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiConfigurations.java
-@@ -0,0 +1,296 @@
+@@ -0,0 +1,297 @@
 +// Suki - Suki configuration
 +
 +package org.sucraft.suki.configuration;
@@ -769,7 +794,7 @@ index 0000000000000000000000000000000000000000..4ce648be802bb93192fc636d3b1c2e7a
 +import io.papermc.paper.configuration.type.DoubleOrDefault;
 +import io.papermc.paper.configuration.type.Duration;
 +import io.papermc.paper.configuration.type.EngineMode;
-+import io.papermc.paper.configuration.type.IntOrDefault;
++import io.papermc.paper.configuration.type.IntOr;
 +import io.papermc.paper.configuration.type.fallback.FallbackValueSerializer;
 +import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 +import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
@@ -928,7 +953,8 @@ index 0000000000000000000000000000000000000000..4ce648be802bb93192fc636d3b1c2e7a
 +                    .register(new TypeToken<Reference2LongMap<?>>() {}, new FastutilMapSerializer.SomethingToPrimitive<Reference2LongMap<?>>(Reference2LongOpenHashMap::new, Long.TYPE))
 +                    .register(new TypeToken<Table<?, ?, ?>>() {}, new TableSerializer())
 +                    .register(new StringRepresentableSerializer())
-+                    .register(IntOrDefault.SERIALIZER)
++                    .register(IntOr.Default.SERIALIZER)
++                    .register(IntOr.Disabled.SERIALIZER)
 +                    .register(DoubleOrDefault.SERIALIZER)
 +                    .register(BooleanOrDefault.SERIALIZER)
 +                    .register(Duration.SERIALIZER)

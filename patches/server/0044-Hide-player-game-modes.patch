@@ -5,20 +5,10 @@ Subject: [PATCH] Hide player game modes
 
 
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 734f05ee6f4ff997403f900760037a4f474effa4..03bc6298d6b50fe9a321dbf916000109889987be 100644
+index c8398f9c8f670cff18af37db1383124778fdc706..acdd283dd11c67fb3f529b81694661223d157e91 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 +++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -10,7 +10,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
- import net.minecraft.network.protocol.Packet;
- import net.minecraft.network.protocol.game.ServerboundPlaceRecipePacket;
- import net.minecraft.server.level.ServerPlayer;
-+import net.minecraft.world.level.GameType;
- import org.bukkit.Bukkit; // Pufferfish
-+import org.bukkit.GameMode;
- import org.checkerframework.checker.nullness.qual.Nullable;
- import org.checkerframework.checker.units.qual.A;
- import org.spongepowered.configurate.objectmapping.ConfigSerializable;
-@@ -19,6 +21,7 @@ import org.spongepowered.configurate.objectmapping.meta.Required;
+@@ -16,6 +16,7 @@ import org.spongepowered.configurate.objectmapping.meta.Required;
  import org.spongepowered.configurate.objectmapping.meta.Setting;
  
  import java.util.List;
@@ -27,7 +17,7 @@ index 734f05ee6f4ff997403f900760037a4f474effa4..03bc6298d6b50fe9a321dbf916000109
  import java.util.Objects;
  import java.util.logging.Level; // Pufferfish
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index 7187c57fb9c7b9f5b04728d942e4de1dade525d7..4bc4cbb55b0a1040788d2e1e41ff58c7c0310292 100644
+index 24602729598dd1adc3fd102e4dd2c9d2495b899d..2d209b9c3569325267f1564731f0b39c463db9e0 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -36,6 +36,7 @@ import net.minecraft.network.chat.MutableComponent;

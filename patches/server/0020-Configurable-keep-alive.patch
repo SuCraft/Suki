@@ -5,7 +5,7 @@ Subject: [PATCH] Configurable keep-alive
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 79ef8872445559058847d94447054f16c89dc814..b5caf4c74864b03c4cb351e3b2747cb956ac7880 100644
+index 6cf26a45cd1fde21d4587c82604a2df5e6487139..c7f4d86f028b6f3c5e6ef251f41a1d092d2e32ec 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -7,7 +7,6 @@ import com.mojang.brigadier.StringReader;
@@ -18,7 +18,7 @@ index 79ef8872445559058847d94447054f16c89dc814..b5caf4c74864b03c4cb351e3b2747cb9
  import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 @@ -410,7 +409,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          // Purpur start
-         if (wtf.etil.mirai.MiraiConfig.useAlternateKeepAlive) {
+         if (dev.etil.mirai.MiraiConfig.useAlternateKeepAlive) {
              if (elapsedTime >= 1000L) { // 1 second
 -                if (!processedDisconnect && keepAlives.size() > KEEPALIVE_LIMIT) {
 +                if (!processedDisconnect && keepAlives.size() > KEEPALIVE_LIMIT && SukiGlobalConfiguration.get().keepalive.kickPlayerFor.lateResponse) { // Suki - configurable keep-alive - no disconnect on late or wrong keep-alive
@@ -42,7 +42,7 @@ index 79ef8872445559058847d94447054f16c89dc814..b5caf4c74864b03c4cb351e3b2747cb9
                  this.keepAlivePending = true;
                  this.keepAliveTime = currentTime;
                  this.keepAliveChallenge = currentTime;
-@@ -3668,11 +3667,16 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3673,11 +3672,16 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
              this.player.latency = (this.player.latency * 3 + i) / 4;
              this.keepAlivePending = false;
          } else if (!this.isSingleplayerOwner()) {
@@ -65,7 +65,7 @@ index 79ef8872445559058847d94447054f16c89dc814..b5caf4c74864b03c4cb351e3b2747cb9
  
      }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 497ad4c8132b2aaf14ad669d9cff7424eee56dc1..eb776ee516d7d99a6d4d933332f8d9b59e768ad9 100644
+index c1199c71fc0889658c50086d0686231490d63a72..e183225a6371b70eb82be961dcc613ba5f0b68ed 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -4,6 +4,7 @@ package org.sucraft.suki.configuration;

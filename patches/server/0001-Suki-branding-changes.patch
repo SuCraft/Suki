@@ -5,7 +5,7 @@ Subject: [PATCH] Suki branding changes
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index b3b74bfee4a568697f36d6fab9f77652911c75ff..5a68471b0b89457fc0d077a12745b234f8ecda01 100644
+index 65441b943a97f8aa453f31bf5cf7f87862fdcc07..9f1912ce5da83852fe8e04f62e67a4c6c3d884bb 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -9,7 +9,7 @@ plugins {
@@ -62,10 +62,10 @@ index d0a342ce8a5cc1a12ecab7969187166fe3597708..2ac40f0cb02c3e933f6204c936c62fda
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 7e9a837a39553c1c1aaf9c24c9db325392fa434e..03694443ea1fde6718ed6acbccf81a5c6972e9a7 100644
+index 3c528e612e9ed17e8c58bbef6c26471cc3411a7a..1be2129db92fde50885c53b830cc2c285509b501 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -913,7 +913,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+@@ -923,7 +923,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
          shutdownThread = Thread.currentThread();
          org.spigotmc.WatchdogThread.doStop(); // Paper
          if (!isSameThread()) {
@@ -74,7 +74,7 @@ index 7e9a837a39553c1c1aaf9c24c9db325392fa434e..03694443ea1fde6718ed6acbccf81a5c
              while (this.getRunningThread().isAlive()) {
                  this.getRunningThread().stop();
                  try {
-@@ -1690,7 +1690,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+@@ -1668,7 +1668,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
  
      @DontObfuscate
      public String getServerModName() {
@@ -84,7 +84,7 @@ index 7e9a837a39553c1c1aaf9c24c9db325392fa434e..03694443ea1fde6718ed6acbccf81a5c
  
      public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index d2298a4c77ebfd3c93ad83959e8e685d8f85e052..2bbf1fd287a88c8b5375a4e8079fe07fe1cece3f 100644
+index cc9c5eecc4ef1d5dc4e814ad89a40a34f4d48a69..d5d0116e49aa9cc5ace6d2e13eba4dceb68a5bbd 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -250,7 +250,7 @@ import javax.annotation.Nullable; // Paper
@@ -96,7 +96,7 @@ index d2298a4c77ebfd3c93ad83959e8e685d8f85e052..2bbf1fd287a88c8b5375a4e8079fe07f
      private final String serverVersion;
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
-@@ -2920,7 +2920,7 @@ public final class CraftServer implements Server {
+@@ -2925,7 +2925,7 @@ public final class CraftServer implements Server {
  
      // Yatopia start
      @Override
@@ -106,27 +106,27 @@ index d2298a4c77ebfd3c93ad83959e8e685d8f85e052..2bbf1fd287a88c8b5375a4e8079fe07f
      }
      // Yatopia end
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index 26402ccd5dfc4713df5514354e2f8baa6c767530..b3f5b7e5ea44174bf2769e9b80d4e21f9438b77f 100644
+index 402927770de3d9df4a75c8eac31c0ac801477164..b3f5b7e5ea44174bf2769e9b80d4e21f9438b77f 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 @@ -430,7 +430,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
  
      @Override
      public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
--        return new wtf.etil.mirai.MiraiVersionFetcher(); // Mirai
+-        return new dev.etil.mirai.MiraiVersionFetcher(); // Mirai
 +        return new wtf.etil.mirai.MiraiVersionFetcher(); // Mirai // Suki - branding changes // TODO Make Suki
      }
  
      @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index bcdb4fd83b665a6f96b6d6e989f2cfe2370cc0db..e800e5e022afbcf297115cb146614c45c97925d1 100644
+index fdfb304a860a1c5bda8fa6a9a5fc6e65cd1e6df4..e800e5e022afbcf297115cb146614c45c97925d1 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 @@ -13,7 +13,7 @@ public final class Versioning {
      static {
          bukkitVersion = "Unknown-Version";
  
--        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/wtf.etil.mirai/mirai-api/pom.properties"); // Pufferfish // Mirai
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/dev.etil.mirai/mirai-api/pom.properties"); // Pufferfish // Mirai
 +        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.sucraft.suki/suki-api/pom.properties"); // Pufferfish // Mirai // Suki - branding changes
          Properties properties = new Properties();
  
@@ -145,10 +145,10 @@ index 26ff7f68dacad945095d794c1def4752e0775abb..ec6a70b704a9b81855d18e3b57ac4cac
          // Yatopia end
          if (args.length > 0 && args[0].equals("mem") && sender.hasPermission("bukkit.command.tpsmemory")) {
 diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/spigotmc/WatchdogThread.java
-index 4e9ae34c690fed7f5d6c52e39a33a00e7943cedd..7c9679ef161ea2e476d39317fc16218c00426d53 100644
+index a566fa4b061961fb07720642564c4d521fbacab6..0d56d5788480cd19950dc06471fe8da9ddb8c6d8 100644
 --- a/src/main/java/org/spigotmc/WatchdogThread.java
 +++ b/src/main/java/org/spigotmc/WatchdogThread.java
-@@ -156,14 +156,14 @@ public class WatchdogThread extends Thread
+@@ -155,14 +155,14 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
                  if (isLongTimeout) {
                  // Paper end
                  log.log( Level.SEVERE, "------------------------------" );
@@ -166,7 +166,7 @@ index 4e9ae34c690fed7f5d6c52e39a33a00e7943cedd..7c9679ef161ea2e476d39317fc16218c
                  //
                  if ( net.minecraft.world.level.Level.lastPhysicsProblem != null )
                  {
-@@ -186,12 +186,12 @@ public class WatchdogThread extends Thread
+@@ -185,12 +185,12 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
                  // Paper end
                  } else
                  {
@@ -178,6 +178,6 @@ index 4e9ae34c690fed7f5d6c52e39a33a00e7943cedd..7c9679ef161ea2e476d39317fc16218c
                  log.log( Level.SEVERE, "------------------------------" );
 -                log.log( Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Mirai!):" ); // Paper // Mirai
 +                log.log( Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Suki!):" ); // Paper // Mirai // Suki - branding changes
-                 com.destroystokyo.paper.io.chunk.ChunkTaskManager.dumpAllChunkLoadInfo(); // Paper
+                 io.papermc.paper.chunk.system.scheduling.ChunkTaskScheduler.dumpAllChunkLoadInfo(isLongTimeout); // Paper // Paper - rewrite chunk system
                  this.dumpTickingInfo(); // Paper - log detailed tick information
-                 WatchdogThread.dumpThread( ManagementFactory.getThreadMXBean().getThreadInfo( server.serverThread.getId(), Integer.MAX_VALUE ), log );
+                 WatchdogThread.dumpThread( ManagementFactory.getThreadMXBean().getThreadInfo( MinecraftServer.getServer().serverThread.getId(), Integer.MAX_VALUE ), log );

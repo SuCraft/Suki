@@ -5,7 +5,7 @@ Subject: [PATCH] TPS options
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index e68f3dbbc67e5352305e7f19944ea7c62e721e9d..5e3ae879e37348ab9604a1d16a18d9083c2488f3 100644
+index 634e7fea7cd958f657d52befd511dc927dfb8ff8..015ba3c279b5b0186b056f5574765ac33b18b250 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -13,6 +13,7 @@ import com.mojang.authlib.GameProfileRepository;
@@ -24,7 +24,7 @@ index e68f3dbbc67e5352305e7f19944ea7c62e721e9d..5e3ae879e37348ab9604a1d16a18d908
  
  public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnable> implements CommandSource, AutoCloseable { // Patina
  
-@@ -1207,7 +1209,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+@@ -1185,7 +1187,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
                  lastTickTime = java.time.Duration.ofNanos(System.nanoTime() - tickStart); // Yatopia
                  this.profiler.popPush("nextTickWait");
                  this.mayHaveDelayedTasks = true;
