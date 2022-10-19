@@ -5,7 +5,7 @@ Subject: [PATCH] Suki configuration and commands
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..7153af98854e518b2c46225c2564fdf1939a7afa 100644
+index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..7b1211b2d2e6a43763a80ea6ac7e43b6a83830f8 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -29,6 +29,7 @@ import net.kyori.adventure.text.event.ClickEvent;
@@ -49,12 +49,12 @@ index 848ffaab670a6a245c40e52c43e0e7e826b3acbb..7153af98854e518b2c46225c2564fdf1
 +            vanillaServerSettingsJSON.put("hide-online-players", String.valueOf(properties.hideOnlinePlayers));
 +            vanillaServerSettingsJSON.put("entity-broadcast-range-percentage", String.valueOf(properties.entityBroadcastRangePercentage));
 +            vanillaServerSettingsJSON.put("simulation-distance", String.valueOf(properties.simulationDistance));
-+            vanillaServerSettingsJSON.put("player-idle-timeout", String.valueOf(properties.playerIdleTimeout));
++            vanillaServerSettingsJSON.put("player-idle-timeout", String.valueOf(properties.playerIdleTimeout.get()));
 +            vanillaServerSettingsJSON.put("debug", String.valueOf(properties.debug));
 +            vanillaServerSettingsJSON.put("force-gamemode", String.valueOf(properties.forceGameMode));
 +            vanillaServerSettingsJSON.put("rate-limit", String.valueOf(properties.rateLimitPacketsPerSecond));
 +            vanillaServerSettingsJSON.put("hardcore", String.valueOf(properties.hardcore));
-+            vanillaServerSettingsJSON.put("white-list", String.valueOf(properties.whiteList));
++            vanillaServerSettingsJSON.put("white-list", String.valueOf(properties.whiteList.get()));
 +            vanillaServerSettingsJSON.put("spawn-npcs", String.valueOf(properties.spawnNpcs));
 +            vanillaServerSettingsJSON.put("previews-chat", String.valueOf(properties.previewsChat));
 +            vanillaServerSettingsJSON.put("spawn-animals", String.valueOf(properties.spawnAnimals));
