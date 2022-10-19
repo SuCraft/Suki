@@ -74,10 +74,10 @@ index 40b66adcb5aac64212b1937dc506ebb60f2eed83..37ac972e8879070219c2b4ad273ff304
  
          // Amend help topics from the help.yml file
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 2698acf366032c21647fec963423470cb5939f24..75f5a17b3413ba11bfcdccc5479fcde56b476ae4 100644
+index 96ffda20a1df8f26c9b9cd7ffe76b4a2293f4e3e..7c1ad857e503a1f5a6eee4f699260baeec27d02d 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -140,4 +140,16 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -151,4 +151,16 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - TPS options
  

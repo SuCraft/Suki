@@ -5,7 +5,7 @@ Subject: [PATCH] TPS options
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index e68f3dbbc67e5352305e7f19944ea7c62e721e9d..bf4d068e53cfe235951fd84d7ec0f61554623987 100644
+index e68f3dbbc67e5352305e7f19944ea7c62e721e9d..6c6b7f48f16d4366039edcb8d02f849d0e6b5c2e 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -13,6 +13,7 @@ import com.mojang.authlib.GameProfileRepository;
@@ -29,12 +29,12 @@ index e68f3dbbc67e5352305e7f19944ea7c62e721e9d..bf4d068e53cfe235951fd84d7ec0f615
                  this.profiler.popPush("nextTickWait");
                  this.mayHaveDelayedTasks = true;
 -                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + 50L, this.nextTickTime);
-+                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + SukiGlobalConfiguration.get().tps.maxOversleep, this.nextTickTime); // Suki - TPS options - configurable tick oversleep
++                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + (SukiGlobalConfiguration.get().tps.oversleep.min < 0 ? 50 : SukiGlobalConfiguration.get().tps.oversleep.min), this.nextTickTime); // Suki - TPS options - configurable tick oversleep
                  this.waitUntilNextTick();
                  this.profiler.pop();
                  this.endMetricsRecordingTick();
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index e183225a6371b70eb82be961dcc613ba5f0b68ed..2698acf366032c21647fec963423470cb5939f24 100644
+index e183225a6371b70eb82be961dcc613ba5f0b68ed..96ffda20a1df8f26c9b9cd7ffe76b4a2293f4e3e 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -4,7 +4,6 @@ package org.sucraft.suki.configuration;
@@ -45,7 +45,7 @@ index e183225a6371b70eb82be961dcc613ba5f0b68ed..2698acf366032c21647fec963423470c
  import org.spongepowered.configurate.objectmapping.meta.Setting;
  
  @SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
-@@ -126,4 +125,19 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -126,4 +125,30 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - configurable keep-alive
  
@@ -55,10 +55,21 @@ index e183225a6371b70eb82be961dcc613ba5f0b68ed..2698acf366032c21647fec963423470c
 +
 +    public class Tps extends ConfigurationPart {
 +
-+        /**
-+         * In milliseconds (default 50)
-+         */
-+        public int maxOversleep = 50;
++        public Oversleep oversleep;
++
++        public class Oversleep extends ConfigurationPart {
++
++            /**
++             * In milliseconds (-1 reverts to default, which is 50)
++             */
++            public int min = -1;
++
++//            /**
++//             * In milliseconds (-1 reverts to default, which is 50)
++//             */
++//            public int max = -1;
++
++        }
 +
 +    }
 +

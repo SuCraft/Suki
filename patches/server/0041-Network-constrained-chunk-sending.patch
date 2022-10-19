@@ -444,10 +444,10 @@ index b5caf4c74864b03c4cb351e3b2747cb956ac7880..a7014ef7d826cebdd38d7ea5fb6caa61
      public void handlePlayerAbilities(ServerboundPlayerAbilitiesPacket packet) {
          PacketUtils.ensureRunningOnSameThread(packet, this, this.player.getLevel());
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index ba5f7382143a6f3e371167cec9b6749462a2b66d..4cdd6f6fc56c0dec0811f82019158e9dfc691e32 100644
+index 218a9d910777e7d90b8712eb3b69bb584f9af448..142033e608024c1d93cd44327a39d58f14a17cd7 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -246,4 +246,28 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -257,4 +257,28 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - configurable login timeout
  

@@ -430,10 +430,10 @@ index ce1190a6b0fb1e4f00e0d573edd42e2456c7e1e2..2ed905294da98cb671800ad6bf6e6147
          // Spigot end
          parent.recalculatePermissibles();
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index a35a68fed4829d40cbbf1323c51ee36b934d163d..5ab29a2cb928cdd6f612a9054948c879b327b69e 100644
+index 7c1ad857e503a1f5a6eee4f699260baeec27d02d..891d2bdd39803b989a99fa386d6b970d4ae1182a 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -151,5 +151,19 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -162,5 +162,19 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - hide plugins
  
@@ -454,7 +454,7 @@ index a35a68fed4829d40cbbf1323c51ee36b934d163d..5ab29a2cb928cdd6f612a9054948c879
  
  }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 9a5143057588c733cab76638e492d8b14385f649..8aaf41185f89f64fa618546c1d9ae91bf9c322ef 100644
+index 63f5729e73d6737f6d8ee1256365fc5bd3b59271..e51ad799d149199c1fc47a7c7783c4b09ef58c49 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -158,4 +158,17 @@ public class SukiWorldConfiguration extends ConfigurationPart {

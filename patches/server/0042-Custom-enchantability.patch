@@ -957,10 +957,10 @@ index 09b6475b77ebc7f43c13861aa2af26e2f6e6a8b5..ed97c55780e9e99dd6b6fa3933b53850
      public net.kyori.adventure.text.event.HoverEvent<net.kyori.adventure.text.event.HoverEvent.ShowItem> asHoverEvent(final ItemStack item, final java.util.function.UnaryOperator<net.kyori.adventure.text.event.HoverEvent.ShowItem> op) {
          final net.minecraft.nbt.CompoundTag tag = CraftItemStack.asNMSCopy(item).getTag();
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 39ae5e40c7facba64383eedca4b713db485e336b..b7e1c2fccadd0270c1a5e82a0df9ee34c676e724 100644
+index 142033e608024c1d93cd44327a39d58f14a17cd7..fed3a5181979acb98c0e82a41f4b78970ac148c2 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -270,4 +270,102 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -281,4 +281,102 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - network-constrained chunk sending
  
