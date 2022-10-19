@@ -1140,10 +1140,10 @@ index f25467ad1c5bac7eaef4b63b2845ad04d7c76e4e..3ea5715b065ac0aeea68feadaaf87156
 +
  }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 50780a18067c7842f023e580a5720f7bd7a5422e..982e2936376ed973b2bfd601cc3348cbe1e8908b 100644
+index 14bee02adbf2322e226bc90c4fb27c70b0a3b844..22fd84b9337af7cda4a225159341d787a81718ad 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -590,4 +590,16 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -596,4 +596,16 @@ public class SukiWorldConfiguration extends ConfigurationPart {
  
      // Suki end - bone meal regrows bark
  

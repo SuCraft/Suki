@@ -4,6 +4,68 @@ Date: Fri, 28 Jan 2022 16:58:29 +0100
 Subject: [PATCH] More entity activation configuration
 
 
+diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
+index 7b1211b2d2e6a43763a80ea6ac7e43b6a83830f8..8aa45702f3033c2d5375e8eca1450b935b93b352 100644
+--- a/src/main/java/co/aikar/timings/TimingsExport.java
++++ b/src/main/java/co/aikar/timings/TimingsExport.java
+@@ -38,6 +38,7 @@ import org.bukkit.configuration.MemorySection;
+ import org.bukkit.entity.EntityType;
+ import org.json.simple.JSONObject;
+ import org.json.simple.JSONValue;
++import org.sucraft.suki.configuration.SukiWorldConfiguration;
+ import oshi.SystemInfo;
+ import oshi.hardware.HardwareAbstractionLayer;
+ 
+@@ -241,7 +242,7 @@ public class TimingsExport extends Thread {
+ 
+         // Suki start - Suki configuration - include vanilla server.properties in timings
+ 
+-        var vanillaServerSettingsJSON = new JSONObject();
++        JSONObject vanillaServerSettingsJSON = new JSONObject();
+         {
+             var server = (DedicatedServer) MinecraftServer.getServer();
+             var properties = server.getProperties();
+@@ -287,6 +288,31 @@ public class TimingsExport extends Thread {
+ 
+         // Suki end - Suki configuration - include vanilla server.properties in timings
+ 
++        // Suki start - configurable ratio of skipped active entities - include computed fraction in timings
++
++        JSONObject sukiConfigJSON = mapAsJSON(Bukkit.spigot().getSukiConfig(), null);
++        {
++            JSONObject sukiConfigWorldsJSON = (JSONObject) sukiConfigJSON.get("__________WORLDS__________");
++            for (Object worldEntry : sukiConfigWorldsJSON.entrySet()) {
++                JSONObject configWorldJSON = (JSONObject) ((Map.Entry<?, ?>) worldEntry).getValue();
++                JSONObject entityTickingJSON = (JSONObject) configWorldJSON.get("entity-ticking");
++                if (entityTickingJSON != null) {
++                    JSONObject skippedActiveEntityRatioJSON = (JSONObject) entityTickingJSON.get("skipped-active-entity-ratio");
++                    if (skippedActiveEntityRatioJSON != null) {
++                        String ratioString = (String) skippedActiveEntityRatioJSON.get("ratio");
++                        if (ratioString != null) {
++                            double ratio = Double.parseDouble(ratioString);
++                            var fraction = SukiWorldConfiguration.EntityTicking.SkippedActiveEntityRatio.computeNumeratorAndDenominator(ratio);
++                            skippedActiveEntityRatioJSON.put("_numerator", fraction.first());
++                            skippedActiveEntityRatioJSON.put("_denominator", fraction.second());
++                        }
++                    }
++                }
++            }
++        }
++
++        // Suki end - configurable ratio of skipped active entities - include computed fraction in timings
++
+         parent.put("config", createObject(
+             pair("server.properties", vanillaServerSettingsJSON), // Suki - Suki configuration- include vanilla server.properties in timings
+             pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
+@@ -294,7 +320,7 @@ public class TimingsExport extends Thread {
+             pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Pufferfish
+             pair("pufferfish", mapAsJSON(gg.pufferfish.pufferfish.PufferfishConfig.getConfigCopy(), null)), // Pufferfish // Mirai
+             pair("mirai", mapAsJSON(wtf.etil.mirai.MiraiConfig.getConfigCopy(), null)), // Mirai // Suki - Suki configuration
+-            pair("suki", mapAsJSON(Bukkit.spigot().getSukiConfig(), null)) // Suki - Suki configuration
++            pair("suki", sukiConfigJSON) // Suki - Suki configuration // Suki - configurable ratio of skipped active entities - include computed fraction in timings
+         ));
+ 
+         new TimingsExport(listeners, parent, history).start();
 diff --git a/src/main/java/org/spigotmc/ActivationRange.java b/src/main/java/org/spigotmc/ActivationRange.java
 index 70b5b307193dc288a6257d90ca96762cb4a8345a..0153b40cef8b07660eb20e3a0dcb4fb19a1d44c8 100644
 --- a/src/main/java/org/spigotmc/ActivationRange.java
@@ -194,18 +256,20 @@ index 70b5b307193dc288a6257d90ca96762cb4a8345a..0153b40cef8b07660eb20e3a0dcb4fb1
      }
  }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index ba92d120d6c6cb85bb3d19c3f929c462ee17d085..10be03e7e73ad61f8c15b5f48c8ffca9d9f671b0 100644
+index 092b726d0617ce88bd00499628ce24356e046528..0c88e2b03f951340293cceeba3a4c2a789b92d8c 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -5,6 +5,7 @@ package org.sucraft.suki.configuration;
+@@ -5,7 +5,9 @@ package org.sucraft.suki.configuration;
  import com.mojang.logging.LogUtils;
  import io.papermc.paper.configuration.Configuration;
  import io.papermc.paper.configuration.ConfigurationPart;
 +import io.papermc.paper.configuration.NestedSetting;
  import io.papermc.paper.configuration.PaperConfigurations;
++import it.unimi.dsi.fastutil.Pair;
  import net.minecraft.resources.ResourceLocation;
  import org.slf4j.Logger;
-@@ -262,4 +263,127 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ import org.spigotmc.SpigotWorldConfig;
+@@ -262,4 +264,132 @@ public class SukiWorldConfiguration extends ConfigurationPart {
  
      // Suki end - difficulty changes
  
@@ -236,37 +300,42 @@ index ba92d120d6c6cb85bb3d19c3f929c462ee17d085..10be03e7e73ad61f8c15b5f48c8ffca9
 +                return a;
 +            }
 +
-+            private synchronized void computeNumeratorAndDenominator() {
-+                if (lastRatio == null || ratio != lastRatio) {
-+                    double closestValue = 0;
-+                    int bestNumerator = 0;
-+                    int bestDenominator = 1;
-+                    for (int denominator = 2; denominator <= 9; denominator++) {
-+                        for (int numerator = 1; numerator < denominator; numerator++) {
-+                            if (gcd(denominator, numerator) != 1) {
-+                                continue;
-+                            }
-+                            double value = ((double) numerator) / denominator;
-+                            if (Math.abs(value - ratio) < Math.abs(closestValue - ratio)) {
-+                                closestValue = value;
-+                                bestNumerator = numerator;
-+                                bestDenominator = denominator;
-+                            }
++            public static Pair<Integer, Integer> computeNumeratorAndDenominator(double ratio) {
++                double closestValue = 0;
++                int bestNumerator = 0;
++                int bestDenominator = 1;
++                for (int denominator = 2; denominator <= 9; denominator++) {
++                    for (int numerator = 1; numerator < denominator; numerator++) {
++                        if (gcd(denominator, numerator) != 1) {
++                            continue;
++                        }
++                        double value = ((double) numerator) / denominator;
++                        if (Math.abs(value - ratio) < Math.abs(closestValue - ratio)) {
++                            closestValue = value;
++                            bestNumerator = numerator;
++                            bestDenominator = denominator;
 +                        }
 +                    }
++                }
++                return Pair.of(bestNumerator, bestDenominator);
++            }
++
++            private synchronized void setNumeratorAndDenominator() {
++                if (lastRatio == null || ratio != lastRatio) {
++                    Pair<Integer, Integer> best = computeNumeratorAndDenominator(ratio);
 +                    lastRatio = ratio;
-+                    lastNumerator = bestNumerator;
-+                    lastDenominator = bestDenominator;
++                    lastNumerator = best.first();
++                    lastDenominator = best.second();
 +                }
 +            }
 +
 +            public int numerator() {
-+                computeNumeratorAndDenominator();
++                setNumeratorAndDenominator();
 +                return lastNumerator;
 +            }
 +
 +            public int denominator() {
-+                computeNumeratorAndDenominator();
++                setNumeratorAndDenominator();
 +                return lastDenominator;
 +            }
 +

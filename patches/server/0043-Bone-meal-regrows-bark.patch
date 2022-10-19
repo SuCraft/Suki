@@ -405,10 +405,10 @@ index 0000000000000000000000000000000000000000..32d7035f98aa575c4b65d154c312a130
 +
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index e7591dafa67e024e5e9b56823fd21d0c143ce0c1..52fa047b68831d2de1b1b9c7b5f05b910d786ff3 100644
+index d7f59a828a3258f3208881f3e720f81010207ca8..14bee02adbf2322e226bc90c4fb27c70b0a3b844 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -576,4 +576,18 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -582,4 +582,18 @@ public class SukiWorldConfiguration extends ConfigurationPart {
  
      // Suki end - network-constrained chunk sending
  

@@ -5,10 +5,10 @@ Subject: [PATCH] Per-player load, see and track view distance
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 86153293dfdebfdcf80dd54e72f3e6bd617d0af8..7a3948397cf823ad5f23bf2e2a77aaf20d7a1c78 100644
+index 8aa45702f3033c2d5375e8eca1450b935b93b352..7db5fa07eaa4bb0c08d3f5bb930b303837fefa2d 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
-@@ -165,8 +165,11 @@ public class TimingsExport extends Thread {
+@@ -166,8 +166,11 @@ public class TimingsExport extends Thread {
                  })),
                  // Paper start - replace chunk loader system
                  pair("ticking-distance", world.getChunkSource().chunkMap.playerChunkManager.getTargetTickViewDistance()),
@@ -2212,12 +2212,12 @@ index 2040ae3c75a5c90d0ecf25db4f544ae93e2dc64e..ba5f7382143a6f3e371167cec9b67494
      // Suki start - configurable keep-alive
  
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index edcad3238c7c112c63bf6abcd1f6103bfdc660e9..533e80ad6193b4f983ebf7b3c3b0a526d1cc9047 100644
+index b423c6df22aa995517234164b4222bedce4c2845..f5b51d75d57a5ede752b4b34af1f7242dcf226c1 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -8,6 +8,9 @@ import io.papermc.paper.configuration.ConfigurationPart;
- import io.papermc.paper.configuration.NestedSetting;
+@@ -9,6 +9,9 @@ import io.papermc.paper.configuration.NestedSetting;
  import io.papermc.paper.configuration.PaperConfigurations;
+ import it.unimi.dsi.fastutil.Pair;
  import net.minecraft.resources.ResourceLocation;
 +import net.minecraft.server.level.ServerPlayer;
 +import org.bukkit.Bukkit;
@@ -2225,7 +2225,7 @@ index edcad3238c7c112c63bf6abcd1f6103bfdc660e9..533e80ad6193b4f983ebf7b3c3b0a526
  import org.slf4j.Logger;
  import org.spigotmc.SpigotWorldConfig;
  import org.spongepowered.configurate.objectmapping.meta.Setting;
-@@ -395,5 +398,160 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -401,5 +404,160 @@ public class SukiWorldConfiguration extends ConfigurationPart {
  
      // Suki end - more entity activation configuration
  

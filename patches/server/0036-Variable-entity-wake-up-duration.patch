@@ -69,10 +69,10 @@ index 0153b40cef8b07660eb20e3a0dcb4fb19a1d44c8..4670d6a4d61f53f689efeb7666ecde85
          }
          return -1;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 16cd9f60f3987233f4f414e7ae02a901225ebcd6..00c7513a4e075bbbdeb7d620dd8230c6325a7210 100644
+index 0c88e2b03f951340293cceeba3a4c2a789b92d8c..b423c6df22aa995517234164b4222bedce4c2845 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -381,6 +381,16 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -387,6 +387,16 @@ public class SukiWorldConfiguration extends ConfigurationPart {
  
          }
  
