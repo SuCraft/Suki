@@ -25,10 +25,10 @@ index 9da5a6086323ff4c4fd62a035fa8f7efc3d92e38..d9b224efd0792a3309973fc0aeb013d7
  
      private MinecraftTimings() {}
 diff --git a/src/main/java/co/aikar/timings/WorldTimingsHandler.java b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
-index d685867d69f95bff0c5677b89722ccf5ffea1f20..1ce0493c5d1863a64662fb7977be5f696c7f3bab 100644
+index dda0f831d0e3768f5798705695742d0c9052f963..92adec4f5a81e94c81cbb96db878e9427971074f 100644
 --- a/src/main/java/co/aikar/timings/WorldTimingsHandler.java
 +++ b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
-@@ -86,6 +86,11 @@ public class WorldTimingsHandler {
+@@ -90,6 +90,11 @@ public class WorldTimingsHandler {
      public final Timing chunkUnloadPOISerialization;
      public final Timing chunkUnloadDataSave;
  
@@ -40,7 +40,7 @@ index d685867d69f95bff0c5677b89722ccf5ffea1f20..1ce0493c5d1863a64662fb7977be5f69
      public WorldTimingsHandler(Level server) {
          String name = ((PrimaryLevelData) server.getLevelData()).getLevelName() + " - ";
  
-@@ -166,6 +171,12 @@ public class WorldTimingsHandler {
+@@ -174,6 +179,12 @@ public class WorldTimingsHandler {
          chunkUnloadPrepareSave = Timings.ofSafe(name + "Chunk unload - Async Save Prepare");
          chunkUnloadPOISerialization = Timings.ofSafe(name + "Chunk unload - POI Data Serialization");
          chunkUnloadDataSave = Timings.ofSafe(name + "Chunk unload - Data Serialization");
@@ -54,7 +54,7 @@ index d685867d69f95bff0c5677b89722ccf5ffea1f20..1ce0493c5d1863a64662fb7977be5f69
  
      public static Timing getTickList(ServerLevel worldserver, String timingsType) {
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..53c1a614f3164a4113d413d1df21a62d8f099b65 100644
+index fb47f7b1681e9b45f215478928494cee187d5f18..b9ee63b0ebc4b337f9522cd7dbf1fe52fc0edf46 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -25,7 +25,9 @@ import org.bukkit.entity.Player;
@@ -251,18 +251,18 @@ index 8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d..53c1a614f3164a4113d413d1df21a62d
              // Suki start - per-player view distance
              this.player.level.timings.playerChunkLoaderUpdate.startTiming();
 +            this.player.removeOverdueChunkInitializationPacketsInTransit(); // Suki - network-constrained chunk sending
+             this.player.level.timings.playerChunkLoaderUpdateGetViewDistances.startTiming();
              final int loadViewDistance = this.player.getLoadViewDistance();
              // load view cannot be less-than tick view + 1
-             final int tickViewDistance = this.player.getTickingViewDistance();
-@@ -1041,7 +1096,7 @@ public final class PlayerChunkLoader {
+@@ -1043,7 +1098,7 @@ public final class PlayerChunkLoader {
                      this.player.getAbilities().flying);
  
              // make sure we're in the send queue
 -            this.loader.chunkSendWaitQueue.add(this);
 +            this.loader.transmittingWaitQueue.add(this);
  
+             this.player.level.timings.playerChunkLoaderUpdateDecideWhetherToRecalculate.startTiming(); try { // Suki - per-player view distance
              if (
-                 // has view distance stayed the same?
 diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
 index 0130e2c3c047055fbea9c3d893a9b4593fa10ed2..6f835d848bd5fe41f7dae92ea88d3d7cb8c1af8b 100644
 --- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
@@ -304,10 +304,10 @@ index 37a6894fba46eb8b091d88e9ab73b801d6ba6213..60c40bf42045a3ebc59349a23cafcc8e
  import org.spigotmc.SpigotWorldConfig;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..0fa42b84a15e77e8b01917905bd0dabae4593e62 100644
+index cc6d3cc740661b80322ed21f887aad0837fa7606..325b24b88739c64b2bafec2c30c8d540452bf4d8 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -7,6 +7,7 @@ import com.mojang.datafixers.util.Either;
+@@ -8,6 +8,7 @@ import com.mojang.datafixers.util.Either;
  import com.mojang.logging.LogUtils;
  import com.mojang.serialization.DataResult;
  
@@ -315,7 +315,7 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..0fa42b84a15e77e8b01917905bd0daba
  import java.util.Collection;
  import java.util.Comparator;
  import java.util.Iterator;
-@@ -19,6 +20,7 @@ import java.util.stream.Stream;
+@@ -20,6 +21,7 @@ import java.util.stream.Stream;
  import javax.annotation.Nullable;
  
  import io.papermc.paper.chunk.PlayerChunkLoader;
@@ -323,7 +323,7 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..0fa42b84a15e77e8b01917905bd0daba
  import it.unimi.dsi.fastutil.Pair;
  import it.unimi.dsi.fastutil.ints.IntIntPair;
  import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
-@@ -523,6 +525,115 @@ public class ServerPlayer extends Player {
+@@ -537,6 +539,115 @@ public class ServerPlayer extends Player {
      public final com.destroystokyo.paper.util.PooledHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> cachedSingleMobDistanceMap;
      // Paper end
  
@@ -439,7 +439,7 @@ index dd18c6b39f99b891d6dd687d083c758ec80f9bf9..0fa42b84a15e77e8b01917905bd0daba
      // CraftBukkit start
      public String displayName;
      public net.kyori.adventure.text.Component adventure$displayName; // Paper
-@@ -2516,6 +2627,7 @@ public class ServerPlayer extends Player {
+@@ -2530,6 +2641,7 @@ public class ServerPlayer extends Player {
              }
              // Paper end
          }

@@ -23,10 +23,10 @@ index 8aa45702f3033c2d5375e8eca1450b935b93b352..7db5fa07eaa4bb0c08d3f5bb930b3038
              ));
          }));
 diff --git a/src/main/java/co/aikar/timings/WorldTimingsHandler.java b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
-index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..d685867d69f95bff0c5677b89722ccf5ffea1f20 100644
+index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..dda0f831d0e3768f5798705695742d0c9052f963 100644
 --- a/src/main/java/co/aikar/timings/WorldTimingsHandler.java
 +++ b/src/main/java/co/aikar/timings/WorldTimingsHandler.java
-@@ -44,6 +44,24 @@ public class WorldTimingsHandler {
+@@ -44,6 +44,28 @@ public class WorldTimingsHandler {
      public final Timing broadcastChunkUpdates;
      public final Timing countNaturalMobs;
  
@@ -38,6 +38,8 @@ index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..d685867d69f95bff0c5677b89722ccf5
 +//    public final Timing chunkMapPlayerMoveUpdatePlayerMap;
 +//    public final Timing chunkMapUpdatePlayerMaps;
 +    public final Timing playerChunkLoaderUpdate;
++    public final Timing playerChunkLoaderUpdateGetViewDistances;
++    public final Timing playerChunkLoaderUpdateDecideWhetherToRecalculate;
 +//    public final Timing chunkMapPlayerMoveUpdateChunkTrackingOrSeeing;
 +//    public final Timing chunkMapPlayerMoveSortChunksForTrackAndSee;
 +    public final Timing computeTrackViewDistance;
@@ -46,12 +48,14 @@ index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..d685867d69f95bff0c5677b89722ccf5
 +    public final Timing trackViewDistanceMayHaveChanged;
 +    public final Timing seeViewDistanceMayHaveChanged;
 +    public final Timing loadViewDistanceMayHaveChanged;
++    public final Timing processTrackViewDistanceChange;
++    public final Timing processSeeViewDistanceChange;
 +    // Suki end - per-player view distance
 +
      public final Timing chunkLoad;
      public final Timing chunkLoadPopulate;
      public final Timing syncChunkLoad;
-@@ -119,6 +137,23 @@ public class WorldTimingsHandler {
+@@ -119,6 +141,27 @@ public class WorldTimingsHandler {
          broadcastChunkUpdates = Timings.ofSafe(name + "Broadcast chunk updates");
          countNaturalMobs = Timings.ofSafe(name + "Count natural mobs");
  
@@ -62,7 +66,9 @@ index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..d685867d69f95bff0c5677b89722ccf5
 +//        chunkMapPlayerMoveUpdateDistanceManager = Timings.ofSafe("Chunk map player move - update distance manager");
 +//        chunkMapPlayerMoveUpdatePlayerMap = Timings.ofSafe("Chunk map player move - update player map");
 +//        chunkMapUpdatePlayerMaps = Timings.ofSafe("Chunk map update player maps");
-+        playerChunkLoaderUpdate = Timings.ofSafe("Player chunk loader update");
++        playerChunkLoaderUpdate = Timings.ofSafe("PlayerChunkLoader update");
++        playerChunkLoaderUpdateGetViewDistances = Timings.ofSafe("PlayerChunkLoader update - get view distances");
++        playerChunkLoaderUpdateDecideWhetherToRecalculate = Timings.ofSafe("PlayerChunkLoader update - decide whether to recalculate");
 +//        chunkMapPlayerMoveUpdateChunkTrackingOrSeeing = Timings.ofSafe("Chunk map player move - update chunk tracking or seeing");
 +//        chunkMapPlayerMoveSortChunksForTrackAndSee = Timings.ofSafe("Chunk map player move - sort chunks for track and see");
 +        computeTrackViewDistance = Timings.ofSafe("Compute track view distance");
@@ -71,12 +77,14 @@ index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..d685867d69f95bff0c5677b89722ccf5
 +        trackViewDistanceMayHaveChanged = Timings.ofSafe("Track view distance may have changed");
 +        seeViewDistanceMayHaveChanged = Timings.ofSafe("See view distance may have changed");
 +        loadViewDistanceMayHaveChanged = Timings.ofSafe("Load view distance may have changed");
++        processTrackViewDistanceChange = Timings.ofSafe("Process track view distance change");
++        processSeeViewDistanceChange = Timings.ofSafe("Process see view distance change");
 +        // Suki end - per-player view distance
  
          miscMobSpawning = Timings.ofSafe(name + "Mob spawning - Misc");
  
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index 0d43afcdd5db346d0ddf82e06bad5b219721715c..8854dc2c9ab5a8ee7c8f4780d4dc7613b03fb09d 100644
+index 0d43afcdd5db346d0ddf82e06bad5b219721715c..fb47f7b1681e9b45f215478928494cee187d5f18 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -24,6 +24,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -686,13 +694,14 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..8854dc2c9ab5a8ee7c8f4780d4dc7613
              this.loader.loadMap.remove(this.player);
              this.loader.loadTicketCleanup.remove(this.player);
              this.loader.tickMap.remove(this.player);
-@@ -939,12 +1020,17 @@ public final class PlayerChunkLoader {
+@@ -939,12 +1020,19 @@ public final class PlayerChunkLoader {
          }
  
          public void update() {
 -            final int tickViewDistance = this.tickViewDistance == -1 ? this.loader.getTickDistance() : this.tickViewDistance;
 +            // Suki start - per-player view distance
 +            this.player.level.timings.playerChunkLoaderUpdate.startTiming();
++            this.player.level.timings.playerChunkLoaderUpdateGetViewDistances.startTiming();
 +            final int loadViewDistance = this.player.getLoadViewDistance();
              // load view cannot be less-than tick view + 1
 -            final int loadViewDistance = Math.max(tickViewDistance + 1, this.loadViewDistance == -1 ? this.loader.getLoadDistance() : this.loadViewDistance);
@@ -703,12 +712,16 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..8854dc2c9ab5a8ee7c8f4780d4dc7613
 +//            final int sendViewDistance = Math.min(loadViewDistance, this.sendViewDistance == -1 ? (!GlobalConfiguration.get().chunkLoading.autoconfigSendDistance || clientViewDistance == -1 ? this.loader.getSendDistance() : clientViewDistance + 1) : this.sendViewDistance);
 +            final int trackViewDistance = this.player.getTrackViewDistance();
 +            final int seeViewDistance = this.player.getSeeViewDistance();
++            this.player.level.timings.playerChunkLoaderUpdateGetViewDistances.stopTiming();
 +            // Suki end - per-player view distance
  
              final double posX = this.player.getX();
              final double posZ = this.player.getZ();
-@@ -959,7 +1045,7 @@ public final class PlayerChunkLoader {
+@@ -957,9 +1045,10 @@ public final class PlayerChunkLoader {
+             // make sure we're in the send queue
+             this.loader.chunkSendWaitQueue.add(this);
  
++            this.player.level.timings.playerChunkLoaderUpdateDecideWhetherToRecalculate.startTiming(); try { // Suki - per-player view distance
              if (
                  // has view distance stayed the same?
 -                    sendViewDistance == this.lastSendDistance
@@ -716,15 +729,16 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..8854dc2c9ab5a8ee7c8f4780d4dc7613
                              && loadViewDistance == this.lastLoadDistance
                              && tickViewDistance == this.lastTickDistance
  
-@@ -980,6 +1066,7 @@ public final class PlayerChunkLoader {
+@@ -980,23 +1069,29 @@ public final class PlayerChunkLoader {
                              && (!this.usingLookingPriority || Math.abs(yaw - this.lastYaw) <= LOOK_PRIORITY_YAW_DELTA_RECALC_THRESHOLD)
              ) {
                  // nothing we care about changed, so we're not re-calculating
 +                this.player.level.timings.playerChunkLoaderUpdate.stopTiming(); // Suki - per-player view distance
                  return;
              }
++            } finally { this.player.level.timings.playerChunkLoaderUpdateDecideWhetherToRecalculate.stopTiming(); }  // Suki - per-player view distance
  
-@@ -987,16 +1074,20 @@ public final class PlayerChunkLoader {
+             final int centerChunkX = Mth.floor(posX) >> 4;
              final int centerChunkZ = Mth.floor(posZ) >> 4;
  
              final boolean needsChunkCenterUpdate = (centerChunkX != this.lastChunkX) || (centerChunkZ != this.lastChunkZ);
@@ -748,7 +762,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..8854dc2c9ab5a8ee7c8f4780d4dc7613
              }
              if (tickViewDistance != this.lastTickDistance) {
                  this.player.connection.send(new ClientboundSetSimulationDistancePacket(tickViewDistance));
-@@ -1005,7 +1096,10 @@ public final class PlayerChunkLoader {
+@@ -1005,7 +1100,10 @@ public final class PlayerChunkLoader {
              this.lastLocX = posX;
              this.lastLocZ = posZ;
              this.lastYaw = yaw;
@@ -760,7 +774,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..8854dc2c9ab5a8ee7c8f4780d4dc7613
              this.lastLoadDistance = loadViewDistance;
              this.lastTickDistance = tickViewDistance;
              this.usingLookingPriority = useLookPriority;
-@@ -1035,76 +1129,87 @@ public final class PlayerChunkLoader {
+@@ -1035,76 +1133,87 @@ public final class PlayerChunkLoader {
  
              final List<ChunkPriorityHolder> loadQueue = new ArrayList<>();
  
@@ -895,7 +909,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..8854dc2c9ab5a8ee7c8f4780d4dc7613
              loadQueue.sort((final ChunkPriorityHolder p1, final ChunkPriorityHolder p2) -> {
                  return Double.compare(p1.priority, p2.priority);
              });
-@@ -1123,6 +1228,9 @@ public final class PlayerChunkLoader {
+@@ -1123,6 +1232,9 @@ public final class PlayerChunkLoader {
              if (needsChunkCenterUpdate) {
                  this.player.connection.send(new ClientboundSetChunkCacheCenterPacket(centerChunkX, centerChunkZ));
              }
@@ -1335,17 +1349,18 @@ index 2bb545b505aa726b7ed7c757caed84bf0538782e..5f1f6e8bd7e7ec02803f14a0fc7f88d0
      public void setSimulationDistance(int simulationDistance) {
          this.distanceManager.updateSimulationDistance(simulationDistance);
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 32be488845de5ceb10dca6fddad87a60b243f747..dd18c6b39f99b891d6dd687d083c758ec80f9bf9 100644
+index 32be488845de5ceb10dca6fddad87a60b243f747..cc6d3cc740661b80322ed21f887aad0837fa7606 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -1,6 +1,5 @@
+@@ -1,6 +1,6 @@
  package net.minecraft.server.level;
  
 -import com.destroystokyo.paper.PaperConfig;
++import co.aikar.timings.Timing;
  import com.destroystokyo.paper.event.entity.PlayerNaturallySpawnCreaturesEvent;
  import com.google.common.collect.Lists;
  import com.mojang.authlib.GameProfile;
-@@ -8,8 +7,6 @@ import com.mojang.datafixers.util.Either;
+@@ -8,8 +8,6 @@ import com.mojang.datafixers.util.Either;
  import com.mojang.logging.LogUtils;
  import com.mojang.serialization.DataResult;
  
@@ -1354,7 +1369,7 @@ index 32be488845de5ceb10dca6fddad87a60b243f747..dd18c6b39f99b891d6dd687d083c758e
  import java.util.Collection;
  import java.util.Comparator;
  import java.util.Iterator;
-@@ -18,16 +15,12 @@ import java.util.Objects;
+@@ -18,16 +16,12 @@ import java.util.Objects;
  import java.util.Optional;
  import java.util.OptionalInt;
  import java.util.UUID;
@@ -1372,7 +1387,7 @@ index 32be488845de5ceb10dca6fddad87a60b243f747..dd18c6b39f99b891d6dd687d083c758e
  import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
  import net.minecraft.BlockUtil;
  import net.minecraft.ChatFormatting;
-@@ -69,8 +62,6 @@ import net.minecraft.network.protocol.game.ClientboundEntityEventPacket;
+@@ -69,8 +63,6 @@ import net.minecraft.network.protocol.game.ClientboundEntityEventPacket;
  import net.minecraft.network.protocol.game.ClientboundForgetLevelChunkPacket;
  import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
  import net.minecraft.network.protocol.game.ClientboundHorseScreenOpenPacket;
@@ -1381,7 +1396,7 @@ index 32be488845de5ceb10dca6fddad87a60b243f747..dd18c6b39f99b891d6dd687d083c758e
  import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
  import net.minecraft.network.protocol.game.ClientboundMerchantOffersPacket;
  import net.minecraft.network.protocol.game.ClientboundOpenBookPacket;
-@@ -87,14 +78,11 @@ import net.minecraft.network.protocol.game.ClientboundResourcePackPacket;
+@@ -87,14 +79,11 @@ import net.minecraft.network.protocol.game.ClientboundResourcePackPacket;
  import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
  import net.minecraft.network.protocol.game.ClientboundServerDataPacket;
  import net.minecraft.network.protocol.game.ClientboundSetCameraPacket;
@@ -1396,7 +1411,7 @@ index 32be488845de5ceb10dca6fddad87a60b243f747..dd18c6b39f99b891d6dd687d083c758e
  import net.minecraft.network.protocol.game.ServerboundClientInformationPacket;
  import net.minecraft.network.protocol.status.ServerStatus;
  import net.minecraft.resources.ResourceKey;
-@@ -160,7 +148,6 @@ import net.minecraft.world.level.block.entity.CommandBlockEntity;
+@@ -160,7 +149,6 @@ import net.minecraft.world.level.block.entity.CommandBlockEntity;
  import net.minecraft.world.level.block.entity.SignBlockEntity;
  import net.minecraft.world.level.block.state.BlockState;
  import net.minecraft.world.level.border.WorldBorder;
@@ -1404,7 +1419,7 @@ index 32be488845de5ceb10dca6fddad87a60b243f747..dd18c6b39f99b891d6dd687d083c758e
  import net.minecraft.world.level.dimension.LevelStem;
  import net.minecraft.world.level.gameevent.GameEvent;
  import net.minecraft.world.level.portal.PortalInfo;
-@@ -196,11 +183,280 @@ import org.bukkit.event.player.PlayerTeleportEvent;
+@@ -196,11 +184,293 @@ import org.bukkit.event.player.PlayerTeleportEvent;
  import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
  import org.bukkit.inventory.MainHand;
  import org.sucraft.suki.configuration.SukiGlobalConfiguration;
@@ -1658,26 +1673,39 @@ index 32be488845de5ceb10dca6fddad87a60b243f747..dd18c6b39f99b891d6dd687d083c758e
 +
 +        switch (type) {
 +            case 0: {
++                this.level.timings.processTrackViewDistanceChange.startTiming();
 +                // Update track view distance of other players
 +                maxViewDistanceDueToTotalViewedChunksMayHaveChanged(type);
++                this.level.timings.processTrackViewDistanceChange.stopTiming();
 +                break;
 +            }
 +            case 1: {
++                this.level.timings.processSeeViewDistanceChange.startTiming();
 +                // Update track view distance
 +                this.trackViewDistanceMayHaveChanged();
 +                // Update load view distance
 +                this.loadViewDistanceMayHaveChanged();
 +                // Update see view distance of other players
 +                maxViewDistanceDueToTotalViewedChunksMayHaveChanged(type);
++                this.level.timings.processSeeViewDistanceChange.stopTiming();
 +                break;
 +            }
 +        }
++
 +    }
 +
 +    private final void viewDistanceMayHaveChanged(int type) {
++        Timing timing = switch (type) {
++            case 0 -> this.level.timings.trackViewDistanceMayHaveChanged;
++            case 1 -> this.level.timings.seeViewDistanceMayHaveChanged;
++            case 2 -> this.level.timings.loadViewDistanceMayHaveChanged;
++            default -> null;
++        };
++        timing.startTiming();
 +        Integer oldViewDistance = this.viewDistances[type];
 +        this.viewDistances[type] = this.computeViewDistance(type);
 +        this.processViewDistanceChange(oldViewDistance, type);
++        timing.stopTiming();
 +    }
 +
 +    // Suki end - per-player view distance
@@ -1685,7 +1713,7 @@ index 32be488845de5ceb10dca6fddad87a60b243f747..dd18c6b39f99b891d6dd687d083c758e
      public long lastSave = MinecraftServer.currentTick; // Paper
      private static final int NEUTRAL_MOB_DEATH_NOTIFICATION_RADII_XZ = 32;
      private static final int NEUTRAL_MOB_DEATH_NOTIFICATION_RADII_Y = 10;
-@@ -1984,6 +2240,11 @@ public class ServerPlayer extends Player {
+@@ -1984,6 +2254,11 @@ public class ServerPlayer extends Player {
          this.connection.connection.channel.attr(PaperAdventure.LOCALE_ATTRIBUTE).set(this.adventure$locale);
          // Paper end
          this.clientViewDistance = packet.getAcceptableViewDistance(); // Suki - allow invalid client view distance
@@ -1697,7 +1725,7 @@ index 32be488845de5ceb10dca6fddad87a60b243f747..dd18c6b39f99b891d6dd687d083c758e
          // CraftBukkit end
          this.chatVisibility = packet.chatVisibility();
          this.canChatColor = packet.chatColors();
-@@ -2244,27 +2505,37 @@ public class ServerPlayer extends Player {
+@@ -2244,27 +2519,37 @@ public class ServerPlayer extends Player {
          return true; // Paper
      }
  
@@ -2132,7 +2160,7 @@ index 60c37b0e71dd2b1b859d23a49f218142d2a92485..a75c1d567e44e5a1087823bcc652228e
      @Override
      public <T> T getClientOption(com.destroystokyo.paper.ClientOption<T> type) {
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 2040ae3c75a5c90d0ecf25db4f544ae93e2dc64e..ba5f7382143a6f3e371167cec9b6749462a2b66d 100644
+index 5a1e50c3b65be575ab24bb04d7b0162b2d32dcad..99ee7401b4c9742389d1f1536e7f111a860391ee 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -4,6 +4,7 @@ package org.sucraft.suki.configuration;
