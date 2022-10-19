@@ -5,7 +5,7 @@ Subject: [PATCH] TPS options
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index e68f3dbbc67e5352305e7f19944ea7c62e721e9d..6c6b7f48f16d4366039edcb8d02f849d0e6b5c2e 100644
+index e68f3dbbc67e5352305e7f19944ea7c62e721e9d..5e3ae879e37348ab9604a1d16a18d9083c2488f3 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -13,6 +13,7 @@ import com.mojang.authlib.GameProfileRepository;
@@ -24,17 +24,22 @@ index e68f3dbbc67e5352305e7f19944ea7c62e721e9d..6c6b7f48f16d4366039edcb8d02f849d
  
  public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnable> implements CommandSource, AutoCloseable { // Patina
  
-@@ -1207,7 +1209,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+@@ -1207,7 +1209,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
                  lastTickTime = java.time.Duration.ofNanos(System.nanoTime() - tickStart); // Yatopia
                  this.profiler.popPush("nextTickWait");
                  this.mayHaveDelayedTasks = true;
 -                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + 50L, this.nextTickTime);
-+                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + (SukiGlobalConfiguration.get().tps.oversleep.min < 0 ? 50 : SukiGlobalConfiguration.get().tps.oversleep.min), this.nextTickTime); // Suki - TPS options - configurable tick oversleep
++                // Suki start - TPS options - configurable tick oversleep
++                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + (SukiGlobalConfiguration.get().tps.oversleep.plannedAfterLastTickEnd < 0 ? 50 : SukiGlobalConfiguration.get().tps.oversleep.plannedAfterLastTickEnd), this.nextTickTime);
++                if (SukiGlobalConfiguration.get().tps.oversleep.maxAfterNextTickStart >= 0) {
++                    this.delayedTasksMaxNextTickTime = Math.min(this.delayedTasksMaxNextTickTime, this.nextTickTime + SukiGlobalConfiguration.get().tps.oversleep.maxAfterNextTickStart);
++                }
++                // Suki end - TPS options - configurable tick oversleep
                  this.waitUntilNextTick();
                  this.profiler.pop();
                  this.endMetricsRecordingTick();
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index e183225a6371b70eb82be961dcc613ba5f0b68ed..96ffda20a1df8f26c9b9cd7ffe76b4a2293f4e3e 100644
+index e183225a6371b70eb82be961dcc613ba5f0b68ed..76ecc0dcabdf6fc7bd8e5f3dfa3927f7b9e10c9e 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -4,7 +4,6 @@ package org.sucraft.suki.configuration;
@@ -45,7 +50,7 @@ index e183225a6371b70eb82be961dcc613ba5f0b68ed..96ffda20a1df8f26c9b9cd7ffe76b4a2
  import org.spongepowered.configurate.objectmapping.meta.Setting;
  
  @SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
-@@ -126,4 +125,30 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -126,4 +125,38 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - configurable keep-alive
  
@@ -60,14 +65,22 @@ index e183225a6371b70eb82be961dcc613ba5f0b68ed..96ffda20a1df8f26c9b9cd7ffe76b4a2
 +        public class Oversleep extends ConfigurationPart {
 +
 +            /**
-+             * In milliseconds (-1 reverts to default, which is 50)
++             * The time that is planned for oversleep after the last tick's end
++             * <br>
++             * In milliseconds
++             * <br>
++             * A value of -1 reverts to the default behavior, which is 50 milliseconds
 +             */
-+            public int min = -1;
++            public int plannedAfterLastTickEnd = -1;
 +
-+//            /**
-+//             * In milliseconds (-1 reverts to default, which is 50)
-+//             */
-+//            public int max = -1;
++            /**
++             * The maximum time to oversleep after the intended next tick's start
++             * <br>
++             * In milliseconds
++             * <br>
++             * A value of -1 indicates no limit
++             */
++            public int maxAfterNextTickStart = -1;
 +
 +        }
 +
