@@ -84,7 +84,7 @@ index fe79c0add4f7cb18d487c5bb9415c40c5b551ea2..dda0f831d0e3768f5798705695742d0c
          miscMobSpawning = Timings.ofSafe(name + "Mob spawning - Misc");
  
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index 0d43afcdd5db346d0ddf82e06bad5b219721715c..fb47f7b1681e9b45f215478928494cee187d5f18 100644
+index 0d43afcdd5db346d0ddf82e06bad5b219721715c..831dd74063fc576b9475fde96da7da71181fbb46 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -24,6 +24,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -466,6 +466,41 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..fb47f7b1681e9b45f215478928494cee
      }
  
      public void addPlayer(final ServerPlayer player) {
+@@ -466,7 +505,7 @@ public final class PlayerChunkLoader {
+         }
+         final PlayerLoaderData data = new PlayerLoaderData(player, this);
+         if (this.playerMap.putIfAbsent(player, data) == null) {
+-            data.update();
++            data.update(true); // Suki - per-player view distance
+         }
+     }
+ 
+@@ -492,14 +531,14 @@ public final class PlayerChunkLoader {
+         }
+     }
+ 
+-    public void updatePlayer(final ServerPlayer player) {
++    public void updatePlayer(final ServerPlayer player, boolean recalculateMapsIfOnlyViewDistanceChanged) { // Suki - per-player view distance
+         TickThread.ensureTickThread("Cannot update player async");
+         if (!player.isRealPlayer) {
+             return;
+         }
+         final PlayerLoaderData loaderData = this.playerMap.get(player);
+         if (loaderData != null) {
+-            loaderData.update();
++            loaderData.update(recalculateMapsIfOnlyViewDistanceChanged); // Suki - per-player view distance
+         }
+     }
+ 
+@@ -510,7 +549,7 @@ public final class PlayerChunkLoader {
+     public void tick() {
+         TickThread.ensureTickThread("Cannot tick async");
+         for (final PlayerLoaderData data : this.playerMap.values()) {
+-            data.update();
++            data.update(true); // Suki - per-player view distance
+         }
+         this.tickMidTick();
+     }
 @@ -559,7 +598,14 @@ public final class PlayerChunkLoader {
  
              final PlayerLoaderData data = this.chunkSendQueue.removeFirst();
@@ -694,13 +729,15 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..fb47f7b1681e9b45f215478928494cee
              this.loader.loadMap.remove(this.player);
              this.loader.loadTicketCleanup.remove(this.player);
              this.loader.tickMap.remove(this.player);
-@@ -939,12 +1020,19 @@ public final class PlayerChunkLoader {
+@@ -938,13 +1019,20 @@ public final class PlayerChunkLoader {
+             return this.player.clientViewDistance == null ? -1 : Math.max(0, this.player.clientViewDistance.intValue());
          }
  
-         public void update() {
+-        public void update() {
 -            final int tickViewDistance = this.tickViewDistance == -1 ? this.loader.getTickDistance() : this.tickViewDistance;
-+            // Suki start - per-player view distance
-+            this.player.level.timings.playerChunkLoaderUpdate.startTiming();
++        // Suki start - per-player view distance
++        public void update(boolean recalculateMapsIfOnlyViewDistanceChanged) { // Only recalculate the chunk loading maps if only the view distance changed in specific scenarios (world change, tick) and not every time the player moves (in which case we will still update the chunk loading maps if the player moved to a different chunk, of course)
++            this.player.level.timings.playerChunkLoaderUpdate.startTiming(); try {
 +            this.player.level.timings.playerChunkLoaderUpdateGetViewDistances.startTiming();
 +            final int loadViewDistance = this.player.getLoadViewDistance();
              // load view cannot be less-than tick view + 1
@@ -717,7 +754,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..fb47f7b1681e9b45f215478928494cee
  
              final double posX = this.player.getX();
              final double posZ = this.player.getZ();
-@@ -957,9 +1045,10 @@ public final class PlayerChunkLoader {
+@@ -957,11 +1045,14 @@ public final class PlayerChunkLoader {
              // make sure we're in the send queue
              this.loader.chunkSendWaitQueue.add(this);
  
@@ -725,15 +762,17 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..fb47f7b1681e9b45f215478928494cee
              if (
                  // has view distance stayed the same?
 -                    sendViewDistance == this.lastSendDistance
-+                    trackViewDistance == this.lastTrackDistance && seeViewDistance == this.lastSeeDistance // Suki - per-player track and see view distance
++                // Suki start - per-player view distance
++                (!recalculateMapsIfOnlyViewDistanceChanged || (trackViewDistance == this.lastTrackDistance && seeViewDistance == this.lastSeeDistance // Suki - per-player track and see view distance
                              && loadViewDistance == this.lastLoadDistance
-                             && tickViewDistance == this.lastTickDistance
+-                            && tickViewDistance == this.lastTickDistance
++                            && tickViewDistance == this.lastTickDistance))
++                        // Suki end - per-player view distance
  
-@@ -980,23 +1069,29 @@ public final class PlayerChunkLoader {
-                             && (!this.usingLookingPriority || Math.abs(yaw - this.lastYaw) <= LOOK_PRIORITY_YAW_DELTA_RECALC_THRESHOLD)
-             ) {
+                             && (this.usingLookingPriority ? (
+                                     // has our block stayed the same (this also accounts for chunk change)?
+@@ -982,21 +1073,26 @@ public final class PlayerChunkLoader {
                  // nothing we care about changed, so we're not re-calculating
-+                this.player.level.timings.playerChunkLoaderUpdate.stopTiming(); // Suki - per-player view distance
                  return;
              }
 +            } finally { this.player.level.timings.playerChunkLoaderUpdateDecideWhetherToRecalculate.stopTiming(); }  // Suki - per-player view distance
@@ -762,7 +801,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..fb47f7b1681e9b45f215478928494cee
              }
              if (tickViewDistance != this.lastTickDistance) {
                  this.player.connection.send(new ClientboundSetSimulationDistancePacket(tickViewDistance));
-@@ -1005,7 +1100,10 @@ public final class PlayerChunkLoader {
+@@ -1005,7 +1101,10 @@ public final class PlayerChunkLoader {
              this.lastLocX = posX;
              this.lastLocZ = posZ;
              this.lastYaw = yaw;
@@ -774,7 +813,7 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..fb47f7b1681e9b45f215478928494cee
              this.lastLoadDistance = loadViewDistance;
              this.lastTickDistance = tickViewDistance;
              this.usingLookingPriority = useLookPriority;
-@@ -1035,76 +1133,87 @@ public final class PlayerChunkLoader {
+@@ -1035,76 +1134,87 @@ public final class PlayerChunkLoader {
  
              final List<ChunkPriorityHolder> loadQueue = new ArrayList<>();
  
@@ -909,12 +948,12 @@ index 0d43afcdd5db346d0ddf82e06bad5b219721715c..fb47f7b1681e9b45f215478928494cee
              loadQueue.sort((final ChunkPriorityHolder p1, final ChunkPriorityHolder p2) -> {
                  return Double.compare(p1.priority, p2.priority);
              });
-@@ -1123,6 +1232,9 @@ public final class PlayerChunkLoader {
+@@ -1123,6 +1233,9 @@ public final class PlayerChunkLoader {
              if (needsChunkCenterUpdate) {
                  this.player.connection.send(new ClientboundSetChunkCacheCenterPacket(centerChunkX, centerChunkZ));
              }
 +
-+            this.player.level.timings.playerChunkLoaderUpdate.stopTiming(); // Suki - per-player view distance
++            } finally { this.player.level.timings.playerChunkLoaderUpdate.stopTiming(); }  // Suki - per-player view distance]
 +
          }
      }
@@ -1002,7 +1041,7 @@ index a041161dee9a857d43c83fb677dba7e90a6a5d24..15e22def419e314b1433b9043d02a062
  
      private static final class ChunkSaveDebug {
 diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
-index 877afa898a35f1ef12543394f052bb18cdad4257..a825c3a206ad53241887aff5bc398f3f41fd20f0 100644
+index 877afa898a35f1ef12543394f052bb18cdad4257..926db8e5541eef4907e2641956a7148185817bc0 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
 @@ -170,7 +170,10 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
@@ -1026,6 +1065,15 @@ index 877afa898a35f1ef12543394f052bb18cdad4257..a825c3a206ad53241887aff5bc398f3f
          }
          // Paper end - use distance map to optimise entity tracker
          // Note: players need to be explicitly added to distance maps before they can be updated
+@@ -288,7 +291,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+         this.playerChunkManager.removePlayer(player); // Paper - replace chunk loader
+     }
+ 
+-    void updateMaps(ServerPlayer player) {
++    void updateMaps(ServerPlayer player, boolean recalculateChunkLoadingMapsIfOnlyViewDistanceChanged) { // Suki - per-player view distance
+         int chunkX = MCUtil.getChunkCoordinate(player.getX());
+         int chunkZ = MCUtil.getChunkCoordinate(player.getZ());
+         // Note: players need to be explicitly added to distance maps before they can be updated
 @@ -297,7 +300,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
              com.destroystokyo.paper.util.misc.PlayerAreaMap trackMap = this.playerEntityTrackerTrackMaps[i];
              int trackRange = this.entityTrackerTrackRanges[i];
@@ -1035,6 +1083,15 @@ index 877afa898a35f1ef12543394f052bb18cdad4257..a825c3a206ad53241887aff5bc398f3f
          }
          // Paper end - use distance map to optimise entity tracker
          this.playerChunkTickRangeMap.update(player, chunkX, chunkZ, DistanceManager.MOB_SPAWN_RANGE); // Paper - optimise ChunkMap#anyPlayerCloseEnoughForSpawning
+@@ -307,7 +310,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+             this.playerMobDistanceMap.update(player, chunkX, chunkZ, this.distanceManager.getSimulationDistance());
+         }
+         // Paper end - per player mob spawning
+-        this.playerChunkManager.updatePlayer(player); // Paper - replace chunk loader
++        this.playerChunkManager.updatePlayer(player, recalculateChunkLoadingMapsIfOnlyViewDistanceChanged); // Paper - replace chunk loader // Suki - per-player view distance
+     }
+     // Paper end
+     // Paper start
 @@ -474,7 +477,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
      // Suki end - sort chunks by distance
  
@@ -1134,12 +1191,19 @@ index 877afa898a35f1ef12543394f052bb18cdad4257..a825c3a206ad53241887aff5bc398f3f
          int i = SectionPos.blockToSectionCoord(player.getBlockX());
          int j = SectionPos.blockToSectionCoord(player.getBlockZ());
          SectionPos sectionposition = player.getLastSectionPos();
-@@ -2042,16 +2052,18 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
-         this.updateMaps(player); // Paper - distance maps
-         this.playerChunkManager.updatePlayer(player); // Paper - respond to movement immediately
+@@ -2039,19 +2049,23 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
  
-+        this.level.timings.chunkMapPlayerMove.stopTiming(); // Suki - per-player view distance
+         // Paper - replaced by PlayerChunkLoader
+ 
+-        this.updateMaps(player); // Paper - distance maps
+-        this.playerChunkManager.updatePlayer(player); // Paper - respond to movement immediately
++        // Suki start - per-player view distance
++        this.updateMaps(player, false); // Paper - distance maps
++        this.playerChunkManager.updatePlayer(player, false); // Paper - respond to movement immediately
++        // Suki end - per-player view distance
 +
++        this.level.timings.chunkMapPlayerMove.stopTiming(); // Suki - per-player view distance
+ 
      }
  
      @Override
@@ -1155,7 +1219,7 @@ index 877afa898a35f1ef12543394f052bb18cdad4257..a825c3a206ad53241887aff5bc398f3f
          if (players == null) {
              return ret;
          }
-@@ -2196,6 +2208,13 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -2196,6 +2210,13 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
      // Paper end - optimised tracker
  
      protected void tick() {
@@ -1169,7 +1233,7 @@ index 877afa898a35f1ef12543394f052bb18cdad4257..a825c3a206ad53241887aff5bc398f3f
          // Paper start - optimized tracker
          if (true) {
              this.processTrackQueue();
-@@ -2304,7 +2323,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -2304,7 +2325,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
      // Paper end - Fix MC-162253
  
      // Paper start - Anti-Xray - Bypass
@@ -1178,7 +1242,7 @@ index 877afa898a35f1ef12543394f052bb18cdad4257..a825c3a206ad53241887aff5bc398f3f
          if (cachedDataPackets.getValue() == null) {
              cachedDataPackets.setValue(new java.util.HashMap<>());
          }
-@@ -2312,7 +2331,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -2312,7 +2333,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
          Boolean shouldModify = chunk.getLevel().chunkPacketBlockController.shouldModify(player, chunk);
          player.trackChunk(chunk.getPos(), (Packet) cachedDataPackets.getValue().computeIfAbsent(shouldModify, (s) -> {
              // Paper start - Fix MC-162253
@@ -1187,7 +1251,7 @@ index 877afa898a35f1ef12543394f052bb18cdad4257..a825c3a206ad53241887aff5bc398f3f
              final int playerChunkX = player.getBlockX() >> 4;
              final int playerChunkZ = player.getBlockZ() >> 4;
  
-@@ -2351,58 +2370,67 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -2351,58 +2372,67 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
              }
              // Paper end - Fix MC-162253
              return new ClientboundLevelChunkWithLightPacket(chunk, this.lightEngine, (BitSet) null, (BitSet) null, true, (Boolean) s);
@@ -1292,7 +1356,7 @@ index 877afa898a35f1ef12543394f052bb18cdad4257..a825c3a206ad53241887aff5bc398f3f
      }
  
      public PoiManager getPoiManager() {
-@@ -2546,7 +2574,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+@@ -2546,7 +2576,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
                  double vec3d_dx = player.getX() - this.entity.getX();
                  double vec3d_dz = player.getZ() - this.entity.getZ();
                  // Paper end - remove allocation of Vec3D here

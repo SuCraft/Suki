@@ -54,7 +54,7 @@ index dda0f831d0e3768f5798705695742d0c9052f963..92adec4f5a81e94c81cbb96db878e942
  
      public static Timing getTickList(ServerLevel worldserver, String timingsType) {
 diff --git a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
-index fb47f7b1681e9b45f215478928494cee187d5f18..b9ee63b0ebc4b337f9522cd7dbf1fe52fc0edf46 100644
+index 831dd74063fc576b9475fde96da7da71181fbb46..1b8ab77ffa907700b37f9edbfcd9b57b5448492c 100644
 --- a/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 +++ b/src/main/java/io/papermc/paper/chunk/PlayerChunkLoader.java
 @@ -25,7 +25,9 @@ import org.bukkit.entity.Player;
@@ -247,9 +247,9 @@ index fb47f7b1681e9b45f215478928494cee187d5f18..b9ee63b0ebc4b337f9522cd7dbf1fe52
  
      static final class ChunkPriorityHolder {
 @@ -1022,6 +1076,7 @@ public final class PlayerChunkLoader {
-         public void update() {
-             // Suki start - per-player view distance
-             this.player.level.timings.playerChunkLoaderUpdate.startTiming();
+         // Suki start - per-player view distance
+         public void update(boolean recalculateMapsIfOnlyViewDistanceChanged) { // Only recalculate the chunk loading maps if only the view distance changed in specific scenarios (world change, tick) and not every time the player moves (in which case we will still update the chunk loading maps if the player moved to a different chunk, of course)
+             this.player.level.timings.playerChunkLoaderUpdate.startTiming(); try {
 +            this.player.removeOverdueChunkInitializationPacketsInTransit(); // Suki - network-constrained chunk sending
              this.player.level.timings.playerChunkLoaderUpdateGetViewDistances.startTiming();
              final int loadViewDistance = this.player.getLoadViewDistance();
