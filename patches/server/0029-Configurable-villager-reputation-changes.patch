@@ -5,7 +5,7 @@ Subject: [PATCH] Configurable villager reputation changes
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/npc/Villager.java b/src/main/java/net/minecraft/world/entity/npc/Villager.java
-index 839e6a8819dfbfe8c54e116b5f5b23ded94e7ca1..3ea11bac3865102dab0ade99dacf8a54b9536c2e 100644
+index e9c36f92bec3a54653db1fd9327467a20b577765..16933fa198b4e3502c9bfd3272f22e509f27375c 100644
 --- a/src/main/java/net/minecraft/world/entity/npc/Villager.java
 +++ b/src/main/java/net/minecraft/world/entity/npc/Villager.java
 @@ -1000,26 +1000,51 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
@@ -68,7 +68,7 @@ index 839e6a8819dfbfe8c54e116b5f5b23ded94e7ca1..3ea11bac3865102dab0ade99dacf8a54
  
      @Override
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index cd3c9b8d8c0e7f16b3f0a9a2f4943aee30ff70b5..48a0b5697770dc46209f81985f80a0d1de518cdd 100644
+index 343f1bcfcb610667988a12b8bbb0514eef814939..4084ae6b76281e097a8e324ca68f682a5279aee1 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -195,6 +195,51 @@ public class SukiWorldConfiguration extends ConfigurationPart {

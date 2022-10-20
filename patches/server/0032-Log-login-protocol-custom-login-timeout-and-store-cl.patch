@@ -18,7 +18,7 @@ index 76810d7767b1a66315b006569654c718105ab4ee..82063bc36ce21b9d47c050068b31db21
  import org.checkerframework.checker.nullness.qual.Nullable;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index 341a65a3862354245b4f132a6ff0992ddc24f51d..24602729598dd1adc3fd102e4dd2c9d2495b899d 100644
+index 5344f1f81797344130bd48f16689161af8261882..580be6a95ccfff83a94d4ce6f617728f2955ffa5 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
 @@ -20,7 +20,6 @@ import io.netty.channel.epoll.EpollSocketChannel;
@@ -54,7 +54,7 @@ index 341a65a3862354245b4f132a6ff0992ddc24f51d..24602729598dd1adc3fd102e4dd2c9d2
          this.receiving = side;
      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index f47022fba8c19e0a7ce3fa9158c5720582f859a2..0e25ec19ea151536de505c0cee2ba3179fc18e5c 100644
+index 58fb45667dafb36a507fe5c4e6de009556d2fc92..20e62990d11f3e454c7eebbd1ae800f1737ffc77 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -12,6 +12,7 @@ import java.util.List;
@@ -131,7 +131,7 @@ index ac254e4fe3973a8cb3321e96c651847e387d9f0e..ed1db61d04b1f81c52300c9f85b96212
                  try {
                      if (!(this.connection.channel.localAddress() instanceof io.netty.channel.unix.DomainSocketAddress)) { // Paper - the connection throttle is useless when you have a Unix domain socket
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index 455f67ea6b972f312469c93f1578b5b093af5a66..9428416d2d1361e2ab35e40589a074b461c4ea10 100644
+index f2fc6cbea76ec31fe96743a0a83ce886f59600fd..c743fbb57836f857497eace112876cadb676d1b7 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 @@ -10,10 +10,10 @@ import java.net.InetSocketAddress;

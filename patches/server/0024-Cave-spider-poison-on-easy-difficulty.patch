@@ -18,7 +18,7 @@ index d980b906d9206560741576fa4153c57212f307a0..76effcae20845705c9040e202401bcc7
                  } else if (this.level.getDifficulty() == Difficulty.HARD) {
                      b0 = 15;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 560d13b0f2ca870138c81633ffbaf9d34d235450..d0106690fb8e6617017beb59759198d31884f7b1 100644
+index aeee63b4d6286d3bfaaea5190657fab12c58b420..b23921dcc74a6d7cd064e805ba7543f46b127574 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -178,6 +178,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {

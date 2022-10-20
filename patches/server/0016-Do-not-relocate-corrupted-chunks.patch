@@ -5,7 +5,7 @@ Subject: [PATCH] Do not relocate corrupted chunks
 
 
 diff --git a/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java b/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
-index 3367c75b1c132b42465d4c355a6b5fd00c3efe23..da17ad76f1ef86af4146f082d2316f89fd456180 100644
+index 34e351e04ac57e47e3cea671c61cc01d17983b77..f583ae81fb60027c47aaecdb6451462cd0d72936 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
 @@ -30,6 +30,7 @@ import net.minecraft.nbt.NbtOps;
@@ -33,7 +33,7 @@ index 3367c75b1c132b42465d4c355a6b5fd00c3efe23..da17ad76f1ef86af4146f082d2316f89
  
          UpgradeData chunkconverter = nbt.contains("UpgradeData", 10) ? new UpgradeData(nbt.getCompound("UpgradeData"), world) : UpgradeData.EMPTY;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 08bb0b03e0afa1e1cc576db03c63beb4b59f96c0..17fe3b00f1ce26d6424f033c96a249bdcad8747f 100644
+index 238f74e9770b81a473600dbb6db8a417e4d4d5b2..d6f07467967acf1043cf3ee75b58b177825b57cc 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -132,4 +132,14 @@ public class SukiWorldConfiguration extends ConfigurationPart {

@@ -18,7 +18,7 @@ index 445f21c3764d148de937f558e3f087ae2006733d..c630a6b3f36aedd05085c495ac20853e
  
          private Plane(Direction[] facingArray, Direction.Axis[] axisArray) {
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
-index f42a7bf4c7151a7021e7eade2e34e551e35d7e10..7529071c971d58dabc6faf86b4145e176102d14f 100644
+index a7726c7a97a745319edf67397802658434603b57..1e457e49199abbecd98ce08835d62e06fd61c852 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
 @@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
@@ -92,7 +92,7 @@ index f42a7bf4c7151a7021e7eade2e34e551e35d7e10..7529071c971d58dabc6faf86b4145e17
                      return;
                  }
 diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
-index b029ae19db2bfde9b08950f41ba8a09e8e4091a0..74f97dd52dac57911c77189d5af318394bf20409 100644
+index d9ea767bac44e47d5e580d2264cbdb4c8edb4fff..3fdca067388e0b014e72ef672d176551c4bebbe0 100644
 --- a/src/main/java/net/minecraft/world/entity/player/Player.java
 +++ b/src/main/java/net/minecraft/world/entity/player/Player.java
 @@ -116,6 +116,7 @@ import net.minecraft.world.phys.Vec3;

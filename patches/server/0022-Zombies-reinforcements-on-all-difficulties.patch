@@ -16,7 +16,7 @@ index c91f109b4cf64dc1b4ef09f38e1cb8bf5cb2be13..588d88441bc5f01be97c9ef206a63ae5
 -}
 +public class PaperWorldConfig {}
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Zombie.java b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
-index a9756c298348a0f1551841540bbe826732ae386a..9ba38eea00012cba6bd07876a059971033c9fa3c 100644
+index 7b74e2aade9a0b5fb41c48ee6affcb7a3d544ad8..3070a52be0d81bdd30db940086d5c71e00cf5b0a 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Zombie.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
 @@ -327,7 +327,7 @@ public class Zombie extends Monster {
@@ -29,7 +29,7 @@ index a9756c298348a0f1551841540bbe826732ae386a..9ba38eea00012cba6bd07876a0599710
                  int j = Mth.floor(this.getY());
                  int k = Mth.floor(this.getZ());
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 0b3989191906237c71a85b5c0b7f746b736f0e7d..aca833af3e418d5a315b6ee343e434da7529df5e 100644
+index e51ad799d149199c1fc47a7c7783c4b09ef58c49..fe46b92a948dabb51a80287b27209dfaa1dab111 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -171,4 +171,14 @@ public class SukiWorldConfiguration extends ConfigurationPart {

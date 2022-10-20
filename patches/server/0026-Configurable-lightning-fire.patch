@@ -5,7 +5,7 @@ Subject: [PATCH] Configurable lightning fire
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/LightningBolt.java b/src/main/java/net/minecraft/world/entity/LightningBolt.java
-index 359c78b4f98c38c81af27a2c4cf0939da51e5a0b..bc83f153018400f0f9e90ee626cf5a77466c3948 100644
+index 50612c00f53821ccafce94835caf1ba442be299a..33e3ec4e1f6fd40b5ab4cdb675e3edb3ead5c2cd 100644
 --- a/src/main/java/net/minecraft/world/entity/LightningBolt.java
 +++ b/src/main/java/net/minecraft/world/entity/LightningBolt.java
 @@ -164,7 +164,7 @@ public class LightningBolt extends Entity {
@@ -18,7 +18,7 @@ index 359c78b4f98c38c81af27a2c4cf0939da51e5a0b..bc83f153018400f0f9e90ee626cf5a77
              BlockState iblockdata = BaseFireBlock.getState(this.level, blockposition);
  
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 88a3975058bb01e94911b04288493c613dee411e..3e83fa45116d584c1177fd053b57e035280252c9 100644
+index 57d26063cbb723657603055feecf25bd295d6823..32e283bb66eb34c4a4832607d6e1bec87f5d2d32 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -180,6 +180,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {

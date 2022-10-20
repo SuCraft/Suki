@@ -71,7 +71,7 @@ index aa277479f5552503a202a057b1a3ede379f2bbbf..292ee703c477e68a6a929b1bc16f23ad
          return entityGossips != null ? entityGossips.weightedValue(gossipTypeFilter) : 0;
      }
 diff --git a/src/main/java/net/minecraft/world/entity/npc/Villager.java b/src/main/java/net/minecraft/world/entity/npc/Villager.java
-index 3ea11bac3865102dab0ade99dacf8a54b9536c2e..c9f5f416782da2c1010fcc2af32fc41ec92099a7 100644
+index 16933fa198b4e3502c9bfd3272f22e509f27375c..618d0a28f9d0070e38ef0ea3ba7b1adb4febd843 100644
 --- a/src/main/java/net/minecraft/world/entity/npc/Villager.java
 +++ b/src/main/java/net/minecraft/world/entity/npc/Villager.java
 @@ -9,6 +9,7 @@ import com.mojang.logging.LogUtils;
@@ -118,7 +118,7 @@ index 3ea11bac3865102dab0ade99dacf8a54b9536c2e..c9f5f416782da2c1010fcc2af32fc41e
  
      private void digestFood(int amount) {
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 2a4162887f9fefdfa2747724fb7cdd3b32a97bd9..86ad443f3fe003964111014de3be4df045382152 100644
+index 4084ae6b76281e097a8e324ca68f682a5279aee1..092b726d0617ce88bd00499628ce24356e046528 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -240,6 +240,24 @@ public class SukiWorldConfiguration extends ConfigurationPart {

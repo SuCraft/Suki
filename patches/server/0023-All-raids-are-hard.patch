@@ -79,7 +79,7 @@ index 5f4bb589474ce7d4f214e32ab0bc4b9cb71638d0..f1e4daf1ea78368e9b36e4111ead8bdc
          boolean flag2 = enumdifficulty == Difficulty.NORMAL;
          int j;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index aca833af3e418d5a315b6ee343e434da7529df5e..560d13b0f2ca870138c81633ffbaf9d34d235450 100644
+index fe46b92a948dabb51a80287b27209dfaa1dab111..aeee63b4d6286d3bfaaea5190657fab12c58b420 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -177,6 +177,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
