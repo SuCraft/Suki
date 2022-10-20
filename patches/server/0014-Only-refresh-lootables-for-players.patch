@@ -1,0 +1,46 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 23:19:59 +0200
+Subject: [PATCH] Only refresh lootables for players
+
+This patch is based on patch from the EmpireCraft fork (https://github.com/starlis/empirecraft) by Aikar.
+
+diff --git a/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java
+index 13e749a3c40f0b2cc002f13675a9a56eedbefdac..01ea0068e1c5a2bf0ad18bfa58bc98a7a2a98ef7 100644
+--- a/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java
++++ b/src/main/java/net/minecraft/world/level/block/entity/RandomizableContainerBlockEntity.java
+@@ -69,6 +69,15 @@ public abstract class RandomizableContainerBlockEntity extends BaseContainerBloc
+     }
+ 
+     public void unpackLootTable(@Nullable Player player) {
++        // Suki start - only refresh lootables for players
++        if (this.level.getServer() != null) {
++            if (this.level.sukiConfig().lootables.onlyRefreshForPlayers) {
++                if (player == null) {
++                    return;
++                }
++            }
++        }
++        // Suki end - only refresh lootables for players
+         if (this.lootableData.shouldReplenish(player) && this.level.getServer() != null) { // Paper
+             LootTable lootTable = this.level.getServer().getLootTables().get(this.lootTable);
+             if (player instanceof ServerPlayer) {
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index e39e9908d0ccc0941d1442a03cd0887e4abe50fe..095f4581dbd065a621c1f3458eb618697689e3e2 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -149,4 +149,14 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ 
+     // Suki end - more entity activation configuration
+ 
++    // Suki start - only refresh lootables for players
++
++    public Lootables lootables;
++
++    public class Lootables extends ConfigurationPart {
++        public boolean onlyRefreshForPlayers = false;
++    }
++
++    // Suki end - only refresh lootables for players
++
+ }

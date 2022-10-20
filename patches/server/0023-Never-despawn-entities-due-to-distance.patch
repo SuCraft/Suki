@@ -1,0 +1,46 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 21:17:24 +0200
+Subject: [PATCH] Never despawn entities due to distance
+
+This patch is based on patch from the EmpireCraft fork (https://github.com/starlis/empirecraft) by Aikar.
+
+diff --git a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
+index a6d30f3213d30ba925926437ed4535319061213d..50851944dcd1d8177b271c32f2c603982c897aec 100644
+--- a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
++++ b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
+@@ -594,6 +594,15 @@ public class WitherBoss extends Monster implements PowerableMob, RangedAttackMob
+         return this.getHealth() <= this.getMaxHealth() / 2.0F;
+     }
+ 
++    // Suki start - never despawn entities due to distance
++
++    @Override
++    public boolean removeWhenFarAway(double distanceSquared) {
++        return !this.level.sukiConfig().neverDespawnEntitiesDueToDistance.wither && super.removeWhenFarAway(distanceSquared);
++    }
++
++    // Suki end - never despawn entities due to distance
++
+     @Override
+     public MobType getMobType() {
+         return MobType.UNDEAD;
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 095f4581dbd065a621c1f3458eb618697689e3e2..df18cffe3445bc978f64dbf9c4ac8077261705d6 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -159,4 +159,14 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ 
+     // Suki end - only refresh lootables for players
+ 
++    // Suki start - never despawn entities due to distance
++
++    public NeverDespawnEntitiesDueToDistance neverDespawnEntitiesDueToDistance;
++
++    public class NeverDespawnEntitiesDueToDistance extends ConfigurationPart {
++        public boolean wither = false;
++    }
++
++    // Suki end - never despawn entities due to distance
++
+ }

@@ -1,0 +1,93 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Mon, 19 Sep 2022 22:49:15 +0200
+Subject: [PATCH] Last tick time API
+
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 372fa7fccb7e73c900c8f87aa4886d28f5fbed63..af681d48baef8e63b89d8224d9d0d95851fde655 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1106,7 +1106,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+     // Spigot End
+ 
+     public static volatile RuntimeException chunkSystemCrash; // Paper - rewrite chunk system
+-    public static java.time.Duration lastTickTime = java.time.Duration.ZERO; // Yatopia
++
++    // Suki start - last tick time API
++    public static java.time.Duration lastProperTickTime = java.time.Duration.ZERO;
++    public static java.time.Duration lastTickOversleepTime = java.time.Duration.ZERO;
++    // Suki end - last tick time API
+ 
+     protected void runServer() {
+         try {
+@@ -1188,9 +1192,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+                 this.nextTickTime += 50L;
+                 this.startMetricsRecordingTick();
+                 this.profiler.push("tick");
+-                long tickStart = System.nanoTime(); // Yatopia
++                long properTickStart = System.nanoTime(); // Suki - last tick time API
+                 this.tickServer(this::haveTime);
+-                lastTickTime = java.time.Duration.ofNanos(System.nanoTime() - tickStart); // Yatopia
++                lastProperTickTime = java.time.Duration.ofNanos(System.nanoTime() - properTickStart); // Suki - last tick time API
+                 this.profiler.popPush("nextTickWait");
+                 this.mayHaveDelayedTasks = true;
+                 // Suki start - TPS options - configurable tick oversleep
+@@ -1340,6 +1344,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+ 
+     protected void waitUntilNextTick() {
+         //this.executeAll(); // Paper - move this into the tick method for timings
++        long tickOversleepStart = System.nanoTime(); // Suki - last tick time API
+         this.finishedAllTasksAtSomePoint = false; // Suki - TPS options - configurable tick oversleep
+         this.managedBlockUntilNextTick(() -> !this.canSleepForTickNoOversleep()); // Suki - informed event loop task poll
+         // Suki start - TPS options - configurable tick oversleep
+@@ -1352,6 +1357,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+             this.unfinishedTicksStateForOversleepMaxAfterNextTickStart = Math.max(-oversleepConfig.maxAfterNextTickStart.ticksImmuneFromIncrease * oversleepConfig.maxAfterNextTickStart.increasePerUnfinishedTick, this.unfinishedTicksStateForOversleepMaxAfterNextTickStart - oversleepConfig.maxAfterNextTickStart.decreasePerFinishedTick);
+         }
+         // Suki end - TPS options - configurable tick oversleep
++        lastTickOversleepTime = java.time.Duration.ofNanos(System.nanoTime() - tickOversleepStart); // Suki - last tick time API
+     }
+ 
+     @Override
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index 3691bcbfd3f64054cd37f9692c00d07d2d492fb6..b073006ef0d4bdf0addedfeb7eb05987025fee84 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -2935,10 +2935,18 @@ public final class CraftServer implements Server {
+     }
+     // Paper end
+ 
+-    // Yatopia start
++    // Suki start - last tick time API
++
++    @Override
++    public java.time.Duration getLastProperTickTime() {
++        return MinecraftServer.lastProperTickTime;
++    }
++
+     @Override
+-    public java.time.Duration getLastTickTime() {
+-        return net.minecraft.server.MinecraftServer.lastTickTime;
++    public java.time.Duration getLastTickOversleepTime() {
++        return MinecraftServer.lastTickOversleepTime;
+     }
+-    // Yatopia end
++
++    // Suki end - last tick time API
++
+ }
+diff --git a/src/main/java/org/spigotmc/TicksPerSecondCommand.java b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
+index 2b348c0d6bb29ded72d6cd5ee07da68faab7432b..76c28ff2c992863a20f2fedc9d243f63eaa0d99e 100644
+--- a/src/main/java/org/spigotmc/TicksPerSecondCommand.java
++++ b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
+@@ -34,10 +34,6 @@ public class TicksPerSecondCommand extends Command
+             tpsAvg[i] = TicksPerSecondCommand.format( tps[i] );
+         }
+         sender.sendMessage(ChatColor.GOLD + "TPS from last 5s, 1m, 5m, 15m: " + org.apache.commons.lang.StringUtils.join(tpsAvg, ", ")); // Purpur
+-        // Yatopia start - Last tick time API
+-        java.time.Duration lastTickTime = org.bukkit.Bukkit.getLastTickTime();
+-        sender.sendMessage(ChatColor.GOLD + "Last tick: " + TicksPerSecondCommand.formatTo( lastTickTime, java.util.concurrent.TimeUnit.MILLISECONDS ) + " (" + formatTo( lastTickTime, java.util.concurrent.TimeUnit.NANOSECONDS ) + ")");
+-        // Yatopia end
+         if (args.length > 0 && args[0].equals("mem") && sender.hasPermission("bukkit.command.tpsmemory")) {
+             sender.sendMessage(ChatColor.GOLD + "Current Memory Usage: " + ChatColor.GREEN + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)) + "/" + (Runtime.getRuntime().totalMemory() / (1024 * 1024)) + " mb (Max: " + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + " mb)");
+             if (!hasShownMemoryWarning) {

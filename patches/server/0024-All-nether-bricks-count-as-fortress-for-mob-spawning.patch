@@ -1,0 +1,50 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: chickeneer <emcchickeneer@gmail.com>
+Date: Sun, 17 May 2020 15:40:10 -0500
+Subject: [PATCH] All nether bricks count as fortress for mob spawning
+
+This patch is based on patch from the EmpireCraft fork (https://github.com/starlis/empirecraft) by chickeneer.
+
+diff --git a/src/main/java/net/minecraft/world/level/NaturalSpawner.java b/src/main/java/net/minecraft/world/level/NaturalSpawner.java
+index 386ed2c102aaa3ec68e828e20fff6bfe0d8f7877..5e00f081d4d886d7928a33d8b223286b95b81ceb 100644
+--- a/src/main/java/net/minecraft/world/level/NaturalSpawner.java
++++ b/src/main/java/net/minecraft/world/level/NaturalSpawner.java
+@@ -50,6 +50,7 @@ import net.minecraft.world.phys.Vec3;
+ import org.slf4j.Logger;
+ import org.bukkit.craftbukkit.util.CraftSpawnCategory;
+ import org.bukkit.entity.SpawnCategory;
++import org.bukkit.World;
+ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+ // CraftBukkit end
+ 
+@@ -407,6 +408,11 @@ public final class NaturalSpawner {
+ 
+     public static boolean isInNetherFortressBounds(BlockPos pos, ServerLevel world, MobCategory spawnGroup, StructureManager structureAccessor) {
+         if (spawnGroup == MobCategory.MONSTER && world.getBlockState(pos.below()).is(Blocks.NETHER_BRICKS)) {
++            // Suki start - all nether bricks count as fortress
++            if (world.sukiConfig().mobSpawning.allNetherBricksCountAsFortress && world.getWorld().getEnvironment() == World.Environment.NETHER) {
++                return true;
++            }
++            // Suki end - all nether bricks count as fortress
+             Structure structure = (Structure) structureAccessor.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY).get(BuiltinStructures.FORTRESS);
+ 
+             return structure == null ? false : structureAccessor.getStructureAt(pos, structure).isValid();
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index df18cffe3445bc978f64dbf9c4ac8077261705d6..fe1f0d91ddea9c8a73724996400319c1be9e3537 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -169,4 +169,14 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ 
+     // Suki end - never despawn entities due to distance
+ 
++    // Suki start - all nether bricks count as fortress
++
++    public MobSpawning mobSpawning;
++
++    public class MobSpawning extends ConfigurationPart {
++        public boolean allNetherBricksCountAsFortress = false;
++    }
++
++    // Suki end - all nether bricks count as fortress
++
+ }

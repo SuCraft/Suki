@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 9 Jun 2022 01:59:25 +0200
+Subject: [PATCH] Wither skull effect on easy difficulty
+
+
+diff --git a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
+index 9fe2a3800f4cb2dc5a3148463144835f94db8a10..8b31f4b7937673f5b541d7fce3b8a3fd60a6e649 100644
+--- a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
++++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
+@@ -38,6 +38,7 @@ import net.minecraft.world.item.Item;
+ import net.minecraft.world.item.Items;
+ import net.minecraft.world.level.NaturalSpawner;
+ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
++import org.bukkit.entity.Wither;
+ import org.slf4j.Logger;
+ import org.spigotmc.SpigotWorldConfig;
+ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
+index 2867e841e73a3edfdeb83af9d96e0d0cd4116a68..16be69b6de2fe743efcba62804b73fe0a17fe9e2 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
+@@ -75,7 +75,7 @@ public class WitherSkull extends AbstractHurtingProjectile {
+             if (flag && entity instanceof LivingEntity) {
+                 byte b0 = 0;
+ 
+-                if (this.level.getDifficulty() == Difficulty.NORMAL) {
++                if (this.level.getDifficulty() == Difficulty.NORMAL || (this.level.getDifficulty() == Difficulty.EASY && this.level.sukiConfig().difficultyChanges.witherEffectFromWitherSkullsOnEasyDifficulty)) { // Suki - wither effect from wither skulls on easy difficulty
+                     b0 = 10;
+                 } else if (this.level.getDifficulty() == Difficulty.HARD) {
+                     b0 = 40;
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 2967598a179538edaa1e76ae06e07522925a8a3f..46b540fdbc334466cada27f996a5a808f81988ee 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -254,6 +254,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+         public boolean zombieReinforcementsOnAllDifficulties = false; // Suki - zombies can call for reinforcements on all difficulties
+         public boolean raidsAreAlwaysHard = false; // Suki - raids are always hard
+         public boolean caveSpidersHavePoisonOnEasyDifficulty = false; // Suki - cave spiders have poison on easy difficulty
++        public boolean witherEffectFromWitherSkullsOnEasyDifficulty = false; // Suki - wither effect from wither skulls on easy difficulty
+     }
+ 
+     // Suki end - difficulty changes

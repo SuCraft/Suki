@@ -1,0 +1,219 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 20 Oct 2022 13:10:05 +0200
+Subject: [PATCH] Skip active entities
+
+
+diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
+index bc6374bdaf17057b55c3e93c391b4c3bfdb977fc..165021663f52dfa4e88c3aacab0c4e3d4d07026f 100644
+--- a/src/main/java/net/minecraft/server/level/ServerLevel.java
++++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
+@@ -624,6 +624,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+     }
+ 
+     public void tick(BooleanSupplier shouldKeepTicking) {
++        this.levelTicksReceived++; // Suki - skip active entities
+         // Paper start - optimise checkDespawn
+         this.playersAffectingSpawning.clear();
+         for (ServerPlayer player : this.players) {
+diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
+index e8a7c938a065c9c68669eee84c77702a303266c9..84e256b017db8dfebbecb994fbb8b4d38ed87239 100644
+--- a/src/main/java/net/minecraft/world/level/Level.java
++++ b/src/main/java/net/minecraft/world/level/Level.java
+@@ -143,6 +143,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+     private final BiomeManager biomeManager;
+     private final ResourceKey<Level> dimension;
+     private long subTickCount;
++    public int levelTicksReceived; // Suki - skip active entities
+ 
+     // CraftBukkit start Added the following
+     private final CraftWorld world;
+diff --git a/src/main/java/org/spigotmc/ActivationRange.java b/src/main/java/org/spigotmc/ActivationRange.java
+index 70b5b307193dc288a6257d90ca96762cb4a8345a..75f844b1ff48e4ec497fcccd59283c02f21cff12 100644
+--- a/src/main/java/org/spigotmc/ActivationRange.java
++++ b/src/main/java/org/spigotmc/ActivationRange.java
+@@ -410,13 +410,14 @@ public class ActivationRange
+         entity.isTemporarilyActive = false; // Paper
+ 
+         // Should this entity tick?
++        Integer immunity = null; // Suki - skip active entities
+         if ( !isActive )
+         {
+             if ( ( MinecraftServer.currentTick - entity.activatedTick - 1 ) % 20 == 0 )
+             {
+                 // Check immunities every 20 ticks.
+                 // Paper start
+-                int immunity = checkEntityImmunities(entity);
++                immunity = checkEntityImmunities(entity);
+                 if (immunity >= 0) {
+                     entity.activatedTick = MinecraftServer.currentTick + immunity;
+                 } else {
+@@ -426,11 +427,25 @@ public class ActivationRange
+                 isActive = true;
+ 
+             }
+-            // Add a little performance juice to active entities. Skip 1/4 if not immune.
+-        } else if ( entity.tickCount + entity.getId() + 1 % 4 == 0 && ActivationRange.checkEntityImmunities( entity ) < 0 ) // Paper
+-        {
+-            isActive = false;
++            // Suki start - skip active entities
++            // Add a little performance juice to active entities. Skip skippedActiveEntityRatioNumerator / skippedActiveEntityRatioDenominator of active entities if not immune.
++        } else {
++//        if (isActive && (immunity == null || immunity < 0)) {
++            var sukiConfig = entity.level.sukiConfig().entityTicking;
++            if (sukiConfig.skippedActiveEntityRatio.numerator() > 0) {
++                long someMeaninglessValueBasedOnTickCountAndEntityId = 31L + 57179L * entity.level.levelTicksReceived + 5774839051L * entity.getId();
++                if (Math.floorMod(someMeaninglessValueBasedOnTickCountAndEntityId, sukiConfig.skippedActiveEntityRatio.denominator()) < sukiConfig.skippedActiveEntityRatio.numerator()) {
++                    if (immunity == null) {
++                        immunity = checkEntityImmunities(entity);
++                    }
++                    if (immunity < 0) {
++                        isActive = false;
++                        entity.isTemporarilyActive = false;
++                    }
++                }
++            }
+         }
++        // Suki end - skip active entities
+         return isActive;
+     }
+ }
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 34f1f5c7eae1d6d8d45ac82ca1f09d24e5dd5a8b..e39e9908d0ccc0941d1442a03cd0887e4abe50fe 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -6,6 +6,7 @@ import com.mojang.logging.LogUtils;
+ import io.papermc.paper.configuration.Configuration;
+ import io.papermc.paper.configuration.ConfigurationPart;
+ import io.papermc.paper.configuration.PaperConfigurations;
++import it.unimi.dsi.fastutil.Pair;
+ import net.minecraft.resources.ResourceLocation;
+ import org.slf4j.Logger;
+ import org.spigotmc.SpigotWorldConfig;
+@@ -74,4 +75,78 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ 
+     // Suki end - slow hopper item pulling, delay villager item pickup
+ 
++    // Suki start - more entity activation configuration
++
++    public EntityTicking entityTicking;
++
++    public class EntityTicking extends ConfigurationPart {
++
++        // Suki start - skip active entities
++
++        public SkippedActiveEntityRatio skippedActiveEntityRatio;
++
++        public class SkippedActiveEntityRatio extends ConfigurationPart {
++
++            public double ratio = 0.25;
++
++            private transient Double lastRatio = null;
++            private transient int lastNumerator = 1;
++            private transient int lastDenominator = 4;
++
++            private static int gcd(int a, int b) {
++                while (b != 0) {
++                    int t = b;
++                    b = a % b;
++                    a = t;
++                }
++                return a;
++            }
++
++            public static Pair<Integer, Integer> computeNumeratorAndDenominator(double ratio) {
++                double closestValue = 0;
++                int bestNumerator = 0;
++                int bestDenominator = 1;
++                for (int denominator = 2; denominator <= 9; denominator++) {
++                    for (int numerator = 1; numerator < denominator; numerator++) {
++                        if (gcd(denominator, numerator) != 1) {
++                            continue;
++                        }
++                        double value = ((double) numerator) / denominator;
++                        if (Math.abs(value - ratio) < Math.abs(closestValue - ratio)) {
++                            closestValue = value;
++                            bestNumerator = numerator;
++                            bestDenominator = denominator;
++                        }
++                    }
++                }
++                return Pair.of(bestNumerator, bestDenominator);
++            }
++
++            private synchronized void setNumeratorAndDenominator() {
++                if (lastRatio == null || ratio != lastRatio) {
++                    Pair<Integer, Integer> best = computeNumeratorAndDenominator(ratio);
++                    lastRatio = ratio;
++                    lastNumerator = best.first();
++                    lastDenominator = best.second();
++                }
++            }
++
++            public int numerator() {
++                setNumeratorAndDenominator();
++                return lastNumerator;
++            }
++
++            public int denominator() {
++                setNumeratorAndDenominator();
++                return lastDenominator;
++            }
++
++        }
++
++        // Suki end - skip active entities
++
++    }
++
++    // Suki end - more entity activation configuration
++
+ }
+diff --git a/src/main/java/org/sucraft/suki/configuration/timingsexport/SukiConfigurationTimingsExport.java b/src/main/java/org/sucraft/suki/configuration/timingsexport/SukiConfigurationTimingsExport.java
+index 0c3e5edb7386c4b6cabb784d320fd3177d224af9..83725f119f28895ad81f996e80f3523ca984f54e 100644
+--- a/src/main/java/org/sucraft/suki/configuration/timingsexport/SukiConfigurationTimingsExport.java
++++ b/src/main/java/org/sucraft/suki/configuration/timingsexport/SukiConfigurationTimingsExport.java
+@@ -3,9 +3,13 @@
+ package org.sucraft.suki.configuration.timingsexport;
+ 
+ import co.aikar.timings.TimingsExport;
++import io.papermc.paper.configuration.Configurations;
+ import org.bukkit.Bukkit;
+ import org.jetbrains.annotations.NotNull;
+ import org.json.simple.JSONObject;
++import org.sucraft.suki.configuration.SukiWorldConfiguration;
++
++import java.util.Map;
+ 
+ public final class SukiConfigurationTimingsExport {
+ 
+@@ -13,6 +17,29 @@ public final class SukiConfigurationTimingsExport {
+ 
+     public static @NotNull JSONObject get() {
+         var json = TimingsExport.mapAsJSON(Bukkit.spigot().getSukiConfig(), null);
++
++        // Suki start - configurable ratio of skipped active entities - include computed fraction in timings
++
++        JSONObject sukiConfigWorldsJSON = (JSONObject) json.get(Configurations.legacyWorldsSectionKey);
++        for (Object worldEntry : sukiConfigWorldsJSON.entrySet()) {
++            JSONObject configWorldJSON = (JSONObject) ((Map.Entry<?, ?>) worldEntry).getValue();
++            JSONObject entityTickingJSON = (JSONObject) configWorldJSON.get("entity-ticking");
++            if (entityTickingJSON != null) {
++                JSONObject skippedActiveEntityRatioJSON = (JSONObject) entityTickingJSON.get("skipped-active-entity-ratio");
++                if (skippedActiveEntityRatioJSON != null) {
++                    String ratioString = (String) skippedActiveEntityRatioJSON.get("ratio");
++                    if (ratioString != null) {
++                        double ratio = Double.parseDouble(ratioString);
++                        var fraction = SukiWorldConfiguration.EntityTicking.SkippedActiveEntityRatio.computeNumeratorAndDenominator(ratio);
++                        skippedActiveEntityRatioJSON.put("_numerator", fraction.first());
++                        skippedActiveEntityRatioJSON.put("_denominator", fraction.second());
++                    }
++                }
++            }
++        }
++
++        // Suki end - configurable ratio of skipped active entities - include computed fraction in timings
++
+         return json;
+     }
+ 

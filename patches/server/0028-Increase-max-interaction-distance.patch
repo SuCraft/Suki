@@ -1,0 +1,92 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 4 Aug 2022 18:57:24 +0200
+Subject: [PATCH] Increase max interaction distance
+
+
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
+index 0a5f8d990cce5df339fd9b2b0fcb291a20ddad41..a7726c7a97a745319edf67397802658434603b57 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
+@@ -3,6 +3,8 @@ package net.minecraft.server.level;
+ import com.mojang.logging.LogUtils;
+ import java.util.Objects;
+ import javax.annotation.Nullable;
++
++import io.papermc.paper.configuration.GlobalConfiguration;
+ import net.minecraft.world.InteractionHand;
+ import net.minecraft.world.InteractionResult;
+ import net.minecraft.world.InteractionResultHolder;
+@@ -173,7 +175,7 @@ public class ServerPlayerGameMode {
+     private void debugLogging(BlockPos pos, boolean success, int sequence, String reason) {}
+ 
+     public void handleBlockBreakAction(BlockPos pos, ServerboundPlayerActionPacket.Action action, Direction direction, int worldHeight, int sequence) {
+-        if (this.player.getEyePosition().distanceToSqr(Vec3.atCenterOf(pos)) > ServerGamePacketListenerImpl.MAX_INTERACTION_DISTANCE) {
++        if (this.player.getEyePosition().distanceToSqr(Vec3.atCenterOf(pos)) > this.player.level.sukiConfig().interactionDistance.maxSquared()) { // Suki - increase max interaction distance
+             if (true) return; // Paper - Don't notify if unreasonably far away
+             this.debugLogging(pos, false, sequence, "too far");
+         } else if (pos.getY() >= worldHeight) {
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index dece797fb8e0471c9140e768cd621e6f0d10eee5..29aa1718784728eecf3d7f2aca96cf6ac707ac08 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -8,6 +8,7 @@ import com.mojang.brigadier.StringReader;
+ import com.mojang.brigadier.exceptions.CommandSyntaxException;
+ import com.mojang.datafixers.util.Pair;
+ import com.mojang.logging.LogUtils;
++import io.papermc.paper.configuration.GlobalConfiguration;
+ import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
+ import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+@@ -248,7 +249,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+ 
+     static final Logger LOGGER = LogUtils.getLogger();
+     private static final int LATENCY_CHECK_INTERVAL = 15000;
+-    public static final double MAX_INTERACTION_DISTANCE = Mth.square(6.0D);
++    //public static final double MAX_INTERACTION_DISTANCE = Mth.square(6.0D); // Suki - increase max interaction distance
+     private static final int NO_BLOCK_UPDATES_TO_ACK = -1;
+     private static final int PENDING_MESSAGE_DISCONNECT_THRESHOLD = 4096;
+     public final Connection connection;
+@@ -1989,7 +1990,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         BlockPos blockposition = movingobjectpositionblock.getBlockPos();
+         Vec3 vec3d1 = Vec3.atCenterOf(blockposition);
+ 
+-        if (this.player.getEyePosition().distanceToSqr(vec3d1) <= ServerGamePacketListenerImpl.MAX_INTERACTION_DISTANCE) {
++        if (this.player.getEyePosition().distanceToSqr(vec3d1) <= worldserver.sukiConfig().interactionDistance.maxSquared()) { // Suki - increase max interaction distance
+             Vec3 vec3d2 = vec3d.subtract(vec3d1);
+             double d0 = 1.0000001D;
+ 
+@@ -2968,7 +2969,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+                 return;
+             }
+ 
+-            if (entity.distanceToSqr(this.player.getEyePosition()) < ServerGamePacketListenerImpl.MAX_INTERACTION_DISTANCE) {
++            if (entity.distanceToSqr(this.player.getEyePosition()) < worldserver.sukiConfig().interactionDistance.maxSquared()) { // Suki - increase max interaction distance
+                 packet.dispatch(new ServerboundInteractPacket.Handler() {
+                     private void performInteraction(InteractionHand enumhand, ServerGamePacketListenerImpl.EntityInteraction playerconnection_a, PlayerInteractEntityEvent event) { // CraftBukkit
+                         ItemStack itemstack = ServerGamePacketListenerImpl.this.player.getItemInHand(enumhand).copy();
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 7f8472b1575caac79c3cb1cc77ee751099cfa0c9..7bc5331502ea755bedee83572cb7f9e71f8605ed 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -217,4 +217,20 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ 
+     // Suki end - do not relocated corrupted chunks
+ 
++    // Suki start - increase max interaction distance
++
++    public InteractionDistance interactionDistance;
++
++    public class InteractionDistance extends ConfigurationPart {
++
++        public double max = 6.0;
++
++        public double maxSquared() {
++            return max * max;
++        }
++
++    }
++
++    // Suki end - increase max interaction distance
++
+ }

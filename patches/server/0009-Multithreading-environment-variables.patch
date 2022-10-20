@@ -1,0 +1,209 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 29 Sep 2022 14:44:20 +0200
+Subject: [PATCH] Multithreading environment variables
+
+
+diff --git a/src/main/java/dev/etil/mirai/path/AsyncPathProcessor.java b/src/main/java/dev/etil/mirai/path/AsyncPathProcessor.java
+index 6dc8f7bb7ba6b78b5db50801a61abe526c17c939..6b6230758e726eb86dee6691cac71125b69cd67e 100644
+--- a/src/main/java/dev/etil/mirai/path/AsyncPathProcessor.java
++++ b/src/main/java/dev/etil/mirai/path/AsyncPathProcessor.java
+@@ -17,10 +17,14 @@ import java.util.function.Consumer;
+ public class AsyncPathProcessor {
+ 
+     private static final Executor mainThreadExecutor = MinecraftServer.getServer();
+-    private static final Executor pathProcessingExecutor = Executors.newCachedThreadPool(new ThreadFactoryBuilder()
+-            .setNameFormat("mirai-path-processor-%d")
+-            .setPriority(Thread.NORM_PRIORITY - 2)
+-            .build());
++    // Suki start - multithreading environment variables
++    private static final int parallelism = Integer.getInteger("suki.threads.path", -1);
++    private static final java.util.concurrent.ThreadFactory pathProcessingExecutorThreadFactory = new ThreadFactoryBuilder()
++        .setNameFormat("mirai-path-processor-%d")
++        .setPriority(Thread.NORM_PRIORITY - 2)
++        .build();
++    public static final Executor pathProcessingExecutor = parallelism >= 1 ? Executors.newFixedThreadPool(parallelism, pathProcessingExecutorThreadFactory) : Executors.newCachedThreadPool(pathProcessingExecutorThreadFactory);
++    // Suki end - multithreading environment variables
+ 
+     protected static CompletableFuture<Void> queue(@NotNull AsyncPath path) {
+         return CompletableFuture.runAsync(path::process, pathProcessingExecutor);
+@@ -41,4 +45,4 @@ public class AsyncPathProcessor {
+             afterProcessing.accept(path);
+         }
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/src/main/java/dev/etil/mirai/tracker/MultithreadedTracker.java b/src/main/java/dev/etil/mirai/tracker/MultithreadedTracker.java
+index 613bd104762755395e86101decaf1cb7dc74d2ad..f9be8b581cec15a8c4c2c6f19658403883dda4ff 100644
+--- a/src/main/java/dev/etil/mirai/tracker/MultithreadedTracker.java
++++ b/src/main/java/dev/etil/mirai/tracker/MultithreadedTracker.java
+@@ -20,7 +20,7 @@ public class MultithreadedTracker {
+         SEND_CHANGES
+     }
+ 
+-    private static final int parallelism = Math.max(4, Runtime.getRuntime().availableProcessors());
++    private static final int parallelism = Integer.getInteger("suki.threads.tracker", Math.max(4, Integer.getInteger("suki.systemcpus.fortracker", Runtime.getRuntime().availableProcessors()))); // Suki - multithreading environment variables
+     private static final Executor trackerExecutor = Executors.newFixedThreadPool(parallelism, new ThreadFactoryBuilder()
+             .setNameFormat("mirai-tracker-%d")
+             .setPriority(Thread.NORM_PRIORITY - 2)
+@@ -151,4 +151,4 @@ public class MultithreadedTracker {
+         }
+     }
+ 
+-}
+\ No newline at end of file
++}
+diff --git a/src/main/java/gg/pufferfish/pufferfish/tracker/MultithreadedTracker.java b/src/main/java/gg/pufferfish/pufferfish/tracker/MultithreadedTracker.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..57c64c23fb2c64aba663717a6f5328a4b8e9920c
+--- /dev/null
++++ b/src/main/java/gg/pufferfish/pufferfish/tracker/MultithreadedTracker.java
+@@ -0,0 +1,9 @@
++package gg.pufferfish.pufferfish.tracker;
++
++// Suki start - multithreading environment variables - placeholder until async entity tracking is re-added upstream
++public class MultithreadedTracker {
++
++//    private static final int parallelism = Integer.getInteger("suki.threads.tracker", Math.max(4, Integer.getInteger("suki.systemcpus.fortracker", Runtime.getRuntime().availableProcessors()))); // Suki - multithreading environment variables
++
++}
++// Suki end - multithreading environment variables - placeholder until async entity tracking is re-added upstream
+diff --git a/src/main/java/net/minecraft/Util.java b/src/main/java/net/minecraft/Util.java
+index 4b4f3533f6f8624551794e63baae87138a495835..37836dbdbff2ca4cd8bfc8300087377f70da2ee1 100644
+--- a/src/main/java/net/minecraft/Util.java
++++ b/src/main/java/net/minecraft/Util.java
+@@ -27,7 +27,6 @@ import java.net.URL;
+ import java.nio.file.Files;
+ import java.nio.file.Path;
+ import java.nio.file.spi.FileSystemProvider;
+-import java.security.AccessController;
+ import java.security.PrivilegedActionException;
+ import java.security.PrivilegedExceptionAction;
+ import java.time.Duration;
+@@ -151,9 +150,15 @@ public class Util {
+     }
+ 
+     private static ExecutorService makeExecutor(String s, int priorityModifier) { // Paper - add priority
++        // Suki start - multithreading environment variables
++        return makeExecutor(s, priorityModifier, -1);
++    }
++
++    public static ExecutorService makeExecutor(String s, int priorityModifier, int specificThreads) {
++        // Suki end - multithreading environment variables
+         // Paper start - use simpler thread pool that allows 1 thread
+         // Paper start - also try to avoid suffocating the system with the worldgen workers
+-        int cpus = Runtime.getRuntime().availableProcessors() / 2;
++        int cpus = Integer.getInteger("suki.systemcpus.forexecutors", Runtime.getRuntime().availableProcessors() / 2); // Suki - multithreading environment variables
+         int i;
+         if (cpus <= 4) {
+             i = cpus <= 2 ? 1 : 2;
+@@ -166,6 +171,11 @@ public class Util {
+         i = Math.min(8, i);
+         // Paper end - also try to avoid suffocating the system with the worldgen workers
+         i = Integer.getInteger("Paper.WorkerThreadCount", i);
++        // Suki start - multithreading environment variables
++        if (specificThreads > 0) {
++            i = specificThreads;
++        }
++        // Suki end - multithreading environment variables
+         ExecutorService executorService;
+ 
+         if (i <= 0) {
+@@ -173,7 +183,7 @@ public class Util {
+         } else {
+             //executorService = new java.util.concurrent.ThreadPoolExecutor(i, i,0L, TimeUnit.MILLISECONDS, new java.util.concurrent.LinkedBlockingQueue<Runnable>(), target -> new net.minecraft.server.ServerWorkerThread(target, s, priorityModifier)); // JettPack
+             // JettPack start
+-            executorService = Integer.getInteger("Paper.WorkerThreadCount", i) <= 0 ? MoreExecutors.newDirectExecutorService() : new AbstractExecutorService(){
++            executorService = new AbstractExecutorService(){ // Suki - multithreading environment variables
+                 private volatile boolean shutdown = false;
+ 
+                 @Override
+diff --git a/src/main/java/net/minecraft/server/MCUtil.java b/src/main/java/net/minecraft/server/MCUtil.java
+index 0d995a13114e718016518f41d7fcff3042674847..575e8eacf5e76fb068ebabdf150f8417189ef49e 100644
+--- a/src/main/java/net/minecraft/server/MCUtil.java
++++ b/src/main/java/net/minecraft/server/MCUtil.java
+@@ -55,8 +55,13 @@ import java.util.function.Supplier;
+ 
+ public final class MCUtil {
+     public static final ThreadPoolExecutor asyncExecutor = new ThreadPoolExecutor(
+-        0, 2, 60L, TimeUnit.SECONDS,
++        // Suki start - multithreading environment variables
++//        0, 2, 60L, TimeUnit.SECONDS, // <- From Paper
++//        Integer.getInteger("suki.threads.asyncexecutor", 2), Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, // <- From JettPack
++        0, Integer.getInteger("suki.threads.asyncexecutor", 2), 60L, TimeUnit.SECONDS,
++//        new SynchronousQueue<Runnable>(), // <- From JettPack
+         new LinkedBlockingQueue<>(),
++        // Suki end - multithreading environment variables
+         new ThreadFactoryBuilder()
+             .setNameFormat("Paper Async Task Handler Thread - %1$d")
+             .setUncaughtExceptionHandler(new net.minecraft.DefaultUncaughtExceptionHandlerWithName(MinecraftServer.LOGGER))
+diff --git a/src/main/java/net/minecraft/server/Main.java b/src/main/java/net/minecraft/server/Main.java
+index 0b677d128cbd108bb58d74d3cfe6015551e94143..72adf5879fc476e1495cfeaf8df31212750e1200 100644
+--- a/src/main/java/net/minecraft/server/Main.java
++++ b/src/main/java/net/minecraft/server/Main.java
+@@ -318,7 +318,7 @@ public class Main {
+     // Paper start - fix and optimise world upgrading
+     public static void convertWorldButItWorks(net.minecraft.resources.ResourceKey<net.minecraft.world.level.dimension.LevelStem> dimensionType, net.minecraft.world.level.storage.LevelStorageSource.LevelStorageAccess worldSession,
+                                               DataFixer dataFixer, Optional<net.minecraft.resources.ResourceKey<com.mojang.serialization.Codec<? extends net.minecraft.world.level.chunk.ChunkGenerator>>> generatorKey, boolean removeCaches) {
+-        int threads = Runtime.getRuntime().availableProcessors() * 3 / 8;
++        int threads = Integer.getInteger("suki.threads.upgradeworld", Integer.getInteger("suki.systemcpus.forupgradeworld", Runtime.getRuntime().availableProcessors()) * 3 / 8); // Suki - multithreading environment variables
+         final ThreadedWorldUpgrader worldUpgrader = new ThreadedWorldUpgrader(dimensionType, worldSession.getLevelId(), worldSession.levelDirectory.path().toFile(), threads, dataFixer, generatorKey, removeCaches);
+         worldUpgrader.convert();
+     }
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 4c9c8cef29409900f3d04e15d0270657c489a443..8b8d260a183a84a9f0251f7a65a4316637503798 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -311,8 +311,10 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+         thread.setUncaughtExceptionHandler((thread1, throwable) -> {
+             MinecraftServer.LOGGER.error("Uncaught exception in server thread", throwable);
+         });
+-        if (Runtime.getRuntime().availableProcessors() > 4) {
+-            thread.setPriority(8);
++        // Suki start - multithreading environment variables
++        if (Integer.getInteger("suki.mainthreadpriority", -1) != -1 || Runtime.getRuntime().availableProcessors() > 4) {
++            thread.setPriority(Integer.getInteger("suki.mainthreadpriority", 8));
++            // Suki end - multithreading environment variables
+         }
+ 
+         S s0 = serverFactory.apply(thread); // CraftBukkit - decompile error
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index 46c5c313419900e1392af28c7cd17e96b54f73ff..3691bcbfd3f64054cd37f9692c00d07d2d492fb6 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
+ import javax.imageio.ImageIO;
+ 
+ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
++import net.minecraft.Util;
+ import net.minecraft.advancements.Advancement;
+ import net.minecraft.commands.CommandSourceStack;
+ import net.minecraft.commands.Commands;
+@@ -1250,9 +1251,11 @@ public final class CraftServer implements Server {
+             worldKey = ResourceKey.create(net.minecraft.core.Registry.DIMENSION_REGISTRY, new net.minecraft.resources.ResourceLocation(creator.key().getNamespace().toLowerCase(java.util.Locale.ENGLISH), creator.key().getKey().toLowerCase(java.util.Locale.ENGLISH))); // Paper
+         }
+ 
+-        ServerLevel internal = (ServerLevel) new ServerLevel(this.console, console.executor, worldSession, worlddata, worldKey, worlddimension, this.getServer().progressListenerFactory.create(11),
++        // Suki start - multithreading environment variables
++        int levelExecutorThreads = Integer.getInteger("suki.threads.levelexecutor", -1);
++        ServerLevel internal = (ServerLevel) new ServerLevel(this.console, levelExecutorThreads > 0 ? Util.makeExecutor(name, -1, levelExecutorThreads) : console.executor, worldSession, worlddata, worldKey, worlddimension, this.getServer().progressListenerFactory.create(11),
+                 worlddata.worldGenSettings().isDebug(), j, creator.environment() == Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator, biomeProvider);
+-
++        // Suki end - multithreading environment variables
+         if (!(this.worlds.containsKey(name.toLowerCase(java.util.Locale.ENGLISH)))) {
+             return null;
+         }
+diff --git a/src/main/java/org/spigotmc/TicksPerSecondCommand.java b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
+index 26ff7f68dacad945095d794c1def4752e0775abb..2b348c0d6bb29ded72d6cd5ee07da68faab7432b 100644
+--- a/src/main/java/org/spigotmc/TicksPerSecondCommand.java
++++ b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
+@@ -5,6 +5,8 @@ import org.bukkit.ChatColor;
+ import org.bukkit.command.Command;
+ import org.bukkit.command.CommandSender;
+ 
++import java.util.concurrent.ThreadPoolExecutor;
++
+ public class TicksPerSecondCommand extends Command
+ {
+ 

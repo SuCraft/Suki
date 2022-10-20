@@ -1,0 +1,55 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 23:13:36 +0200
+Subject: [PATCH] Delay villager item pickup
+
+This patch is based on patch from the EmpireCraft fork (https://github.com/starlis/empirecraft) by Aikar.
+
+diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/BehaviorUtils.java b/src/main/java/net/minecraft/world/entity/ai/behavior/BehaviorUtils.java
+index 098253e92bd95159de93fbbdf95daee341fc5752..9b153475bf32af92648829a401e4e58235b8c7e1 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/behavior/BehaviorUtils.java
++++ b/src/main/java/net/minecraft/world/entity/ai/behavior/BehaviorUtils.java
+@@ -102,7 +102,13 @@ public class BehaviorUtils {
+ 
+         vec3d2 = vec3d2.normalize().multiply(velocityFactor.x, velocityFactor.y, velocityFactor.z);
+         entityitem.setDeltaMovement(vec3d2);
+-        entityitem.setDefaultPickUpDelay();
++        // Suki start - delay villager item pickup
++        if (entity.level.sukiConfig().itemPickup.villager.delayAfterDrop == -1) {
++            entityitem.setDefaultPickUpDelay();
++        } else {
++            entityitem.pickupDelay = entity.level.sukiConfig().itemPickup.villager.delayAfterDrop;
++        }
++        // Suki end - delay villager item pickup
+         // CraftBukkit start
+         org.bukkit.event.entity.EntityDropItemEvent event = new org.bukkit.event.entity.EntityDropItemEvent(entity.getBukkitEntity(), (org.bukkit.entity.Item) entityitem.getBukkitEntity());
+         entityitem.level.getCraftServer().getPluginManager().callEvent(event);
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 97c5c42d73f3dac278179542b6273b3bf9f87462..34f1f5c7eae1d6d8d45ac82ca1f09d24e5dd5a8b 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -30,7 +30,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+     @Setting(Configuration.VERSION_FIELD)
+     public int version = CURRENT_VERSION;
+ 
+-    // Suki start - slow hopper item pulling
++    // Suki start - slow hopper item pulling, delay villager item pickup
+ 
+     public ItemPickup itemPickup;
+ 
+@@ -64,8 +64,14 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ 
+         }
+ 
++        public Villager villager;
++
++        public class Villager extends ConfigurationPart {
++            public int delayAfterDrop = -1;
++        }
++
+     }
+ 
+-    // Suki end - slow hopper item pulling
++    // Suki end - slow hopper item pulling, delay villager item pickup
+ 
+ }

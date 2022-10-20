@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 9 Jun 2022 02:18:14 +0200
+Subject: [PATCH] Spiders have effects on all difficulties
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Spider.java b/src/main/java/net/minecraft/world/entity/monster/Spider.java
+index c3085ad5410b41d9c7703b28ca835dbee3f49ee7..095715e3946ec81ab85db4bbdfdac244c3b20a6f 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Spider.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Spider.java
+@@ -168,7 +168,7 @@ public class Spider extends Monster {
+ 
+         if (object == null) {
+             object = new Spider.SpiderEffectsGroupData();
+-            if (world.getDifficulty() == Difficulty.HARD && randomsource.nextFloat() < 0.1F * difficulty.getSpecialMultiplier()) {
++            if (((world.getDifficulty() != Difficulty.PEACEFUL && world.getLevel().sukiConfig().difficultyChanges.spidersWithEffectsOnAllDifficulties) || world.getDifficulty() == Difficulty.HARD) && randomsource.nextFloat() < 0.1F * difficulty.getSpecialMultiplier()) { // Suki - spiders can spawn with effects on all difficulties
+                 ((Spider.SpiderEffectsGroupData) object).setRandomEffect(randomsource);
+             }
+         }
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 650de4a9c278ad10e42936146f43b6f5a243dee2..92642b4cd88ac86e5a46f5836006ab436a677f9a 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -257,6 +257,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+         public boolean caveSpidersHavePoisonOnEasyDifficulty = false; // Suki - cave spiders have poison on easy difficulty
+         public boolean witherEffectFromWitherSkullsOnEasyDifficulty = false; // Suki - wither effect from wither skulls on easy difficulty
+         public boolean lightningSpawnsFire = true; // Suki - configurable lightning fire
++        public boolean spidersWithEffectsOnAllDifficulties = false; // Suki - spiders can spawn with effects on all difficulties
+ 
+         // Suki start - minimum health after starving
+ 

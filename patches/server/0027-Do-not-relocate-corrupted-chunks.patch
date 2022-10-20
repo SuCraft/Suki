@@ -1,0 +1,53 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Tue, 18 Jan 2022 14:09:32 +0100
+Subject: [PATCH] Do not relocate corrupted chunks
+
+
+diff --git a/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java b/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
+index 34e351e04ac57e47e3cea671c61cc01d17983b77..f583ae81fb60027c47aaecdb6451462cd0d72936 100644
+--- a/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
++++ b/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
+@@ -30,6 +30,7 @@ import net.minecraft.nbt.NbtOps;
+ import net.minecraft.nbt.ShortTag;
+ import net.minecraft.nbt.Tag;
+ import net.minecraft.resources.ResourceLocation;
++import net.minecraft.server.MinecraftServer;
+ import net.minecraft.server.level.ServerChunkCache;
+ import net.minecraft.server.level.ServerLevel;
+ import net.minecraft.server.level.ThreadedLevelLightEngine;
+@@ -157,7 +158,14 @@ public class ChunkSerializer {
+         ChunkPos chunkcoordintpair1 = new ChunkPos(nbt.getInt("xPos"), nbt.getInt("zPos")); // Paper - diff on change, see ChunkSerializer#getChunkCoordinate
+ 
+         if (!Objects.equals(chunkPos, chunkcoordintpair1)) {
+-            ChunkSerializer.LOGGER.error("Chunk file at {} is in the wrong location; relocating. (Expected {}, got {})", new Object[]{chunkPos, chunkPos, chunkcoordintpair1});
++            // Suki start - do not relocate corrupted chunks
++            if (world.sukiConfig().relocateCorruptedChunks.enabled) {
++                ChunkSerializer.LOGGER.error("Chunk file at {} is in the wrong location; relocating. (Expected {}, got {})", new Object[]{chunkPos, chunkPos, chunkcoordintpair1});
++            } else {
++                ChunkSerializer.LOGGER.error("Chunk file at {} is in the wrong location; stopping the server. (Expected {}, got {})", new Object[]{chunkPos, chunkPos, chunkcoordintpair1});
++                MinecraftServer.getServer().stopServer();
++            }
++            // Suki end - do not relocate corrupted chunks
+         }
+ 
+         UpgradeData chunkconverter = nbt.contains("UpgradeData", 10) ? new UpgradeData(nbt.getCompound("UpgradeData"), world) : UpgradeData.EMPTY;
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index a94d4def4151aa1ba91e4e97e31afeb494847b6a..7f8472b1575caac79c3cb1cc77ee751099cfa0c9 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -207,4 +207,14 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ 
+     // Suki end - configurable move checks
+ 
++    // Suki start - do not relocate corrupted chunks
++
++    public RelocateCorruptedChunks relocateCorruptedChunks;
++
++    public class RelocateCorruptedChunks extends ConfigurationPart {
++        public boolean enabled = true;
++    }
++
++    // Suki end - do not relocated corrupted chunks
++
+ }
