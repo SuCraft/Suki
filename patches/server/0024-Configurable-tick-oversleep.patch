@@ -5,7 +5,7 @@ Subject: [PATCH] Configurable tick oversleep
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index bed4764fe7d46d1013206a23b7547f2373361ef9..701d587c259aca0d8fef87fc08e7008b1179078c 100644
+index bed4764fe7d46d1013206a23b7547f2373361ef9..f7adbaed4f60986e3e079a54702059b825dcc555 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -13,6 +13,7 @@ import com.mojang.authlib.GameProfileRepository;
@@ -24,33 +24,62 @@ index bed4764fe7d46d1013206a23b7547f2373361ef9..701d587c259aca0d8fef87fc08e7008b
  
  public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnable> implements CommandSource, AutoCloseable { // Patina
  
-@@ -1189,7 +1191,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+@@ -254,6 +256,10 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+     public final Thread serverThread;
+     private long nextTickTime;
+     private long delayedTasksMaxNextTickTime;
++    // Suki start - TPS options - configurable tick oversleep
++    private double unfinishedTicksStateForOversleepPlannedAfterLastTickEnd;
++    private double unfinishedTicksStateForOversleepMaxAfterNextTickStart;
++    // Suki end - TPS options - configurable tick oversleep
+     private boolean mayHaveDelayedTasks;
+     private final PackRepository packRepository;
+     private final ServerScoreboard scoreboard;
+@@ -1189,7 +1195,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
                  lastProperTickTime = java.time.Duration.ofNanos(System.nanoTime() - properTickStart); // Suki - last tick time API
                  this.profiler.popPush("nextTickWait");
                  this.mayHaveDelayedTasks = true;
 -                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + 50L, this.nextTickTime);
 +                // Suki start - TPS options - configurable tick oversleep
-+                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + (SukiGlobalConfiguration.get().tps.oversleep.plannedAfterLastTickEnd < 0 ? 50 : SukiGlobalConfiguration.get().tps.oversleep.plannedAfterLastTickEnd), this.nextTickTime);
-+                if (SukiGlobalConfiguration.get().tps.oversleep.maxAfterNextTickStart >= 0) {
-+                    this.delayedTasksMaxNextTickTime = Math.min(this.delayedTasksMaxNextTickTime, this.nextTickTime + SukiGlobalConfiguration.get().tps.oversleep.maxAfterNextTickStart);
-+                }
++                var oversleepConfig = SukiGlobalConfiguration.get().tps.oversleep.dynamic;
++                long oversleepPlannedAfterLastTickEnd = (long) Math.round(Math.min(oversleepConfig.plannedAfterLastTickEnd.max, oversleepConfig.plannedAfterLastTickEnd.min + Math.max(0.0, this.unfinishedTicksStateForOversleepPlannedAfterLastTickEnd)));
++                long oversleepMaxAfterNextTickStart = (long) Math.round(Math.min(oversleepConfig.maxAfterNextTickStart.max, oversleepConfig.maxAfterNextTickStart.min + Math.max(0.0, this.unfinishedTicksStateForOversleepMaxAfterNextTickStart)));
++                this.delayedTasksMaxNextTickTime = Math.min(Math.max(Util.getMillis() + oversleepPlannedAfterLastTickEnd, this.nextTickTime), this.nextTickTime + oversleepMaxAfterNextTickStart);
 +                // Suki end - TPS options - configurable tick oversleep
                  this.waitUntilNextTick();
                  this.profiler.pop();
                  this.endMetricsRecordingTick();
+@@ -1306,6 +1317,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+         this.managedBlock(() -> {
+             return !this.canSleepForTickNoOversleep(); // Paper - move oversleep into full server tick
+         });
++        // Suki start - TPS options - configurable tick oversleep
++        var oversleepConfig = SukiGlobalConfiguration.get().tps.oversleep.dynamic;
++        if (this.getPendingTasksCount() > 0) {
++            this.unfinishedTicksStateForOversleepPlannedAfterLastTickEnd = Math.min(oversleepConfig.plannedAfterLastTickEnd.max - oversleepConfig.plannedAfterLastTickEnd.min, this.unfinishedTicksStateForOversleepPlannedAfterLastTickEnd + oversleepConfig.plannedAfterLastTickEnd.increasePerUnfinishedTick);
++            this.unfinishedTicksStateForOversleepMaxAfterNextTickStart = Math.min(oversleepConfig.maxAfterNextTickStart.max - oversleepConfig.maxAfterNextTickStart.min, this.unfinishedTicksStateForOversleepMaxAfterNextTickStart + oversleepConfig.maxAfterNextTickStart.increasePerUnfinishedTick);
++        } else {
++            this.unfinishedTicksStateForOversleepPlannedAfterLastTickEnd = Math.max(-oversleepConfig.plannedAfterLastTickEnd.ticksImmuneFromIncrease * oversleepConfig.plannedAfterLastTickEnd.increasePerUnfinishedTick, this.unfinishedTicksStateForOversleepPlannedAfterLastTickEnd - oversleepConfig.plannedAfterLastTickEnd.decreasePerFinishedTick);
++            this.unfinishedTicksStateForOversleepMaxAfterNextTickStart = Math.max(-oversleepConfig.maxAfterNextTickStart.ticksImmuneFromIncrease * oversleepConfig.maxAfterNextTickStart.increasePerUnfinishedTick, this.unfinishedTicksStateForOversleepMaxAfterNextTickStart - oversleepConfig.maxAfterNextTickStart.decreasePerFinishedTick);
++        }
++        // Suki end - TPS options - configurable tick oversleep
+         lastTickOversleepTime = java.time.Duration.ofNanos(System.nanoTime() - tickOversleepStart); // Suki - last tick time API
+     }
+ 
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index e183225a6371b70eb82be961dcc613ba5f0b68ed..76ecc0dcabdf6fc7bd8e5f3dfa3927f7b9e10c9e 100644
+index e183225a6371b70eb82be961dcc613ba5f0b68ed..36fba9c8497d37df0170cd4e413eb6780192b953 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -4,7 +4,6 @@ package org.sucraft.suki.configuration;
+@@ -4,7 +4,7 @@ package org.sucraft.suki.configuration;
  
  import io.papermc.paper.configuration.Configuration;
  import io.papermc.paper.configuration.ConfigurationPart;
 -import io.papermc.paper.configuration.GlobalConfiguration;
++import org.checkerframework.checker.units.qual.A;
  import org.spongepowered.configurate.objectmapping.meta.Setting;
  
  @SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
-@@ -126,4 +125,38 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -126,4 +126,59 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - configurable keep-alive
  
@@ -64,24 +93,45 @@ index e183225a6371b70eb82be961dcc613ba5f0b68ed..76ecc0dcabdf6fc7bd8e5f3dfa3927f7
 +
 +        public class Oversleep extends ConfigurationPart {
 +
-+            /**
-+             * The time that is planned for oversleep after the last tick's end
-+             * <br>
-+             * In milliseconds
-+             * <br>
-+             * A value of -1 reverts to the default behavior, which is 50 milliseconds
-+             */
-+            public int plannedAfterLastTickEnd = -1;
++            public Dynamic dynamic;
 +
-+            /**
-+             * The maximum time to oversleep after the intended next tick's start
-+             * <br>
-+             * In milliseconds
-+             * <br>
-+             * A value of -1 indicates no limit
-+             */
-+            public int maxAfterNextTickStart = -1;
++            public class Dynamic extends ConfigurationPart {
 +
++                public PlannedAfterLastTickEnd plannedAfterLastTickEnd;
++
++                /**
++                 * The time that is planned for oversleep after the last tick's end
++                 * <br>
++                 * In milliseconds
++                 */
++                public class PlannedAfterLastTickEnd extends ConfigurationPart {
++
++                    public double min = 50;
++                    public double max = 50;
++                    public double increasePerUnfinishedTick = 1;
++                    public double decreasePerFinishedTick = 1;
++                    public int ticksImmuneFromIncrease = 2;
++
++                }
++
++                public MaxAfterNextTickStart maxAfterNextTickStart;
++
++                /**
++                 * The maximum time to oversleep after the intended next tick's start
++                 * <br>
++                 * In milliseconds
++                 */
++                public class MaxAfterNextTickStart extends ConfigurationPart {
++
++                    public double min = 50;
++                    public double max = 50;
++                    public double increasePerUnfinishedTick = 0.5;
++                    public double decreasePerFinishedTick = 0.5;
++                    public int ticksImmuneFromIncrease = 10;
++
++                }
++
++            }
 +        }
 +
 +    }

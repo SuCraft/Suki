@@ -227,10 +227,10 @@ index f81c16884f8e517ceccb832bdff8840f24d52982..7e2dbcb4e9784682a7ecc5af3c2051c8
          this.hiddenEntities.remove(entity.getUUID());
      }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 9a63137ba1a534229ef54dfff3914650e1668b47..8a785837261ce820dd83038c16d16f5b85ca3b9f 100644
+index 14d1545b2b420611386498f017abb2b19452b64d..b6ce6f84b37b0002a24a5a4d3b1874ef6d08476a 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -20,7 +20,7 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -21,7 +21,7 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
      @Setting(Configuration.VERSION_FIELD)
      public int version = CURRENT_VERSION;
  
@@ -239,7 +239,7 @@ index 9a63137ba1a534229ef54dfff3914650e1668b47..8a785837261ce820dd83038c16d16f5b
  
      public ConsoleLogs consoleLogs;
  
-@@ -63,9 +63,25 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -64,9 +64,25 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
          }
  
@@ -266,7 +266,7 @@ index 9a63137ba1a534229ef54dfff3914650e1668b47..8a785837261ce820dd83038c16d16f5b
  
      // Suki start - no signed chat
  
-@@ -204,4 +220,19 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -226,4 +242,19 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - survival debug stick
  

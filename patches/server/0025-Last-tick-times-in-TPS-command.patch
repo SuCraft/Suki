@@ -67,11 +67,11 @@ index 98daa177d87de6cccda7f2b4302799afdaddbf09..693306143bd77a1029df0ee3c5d93c0a
 +
  }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 76ecc0dcabdf6fc7bd8e5f3dfa3927f7b9e10c9e..9f98068dac1d382e473da018a6a6510b7f46419d 100644
+index 36fba9c8497d37df0170cd4e413eb6780192b953..074c428781d6d564b733a2ac38fd65831e61db27 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -155,6 +155,25 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
- 
+@@ -177,6 +177,25 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+             }
          }
  
 +        // Suki start - last tick times in TPS command
