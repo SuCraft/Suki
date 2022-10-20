@@ -5,7 +5,7 @@ Subject: [PATCH] Last tick time API
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 634e7fea7cd958f657d52befd511dc927dfb8ff8..bed4764fe7d46d1013206a23b7547f2373361ef9 100644
+index 4c9c8cef29409900f3d04e15d0270657c489a443..673a2999165b059308cd306e846206dcea4a3c83 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1098,7 +1098,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
@@ -33,14 +33,12 @@ index 634e7fea7cd958f657d52befd511dc927dfb8ff8..bed4764fe7d46d1013206a23b7547f23
                  this.profiler.popPush("nextTickWait");
                  this.mayHaveDelayedTasks = true;
                  this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + 50L, this.nextTickTime);
-@@ -1298,9 +1302,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+@@ -1311,7 +1315,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
  
      protected void waitUntilNextTick() {
          //this.executeAll(); // Paper - move this into the tick method for timings
 +        long tickOversleepStart = System.nanoTime(); // Suki - last tick time API
-         this.managedBlock(() -> {
-             return !this.canSleepForTickNoOversleep(); // Paper - move oversleep into full server tick
-         });
+         this.managedBlockUntilNextTick(() -> !this.canSleepForTickNoOversleep()); // Suki - informed event loop task poll
 +        lastTickOversleepTime = java.time.Duration.ofNanos(System.nanoTime() - tickOversleepStart); // Suki - last tick time API
      }
  

@@ -1,0 +1,72 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 20 Oct 2022 16:22:09 +0200
+Subject: [PATCH] Informed event loop task poll
+
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 634e7fea7cd958f657d52befd511dc927dfb8ff8..4c9c8cef29409900f3d04e15d0270657c489a443 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1295,12 +1295,23 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+         java.util.concurrent.locks.LockSupport.parkNanos("executing tasks", 1000L);
+     }
+     // CraftBukkit end
++    
++    // Suki start - informed event loop task poll
++    
++    protected void managedBlockUntilNextTick(BooleanSupplier stopCondition) {
++        this.managedBlock(() -> {
++            long millisLeft = this.nextTickTime - Util.getMillis();
++            this.pollTimeoutMicros = millisLeft <= 0 ? 1L : millisLeft == 1 ? 100L : (millisLeft - 1) * 1000L;
++            return stopCondition.getAsBoolean(); // Paper - move oversleep into full server tick
++        });
++        this.pollTimeoutMicros = DEFAULT_POLL_TIMEOUT_MICROS;
++    }
++    
++    // Suki end - informed event loop task poll
+ 
+     protected void waitUntilNextTick() {
+         //this.executeAll(); // Paper - move this into the tick method for timings
+-        this.managedBlock(() -> {
+-            return !this.canSleepForTickNoOversleep(); // Paper - move oversleep into full server tick
+-        });
++        this.managedBlockUntilNextTick(() -> !this.canSleepForTickNoOversleep()); // Suki - informed event loop task poll
+     }
+ 
+     @Override
+@@ -1402,9 +1413,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+ 
+         // Paper start - move oversleep into full server tick
+         isOversleep = true;MinecraftTimings.serverOversleep.startTiming();
+-        this.managedBlock(() -> {
+-            return !this.canOversleep();
+-        });
++        this.managedBlockUntilNextTick(() -> !this.canOversleep()); // Suki - informed event loop task poll
+         isOversleep = false;MinecraftTimings.serverOversleep.stopTiming();
+         // Paper end
+         new com.destroystokyo.paper.event.server.ServerTickStartEvent(this.tickCount+1).callEvent(); // Paper
+diff --git a/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java b/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
+index dd7c85b6d94e5d2397d4ac28d796048590888216..9f442bc3fc7295b152ea3180971c257525cce602 100644
+--- a/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
++++ b/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
+@@ -24,6 +24,10 @@ public abstract class BlockableEventLoop<R extends Runnable> implements Profiler
+     private final LinkedBlockingDeque<R> pendingRunnables = new LinkedBlockingDeque(); // JettPack
+     private int blockingCount;
+     private R next = null; // JettPack
++    // Suki start - informed event loop task poll
++    public static final long DEFAULT_POLL_TIMEOUT_MICROS = 100L; // JettPack
++    public long pollTimeoutMicros = DEFAULT_POLL_TIMEOUT_MICROS;
++    // Suki end - informed event loop task poll
+ 
+     protected BlockableEventLoop(String name) {
+         this.name = name;
+@@ -157,7 +161,7 @@ public abstract class BlockableEventLoop<R extends Runnable> implements Profiler
+             throw new IllegalStateException("next != null");
+         }
+         try {
+-            this.next = this.pendingRunnables.poll(100L, TimeUnit.MICROSECONDS);
++            this.next = this.pendingRunnables.poll(pollTimeoutMicros, TimeUnit.MICROSECONDS); // Suki - informed event loop task poll
+             return;
+         }
+         catch (InterruptedException interruptedException) {

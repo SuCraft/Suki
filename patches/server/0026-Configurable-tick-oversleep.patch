@@ -5,7 +5,7 @@ Subject: [PATCH] Configurable tick oversleep
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index bed4764fe7d46d1013206a23b7547f2373361ef9..f7adbaed4f60986e3e079a54702059b825dcc555 100644
+index 673a2999165b059308cd306e846206dcea4a3c83..dba3e8242ad39cd008aab828169839eb3f1a0bed 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -13,6 +13,7 @@ import com.mojang.authlib.GameProfileRepository;
@@ -49,13 +49,45 @@ index bed4764fe7d46d1013206a23b7547f2373361ef9..f7adbaed4f60986e3e079a54702059b8
                  this.waitUntilNextTick();
                  this.profiler.pop();
                  this.endMetricsRecordingTick();
-@@ -1306,6 +1317,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
-         this.managedBlock(() -> {
-             return !this.canSleepForTickNoOversleep(); // Paper - move oversleep into full server tick
-         });
+@@ -1286,11 +1297,27 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+     // Paper start
+     boolean isOversleep = false;
+     private boolean canOversleep() {
+-        return this.mayHaveDelayedTasks && Util.getMillis() < this.delayedTasksMaxNextTickTime;
++        // Suki start - TPS options - configurable tick oversleep
++        if (!this.mayHaveDelayedTasks) {
++            return false;
++        }
++        if (this.getPendingTasksCount() == 0) {
++            return Util.getMillis() < this.nextTickTime - SukiGlobalConfiguration.get().tps.oversleep.startNextTickEarlyIfNoPendingTasks;
++        }
++        return Util.getMillis() < this.delayedTasksMaxNextTickTime;
++        // Suki end - TPS options - configurable tick oversleep
+     }
+ 
+     private boolean canSleepForTickNoOversleep() {
+-        return this.forceTicks || this.runningTask() || Util.getMillis() < this.nextTickTime;
++        // Suki start - TPS options - configurable tick oversleep
++        if (this.forceTicks || this.runningTask()) {
++            return true;
++        }
++        if (this.getPendingTasksCount() == 0) {
++            return Util.getMillis() < this.nextTickTime - SukiGlobalConfiguration.get().tps.oversleep.startNextTickEarlyIfNoPendingTasks;
++        }
++        return Util.getMillis() < this.nextTickTime;
++        // Suki end - TPS options - configurable tick oversleep
+     }
+     // Paper end
+ 
+@@ -1316,7 +1343,18 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+     protected void waitUntilNextTick() {
+         //this.executeAll(); // Paper - move this into the tick method for timings
+         long tickOversleepStart = System.nanoTime(); // Suki - last tick time API
++        this.finishedAllTasksAtSomePoint = false; // Suki - TPS options - configurable tick oversleep
+         this.managedBlockUntilNextTick(() -> !this.canSleepForTickNoOversleep()); // Suki - informed event loop task poll
 +        // Suki start - TPS options - configurable tick oversleep
 +        var oversleepConfig = SukiGlobalConfiguration.get().tps.oversleep.dynamic;
-+        if (this.getPendingTasksCount() > 0) {
++        if (!finishedAllTasksAtSomePoint) {
 +            this.unfinishedTicksStateForOversleepPlannedAfterLastTickEnd = Math.min(oversleepConfig.plannedAfterLastTickEnd.max - oversleepConfig.plannedAfterLastTickEnd.min, this.unfinishedTicksStateForOversleepPlannedAfterLastTickEnd + oversleepConfig.plannedAfterLastTickEnd.increasePerUnfinishedTick);
 +            this.unfinishedTicksStateForOversleepMaxAfterNextTickStart = Math.min(oversleepConfig.maxAfterNextTickStart.max - oversleepConfig.maxAfterNextTickStart.min, this.unfinishedTicksStateForOversleepMaxAfterNextTickStart + oversleepConfig.maxAfterNextTickStart.increasePerUnfinishedTick);
 +        } else {
@@ -66,8 +98,28 @@ index bed4764fe7d46d1013206a23b7547f2373361ef9..f7adbaed4f60986e3e079a54702059b8
          lastTickOversleepTime = java.time.Duration.ofNanos(System.nanoTime() - tickOversleepStart); // Suki - last tick time API
      }
  
+diff --git a/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java b/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
+index 9f442bc3fc7295b152ea3180971c257525cce602..529a877050e99e261c833b15ac92270ffbabd3f4 100644
+--- a/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
++++ b/src/main/java/net/minecraft/util/thread/BlockableEventLoop.java
+@@ -28,6 +28,7 @@ public abstract class BlockableEventLoop<R extends Runnable> implements Profiler
+     public static final long DEFAULT_POLL_TIMEOUT_MICROS = 100L; // JettPack
+     public long pollTimeoutMicros = DEFAULT_POLL_TIMEOUT_MICROS;
+     // Suki end - informed event loop task poll
++    protected boolean finishedAllTasksAtSomePoint; // Suki - TPS options - configurable tick oversleep
+ 
+     protected BlockableEventLoop(String name) {
+         this.name = name;
+@@ -160,6 +161,7 @@ public abstract class BlockableEventLoop<R extends Runnable> implements Profiler
+         if (this.next != null) {
+             throw new IllegalStateException("next != null");
+         }
++        this.finishedAllTasksAtSomePoint = true; // Suki - TPS options - configurable tick oversleep
+         try {
+             this.next = this.pendingRunnables.poll(pollTimeoutMicros, TimeUnit.MICROSECONDS); // Suki - informed event loop task poll
+             return;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index e183225a6371b70eb82be961dcc613ba5f0b68ed..c520de5443d0f7bc1c16206b016d276b624d05d7 100644
+index e183225a6371b70eb82be961dcc613ba5f0b68ed..942156d2816f5cc7f0937843954f09135ca76855 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -4,7 +4,7 @@ package org.sucraft.suki.configuration;
@@ -79,7 +131,7 @@ index e183225a6371b70eb82be961dcc613ba5f0b68ed..c520de5443d0f7bc1c16206b016d276b
  import org.spongepowered.configurate.objectmapping.meta.Setting;
  
  @SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
-@@ -126,4 +126,59 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -126,4 +126,61 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      // Suki end - configurable keep-alive
  
@@ -92,6 +144,8 @@ index e183225a6371b70eb82be961dcc613ba5f0b68ed..c520de5443d0f7bc1c16206b016d276b
 +        public Oversleep oversleep;
 +
 +        public class Oversleep extends ConfigurationPart {
++
++            public int startNextTickEarlyIfNoPendingTasks = 2;
 +
 +            public Dynamic dynamic;
 +

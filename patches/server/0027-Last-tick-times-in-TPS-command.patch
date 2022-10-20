@@ -67,10 +67,10 @@ index 98daa177d87de6cccda7f2b4302799afdaddbf09..693306143bd77a1029df0ee3c5d93c0a
 +
  }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index c520de5443d0f7bc1c16206b016d276b624d05d7..b721e94b5b28329b081c3028006becad79b835bd 100644
+index 942156d2816f5cc7f0937843954f09135ca76855..e0a15122ff4797cb5f12a80f92ff4fc429c9bb02 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -177,6 +177,25 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -179,6 +179,25 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
              }
          }
  
