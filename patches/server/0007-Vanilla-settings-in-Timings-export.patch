@@ -5,14 +5,22 @@ Subject: [PATCH] Vanilla settings in Timings export
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 1b499fd268ad47c5b502c12e79e8fff04a92fe59..a0996c275da20666ef9343c1aacfb3862091fb1b 100644
+index 8d638ccdecaf7c23ac3aa37fd2f787b6899b2ff1..cc2b5e565ec86f8e7a22170453a909198df6ee4e 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
-@@ -239,6 +239,7 @@ public class TimingsExport extends Thread {
+@@ -37,6 +37,7 @@ import org.bukkit.configuration.MemorySection;
+ import org.bukkit.entity.EntityType;
+ import org.json.simple.JSONObject;
+ import org.json.simple.JSONValue;
++import org.sucraft.suki.configuration.timingsexport.VanillaServerSettingsTimingsExport;
+ import oshi.SystemInfo;
+ import oshi.hardware.HardwareAbstractionLayer;
+ 
+@@ -239,6 +240,7 @@ public class TimingsExport extends Thread {
          // Information on the users Config
  
          parent.put("config", createObject(
-+            pair("server.properties", org.sucraft.suki.configuration.VanillaServerSettingsTimingsExport.get()), // Suki - Suki configuration- include vanilla server.properties in timings
++            pair("server.properties", VanillaServerSettingsTimingsExport.get()), // Suki - Suki configuration- include vanilla server.properties in timings
              pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
              pair("bukkit", mapAsJSON(Bukkit.spigot().getBukkitConfig(), null)),
              pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Pufferfish
@@ -29,15 +37,15 @@ index 3e4a3915cdf29fc964e0314ce01d156dd2f4f873..19214a855ce4b7610a21c9514e81ebc5
      @Nullable
      private WorldGenSettings worldGenSettings;
  
-diff --git a/src/main/java/org/sucraft/suki/configuration/VanillaServerSettingsTimingsExport.java b/src/main/java/org/sucraft/suki/configuration/VanillaServerSettingsTimingsExport.java
+diff --git a/src/main/java/org/sucraft/suki/configuration/timingsexport/VanillaServerSettingsTimingsExport.java b/src/main/java/org/sucraft/suki/configuration/timingsexport/VanillaServerSettingsTimingsExport.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..bb6f90f83384c85b588871885c147fa27913e6d5
+index 0000000000000000000000000000000000000000..8efefa1eefeed1cebf06f160eb2aab7fcf66e207
 --- /dev/null
-+++ b/src/main/java/org/sucraft/suki/configuration/VanillaServerSettingsTimingsExport.java
++++ b/src/main/java/org/sucraft/suki/configuration/timingsexport/VanillaServerSettingsTimingsExport.java
 @@ -0,0 +1,58 @@
 +// Suki - Suki configuration - include vanilla server.properties in timings
 +
-+package org.sucraft.suki.configuration;
++package org.sucraft.suki.configuration.timingsexport;
 +
 +import net.minecraft.server.MinecraftServer;
 +import net.minecraft.server.dedicated.DedicatedServer;
