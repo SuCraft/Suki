@@ -1,0 +1,32 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Mon, 19 Sep 2022 22:49:15 +0200
+Subject: [PATCH] Latest tick time API
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index f55cabbe49496d00fd9a7b63f4b4350beeb74edd..d5d0116e49aa9cc5ace6d2e13eba4dceb68a5bbd 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -2925,7 +2925,7 @@ public final class CraftServer implements Server {
+ 
+     // Yatopia start
+     @Override
+-    public java.time.Duration getLastTickTime() {
++    public java.time.Duration getLatestTickTime() { // Suki - branding changes - Suki is not a fork of Yatopia
+         return net.minecraft.server.MinecraftServer.lastTickTime;
+     }
+     // Yatopia end
+diff --git a/src/main/java/org/spigotmc/TicksPerSecondCommand.java b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
+index 26ff7f68dacad945095d794c1def4752e0775abb..ec6a70b704a9b81855d18e3b57ac4cac6c75f3ff 100644
+--- a/src/main/java/org/spigotmc/TicksPerSecondCommand.java
++++ b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
+@@ -33,7 +33,7 @@ public class TicksPerSecondCommand extends Command
+         }
+         sender.sendMessage(ChatColor.GOLD + "TPS from last 5s, 1m, 5m, 15m: " + org.apache.commons.lang.StringUtils.join(tpsAvg, ", ")); // Purpur
+         // Yatopia start - Last tick time API
+-        java.time.Duration lastTickTime = org.bukkit.Bukkit.getLastTickTime();
++        java.time.Duration lastTickTime = org.bukkit.Bukkit.getLatestTickTime(); // Suki - branding changes - Suki is not a fork of Yatopia
+         sender.sendMessage(ChatColor.GOLD + "Last tick: " + TicksPerSecondCommand.formatTo( lastTickTime, java.util.concurrent.TimeUnit.MILLISECONDS ) + " (" + formatTo( lastTickTime, java.util.concurrent.TimeUnit.NANOSECONDS ) + ")");
+         // Yatopia end
+         if (args.length > 0 && args[0].equals("mem") && sender.hasPermission("bukkit.command.tpsmemory")) {
