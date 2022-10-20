@@ -5,10 +5,10 @@ Subject: [PATCH] Do not log empty chat messages
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index e4abcd2f58dabe919a41162470386a6322f91f05..586dfa1dcdc83d2c0dcc97f1e5ba177e5ae41a3d 100644
+index 8b6a1cccd4e9071ef18904ccfa2669dc07cef3ae..29a959d2b65c988450e92ca36a3b483fa2550d10 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -243,6 +243,7 @@ import org.bukkit.inventory.CraftingInventory;
+@@ -244,6 +244,7 @@ import org.bukkit.inventory.CraftingInventory;
  import org.bukkit.inventory.EquipmentSlot;
  import org.bukkit.inventory.InventoryView;
  import org.bukkit.inventory.SmithingInventory;
@@ -16,7 +16,7 @@ index e4abcd2f58dabe919a41162470386a6322f91f05..586dfa1dcdc83d2c0dcc97f1e5ba177e
  // CraftBukkit end
  
  public class ServerGamePacketListenerImpl implements ServerPlayerConnection, TickablePacketListener, ServerGamePacketListener {
-@@ -2612,7 +2613,11 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2617,7 +2618,11 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          // CraftBukkit start
          String s = message.signedContent().plain();
          if (s.isEmpty()) {

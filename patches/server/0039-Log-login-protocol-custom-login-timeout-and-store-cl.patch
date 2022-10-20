@@ -18,10 +18,10 @@ index 76810d7767b1a66315b006569654c718105ab4ee..82063bc36ce21b9d47c050068b31db21
  import org.checkerframework.checker.nullness.qual.Nullable;
  import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
-index 5344f1f81797344130bd48f16689161af8261882..580be6a95ccfff83a94d4ce6f617728f2955ffa5 100644
+index 9667eaf9708d4ece9e4c92ed5c914f3d65a52505..6c94c830e0ae1fa37e28086d654179a2a4fe27a5 100644
 --- a/src/main/java/net/minecraft/network/Connection.java
 +++ b/src/main/java/net/minecraft/network/Connection.java
-@@ -20,7 +20,6 @@ import io.netty.channel.epoll.EpollSocketChannel;
+@@ -21,7 +21,6 @@ import io.netty.channel.epoll.EpollSocketChannel;
  import io.netty.channel.local.LocalChannel;
  import io.netty.channel.local.LocalServerChannel;
  import io.netty.channel.nio.NioEventLoopGroup;
@@ -29,7 +29,7 @@ index 5344f1f81797344130bd48f16689161af8261882..580be6a95ccfff83a94d4ce6f617728f
  import io.netty.channel.socket.nio.NioSocketChannel;
  import io.netty.handler.timeout.ReadTimeoutHandler;
  import io.netty.handler.timeout.TimeoutException;
-@@ -28,9 +27,9 @@ import io.netty.util.AttributeKey;
+@@ -29,9 +28,9 @@ import io.netty.util.AttributeKey;
  import java.net.InetSocketAddress;
  import java.net.SocketAddress;
  import java.util.Queue;
@@ -40,7 +40,7 @@ index 5344f1f81797344130bd48f16689161af8261882..580be6a95ccfff83a94d4ce6f617728f
  import net.minecraft.Util;
  import net.minecraft.network.chat.Component;
  import net.minecraft.network.chat.MutableComponent;
-@@ -172,6 +171,12 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+@@ -173,6 +172,12 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
      }
      // Paper end - packet limiter
  
@@ -131,10 +131,10 @@ index ac254e4fe3973a8cb3321e96c651847e387d9f0e..ed1db61d04b1f81c52300c9f85b96212
                  try {
                      if (!(this.connection.channel.localAddress() instanceof io.netty.channel.unix.DomainSocketAddress)) { // Paper - the connection throttle is useless when you have a Unix domain socket
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index f1105edce8484cac39d8fb33a42c9ed8d44fe5c0..f8bcace8d90e3926f34670d880f61a47192f9ca9 100644
+index 4eb909f85068f80faf99bd6024560be6711d40e1..15f610db076df0f2a7c8660b478177aed5b4d6e2 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-@@ -10,10 +10,10 @@ import java.net.InetSocketAddress;
+@@ -11,10 +11,10 @@ import java.net.InetSocketAddress;
  import java.net.SocketAddress;
  import java.security.PrivateKey;
  import java.time.Duration;
@@ -146,7 +146,7 @@ index f1105edce8484cac39d8fb33a42c9ed8d44fe5c0..f8bcace8d90e3926f34670d880f61a47
  import javax.crypto.SecretKey;
  import net.minecraft.DefaultUncaughtExceptionHandler;
  import net.minecraft.core.UUIDUtil;
-@@ -45,6 +45,7 @@ import org.slf4j.Logger;
+@@ -46,6 +46,7 @@ import org.slf4j.Logger;
  import org.bukkit.craftbukkit.util.Waitable;
  import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
  import org.bukkit.event.player.PlayerPreLoginEvent;
@@ -154,7 +154,7 @@ index f1105edce8484cac39d8fb33a42c9ed8d44fe5c0..f8bcace8d90e3926f34670d880f61a47
  // CraftBukkit end
  
  public class ServerLoginPacketListenerImpl implements TickablePacketListener, ServerLoginPacketListener {
-@@ -101,7 +102,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -104,7 +105,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
              }
          }
  
@@ -163,7 +163,7 @@ index f1105edce8484cac39d8fb33a42c9ed8d44fe5c0..f8bcace8d90e3926f34670d880f61a47
              this.disconnect(Component.translatable("multiplayer.disconnect.slow_login"));
          }
  
-@@ -185,6 +186,11 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -189,6 +190,11 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
          } else {
              this.state = ServerLoginPacketListenerImpl.State.ACCEPTED;
              if (this.server.getCompressionThreshold() >= 0 && !this.connection.isMemoryConnection()) {
@@ -175,7 +175,7 @@ index f1105edce8484cac39d8fb33a42c9ed8d44fe5c0..f8bcace8d90e3926f34670d880f61a47
                  this.connection.send(new ClientboundLoginCompressionPacket(this.server.getCompressionThreshold()), PacketSendListener.thenRun(() -> {
                      this.connection.setupCompression(this.server.getCompressionThreshold(), true);
                  }));
-@@ -282,10 +288,20 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -286,10 +292,20 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
          this.profilePublicKeyData = (ProfilePublicKey.Data) packet.publicKey().orElse(null); // CraftBukkit - decompile error
          GameProfile gameprofile = this.server.getSingleplayerProfile();
  
@@ -196,7 +196,7 @@ index f1105edce8484cac39d8fb33a42c9ed8d44fe5c0..f8bcace8d90e3926f34670d880f61a47
              this.gameProfile = new GameProfile((UUID) null, packet.name());
              if (this.server.usesAuthentication() && !this.connection.isMemoryConnection()) {
                  this.state = ServerLoginPacketListenerImpl.State.KEY;
-@@ -428,7 +444,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -432,7 +448,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
  
                          // Paper start
                          com.destroystokyo.paper.profile.PlayerProfile profile = com.destroystokyo.paper.profile.CraftPlayerProfile.asBukkitMirror(ServerLoginPacketListenerImpl.this.gameProfile);
@@ -227,7 +227,7 @@ index f81c16884f8e517ceccb832bdff8840f24d52982..7e2dbcb4e9784682a7ecc5af3c2051c8
          this.hiddenEntities.remove(entity.getUUID());
      }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 14d1545b2b420611386498f017abb2b19452b64d..b6ce6f84b37b0002a24a5a4d3b1874ef6d08476a 100644
+index cc64acdfe0396f11fac59b1f4a086b6604c9fbc8..5efe6306c7b85de9c1b46eb25f9eae277850a49e 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -21,7 +21,7 @@ public class SukiGlobalConfiguration extends ConfigurationPart {

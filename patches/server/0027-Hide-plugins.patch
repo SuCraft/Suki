@@ -74,7 +74,7 @@ index 40b66adcb5aac64212b1937dc506ebb60f2eed83..37ac972e8879070219c2b4ad273ff304
  
          // Amend help topics from the help.yml file
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 074c428781d6d564b733a2ac38fd65831e61db27..05b194c2b0b6dafb62c27d53870c9803ad60d27b 100644
+index b721e94b5b28329b081c3028006becad79b835bd..7135cc4f612197bc63505b6cffa58e18e2b6b0b0 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -200,4 +200,16 @@ public class SukiGlobalConfiguration extends ConfigurationPart {

@@ -5,10 +5,10 @@ Subject: [PATCH] Configurable keep-alive
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index f7b9ece0a9ccaff03d89c751c2a1a28b72212f5b..5ce24e4dac8ebbbd4e3f6d5bcffef4bf30129204 100644
+index 29aa1718784728eecf3d7f2aca96cf6ac707ac08..9056ed8b47ad8d99e12b83fee93a60e95f16ec3e 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -7,7 +7,6 @@ import com.mojang.brigadier.StringReader;
+@@ -8,7 +8,6 @@ import com.mojang.brigadier.StringReader;
  import com.mojang.brigadier.exceptions.CommandSyntaxException;
  import com.mojang.datafixers.util.Pair;
  import com.mojang.logging.LogUtils;
@@ -16,7 +16,7 @@ index f7b9ece0a9ccaff03d89c751c2a1a28b72212f5b..5ce24e4dac8ebbbd4e3f6d5bcffef4bf
  import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
  import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
  import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-@@ -410,7 +409,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -413,7 +412,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          // Purpur start
          if (dev.etil.mirai.MiraiConfig.useAlternateKeepAlive) {
              if (elapsedTime >= 1000L) { // 1 second
@@ -25,7 +25,7 @@ index f7b9ece0a9ccaff03d89c751c2a1a28b72212f5b..5ce24e4dac8ebbbd4e3f6d5bcffef4bf
                      LOGGER.warn("{} was kicked due to keepalive timeout!", player.getName());
                      disconnect(Component.translatable("disconnect.timeout"));
                  } else {
-@@ -422,13 +421,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -425,13 +424,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          } else
          // Purpur end
  
@@ -42,7 +42,7 @@ index f7b9ece0a9ccaff03d89c751c2a1a28b72212f5b..5ce24e4dac8ebbbd4e3f6d5bcffef4bf
                  this.keepAlivePending = true;
                  this.keepAliveTime = currentTime;
                  this.keepAliveChallenge = currentTime;
-@@ -3674,11 +3673,16 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3679,11 +3678,16 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
              this.player.latency = (this.player.latency * 3 + i) / 4;
              this.keepAlivePending = false;
          } else if (!this.isSingleplayerOwner()) {

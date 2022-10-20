@@ -5,10 +5,10 @@ Subject: [PATCH] Last tick time API
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 1be2129db92fde50885c53b830cc2c285509b501..8dfaead6ef64f199f49a027c8e6b5f3fa7f14d8e 100644
+index 634e7fea7cd958f657d52befd511dc927dfb8ff8..bed4764fe7d46d1013206a23b7547f2373361ef9 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1096,7 +1096,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+@@ -1098,7 +1098,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
      // Spigot End
  
      public static volatile RuntimeException chunkSystemCrash; // Paper - rewrite chunk system
@@ -21,7 +21,7 @@ index 1be2129db92fde50885c53b830cc2c285509b501..8dfaead6ef64f199f49a027c8e6b5f3f
  
      protected void runServer() {
          try {
-@@ -1178,9 +1182,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+@@ -1180,9 +1184,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
                  this.nextTickTime += 50L;
                  this.startMetricsRecordingTick();
                  this.profiler.push("tick");
@@ -33,7 +33,7 @@ index 1be2129db92fde50885c53b830cc2c285509b501..8dfaead6ef64f199f49a027c8e6b5f3f
                  this.profiler.popPush("nextTickWait");
                  this.mayHaveDelayedTasks = true;
                  this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + 50L, this.nextTickTime);
-@@ -1296,9 +1300,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+@@ -1298,9 +1302,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
  
      protected void waitUntilNextTick() {
          //this.executeAll(); // Paper - move this into the tick method for timings
@@ -46,10 +46,10 @@ index 1be2129db92fde50885c53b830cc2c285509b501..8dfaead6ef64f199f49a027c8e6b5f3f
  
      @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index f55cabbe49496d00fd9a7b63f4b4350beeb74edd..52b56b1d6f1a4b54bb63e9df38b7428baf9f8cbd 100644
+index 46c5c313419900e1392af28c7cd17e96b54f73ff..6cac9b1d839de97ac3f57d6a9e4bddf6ec32ae24 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2923,10 +2923,18 @@ public final class CraftServer implements Server {
+@@ -2932,10 +2932,18 @@ public final class CraftServer implements Server {
      }
      // Paper end
  

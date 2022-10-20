@@ -1,0 +1,157 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 20 Oct 2022 11:52:49 +0200
+Subject: [PATCH] More Timings
+
+
+diff --git a/src/main/java/co/aikar/timings/MinecraftTimings.java b/src/main/java/co/aikar/timings/MinecraftTimings.java
+index 9da5a6086323ff4c4fd62a035fa8f7efc3d92e38..fcf8eba24e2c71c968218188534f5e6dfbd1b5c7 100644
+--- a/src/main/java/co/aikar/timings/MinecraftTimings.java
++++ b/src/main/java/co/aikar/timings/MinecraftTimings.java
+@@ -20,6 +20,14 @@ public final class MinecraftTimings {
+     public static final Timing playerListTimer = Timings.ofSafe("Player List");
+     public static final Timing commandFunctionsTimer = Timings.ofSafe("Command Functions");
+     public static final Timing connectionTimer = Timings.ofSafe("Connection Handler");
++    // Suki start - more timings - connections
++    public static final Timing acquireConnections = Timings.ofSafe("Acquire connections monitor lock");
++    public static final Timing shuffleConnections = Timings.ofSafe("Shuffle connections");
++    public static final Timing tickConnection = Timings.ofSafe("Connection tick");
++    public static final Timing tickLoginPacketListener = Timings.ofSafe("Login packet listener tick");
++    public static final Timing tickGamePacketListener = Timings.ofSafe("Game packet listener tick");
++    public static final Timing connectionProcessQueue = Timings.ofSafe("Connection processQueue");
++    // Suki end - more timings - connections
+     public static final Timing tickablesTimer = Timings.ofSafe("Tickables");
+     public static final Timing minecraftSchedulerTimer = Timings.ofSafe("Minecraft Scheduler");
+     public static final Timing bukkitSchedulerTimer = Timings.ofSafe("Bukkit Scheduler");
+diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
+index 5344f1f81797344130bd48f16689161af8261882..9667eaf9708d4ece9e4c92ed5c914f3d65a52505 100644
+--- a/src/main/java/net/minecraft/network/Connection.java
++++ b/src/main/java/net/minecraft/network/Connection.java
+@@ -1,5 +1,6 @@
+ package net.minecraft.network;
+ 
++import co.aikar.timings.MinecraftTimings;
+ import com.google.common.collect.Queues;
+ import com.google.common.util.concurrent.ThreadFactoryBuilder;
+ import com.mojang.logging.LogUtils;
+@@ -510,6 +511,8 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+         return false;
+     }
+     private boolean processQueue() {
++        MinecraftTimings.connectionProcessQueue.startTiming(); try { // Suki - more timings - connections
++
+         try { // Paper - add pending task queue
+         if (this.queue.isEmpty()) return true;
+         // Paper start - make only one flush call per sendPacketQueue() call
+@@ -548,6 +551,8 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+                 this.channel.eventLoop().execute(r);
+             }
+         } // Paper end - add pending task queue
++
++        } finally { MinecraftTimings.connectionProcessQueue.stopTiming(); } // Suki - more timings - connections
+     }
+     // Paper end
+ 
+@@ -555,6 +560,8 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+     private static int joinAttemptsThisTick; // Paper
+     private static int currTick; // Paper
+     public void tick() {
++        MinecraftTimings.tickConnection.startTiming(); try { // Suki - more timings - connections
++
+         this.flushQueue();
+         // Paper start
+         if (currTick != net.minecraft.server.MinecraftServer.currentTick) {
+@@ -594,6 +601,7 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+             this.tickSecond();
+         }
+ 
++        } finally { MinecraftTimings.tickConnection.stopTiming(); } // Suki - more timings - connections
+     }
+ 
+     protected void tickSecond() {
+diff --git a/src/main/java/net/minecraft/server/network/ServerConnectionListener.java b/src/main/java/net/minecraft/server/network/ServerConnectionListener.java
+index abcc3266d18f34d160eac87fdea153dce24c60b8..5633b0a0d73bb068255a7867775fa8fbf9924147 100644
+--- a/src/main/java/net/minecraft/server/network/ServerConnectionListener.java
++++ b/src/main/java/net/minecraft/server/network/ServerConnectionListener.java
+@@ -1,5 +1,6 @@
+ package net.minecraft.server.network;
+ 
++import co.aikar.timings.MinecraftTimings;
+ import com.google.common.collect.Lists;
+ import com.google.common.util.concurrent.ThreadFactoryBuilder;
+ import com.mojang.logging.LogUtils;
+@@ -213,13 +214,17 @@ public class ServerConnectionListener {
+     public void tick() {
+         List list = this.connections;
+ 
++        MinecraftTimings.acquireConnections.startTiming(); // Suki - more timings - connections
+         synchronized (this.connections) {
++            MinecraftTimings.acquireConnections.stopTiming(); // Suki - more timings - connections
+             // Spigot Start
+             this.addPending(); // Paper
+             // This prevents players from 'gaming' the server, and strategically relogging to increase their position in the tick order
+             if ( org.spigotmc.SpigotConfig.playerShuffle > 0 && MinecraftServer.currentTick % org.spigotmc.SpigotConfig.playerShuffle == 0 )
+             {
++                MinecraftTimings.shuffleConnections.startTiming(); // Suki - more timings - connections
+                 Collections.shuffle( this.connections );
++                MinecraftTimings.shuffleConnections.stopTiming(); // Suki - more timings - connections
+             }
+             // Spigot End
+             Iterator iterator = this.connections.iterator();
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index e4abcd2f58dabe919a41162470386a6322f91f05..8b6a1cccd4e9071ef18904ccfa2669dc07cef3ae 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -1,5 +1,6 @@
+ package net.minecraft.server.network;
+ 
++import co.aikar.timings.MinecraftTimings;
+ import com.google.common.collect.Lists;
+ import com.google.common.primitives.Floats;
+ import com.mojang.brigadier.ParseResults;
+@@ -350,6 +351,8 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+ 
+     @Override
+     public void tick() {
++        MinecraftTimings.tickGamePacketListener.startTiming(); try { // Suki - more timings - connections
++
+         // Paper start - login async
+         // Don't tick if not valid (dead), otherwise we load chunks below
+         if (this.player.valid) {
+@@ -460,6 +463,8 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         }
+ 
+         this.chatPreviewThrottler.tick();
++
++        } finally { MinecraftTimings.tickGamePacketListener.stopTiming(); } // Suki - more timings - connections
+     }
+ 
+     public void resetPosition() {
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index f1105edce8484cac39d8fb33a42c9ed8d44fe5c0..4eb909f85068f80faf99bd6024560be6711d40e1 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -1,5 +1,6 @@
+ package net.minecraft.server.network;
+ 
++import co.aikar.timings.MinecraftTimings;
+ import com.google.common.primitives.Ints;
+ import com.mojang.authlib.GameProfile;
+ import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
+@@ -79,6 +80,8 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+ 
+     @Override
+     public void tick() {
++        MinecraftTimings.tickLoginPacketListener.startTiming(); try { // Suki - more timings - connections
++
+         // Paper start - Do not allow logins while the server is shutting down
+         if (!MinecraftServer.getServer().isRunning()) {
+             this.disconnect(org.bukkit.craftbukkit.util.CraftChatMessage.fromString(org.spigotmc.SpigotConfig.restartMessage)[0]);
+@@ -105,6 +108,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+             this.disconnect(Component.translatable("multiplayer.disconnect.slow_login"));
+         }
+ 
++        } finally { MinecraftTimings.tickLoginPacketListener.stopTiming(); } // Suki - more timings - connections
+     }
+ 
+     // CraftBukkit start

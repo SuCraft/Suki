@@ -58,10 +58,10 @@ index 7c2e8ea5fe134e73c33586d251d939038ee33b02..58fb45667dafb36a507fe5c4e6de0095
          this.chatVisibility = packet.chatVisibility();
          this.canChatColor = packet.chatColors();
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 586dfa1dcdc83d2c0dcc97f1e5ba177e5ae41a3d..ee0ca0f13a143cece813d7082dfa197cdefdaf6c 100644
+index 29a959d2b65c988450e92ca36a3b483fa2550d10..682ab9295914f0212e78ac3938bc7695f386ae47 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -175,7 +175,6 @@ import net.minecraft.world.level.block.entity.CommandBlockEntity;
+@@ -176,7 +176,6 @@ import net.minecraft.world.level.block.entity.CommandBlockEntity;
  import net.minecraft.world.level.block.entity.JigsawBlockEntity;
  import net.minecraft.world.level.block.entity.SignBlockEntity;
  import net.minecraft.world.level.block.entity.StructureBlockEntity;
@@ -69,7 +69,7 @@ index 586dfa1dcdc83d2c0dcc97f1e5ba177e5ae41a3d..ee0ca0f13a143cece813d7082dfa197c
  import net.minecraft.world.level.block.state.BlockState;
  import net.minecraft.world.phys.AABB;
  import net.minecraft.world.phys.BlockHitResult;
-@@ -224,8 +223,6 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
+@@ -225,8 +224,6 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
  import org.bukkit.event.inventory.InventoryType.SlotType;
  import org.bukkit.event.inventory.SmithItemEvent;
  import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -78,7 +78,7 @@ index 586dfa1dcdc83d2c0dcc97f1e5ba177e5ae41a3d..ee0ca0f13a143cece813d7082dfa197c
  import org.bukkit.event.player.PlayerChatEvent;
  import org.bukkit.event.player.PlayerCommandPreprocessEvent;
  import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-@@ -3690,9 +3687,19 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3695,9 +3692,19 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          PacketUtils.ensureRunningOnSameThread(packet, this, this.player.getLevel());
          // Paper start - do not accept invalid information
          if (packet.viewDistance() < 0) {

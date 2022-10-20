@@ -5,10 +5,10 @@ Subject: [PATCH] Configurable move checks
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index ee0ca0f13a143cece813d7082dfa197cdefdaf6c..438c4a2c8d11fd86627649d71080212c28197c94 100644
+index 682ab9295914f0212e78ac3938bc7695f386ae47..dece797fb8e0471c9140e768cd621e6f0d10eee5 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -668,9 +668,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -673,9 +673,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
                  }
                  // Paper end
  
@@ -24,7 +24,7 @@ index ee0ca0f13a143cece813d7082dfa197cdefdaf6c..438c4a2c8d11fd86627649d71080212c
                      this.connection.send(new ClientboundMoveVehiclePacket(entity));
                      return;
                  }
-@@ -696,9 +700,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -701,9 +705,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
                  d10 = d6 * d6 + d7 * d7 + d8 * d8;
                  boolean flag2 = false;
  
@@ -40,7 +40,7 @@ index ee0ca0f13a143cece813d7082dfa197cdefdaf6c..438c4a2c8d11fd86627649d71080212c
                  }
                  Location curPos = this.getCraftPlayer().getLocation(); // Spigot
  
-@@ -1492,9 +1500,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -1497,9 +1505,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
                              if (!this.player.isChangingDimension() && (!this.player.getLevel().getGameRules().getBoolean(GameRules.RULE_DISABLE_ELYTRA_MOVEMENT_CHECK) || !this.player.isFallFlying())) {
                                  float f2 = this.player.isFallFlying() ? 300.0F : 100.0F;
  
@@ -56,7 +56,7 @@ index ee0ca0f13a143cece813d7082dfa197cdefdaf6c..438c4a2c8d11fd86627649d71080212c
                                      this.teleport(this.player.getX(), this.player.getY(), this.player.getZ(), this.player.getYRot(), this.player.getXRot());
                                      return;
                                  }
-@@ -1560,9 +1572,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -1565,9 +1577,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
                              d11 = d7 * d7 + d8 * d8 + d9 * d9;
                              boolean flag2 = false;
  

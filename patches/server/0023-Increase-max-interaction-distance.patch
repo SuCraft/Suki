@@ -27,10 +27,10 @@ index 0a5f8d990cce5df339fd9b2b0fcb291a20ddad41..a7726c7a97a745319edf673978026584
              this.debugLogging(pos, false, sequence, "too far");
          } else if (pos.getY() >= worldHeight) {
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 438c4a2c8d11fd86627649d71080212c28197c94..f7b9ece0a9ccaff03d89c751c2a1a28b72212f5b 100644
+index dece797fb8e0471c9140e768cd621e6f0d10eee5..29aa1718784728eecf3d7f2aca96cf6ac707ac08 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -7,6 +7,7 @@ import com.mojang.brigadier.StringReader;
+@@ -8,6 +8,7 @@ import com.mojang.brigadier.StringReader;
  import com.mojang.brigadier.exceptions.CommandSyntaxException;
  import com.mojang.datafixers.util.Pair;
  import com.mojang.logging.LogUtils;
@@ -38,7 +38,7 @@ index 438c4a2c8d11fd86627649d71080212c28197c94..f7b9ece0a9ccaff03d89c751c2a1a28b
  import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
  import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
  import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-@@ -247,7 +248,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -248,7 +249,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
  
      static final Logger LOGGER = LogUtils.getLogger();
      private static final int LATENCY_CHECK_INTERVAL = 15000;
@@ -47,7 +47,7 @@ index 438c4a2c8d11fd86627649d71080212c28197c94..f7b9ece0a9ccaff03d89c751c2a1a28b
      private static final int NO_BLOCK_UPDATES_TO_ACK = -1;
      private static final int PENDING_MESSAGE_DISCONNECT_THRESHOLD = 4096;
      public final Connection connection;
-@@ -1984,7 +1985,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -1989,7 +1990,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          BlockPos blockposition = movingobjectpositionblock.getBlockPos();
          Vec3 vec3d1 = Vec3.atCenterOf(blockposition);
  
@@ -56,7 +56,7 @@ index 438c4a2c8d11fd86627649d71080212c28197c94..f7b9ece0a9ccaff03d89c751c2a1a28b
              Vec3 vec3d2 = vec3d.subtract(vec3d1);
              double d0 = 1.0000001D;
  
-@@ -2963,7 +2964,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -2968,7 +2969,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
                  return;
              }
  
