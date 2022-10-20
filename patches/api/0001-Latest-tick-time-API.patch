@@ -1,0 +1,118 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Mon, 17 Oct 2022 16:50:37 +0200
+Subject: [PATCH] Latest tick time API
+
+
+diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
+index bfa71be59dd84459bd420ace2d6694e1d80aee81..79cc19ca656639a9649a0f82b5cc44d76247f550 100644
+--- a/src/main/java/org/bukkit/Bukkit.java
++++ b/src/main/java/org/bukkit/Bukkit.java
+@@ -2430,15 +2430,34 @@ public final class Bukkit {
+         return server.isStopping();
+     }
+ 
+-    // Yatopia start
++    // Suki start - last tick time API
++
+     @Deprecated
+     public static long getLastTickMs() {
+         return server.getLastTickMs();
+     }
+-    @NotNull public static java.time.Duration getLastTickTime() {
+-        return server.getLastTickTime();
++
++    @Deprecated
++    public static long getLastProperTickMs() {
++        return server.getLastProperTickMs();
+     }
+-    // Yatopia end
++
++    @Deprecated
++    public static long getLastTickOversleepMs() {
++        return server.getLastTickOversleepMs();
++    }
++
++    @NotNull
++    public static java.time.Duration getLastProperTickTime() {
++        return server.getLastProperTickTime();
++    }
++
++    @NotNull
++    public static java.time.Duration getLastTickOversleepTime() {
++        return server.getLastTickOversleepTime();
++    }
++
++    // Suki end - last tick time API
+ 
+     /**
+      * Returns the {@link com.destroystokyo.paper.entity.ai.MobGoals} manager
+diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
+index 259209a999b80542a21ce6083301d3848d4006af..6ca07fee81bfaf36cfa4002e5222164405168d9c 100644
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -2128,25 +2128,58 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+      */
+     boolean isStopping();
+ 
+-    // Yatopia start
++    // Suki start - last tick time API
++
+     /**
+-     * Returns the time the last tick took in milliseconds.
++     * Returns the time the last proper tick (excluding oversleep) took in milliseconds.
+      *
+      * @return long time value
+      * @deprecated newer method with java's Duration and a possibility to convert it from millis to something else
+      */
+     @Deprecated
+     default long getLastTickMs() {
+-        return getLastTickTime().toMillis();
++        return getLastProperTickMs();
+     }
++
+     /**
+-     * Returns the time in {@link java.time.Duration} the last tick took.
++     * Returns the time the last proper tick (excluding oversleep) took in milliseconds.
++     *
++     * @return long time value
++     * @deprecated newer method with java's Duration and a possibility to convert it from millis to something else
++     */
++    @Deprecated
++    default long getLastProperTickMs() {
++        return getLastProperTickTime().toMillis();
++    }
++
++    /**
++     * Returns the time the last tick oversleep took in milliseconds.
++     *
++     * @return long time value
++     * @deprecated newer method with java's Duration and a possibility to convert it from millis to something else
++     */
++    @Deprecated
++    default long getLastTickOversleepMs() {
++        return getLastTickOversleepTime().toMillis();
++    }
++
++    /**
++     * Returns the time in {@link java.time.Duration} the last proper tick (excluding oversleep) took.
++     *
++     * @return duration
++     */
++    @NotNull
++    java.time.Duration getLastProperTickTime();
++
++    /**
++     * Returns the time in {@link java.time.Duration} the last tick oversleep took.
+      *
+      * @return duration
+      */
+     @NotNull
+-    java.time.Duration getLastTickTime();
+-    // Yatopia end
++    java.time.Duration getLastTickOversleepTime();
++
++    // Suki end - last tick time API
+ 
+     /**
+      * Returns the {@link com.destroystokyo.paper.entity.ai.MobGoals} manager

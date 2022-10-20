@@ -5,7 +5,7 @@ Subject: [PATCH] TPS options
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 634e7fea7cd958f657d52befd511dc927dfb8ff8..015ba3c279b5b0186b056f5574765ac33b18b250 100644
+index bed4764fe7d46d1013206a23b7547f2373361ef9..701d587c259aca0d8fef87fc08e7008b1179078c 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -13,6 +13,7 @@ import com.mojang.authlib.GameProfileRepository;
@@ -24,8 +24,8 @@ index 634e7fea7cd958f657d52befd511dc927dfb8ff8..015ba3c279b5b0186b056f5574765ac3
  
  public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnable> implements CommandSource, AutoCloseable { // Patina
  
-@@ -1185,7 +1187,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
-                 lastTickTime = java.time.Duration.ofNanos(System.nanoTime() - tickStart); // Yatopia
+@@ -1189,7 +1191,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+                 lastProperTickTime = java.time.Duration.ofNanos(System.nanoTime() - properTickStart); // Suki - last tick time API
                  this.profiler.popPush("nextTickWait");
                  this.mayHaveDelayedTasks = true;
 -                this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + 50L, this.nextTickTime);

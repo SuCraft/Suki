@@ -4,29 +4,165 @@ Date: Mon, 19 Sep 2022 22:49:15 +0200
 Subject: [PATCH] Latest tick time API
 
 
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 1be2129db92fde50885c53b830cc2c285509b501..8dfaead6ef64f199f49a027c8e6b5f3fa7f14d8e 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1096,7 +1096,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+     // Spigot End
+ 
+     public static volatile RuntimeException chunkSystemCrash; // Paper - rewrite chunk system
+-    public static java.time.Duration lastTickTime = java.time.Duration.ZERO; // Yatopia
++
++    // Suki start - last tick time API
++    public static java.time.Duration lastProperTickTime = java.time.Duration.ZERO;
++    public static java.time.Duration lastTickOversleepTime = java.time.Duration.ZERO;
++    // Suki end - last tick time API
+ 
+     protected void runServer() {
+         try {
+@@ -1178,9 +1182,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+                 this.nextTickTime += 50L;
+                 this.startMetricsRecordingTick();
+                 this.profiler.push("tick");
+-                long tickStart = System.nanoTime(); // Yatopia
++                long properTickStart = System.nanoTime(); // Suki - last tick time API
+                 this.tickServer(this::haveTime);
+-                lastTickTime = java.time.Duration.ofNanos(System.nanoTime() - tickStart); // Yatopia
++                lastProperTickTime = java.time.Duration.ofNanos(System.nanoTime() - properTickStart); // Suki - last tick time API
+                 this.profiler.popPush("nextTickWait");
+                 this.mayHaveDelayedTasks = true;
+                 this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + 50L, this.nextTickTime);
+@@ -1296,9 +1300,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
+ 
+     protected void waitUntilNextTick() {
+         //this.executeAll(); // Paper - move this into the tick method for timings
++        long tickOversleepStart = System.nanoTime(); // Suki - last tick time API
+         this.managedBlock(() -> {
+             return !this.canSleepForTickNoOversleep(); // Paper - move oversleep into full server tick
+         });
++        lastTickOversleepTime = java.time.Duration.ofNanos(System.nanoTime() - tickOversleepStart); // Suki - last tick time API
+     }
+ 
+     @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index f55cabbe49496d00fd9a7b63f4b4350beeb74edd..d5d0116e49aa9cc5ace6d2e13eba4dceb68a5bbd 100644
+index f55cabbe49496d00fd9a7b63f4b4350beeb74edd..52b56b1d6f1a4b54bb63e9df38b7428baf9f8cbd 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2925,7 +2925,7 @@ public final class CraftServer implements Server {
+@@ -2923,10 +2923,18 @@ public final class CraftServer implements Server {
+     }
+     // Paper end
  
-     // Yatopia start
+-    // Yatopia start
++    // Suki start - last tick time API
++
++    @Override
++    public java.time.Duration getLastProperTickTime() {
++        return MinecraftServer.lastProperTickTime;
++    }
++
      @Override
 -    public java.time.Duration getLastTickTime() {
-+    public java.time.Duration getLatestTickTime() { // Suki - branding changes - Suki is not a fork of Yatopia
-         return net.minecraft.server.MinecraftServer.lastTickTime;
+-        return net.minecraft.server.MinecraftServer.lastTickTime;
++    public java.time.Duration getLastTickOversleepTime() {
++        return MinecraftServer.lastTickOversleepTime;
      }
-     // Yatopia end
+-    // Yatopia end
++
++    // Suki end - last tick time API
++
+ }
 diff --git a/src/main/java/org/spigotmc/TicksPerSecondCommand.java b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
-index 26ff7f68dacad945095d794c1def4752e0775abb..ec6a70b704a9b81855d18e3b57ac4cac6c75f3ff 100644
+index 26ff7f68dacad945095d794c1def4752e0775abb..fa18f0a0ff6fcfea6de21876a419f6a72d585eca 100644
 --- a/src/main/java/org/spigotmc/TicksPerSecondCommand.java
 +++ b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
-@@ -33,7 +33,7 @@ public class TicksPerSecondCommand extends Command
+@@ -1,6 +1,5 @@
+ package org.spigotmc;
+ 
+-import net.minecraft.server.MinecraftServer;
+ import org.bukkit.ChatColor;
+ import org.bukkit.command.Command;
+ import org.bukkit.command.CommandSender;
+@@ -32,10 +31,21 @@ public class TicksPerSecondCommand extends Command
+             tpsAvg[i] = TicksPerSecondCommand.format( tps[i] );
          }
          sender.sendMessage(ChatColor.GOLD + "TPS from last 5s, 1m, 5m, 15m: " + org.apache.commons.lang.StringUtils.join(tpsAvg, ", ")); // Purpur
-         // Yatopia start - Last tick time API
+-        // Yatopia start - Last tick time API
 -        java.time.Duration lastTickTime = org.bukkit.Bukkit.getLastTickTime();
-+        java.time.Duration lastTickTime = org.bukkit.Bukkit.getLatestTickTime(); // Suki - branding changes - Suki is not a fork of Yatopia
-         sender.sendMessage(ChatColor.GOLD + "Last tick: " + TicksPerSecondCommand.formatTo( lastTickTime, java.util.concurrent.TimeUnit.MILLISECONDS ) + " (" + formatTo( lastTickTime, java.util.concurrent.TimeUnit.NANOSECONDS ) + ")");
-         // Yatopia end
+-        sender.sendMessage(ChatColor.GOLD + "Last tick: " + TicksPerSecondCommand.formatTo( lastTickTime, java.util.concurrent.TimeUnit.MILLISECONDS ) + " (" + formatTo( lastTickTime, java.util.concurrent.TimeUnit.NANOSECONDS ) + ")");
+-        // Yatopia end
++        // Suki start - last tick time API
++        java.time.Duration lastProperTickTime = org.bukkit.Bukkit.getLastProperTickTime();
++        long lastProperTickTimeMillis = lastProperTickTime.toMillis();
++        java.time.Duration lastTickOversleepTime = org.bukkit.Bukkit.getLastTickOversleepTime();
++        long lastTickOversleepTimeMillis = lastTickOversleepTime.toMillis();
++        sender.sendMessage(
++            net.kyori.adventure.text.Component.text("Last tick: ")
++                .append(formatTickTimeDuration(lastProperTickTimeMillis, 40, 50))
++                .append(net.kyori.adventure.text.Component.text (" self + "))
++                .append(formatTickTimeDuration(lastTickOversleepTimeMillis, Math.max(1, 41 - lastProperTickTimeMillis), Math.max(1, 51 - lastProperTickTimeMillis)))
++                .append(net.kyori.adventure.text.Component.text (" oversleep = "))
++                .append(formatTickTimeDuration(lastProperTickTimeMillis + lastTickOversleepTimeMillis, 40, 50))
++                .color(net.kyori.adventure.text.format.NamedTextColor.GOLD)
++        );
++        // Suki end - last tick time API
          if (args.length > 0 && args[0].equals("mem") && sender.hasPermission("bukkit.command.tpsmemory")) {
+             sender.sendMessage(ChatColor.GOLD + "Current Memory Usage: " + ChatColor.GREEN + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)) + "/" + (Runtime.getRuntime().totalMemory() / (1024 * 1024)) + " mb (Max: " + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + " mb)");
+             if (!hasShownMemoryWarning) {
+@@ -55,14 +65,13 @@ public class TicksPerSecondCommand extends Command
+                 + ( ( tps > 21.0 ) ? "*" : "" ) + Math.min( carpetfixes.helpers.FastMath.round( tps * 100.0 ) / 100.0, 20.0 ); // Paper - only print * at 21, we commonly peak to 20.02 as the tick sleep is not accurate enough, stop the noise // Mirai
+     }
+ 
+-    // Yatopia start - Last tick time API
+-    public static String formatTo(java.time.Duration duration, java.util.concurrent.TimeUnit unit) {
+-        java.util.concurrent.TimeUnit nanosUnit = java.util.concurrent.TimeUnit.NANOSECONDS;
+-        long nanos = duration.toNanos();
+-        long toAskedUnit = unit.convert( nanos, nanosUnit );
+-        long ms = nanosUnit.toMillis( nanos );
+-        ChatColor startingColor = ms < 40 ? ChatColor.GREEN : ( ms < 50 ) ? ChatColor.YELLOW : ChatColor.RED;
+-        return startingColor.toString() + toAskedUnit + ChatColor.GOLD + org.yatopiamc.yatopia.server.util.TimeUtils.getFriendlyName( unit );
++    // Suki start - last tick time API
++
++    public static net.kyori.adventure.text.Component formatTickTimeDuration(long ms, long safeLimit, long severeLimit) {
++        return net.kyori.adventure.text.Component.text(ms + " ", ms < safeLimit ? net.kyori.adventure.text.format.NamedTextColor.GREEN : ( ms < severeLimit ) ? net.kyori.adventure.text.format.NamedTextColor.YELLOW : net.kyori.adventure.text.format.NamedTextColor.RED)
++            .append(net.kyori.adventure.text.Component.text("ms", net.kyori.adventure.text.format.NamedTextColor.GOLD));
+     }
+-    // Yatopia end
++
++    // Suki end - last tick time API
++
+ }
+diff --git a/src/main/java/org/yatopiamc/yatopia/server/util/TimeUtils.java b/src/main/java/org/yatopiamc/yatopia/server/util/TimeUtils.java
+deleted file mode 100644
+index bb023bcb4b1e1ab5261c83358ce0951cc35ba16d..0000000000000000000000000000000000000000
+--- a/src/main/java/org/yatopiamc/yatopia/server/util/TimeUtils.java
++++ /dev/null
+@@ -1,27 +0,0 @@
+-package org.yatopiamc.yatopia.server.util;
+-
+-import java.util.concurrent.TimeUnit;
+-
+-public class TimeUtils {
+-
+-    public static String getFriendlyName(TimeUnit unit) {
+-        switch (unit) {
+-            case NANOSECONDS:
+-                return "ns";
+-            case MILLISECONDS:
+-                return "ms";
+-            case MICROSECONDS:
+-                return "micros";
+-            case SECONDS:
+-                return "s";
+-            case MINUTES:
+-                return "m";
+-            case DAYS:
+-                return "d";
+-            case HOURS:
+-                return "h";
+-            default:
+-                throw new AssertionError();
+-        }
+-    }
+-}
+\ No newline at end of file
