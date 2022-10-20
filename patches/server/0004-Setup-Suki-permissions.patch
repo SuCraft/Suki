@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Thu, 13 Oct 2022 18:09:28 +0200
+Subject: [PATCH] Setup Suki permissions
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
+index 8e06bc11fb28baee3407bbfe9d7b3689d6f85ff2..ce1190a6b0fb1e4f00e0d573edd42e2456c7e1e2 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
+@@ -5,6 +5,7 @@ import org.bukkit.util.permissions.DefaultPermissions;
+ 
+ public final class CraftDefaultPermissions {
+     private static final String ROOT = "minecraft";
++    private static final String SUKI_ROOT = "suki"; // Suki - Suki permissions
+ 
+     private CraftDefaultPermissions() {}
+ 

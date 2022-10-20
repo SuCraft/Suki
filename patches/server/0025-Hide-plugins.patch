@@ -5,7 +5,7 @@ Subject: [PATCH] Hide plugins
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index fbee98f461746cdce51df95b0fdf87a3a86190d0..8980219d1de080eb46fdf4d3dc7c597ee576e2f9 100644
+index 6cac9b1d839de97ac3f57d6a9e4bddf6ec32ae24..c54c4b36583a9afc39cfb0e7d9fa0ac0e475839b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -16,6 +16,7 @@ import com.mojang.serialization.Lifecycle;

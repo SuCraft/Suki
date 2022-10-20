@@ -1,27 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: MartijnMuijsers <martijnmuijsers@live.nl>
 Date: Thu, 13 Oct 2022 18:09:28 +0200
-Subject: [PATCH] Suki configuration and commands
+Subject: [PATCH] Setup Suki configuration
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 3491ee7e1dfeb130ffab57e9696b784220aeae67..5ce11680243d09937f012b88f7f8fe9579d4043b 100644
+index 3491ee7e1dfeb130ffab57e9696b784220aeae67..1b499fd268ad47c5b502c12e79e8fff04a92fe59 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
-@@ -29,6 +29,7 @@ import net.kyori.adventure.text.event.ClickEvent;
- import net.kyori.adventure.text.format.NamedTextColor;
- import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
- import net.minecraft.server.MinecraftServer;
-+import net.minecraft.server.dedicated.DedicatedServer;
- import org.apache.commons.lang.StringUtils;
- import org.bukkit.Bukkit;
- import org.bukkit.Material;
-@@ -239,11 +240,13 @@ public class TimingsExport extends Thread {
-         // Information on the users Config
- 
-         parent.put("config", createObject(
-+            pair("server.properties", org.sucraft.suki.configuration.VanillaServerSettingsTimingsExport.get()), // Suki - Suki configuration- include vanilla server.properties in timings
-             pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
+@@ -243,7 +243,8 @@ public class TimingsExport extends Thread {
              pair("bukkit", mapAsJSON(Bukkit.spigot().getBukkitConfig(), null)),
              pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Pufferfish
              pair("pufferfish", mapAsJSON(gg.pufferfish.pufferfish.PufferfishConfig.getConfigCopy(), null)), // Pufferfish // Mirai
@@ -224,7 +211,7 @@ index e731de3ac158c5a4cff236c6f5001674cd488a77..06a6cecfa01c676285ea894c3ed77d0e
 +    // Suki end - Suki configuration
  }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 1be2129db92fde50885c53b830cc2c285509b501..634e7fea7cd958f657d52befd511dc927dfb8ff8 100644
+index 8dfaead6ef64f199f49a027c8e6b5f3fa7f14d8e..bed4764fe7d46d1013206a23b7547f2373361ef9 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -293,6 +293,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
@@ -287,7 +274,7 @@ index ef6ff78af2ae747e939895b82ee9d11c75012dcd..05d011ff1053fafd9b1d440911fbe123
      }
  }
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 7d7d88d2f920446a98c63229a351dc0dc07d454b..565e042fff20cb656977c4b9a02ff3e3553678b9 100644
+index 7d7d88d2f920446a98c63229a351dc0dc07d454b..94e5ec6b883c59a5fa6aba778803def3d7c395dd 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -213,6 +213,10 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
@@ -301,27 +288,6 @@ index 7d7d88d2f920446a98c63229a351dc0dc07d454b..565e042fff20cb656977c4b9a02ff3e3
          // Paper start - moved up to right after PlayerList creation but before file load/save
          if (this.convertOldUsers()) {
              this.getProfileCache().save(false); // Paper
-@@ -222,6 +226,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
-         org.spigotmc.WatchdogThread.doStart(org.spigotmc.SpigotConfig.timeoutTime, org.spigotmc.SpigotConfig.restartOnCrash);
-         thread.start(); // Paper - start console thread after MinecraftServer.console & PaperConfig are initialized
-         io.papermc.paper.command.PaperCommands.registerCommands(this);
-+        org.sucraft.suki.command.SukiCommands.registerCommands(this); // Suki - Suki commands
-         com.destroystokyo.paper.Metrics.PaperMetrics.startMetrics();
-         com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
-         io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
-diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java
-index 3e4a3915cdf29fc964e0314ce01d156dd2f4f873..19214a855ce4b7610a21c9514e81ebc51abdb10a 100644
---- a/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java
-+++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServerProperties.java
-@@ -96,7 +96,7 @@ public class DedicatedServerProperties extends Settings<DedicatedServerPropertie
-     public final Settings<DedicatedServerProperties>.MutableValue<Integer> playerIdleTimeout;
-     public final Settings<DedicatedServerProperties>.MutableValue<Boolean> whiteList;
-     public final boolean enforceSecureProfile;
--    private final DedicatedServerProperties.WorldGenProperties worldGenProperties;
-+    public final DedicatedServerProperties.WorldGenProperties worldGenProperties; // Suki - Suki configuration- include vanilla server.properties in timings
-     @Nullable
-     private WorldGenSettings worldGenSettings;
- 
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
 index ac96f90d2f89fa449907108700db327ca5c798d5..bc6374bdaf17057b55c3e93c391b4c3bfdb977fc 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
@@ -335,18 +301,6 @@ index ac96f90d2f89fa449907108700db327ca5c798d5..bc6374bdaf17057b55c3e93c391b4c3b
          this.pvpMode = minecraftserver.isPvpAllowed();
          this.convertable = convertable_conversionsession;
          this.uuid = WorldUUID.getUUID(convertable_conversionsession.levelDirectory.path().toFile());
-diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index f1105edce8484cac39d8fb33a42c9ed8d44fe5c0..f2fc6cbea76ec31fe96743a0a83ce886f59600fd 100644
---- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-+++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
- import javax.annotation.Nullable;
- import javax.crypto.Cipher;
- import javax.crypto.SecretKey;
-+
- import net.minecraft.DefaultUncaughtExceptionHandler;
- import net.minecraft.core.UUIDUtil;
- import net.minecraft.network.Connection;
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
 index 7fc3c9892d69d14de694d5328fe17a971019cc54..e8a7c938a065c9c68669eee84c77702a303266c9 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
@@ -377,7 +331,7 @@ index 7fc3c9892d69d14de694d5328fe17a971019cc54..e8a7c938a065c9c68669eee84c77702a
          this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index d5d0116e49aa9cc5ace6d2e13eba4dceb68a5bbd..fbee98f461746cdce51df95b0fdf87a3a86190d0 100644
+index 52b56b1d6f1a4b54bb63e9df38b7428baf9f8cbd..6cac9b1d839de97ac3f57d6a9e4bddf6ec32ae24 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -969,6 +969,7 @@ public final class CraftServer implements Server {
@@ -403,301 +357,6 @@ index d5d0116e49aa9cc5ace6d2e13eba4dceb68a5bbd..fbee98f461746cdce51df95b0fdf87a3
          @Override
          public void restart() {
              org.spigotmc.RestartCommand.restart();
-diff --git a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
-index 8e06bc11fb28baee3407bbfe9d7b3689d6f85ff2..ce1190a6b0fb1e4f00e0d573edd42e2456c7e1e2 100644
---- a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
-+++ b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
-@@ -5,6 +5,7 @@ import org.bukkit.util.permissions.DefaultPermissions;
- 
- public final class CraftDefaultPermissions {
-     private static final String ROOT = "minecraft";
-+    private static final String SUKI_ROOT = "suki"; // Suki - Suki permissions
- 
-     private CraftDefaultPermissions() {}
- 
-diff --git a/src/main/java/org/sucraft/suki/command/SukiCommand.java b/src/main/java/org/sucraft/suki/command/SukiCommand.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..9fdacb5b7bed75631e00b05ca3df92639546f6ef
---- /dev/null
-+++ b/src/main/java/org/sucraft/suki/command/SukiCommand.java
-@@ -0,0 +1,145 @@
-+// Suki - /suki command
-+
-+package org.sucraft.suki.command;
-+
-+import io.papermc.paper.command.CommandUtil;
-+import it.unimi.dsi.fastutil.Pair;
-+import net.minecraft.Util;
-+import org.bukkit.Bukkit;
-+import org.bukkit.Location;
-+import org.bukkit.command.Command;
-+import org.bukkit.command.CommandSender;
-+import org.bukkit.permissions.Permission;
-+import org.bukkit.permissions.PermissionDefault;
-+import org.bukkit.plugin.PluginManager;
-+import org.checkerframework.checker.nullness.qual.NonNull;
-+import org.checkerframework.checker.nullness.qual.Nullable;
-+import org.checkerframework.framework.qual.DefaultQualifier;
-+import org.sucraft.suki.command.subcommand.ReloadCommand;
-+import org.sucraft.suki.command.subcommand.VersionCommand;
-+
-+import java.util.ArrayList;
-+import java.util.Arrays;
-+import java.util.Collections;
-+import java.util.HashMap;
-+import java.util.List;
-+import java.util.Locale;
-+import java.util.Map;
-+import java.util.Set;
-+import java.util.stream.Collectors;
-+
-+import static net.kyori.adventure.text.Component.text;
-+import static net.kyori.adventure.text.format.NamedTextColor.RED;
-+
-+@DefaultQualifier(NonNull.class)
-+public final class SukiCommand extends Command {
-+    static final String BASE_PERM = "suki.command.suki.";
-+    // subcommand label -> subcommand
-+    private static final Map<String, SukiSubcommand> SUBCOMMANDS = Util.make(() -> {
-+        final Map<Set<String>, SukiSubcommand> commands = new HashMap<>();
-+
-+        commands.put(Set.of("reload"), new ReloadCommand());
-+        commands.put(Set.of("version"), new VersionCommand());
-+
-+        return commands.entrySet().stream()
-+            .flatMap(entry -> entry.getKey().stream().map(s -> Map.entry(s, entry.getValue())))
-+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-+    });
-+    // alias -> subcommand label
-+    private static final Map<String, String> ALIASES = Util.make(() -> {
-+        final Map<String, Set<String>> aliases = new HashMap<>();
-+
-+        aliases.put("version", Set.of("ver"));
-+
-+        return aliases.entrySet().stream()
-+            .flatMap(entry -> entry.getValue().stream().map(s -> Map.entry(s, entry.getKey())))
-+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-+    });
-+
-+    public SukiCommand(final String name) {
-+        super(name);
-+        this.description = "Suki related commands";
-+        this.usageMessage = "/suki [" + String.join(" | ", SUBCOMMANDS.keySet()) + "]";
-+        final List<String> permissions = new ArrayList<>();
-+        permissions.add("suki.command.suki");
-+        permissions.addAll(SUBCOMMANDS.keySet().stream().map(s -> BASE_PERM + s).toList());
-+        this.setPermission(String.join(";", permissions));
-+        final PluginManager pluginManager = Bukkit.getServer().getPluginManager();
-+        for (final String perm : permissions) {
-+            pluginManager.addPermission(new Permission(perm, PermissionDefault.OP));
-+        }
-+    }
-+
-+    private static boolean testPermission(final CommandSender sender, final String permission) {
-+        if (sender.hasPermission(BASE_PERM + permission) || sender.hasPermission("suki.command.suki")) {
-+            return true;
-+        }
-+        sender.sendMessage(Bukkit.permissionMessage());
-+        return false;
-+    }
-+
-+    @Override
-+    public List<String> tabComplete(
-+        final CommandSender sender,
-+        final String alias,
-+        final String[] args,
-+        final @Nullable Location location
-+    ) throws IllegalArgumentException {
-+        if (args.length <= 1) {
-+            return CommandUtil.getListMatchingLast(sender, args, SUBCOMMANDS.keySet());
-+        }
-+
-+        final @Nullable Pair<String, SukiSubcommand> subCommand = resolveCommand(args[0]);
-+        if (subCommand != null) {
-+            return subCommand.second().tabComplete(sender, subCommand.first(), Arrays.copyOfRange(args, 1, args.length));
-+        }
-+
-+        return Collections.emptyList();
-+    }
-+
-+    @Override
-+    public boolean execute(
-+        final CommandSender sender,
-+        final String commandLabel,
-+        final String[] args
-+    ) {
-+        if (!testPermission(sender)) {
-+            return true;
-+        }
-+
-+        if (args.length == 0) {
-+            sender.sendMessage(text("Usage: " + this.usageMessage, RED));
-+            return false;
-+        }
-+        final @Nullable Pair<String, SukiSubcommand> subCommand = resolveCommand(args[0]);
-+
-+        if (subCommand == null) {
-+            sender.sendMessage(text("Usage: " + this.usageMessage, RED));
-+            return false;
-+        }
-+
-+        if (!testPermission(sender, subCommand.first())) {
-+            return true;
-+        }
-+        final String[] choppedArgs = Arrays.copyOfRange(args, 1, args.length);
-+        return subCommand.second().execute(sender, subCommand.first(), choppedArgs);
-+    }
-+
-+    private static @Nullable Pair<String, SukiSubcommand> resolveCommand(String label) {
-+        label = label.toLowerCase(Locale.ENGLISH);
-+        @Nullable SukiSubcommand subCommand = SUBCOMMANDS.get(label);
-+        if (subCommand == null) {
-+            final @Nullable String command = ALIASES.get(label);
-+            if (command != null) {
-+                label = command;
-+                subCommand = SUBCOMMANDS.get(command);
-+            }
-+        }
-+
-+        if (subCommand != null) {
-+            return Pair.of(label, subCommand);
-+        }
-+
-+        return null;
-+    }
-+}
-diff --git a/src/main/java/org/sucraft/suki/command/SukiCommands.java b/src/main/java/org/sucraft/suki/command/SukiCommands.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..01545d1ce279e199e69c09e7d8c391337e930afa
---- /dev/null
-+++ b/src/main/java/org/sucraft/suki/command/SukiCommands.java
-@@ -0,0 +1,31 @@
-+// Suki - Suki commands
-+
-+package org.sucraft.suki.command;
-+
-+import io.papermc.paper.command.MSPTCommand;
-+import io.papermc.paper.command.PaperCommand;
-+import net.minecraft.server.MinecraftServer;
-+import org.bukkit.command.Command;
-+import org.checkerframework.checker.nullness.qual.NonNull;
-+import org.checkerframework.framework.qual.DefaultQualifier;
-+
-+import java.util.HashMap;
-+import java.util.Map;
-+
-+@DefaultQualifier(NonNull.class)
-+public final class SukiCommands {
-+
-+    private SukiCommands() {
-+    }
-+
-+    private static final Map<String, Command> COMMANDS = new HashMap<>();
-+    static {
-+        COMMANDS.put("suki", new SukiCommand("suki"));
-+    }
-+
-+    public static void registerCommands(final MinecraftServer server) {
-+        COMMANDS.forEach((s, command) -> {
-+            server.server.getCommandMap().register(s, "Suki", command);
-+        });
-+    }
-+}
-diff --git a/src/main/java/org/sucraft/suki/command/SukiSubcommand.java b/src/main/java/org/sucraft/suki/command/SukiSubcommand.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..8afaad936500b3dc7568ad57f119f1e7660a3120
---- /dev/null
-+++ b/src/main/java/org/sucraft/suki/command/SukiSubcommand.java
-@@ -0,0 +1,19 @@
-+// Suki - Suki commands
-+
-+package org.sucraft.suki.command;
-+
-+import org.bukkit.command.CommandSender;
-+import org.checkerframework.checker.nullness.qual.NonNull;
-+import org.checkerframework.framework.qual.DefaultQualifier;
-+
-+import java.util.Collections;
-+import java.util.List;
-+
-+@DefaultQualifier(NonNull.class)
-+public interface SukiSubcommand {
-+    boolean execute(CommandSender sender, String subCommand, String[] args);
-+
-+    default List<String> tabComplete(final CommandSender sender, final String subCommand, final String[] args) {
-+        return Collections.emptyList();
-+    }
-+}
-diff --git a/src/main/java/org/sucraft/suki/command/subcommand/ReloadCommand.java b/src/main/java/org/sucraft/suki/command/subcommand/ReloadCommand.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..18bc7908f31897d955cf1d5a036728688c502d99
---- /dev/null
-+++ b/src/main/java/org/sucraft/suki/command/subcommand/ReloadCommand.java
-@@ -0,0 +1,35 @@
-+// Suki - /suki command
-+
-+package org.sucraft.suki.command.subcommand;
-+
-+import net.minecraft.server.MinecraftServer;
-+import org.bukkit.command.Command;
-+import org.bukkit.command.CommandSender;
-+import org.bukkit.craftbukkit.CraftServer;
-+import org.checkerframework.checker.nullness.qual.NonNull;
-+import org.checkerframework.framework.qual.DefaultQualifier;
-+import org.sucraft.suki.command.SukiSubcommand;
-+
-+import static net.kyori.adventure.text.Component.text;
-+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
-+import static net.kyori.adventure.text.format.NamedTextColor.RED;
-+
-+@DefaultQualifier(NonNull.class)
-+public final class ReloadCommand implements SukiSubcommand {
-+    @Override
-+    public boolean execute(final CommandSender sender, final String subCommand, final String[] args) {
-+        this.doReload(sender);
-+        return true;
-+    }
-+
-+    private void doReload(final CommandSender sender) {
-+        Command.broadcastCommandMessage(sender, text("Please note that this command is not supported and may cause issues.", RED));
-+        Command.broadcastCommandMessage(sender, text("If you encounter any issues please use the /stop command to restart your server.", RED));
-+
-+        MinecraftServer server = ((CraftServer) sender.getServer()).getServer();
-+        server.sukiConfigurations.reloadConfigs(server);
-+        server.server.reloadCount++;
-+
-+        Command.broadcastCommandMessage(sender, text("Suki config reload complete.", GREEN));
-+    }
-+}
-diff --git a/src/main/java/org/sucraft/suki/command/subcommand/VersionCommand.java b/src/main/java/org/sucraft/suki/command/subcommand/VersionCommand.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..da669f80719df48260a43cfa616d3d05f325374a
---- /dev/null
-+++ b/src/main/java/org/sucraft/suki/command/subcommand/VersionCommand.java
-@@ -0,0 +1,23 @@
-+// Suki - /suki command
-+
-+package org.sucraft.suki.command.subcommand;
-+
-+import net.minecraft.server.MinecraftServer;
-+import org.bukkit.command.Command;
-+import org.bukkit.command.CommandSender;
-+import org.checkerframework.checker.nullness.qual.NonNull;
-+import org.checkerframework.checker.nullness.qual.Nullable;
-+import org.checkerframework.framework.qual.DefaultQualifier;
-+import org.sucraft.suki.command.SukiSubcommand;
-+
-+@DefaultQualifier(NonNull.class)
-+public final class VersionCommand implements SukiSubcommand {
-+    @Override
-+    public boolean execute(final CommandSender sender, final String subCommand, final String[] args) {
-+        final @Nullable Command ver = MinecraftServer.getServer().server.getCommandMap().getCommand("version");
-+        if (ver != null) {
-+            ver.execute(sender, "suki", me.titaniumtown.Constants.EMPTY_string_arr); // JettPack
-+        }
-+        return true;
-+    }
-+}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiConfigurations.java b/src/main/java/org/sucraft/suki/configuration/SukiConfigurations.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..e7224346563ca750b00d958bdbf486b3166f09cf
@@ -1101,70 +760,6 @@ index 0000000000000000000000000000000000000000..7efcab76aeaaf0d9bd7ef52e6f32718a
 +
 +        int worldDummyValue = 0;
 +
-+    }
-+
-+}
-diff --git a/src/main/java/org/sucraft/suki/configuration/VanillaServerSettingsTimingsExport.java b/src/main/java/org/sucraft/suki/configuration/VanillaServerSettingsTimingsExport.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..bb6f90f83384c85b588871885c147fa27913e6d5
---- /dev/null
-+++ b/src/main/java/org/sucraft/suki/configuration/VanillaServerSettingsTimingsExport.java
-@@ -0,0 +1,58 @@
-+// Suki - Suki configuration - include vanilla server.properties in timings
-+
-+package org.sucraft.suki.configuration;
-+
-+import net.minecraft.server.MinecraftServer;
-+import net.minecraft.server.dedicated.DedicatedServer;
-+import org.jetbrains.annotations.NotNull;
-+import org.json.simple.JSONObject;
-+
-+public final class VanillaServerSettingsTimingsExport {
-+
-+    private VanillaServerSettingsTimingsExport() {}
-+
-+    public static @NotNull JSONObject get() {
-+        var json = new JSONObject();
-+        var properties = ((DedicatedServer) MinecraftServer.getServer()).getProperties();
-+        json.put("enable-command-block", String.valueOf(properties.enableCommandBlock));
-+        json.put("gamemode", String.valueOf(properties.gamemode));
-+        json.put("enforce-secure-profile", String.valueOf(properties.enforceSecureProfile));
-+        json.put("pvp", String.valueOf(properties.pvp));
-+        json.put("generate-structures", String.valueOf(properties.worldGenProperties.generateStructures()));
-+        json.put("max-chained-neighbor-updates", String.valueOf(properties.maxChainedNeighborUpdates));
-+        json.put("difficulty", String.valueOf(properties.difficulty));
-+        json.put("network-compression-threshold", String.valueOf(properties.networkCompressionThreshold));
-+        json.put("max-tick-time", String.valueOf(properties.maxTickTime));
-+        properties.serverResourcePackInfo.ifPresent(it -> json.put("require-resource-pack", String.valueOf(it.isRequired())));
-+        json.put("max-players", String.valueOf(properties.maxPlayers));
-+        json.put("use-native-transport", String.valueOf(properties.useNativeTransport));
-+        json.put("online-mode", String.valueOf(properties.onlineMode));
-+        json.put("enable-status", String.valueOf(properties.enableStatus));
-+        json.put("allow-flight", String.valueOf(properties.allowFlight));
-+        json.put("view-distance", String.valueOf(properties.viewDistance));
-+        json.put("allow-nether", String.valueOf(properties.allowNether));
-+        json.put("sync-chunk-writes", String.valueOf(properties.syncChunkWrites));
-+        json.put("op-permission-level", String.valueOf(properties.opPermissionLevel));
-+        json.put("prevent-proxy-connections", String.valueOf(properties.preventProxyConnections));
-+        json.put("hide-online-players", String.valueOf(properties.hideOnlinePlayers));
-+        json.put("entity-broadcast-range-percentage", String.valueOf(properties.entityBroadcastRangePercentage));
-+        json.put("simulation-distance", String.valueOf(properties.simulationDistance));
-+        json.put("player-idle-timeout", String.valueOf(properties.playerIdleTimeout.get()));
-+        json.put("debug", String.valueOf(properties.debug));
-+        json.put("force-gamemode", String.valueOf(properties.forceGameMode));
-+        json.put("rate-limit", String.valueOf(properties.rateLimitPacketsPerSecond));
-+        json.put("hardcore", String.valueOf(properties.hardcore));
-+        json.put("white-list", String.valueOf(properties.whiteList.get()));
-+        json.put("spawn-npcs", String.valueOf(properties.spawnNpcs));
-+        json.put("previews-chat", String.valueOf(properties.previewsChat));
-+        json.put("spawn-animals", String.valueOf(properties.spawnAnimals));
-+        json.put("function-permission-level", String.valueOf(properties.functionPermissionLevel));
-+        json.put("level-type", properties.worldGenProperties.levelType());
-+        json.put("spawn-monsters", String.valueOf(properties.spawnMonsters));
-+        json.put("enforce-whitelist", String.valueOf(properties.enforceWhitelist));
-+        json.put("spawn-protection", String.valueOf(properties.spawnProtection));
-+        json.put("max-world-size", String.valueOf(properties.maxWorldSize));
-+        return json;
 +    }
 +
 +}

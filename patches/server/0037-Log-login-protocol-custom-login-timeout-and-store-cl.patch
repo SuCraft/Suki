@@ -131,7 +131,7 @@ index ac254e4fe3973a8cb3321e96c651847e387d9f0e..ed1db61d04b1f81c52300c9f85b96212
                  try {
                      if (!(this.connection.channel.localAddress() instanceof io.netty.channel.unix.DomainSocketAddress)) { // Paper - the connection throttle is useless when you have a Unix domain socket
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index f2fc6cbea76ec31fe96743a0a83ce886f59600fd..c743fbb57836f857497eace112876cadb676d1b7 100644
+index f1105edce8484cac39d8fb33a42c9ed8d44fe5c0..f8bcace8d90e3926f34670d880f61a47192f9ca9 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 @@ -10,10 +10,10 @@ import java.net.InetSocketAddress;
@@ -144,9 +144,9 @@ index f2fc6cbea76ec31fe96743a0a83ce886f59600fd..c743fbb57836f857497eace112876cad
  import javax.annotation.Nullable;
 -import javax.crypto.Cipher;
  import javax.crypto.SecretKey;
- 
  import net.minecraft.DefaultUncaughtExceptionHandler;
-@@ -46,6 +46,7 @@ import org.slf4j.Logger;
+ import net.minecraft.core.UUIDUtil;
+@@ -45,6 +45,7 @@ import org.slf4j.Logger;
  import org.bukkit.craftbukkit.util.Waitable;
  import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
  import org.bukkit.event.player.PlayerPreLoginEvent;
@@ -154,7 +154,7 @@ index f2fc6cbea76ec31fe96743a0a83ce886f59600fd..c743fbb57836f857497eace112876cad
  // CraftBukkit end
  
  public class ServerLoginPacketListenerImpl implements TickablePacketListener, ServerLoginPacketListener {
-@@ -102,7 +103,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -101,7 +102,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
              }
          }
  
@@ -163,7 +163,7 @@ index f2fc6cbea76ec31fe96743a0a83ce886f59600fd..c743fbb57836f857497eace112876cad
              this.disconnect(Component.translatable("multiplayer.disconnect.slow_login"));
          }
  
-@@ -186,6 +187,11 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -185,6 +186,11 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
          } else {
              this.state = ServerLoginPacketListenerImpl.State.ACCEPTED;
              if (this.server.getCompressionThreshold() >= 0 && !this.connection.isMemoryConnection()) {
@@ -175,7 +175,7 @@ index f2fc6cbea76ec31fe96743a0a83ce886f59600fd..c743fbb57836f857497eace112876cad
                  this.connection.send(new ClientboundLoginCompressionPacket(this.server.getCompressionThreshold()), PacketSendListener.thenRun(() -> {
                      this.connection.setupCompression(this.server.getCompressionThreshold(), true);
                  }));
-@@ -283,10 +289,20 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -282,10 +288,20 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
          this.profilePublicKeyData = (ProfilePublicKey.Data) packet.publicKey().orElse(null); // CraftBukkit - decompile error
          GameProfile gameprofile = this.server.getSingleplayerProfile();
  
@@ -196,7 +196,7 @@ index f2fc6cbea76ec31fe96743a0a83ce886f59600fd..c743fbb57836f857497eace112876cad
              this.gameProfile = new GameProfile((UUID) null, packet.name());
              if (this.server.usesAuthentication() && !this.connection.isMemoryConnection()) {
                  this.state = ServerLoginPacketListenerImpl.State.KEY;
-@@ -429,7 +445,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -428,7 +444,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
  
                          // Paper start
                          com.destroystokyo.paper.profile.PlayerProfile profile = com.destroystokyo.paper.profile.CraftPlayerProfile.asBukkitMirror(ServerLoginPacketListenerImpl.this.gameProfile);
