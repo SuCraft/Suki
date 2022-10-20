@@ -5,7 +5,7 @@ Subject: [PATCH] Setup Suki configuration
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 3491ee7e1dfeb130ffab57e9696b784220aeae67..1b499fd268ad47c5b502c12e79e8fff04a92fe59 100644
+index 3491ee7e1dfeb130ffab57e9696b784220aeae67..8d638ccdecaf7c23ac3aa37fd2f787b6899b2ff1 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -243,7 +243,8 @@ public class TimingsExport extends Thread {
@@ -14,10 +14,19 @@ index 3491ee7e1dfeb130ffab57e9696b784220aeae67..1b499fd268ad47c5b502c12e79e8fff0
              pair("pufferfish", mapAsJSON(gg.pufferfish.pufferfish.PufferfishConfig.getConfigCopy(), null)), // Pufferfish // Mirai
 -            pair("mirai", mapAsJSON(dev.etil.mirai.MiraiConfig.getConfigCopy(), null)) // Mirai
 +            pair("mirai", mapAsJSON(dev.etil.mirai.MiraiConfig.getConfigCopy(), null)), // Mirai // Suki - Suki configuration
-+            pair("suki", mapAsJSON(Bukkit.spigot().getSukiConfig(), null)) // Suki - Suki configuration
++            pair("suki", org.sucraft.suki.configuration.timingsexport.SukiConfigurationTimingsExport.get()) // Suki - Suki configuration
          ));
  
          new TimingsExport(listeners, parent, history).start();
+@@ -284,7 +285,7 @@ public class TimingsExport extends Thread {
+         return timingsCost;
+     }
+ 
+-    private static JSONObject mapAsJSON(ConfigurationSection config, String parentKey) {
++    public static JSONObject mapAsJSON(ConfigurationSection config, String parentKey) { // Suki - Suki configuration
+ 
+         JSONObject object = new JSONObject();
+         for (String key : config.getKeys(false)) {
 diff --git a/src/main/java/io/papermc/paper/configuration/ConfigurationPart.java b/src/main/java/io/papermc/paper/configuration/ConfigurationPart.java
 index 7a4a7a654fe2516ed894a68f2657344df9d70f4c..0a501c3ba5382dae230122066c131de631edff0d 100644
 --- a/src/main/java/io/papermc/paper/configuration/ConfigurationPart.java
@@ -211,7 +220,7 @@ index e731de3ac158c5a4cff236c6f5001674cd488a77..06a6cecfa01c676285ea894c3ed77d0e
 +    // Suki end - Suki configuration
  }
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 8dfaead6ef64f199f49a027c8e6b5f3fa7f14d8e..bed4764fe7d46d1013206a23b7547f2373361ef9 100644
+index 1be2129db92fde50885c53b830cc2c285509b501..634e7fea7cd958f657d52befd511dc927dfb8ff8 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -293,6 +293,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<Runnab
@@ -331,7 +340,7 @@ index 7fc3c9892d69d14de694d5328fe17a971019cc54..e8a7c938a065c9c68669eee84c77702a
          this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 52b56b1d6f1a4b54bb63e9df38b7428baf9f8cbd..6cac9b1d839de97ac3f57d6a9e4bddf6ec32ae24 100644
+index f55cabbe49496d00fd9a7b63f4b4350beeb74edd..46c5c313419900e1392af28c7cd17e96b54f73ff 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -969,6 +969,7 @@ public final class CraftServer implements Server {
@@ -760,6 +769,31 @@ index 0000000000000000000000000000000000000000..7efcab76aeaaf0d9bd7ef52e6f32718a
 +
 +        int worldDummyValue = 0;
 +
++    }
++
++}
+diff --git a/src/main/java/org/sucraft/suki/configuration/timingsexport/SukiConfigurationTimingsExport.java b/src/main/java/org/sucraft/suki/configuration/timingsexport/SukiConfigurationTimingsExport.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..0c3e5edb7386c4b6cabb784d320fd3177d224af9
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/configuration/timingsexport/SukiConfigurationTimingsExport.java
+@@ -0,0 +1,19 @@
++// Suki - Suki configuration
++
++package org.sucraft.suki.configuration.timingsexport;
++
++import co.aikar.timings.TimingsExport;
++import org.bukkit.Bukkit;
++import org.jetbrains.annotations.NotNull;
++import org.json.simple.JSONObject;
++
++public final class SukiConfigurationTimingsExport {
++
++    private SukiConfigurationTimingsExport() {}
++
++    public static @NotNull JSONObject get() {
++        var json = TimingsExport.mapAsJSON(Bukkit.spigot().getSukiConfig(), null);
++        return json;
 +    }
 +
 +}
