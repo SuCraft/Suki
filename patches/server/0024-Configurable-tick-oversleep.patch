@@ -67,7 +67,7 @@ index bed4764fe7d46d1013206a23b7547f2373361ef9..f7adbaed4f60986e3e079a54702059b8
      }
  
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index e183225a6371b70eb82be961dcc613ba5f0b68ed..36fba9c8497d37df0170cd4e413eb6780192b953 100644
+index e183225a6371b70eb82be961dcc613ba5f0b68ed..c520de5443d0f7bc1c16206b016d276b624d05d7 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -4,7 +4,7 @@ package org.sucraft.suki.configuration;
@@ -106,10 +106,10 @@ index e183225a6371b70eb82be961dcc613ba5f0b68ed..36fba9c8497d37df0170cd4e413eb678
 +                 */
 +                public class PlannedAfterLastTickEnd extends ConfigurationPart {
 +
-+                    public double min = 50;
++                    public double min = 0;
 +                    public double max = 50;
 +                    public double increasePerUnfinishedTick = 1;
-+                    public double decreasePerFinishedTick = 1;
++                    public double decreasePerFinishedTick = 3.0;
 +                    public int ticksImmuneFromIncrease = 2;
 +
 +                }
@@ -123,10 +123,10 @@ index e183225a6371b70eb82be961dcc613ba5f0b68ed..36fba9c8497d37df0170cd4e413eb678
 +                 */
 +                public class MaxAfterNextTickStart extends ConfigurationPart {
 +
-+                    public double min = 50;
++                    public double min = 0;
 +                    public double max = 50;
 +                    public double increasePerUnfinishedTick = 0.5;
-+                    public double decreasePerFinishedTick = 0.5;
++                    public double decreasePerFinishedTick = 3.0;
 +                    public int ticksImmuneFromIncrease = 10;
 +
 +                }
