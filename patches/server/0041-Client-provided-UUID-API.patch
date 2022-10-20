@@ -1,0 +1,104 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Mon, 3 Oct 2022 16:46:09 +0200
+Subject: [PATCH] Client-provided UUID API
+
+
+diff --git a/src/main/java/net/minecraft/network/Connection.java b/src/main/java/net/minecraft/network/Connection.java
+index 9667eaf9708d4ece9e4c92ed5c914f3d65a52505..a345e08b39bb5b59bbf236748292f63765c3a81f 100644
+--- a/src/main/java/net/minecraft/network/Connection.java
++++ b/src/main/java/net/minecraft/network/Connection.java
+@@ -29,6 +29,7 @@ import io.netty.util.AttributeKey;
+ import java.net.InetSocketAddress;
+ import java.net.SocketAddress;
+ import java.util.Queue;
++import java.util.UUID;
+ import java.util.concurrent.RejectedExecutionException;
+ import javax.annotation.Nullable;
+ import javax.crypto.Cipher;
+@@ -173,6 +174,12 @@ public class Connection extends SimpleChannelInboundHandler<Packet<?>> {
+     }
+     // Paper end - packet limiter
+ 
++    // Suki start - login protocol - client-provided UUID API
++
++    public @Nullable UUID lastReceivedLoginStartUUID = null;
++
++    // Suki end - login protocol - client-provided UUID API
++
+     public Connection(PacketFlow side) {
+         this.receiving = side;
+     }
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+index 58fb45667dafb36a507fe5c4e6de009556d2fc92..20e62990d11f3e454c7eebbd1ae800f1737ffc77 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+@@ -12,6 +12,7 @@ import java.util.List;
+ import java.util.Objects;
+ import java.util.Optional;
+ import java.util.OptionalInt;
++import java.util.UUID;
+ import javax.annotation.Nullable;
+ import net.minecraft.BlockUtil;
+ import net.minecraft.ChatFormatting;
+@@ -2447,6 +2448,15 @@ public class ServerPlayer extends Player {
+         return this.getBukkitEntity().getScoreboard().getHandle();
+     }
+ 
++    // Suki start - login protocol - client-provided UUID API
++
++    @Nullable
++    public UUID getClientProvidedUUID() {
++        return this.connection.connection.lastReceivedLoginStartUUID;
++    }
++
++    // Suki end - login protocol - client-provided UUID API
++
+     public void reset() {
+         float exp = 0;
+         boolean keepInventory = this.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY);
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index 74cb30442215e110cb39740dfb0b4ab3127d5104..d064f5cc205b0ddc52aaf87546f05c559d8112f6 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -303,6 +303,10 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+             this.gameProfile = gameprofile;
+             this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
+         } else {
++            // Suki start - login protocol - client-provided UUID API
++            //noinspection ConstantConditions
++            this.connection.lastReceivedLoginStartUUID = Optional.ofNullable(packet.profileId()).flatMap($ -> $).orElse(null);
++            // Suki end - login protocol - client-provided UUID API
+             this.gameProfile = new GameProfile((UUID) null, packet.name());
+             if (this.server.usesAuthentication() && !this.connection.isMemoryConnection()) {
+                 this.state = ServerLoginPacketListenerImpl.State.KEY;
+@@ -445,7 +449,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+ 
+                         // Paper start
+                         com.destroystokyo.paper.profile.PlayerProfile profile = com.destroystokyo.paper.profile.CraftPlayerProfile.asBukkitMirror(ServerLoginPacketListenerImpl.this.gameProfile);
+-                        AsyncPlayerPreLoginEvent asyncEvent = new AsyncPlayerPreLoginEvent(playerName, address, rawAddress, uniqueId, profile, ServerLoginPacketListenerImpl.this.hostname); // Paper - add rawAddress & hostname
++                        AsyncPlayerPreLoginEvent asyncEvent = new AsyncPlayerPreLoginEvent(playerName, address, rawAddress, uniqueId, profile, ServerLoginPacketListenerImpl.this.hostname, ServerLoginPacketListenerImpl.this.connection.lastReceivedLoginStartUUID); // Paper - add rawAddress & hostname // Suki - login protocol - client-provided UUID API
+                         server.getPluginManager().callEvent(asyncEvent);
+                         profile = asyncEvent.getPlayerProfile();
+                         profile.complete(true); // Paper - setPlayerProfileAPI
+diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
+index f81c16884f8e517ceccb832bdff8840f24d52982..7e2dbcb4e9784682a7ecc5af3c2051c83c7d7b09 100644
+--- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
++++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
+@@ -1881,6 +1881,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+     }
+     // Paper end
+ 
++    // Suki start - login protocol - client-provided UUID API
++
++    @Override
++    @Nullable
++    public UUID getClientProvidedUUID() {
++        return this.getHandle().getClientProvidedUUID();
++    }
++
++    // Suki end - login protocol - client-provided UUID API
++
+     public void onEntityRemove(Entity entity) {
+         this.hiddenEntities.remove(entity.getUUID());
+     }

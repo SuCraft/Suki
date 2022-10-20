@@ -1,0 +1,51 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Mon, 3 Oct 2022 16:46:09 +0200
+Subject: [PATCH] Configurable login timeout
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index 4eb909f85068f80faf99bd6024560be6711d40e1..bb3afd79d1e1a164ce26b9d3ce47b30aacf3ff45 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -46,6 +46,7 @@ import org.slf4j.Logger;
+ import org.bukkit.craftbukkit.util.Waitable;
+ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+ import org.bukkit.event.player.PlayerPreLoginEvent;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ // CraftBukkit end
+ 
+ public class ServerLoginPacketListenerImpl implements TickablePacketListener, ServerLoginPacketListener {
+@@ -104,7 +105,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+             }
+         }
+ 
+-        if (this.tick++ == 600) {
++        if (this.tick++ == SukiGlobalConfiguration.get().loginProtocol.slowLoginTimeout) { // Suki - login protocol - configurable slow login timeout
+             this.disconnect(Component.translatable("multiplayer.disconnect.slow_login"));
+         }
+ 
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index cc64acdfe0396f11fac59b1f4a086b6604c9fbc8..d52ad3a4dc7dfcab8a0d604b0a95fe3701bccb45 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -226,4 +226,19 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+     // Suki end - survival debug stick
+ 
++    // Suki start - configurable login timeout
++
++    public LoginProtocol loginProtocol;
++
++    public class LoginProtocol extends ConfigurationPart {
++
++        /**
++         * In ticks
++         */
++        public int slowLoginTimeout = 600;
++
++    }
++
++    // Suki end - configurable login timeout
++
+ }
