@@ -40,7 +40,7 @@ index 7a4a7a654fe2516ed894a68f2657344df9d70f4c..0a501c3ba5382dae230122066c131de6
      public static abstract class Post extends ConfigurationPart {
  
 diff --git a/src/main/java/io/papermc/paper/configuration/Configurations.java b/src/main/java/io/papermc/paper/configuration/Configurations.java
-index c2dca89291361d60cbf160cab77749cb0130035a..aedd5aec308dd206ce149e2b303323e5a8adb88e 100644
+index c2dca89291361d60cbf160cab77749cb0130035a..033372cfb53bee0048903306d174e9a47f86169f 100644
 --- a/src/main/java/io/papermc/paper/configuration/Configurations.java
 +++ b/src/main/java/io/papermc/paper/configuration/Configurations.java
 @@ -5,7 +5,10 @@ import io.leangen.geantyref.TypeToken;
@@ -90,18 +90,21 @@ index c2dca89291361d60cbf160cab77749cb0130035a..aedd5aec308dd206ce149e2b303323e5
          }
          this.applyWorldConfigTransformations(contextMap, worldNode);
          this.applyDefaultsAwareWorldConfigTransformations(contextMap, worldNode, defaultsNode);
-@@ -308,4 +313,21 @@ public abstract class Configurations<G, W> {
+@@ -308,4 +313,25 @@ public abstract class Configurations<G, W> {
              return "ContextKey{" + this.name + "}";
          }
      }
 +
 +    // Suki start - Suki configuration
 +
++    public static final String legacyWorldsSectionKey = "__________WORLDS__________";
++    public static final String legacyWorldDefaultsSectionKey = "__defaults__";
++
 +    @Deprecated
 +    public YamlConfiguration createLegacyObject(final MinecraftServer server) {
 +        YamlConfiguration global = YamlConfiguration.loadConfiguration(this.globalFolder.resolve(this.globalConfigFileName).toFile());
-+        ConfigurationSection worlds = global.createSection("__________WORLDS__________");
-+        worlds.set("__defaults__", YamlConfiguration.loadConfiguration(this.globalFolder.resolve(this.defaultWorldConfigFileName).toFile()));
++        ConfigurationSection worlds = global.createSection(legacyWorldsSectionKey);
++        worlds.set(legacyWorldDefaultsSectionKey, YamlConfiguration.loadConfiguration(this.globalFolder.resolve(this.defaultWorldConfigFileName).toFile()));
 +        for (ServerLevel level : server.getAllLevels()) {
 +            worlds.set(level.getWorld().getName(), YamlConfiguration.loadConfiguration(getWorldConfigFile(level).toFile()));
 +        }
@@ -109,6 +112,7 @@ index c2dca89291361d60cbf160cab77749cb0130035a..aedd5aec308dd206ce149e2b303323e5
 +    }
 +
 +    public abstract int getWorldConfigurationCurrentVersion();
++
 +    // Suki end - Suki configuration
 +
  }
