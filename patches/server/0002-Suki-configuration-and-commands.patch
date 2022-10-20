@@ -5,7 +5,7 @@ Subject: [PATCH] Suki configuration and commands
 
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 3491ee7e1dfeb130ffab57e9696b784220aeae67..2c125cad7f50ef71be0f8fb69625a7109748296d 100644
+index 3491ee7e1dfeb130ffab57e9696b784220aeae67..5ce11680243d09937f012b88f7f8fe9579d4043b 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -29,6 +29,7 @@ import net.kyori.adventure.text.event.ClickEvent;
@@ -16,60 +16,11 @@ index 3491ee7e1dfeb130ffab57e9696b784220aeae67..2c125cad7f50ef71be0f8fb69625a710
  import org.apache.commons.lang.StringUtils;
  import org.bukkit.Bukkit;
  import org.bukkit.Material;
-@@ -238,12 +239,62 @@ public class TimingsExport extends Thread {
- 
+@@ -239,11 +240,13 @@ public class TimingsExport extends Thread {
          // Information on the users Config
  
-+        // Suki start - Suki configuration - include vanilla server.properties in timings
-+
-+        var vanillaServerSettingsJSON = new JSONObject();
-+        {
-+            var server = (DedicatedServer) MinecraftServer.getServer();
-+            var properties = server.getProperties();
-+            vanillaServerSettingsJSON.put("enable-command-block", String.valueOf(properties.enableCommandBlock));
-+            vanillaServerSettingsJSON.put("gamemode", String.valueOf(properties.gamemode));
-+            vanillaServerSettingsJSON.put("enforce-secure-profile", String.valueOf(properties.enforceSecureProfile));
-+            vanillaServerSettingsJSON.put("pvp", String.valueOf(properties.pvp));
-+            vanillaServerSettingsJSON.put("generate-structures", String.valueOf(properties.worldGenProperties.generateStructures()));
-+            vanillaServerSettingsJSON.put("max-chained-neighbor-updates", String.valueOf(properties.maxChainedNeighborUpdates));
-+            vanillaServerSettingsJSON.put("difficulty", String.valueOf(properties.difficulty));
-+            vanillaServerSettingsJSON.put("network-compression-threshold", String.valueOf(properties.networkCompressionThreshold));
-+            vanillaServerSettingsJSON.put("max-tick-time", String.valueOf(properties.maxTickTime));
-+            properties.serverResourcePackInfo.ifPresent(it -> vanillaServerSettingsJSON.put("require-resource-pack", String.valueOf(it.isRequired())));
-+            vanillaServerSettingsJSON.put("max-players", String.valueOf(properties.maxPlayers));
-+            vanillaServerSettingsJSON.put("use-native-transport", String.valueOf(properties.useNativeTransport));
-+            vanillaServerSettingsJSON.put("online-mode", String.valueOf(properties.onlineMode));
-+            vanillaServerSettingsJSON.put("enable-status", String.valueOf(properties.enableStatus));
-+            vanillaServerSettingsJSON.put("allow-flight", String.valueOf(properties.allowFlight));
-+            vanillaServerSettingsJSON.put("view-distance", String.valueOf(properties.viewDistance));
-+            vanillaServerSettingsJSON.put("allow-nether", String.valueOf(properties.allowNether));
-+            vanillaServerSettingsJSON.put("sync-chunk-writes", String.valueOf(properties.syncChunkWrites));
-+            vanillaServerSettingsJSON.put("op-permission-level", String.valueOf(properties.opPermissionLevel));
-+            vanillaServerSettingsJSON.put("prevent-proxy-connections", String.valueOf(properties.preventProxyConnections));
-+            vanillaServerSettingsJSON.put("hide-online-players", String.valueOf(properties.hideOnlinePlayers));
-+            vanillaServerSettingsJSON.put("entity-broadcast-range-percentage", String.valueOf(properties.entityBroadcastRangePercentage));
-+            vanillaServerSettingsJSON.put("simulation-distance", String.valueOf(properties.simulationDistance));
-+            vanillaServerSettingsJSON.put("player-idle-timeout", String.valueOf(properties.playerIdleTimeout.get()));
-+            vanillaServerSettingsJSON.put("debug", String.valueOf(properties.debug));
-+            vanillaServerSettingsJSON.put("force-gamemode", String.valueOf(properties.forceGameMode));
-+            vanillaServerSettingsJSON.put("rate-limit", String.valueOf(properties.rateLimitPacketsPerSecond));
-+            vanillaServerSettingsJSON.put("hardcore", String.valueOf(properties.hardcore));
-+            vanillaServerSettingsJSON.put("white-list", String.valueOf(properties.whiteList.get()));
-+            vanillaServerSettingsJSON.put("spawn-npcs", String.valueOf(properties.spawnNpcs));
-+            vanillaServerSettingsJSON.put("previews-chat", String.valueOf(properties.previewsChat));
-+            vanillaServerSettingsJSON.put("spawn-animals", String.valueOf(properties.spawnAnimals));
-+            vanillaServerSettingsJSON.put("function-permission-level", String.valueOf(properties.functionPermissionLevel));
-+            vanillaServerSettingsJSON.put("level-type", properties.worldGenProperties.levelType());
-+            vanillaServerSettingsJSON.put("spawn-monsters", String.valueOf(properties.spawnMonsters));
-+            vanillaServerSettingsJSON.put("enforce-whitelist", String.valueOf(properties.enforceWhitelist));
-+            vanillaServerSettingsJSON.put("spawn-protection", String.valueOf(properties.spawnProtection));
-+            vanillaServerSettingsJSON.put("max-world-size", String.valueOf(properties.maxWorldSize));
-+        }
-+
-+        // Suki end - Suki configuration - include vanilla server.properties in timings
-+
          parent.put("config", createObject(
-+            pair("server.properties", vanillaServerSettingsJSON), // Suki - Suki configuration- include vanilla server.properties in timings
++            pair("server.properties", org.sucraft.suki.configuration.VanillaServerSettingsTimingsExport.get()), // Suki - Suki configuration- include vanilla server.properties in timings
              pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
              pair("bukkit", mapAsJSON(Bukkit.spigot().getBukkitConfig(), null)),
              pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Pufferfish
@@ -1150,6 +1101,70 @@ index 0000000000000000000000000000000000000000..7efcab76aeaaf0d9bd7ef52e6f32718a
 +
 +        int worldDummyValue = 0;
 +
++    }
++
++}
+diff --git a/src/main/java/org/sucraft/suki/configuration/VanillaServerSettingsTimingsExport.java b/src/main/java/org/sucraft/suki/configuration/VanillaServerSettingsTimingsExport.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..bb6f90f83384c85b588871885c147fa27913e6d5
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/configuration/VanillaServerSettingsTimingsExport.java
+@@ -0,0 +1,58 @@
++// Suki - Suki configuration - include vanilla server.properties in timings
++
++package org.sucraft.suki.configuration;
++
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.dedicated.DedicatedServer;
++import org.jetbrains.annotations.NotNull;
++import org.json.simple.JSONObject;
++
++public final class VanillaServerSettingsTimingsExport {
++
++    private VanillaServerSettingsTimingsExport() {}
++
++    public static @NotNull JSONObject get() {
++        var json = new JSONObject();
++        var properties = ((DedicatedServer) MinecraftServer.getServer()).getProperties();
++        json.put("enable-command-block", String.valueOf(properties.enableCommandBlock));
++        json.put("gamemode", String.valueOf(properties.gamemode));
++        json.put("enforce-secure-profile", String.valueOf(properties.enforceSecureProfile));
++        json.put("pvp", String.valueOf(properties.pvp));
++        json.put("generate-structures", String.valueOf(properties.worldGenProperties.generateStructures()));
++        json.put("max-chained-neighbor-updates", String.valueOf(properties.maxChainedNeighborUpdates));
++        json.put("difficulty", String.valueOf(properties.difficulty));
++        json.put("network-compression-threshold", String.valueOf(properties.networkCompressionThreshold));
++        json.put("max-tick-time", String.valueOf(properties.maxTickTime));
++        properties.serverResourcePackInfo.ifPresent(it -> json.put("require-resource-pack", String.valueOf(it.isRequired())));
++        json.put("max-players", String.valueOf(properties.maxPlayers));
++        json.put("use-native-transport", String.valueOf(properties.useNativeTransport));
++        json.put("online-mode", String.valueOf(properties.onlineMode));
++        json.put("enable-status", String.valueOf(properties.enableStatus));
++        json.put("allow-flight", String.valueOf(properties.allowFlight));
++        json.put("view-distance", String.valueOf(properties.viewDistance));
++        json.put("allow-nether", String.valueOf(properties.allowNether));
++        json.put("sync-chunk-writes", String.valueOf(properties.syncChunkWrites));
++        json.put("op-permission-level", String.valueOf(properties.opPermissionLevel));
++        json.put("prevent-proxy-connections", String.valueOf(properties.preventProxyConnections));
++        json.put("hide-online-players", String.valueOf(properties.hideOnlinePlayers));
++        json.put("entity-broadcast-range-percentage", String.valueOf(properties.entityBroadcastRangePercentage));
++        json.put("simulation-distance", String.valueOf(properties.simulationDistance));
++        json.put("player-idle-timeout", String.valueOf(properties.playerIdleTimeout.get()));
++        json.put("debug", String.valueOf(properties.debug));
++        json.put("force-gamemode", String.valueOf(properties.forceGameMode));
++        json.put("rate-limit", String.valueOf(properties.rateLimitPacketsPerSecond));
++        json.put("hardcore", String.valueOf(properties.hardcore));
++        json.put("white-list", String.valueOf(properties.whiteList.get()));
++        json.put("spawn-npcs", String.valueOf(properties.spawnNpcs));
++        json.put("previews-chat", String.valueOf(properties.previewsChat));
++        json.put("spawn-animals", String.valueOf(properties.spawnAnimals));
++        json.put("function-permission-level", String.valueOf(properties.functionPermissionLevel));
++        json.put("level-type", properties.worldGenProperties.levelType());
++        json.put("spawn-monsters", String.valueOf(properties.spawnMonsters));
++        json.put("enforce-whitelist", String.valueOf(properties.enforceWhitelist));
++        json.put("spawn-protection", String.valueOf(properties.spawnProtection));
++        json.put("max-world-size", String.valueOf(properties.maxWorldSize));
++        return json;
 +    }
 +
 +}
