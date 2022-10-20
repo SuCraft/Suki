@@ -5,16 +5,11 @@ Subject: [PATCH] Allow invalid client view distance
 
 
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
-index 177306cc9c6092a9da9c4889ff9e7ca620a5ec8f..604fc0bedd43700957272a9e88d17c011fdbe267 100644
+index 631d26a5cf33f2c6d076cfda617810bac7e7a0ba..0d0b82aa1551505c2fea490dab0d58bd0b6bfa52 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
-@@ -6,10 +6,21 @@ import net.minecraft.world.entity.HumanoidArm;
- import net.minecraft.world.entity.player.ChatVisiblity;
- 
+@@ -8,6 +8,18 @@ import net.minecraft.world.entity.player.ChatVisiblity;
  public record ServerboundClientInformationPacket(String language, int viewDistance, ChatVisiblity chatVisibility, boolean chatColors, int modelCustomisation, HumanoidArm mainHand, boolean textFilteringEnabled, boolean allowsListing) implements Packet<ServerGamePacketListener> {
--    public final String language;
--    public final int viewDistance;
-+
      public static final int MAX_LANGUAGE_LENGTH = 16;
  
 +    // Suki start - allow invalid client view distance
@@ -33,7 +28,7 @@ index 177306cc9c6092a9da9c4889ff9e7ca620a5ec8f..604fc0bedd43700957272a9e88d17c01
          this(buf.readUtf(16), buf.readByte(), buf.readEnum(ChatVisiblity.class), buf.readBoolean(), buf.readUnsignedByte(), buf.readEnum(HumanoidArm.class), buf.readBoolean(), buf.readBoolean());
      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 560aed20dddb3bd60911b7d3033ecdcb1bf9e725..f47022fba8c19e0a7ce3fa9158c5720582f859a2 100644
+index 7c2e8ea5fe134e73c33586d251d939038ee33b02..58fb45667dafb36a507fe5c4e6de009556d2fc92 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -90,7 +90,6 @@ import net.minecraft.stats.ServerStatsCounter;
@@ -44,40 +39,26 @@ index 560aed20dddb3bd60911b7d3033ecdcb1bf9e725..f47022fba8c19e0a7ce3fa9158c57205
  import net.minecraft.util.Unit;
  import net.minecraft.world.damagesource.DamageSource;
  import net.minecraft.world.damagesource.EntityDamageSource;
-@@ -1920,23 +1919,25 @@ public class ServerPlayer extends Player {
+@@ -1920,7 +1919,7 @@ public class ServerPlayer extends Player {
      public String locale = null; // CraftBukkit - add, lowercase // Paper - default to null
      public java.util.Locale adventure$locale = java.util.Locale.US; // Paper
      public void updateOptions(ServerboundClientInformationPacket packet) {
--        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), packet.language, packet.viewDistance, com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT).callEvent(); // Paper - settings event
+-        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), packet.language(), packet.viewDistance(), com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT).callEvent(); // Paper - settings event // Suki - Suki imports decompilation fixes
 +        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), packet.language(), packet.getAcceptableViewDistance(), com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT).callEvent(); // Paper - settings event // Suki - allow invalid client view distance
          // CraftBukkit start
          if (getMainArm() != packet.mainHand()) {
              PlayerChangedMainHandEvent event = new PlayerChangedMainHandEvent(this.getBukkitEntity(), getMainArm() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT);
-             this.server.server.getPluginManager().callEvent(event);
-         }
--        if (this.locale == null || !this.locale.equals(packet.language)) { // Paper - check for null
--            PlayerLocaleChangeEvent event = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packet.language);
-+        // Suki start - allow invalid client view distance
-+        if (this.locale == null || !this.locale.equals(packet.language())) { // Paper - check for null
-+            PlayerLocaleChangeEvent event = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packet.language());
-+            // Suki end - allow invalid client view distance
-             this.server.server.getPluginManager().callEvent(event);
--            this.server.server.getPluginManager().callEvent(new com.destroystokyo.paper.event.player.PlayerLocaleChangeEvent(this.getBukkitEntity(), this.locale, packet.language)); // Paper
-+            this.server.server.getPluginManager().callEvent(new com.destroystokyo.paper.event.player.PlayerLocaleChangeEvent(this.getBukkitEntity(), this.locale, packet.language())); // Paper // Suki - do not use invalid client view distance
-         }
--        this.locale = packet.language;
-+        this.locale = packet.language(); // Suki - allow invalid client view distance
-         // Paper start
+@@ -1938,7 +1937,7 @@ public class ServerPlayer extends Player {
          this.adventure$locale = net.kyori.adventure.translation.Translator.parseLocale(this.locale);
          this.connection.connection.channel.attr(PaperAdventure.LOCALE_ATTRIBUTE).set(this.adventure$locale);
          // Paper end
--        this.clientViewDistance = packet.viewDistance;
+-        this.clientViewDistance = packet.viewDistance(); // Suki - Suki imports decompilation fixes
 +        this.clientViewDistance = packet.getAcceptableViewDistance(); // Suki - allow invalid client view distance
          // CraftBukkit end
          this.chatVisibility = packet.chatVisibility();
          this.canChatColor = packet.chatColors();
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 8669862af25b53e295070b468211c963dfbd171e..11fbe20291de082a7f802630aa18f03888c499e3 100644
+index 586dfa1dcdc83d2c0dcc97f1e5ba177e5ae41a3d..ee0ca0f13a143cece813d7082dfa197cdefdaf6c 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -175,7 +175,6 @@ import net.minecraft.world.level.block.entity.CommandBlockEntity;
@@ -97,7 +78,7 @@ index 8669862af25b53e295070b468211c963dfbd171e..11fbe20291de082a7f802630aa18f038
  import org.bukkit.event.player.PlayerChatEvent;
  import org.bukkit.event.player.PlayerCommandPreprocessEvent;
  import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-@@ -3689,9 +3686,19 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3690,9 +3687,19 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          PacketUtils.ensureRunningOnSameThread(packet, this, this.player.getLevel());
          // Paper start - do not accept invalid information
          if (packet.viewDistance() < 0) {

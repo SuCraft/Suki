@@ -85,7 +85,7 @@ index 0b818969d74eae05e2d2adfdbc38e513972c61a1..bb2b995c90af00299efadcc27339f932
 +
  }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index abc86f95fdfc0e6dcb37c923d17a55c9b55b0fca..560aed20dddb3bd60911b7d3033ecdcb1bf9e725 100644
+index 1f8e6671882be5f0982cd26ff6279d9058f270be..7c2e8ea5fe134e73c33586d251d939038ee33b02 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 @@ -174,6 +174,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
@@ -105,7 +105,7 @@ index abc86f95fdfc0e6dcb37c923d17a55c9b55b0fca..560aed20dddb3bd60911b7d3033ecdcb
              this.connection.send(new ClientboundPlayerChatHeaderPacket(header, headerSignature, bodyDigest));
          }
  
-@@ -1966,7 +1967,7 @@ public class ServerPlayer extends Player {
+@@ -1968,7 +1969,7 @@ public class ServerPlayer extends Player {
      }
  
      public void sendServerStatus(ServerStatus metadata) {

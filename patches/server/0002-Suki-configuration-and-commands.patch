@@ -372,10 +372,10 @@ index 3e4a3915cdf29fc964e0314ce01d156dd2f4f873..19214a855ce4b7610a21c9514e81ebc5
      private WorldGenSettings worldGenSettings;
  
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 9704b6420a15fbed8970ca3adac21bf2aaa3766d..6b1487c35dcad8b83c13f09106cce04f925ad41b 100644
+index ac96f90d2f89fa449907108700db327ca5c798d5..bc6374bdaf17057b55c3e93c391b4c3bfdb977fc 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -530,7 +530,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+@@ -525,7 +525,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
      public ServerLevel(MinecraftServer minecraftserver, Executor executor, LevelStorageSource.LevelStorageAccess convertable_conversionsession, PrimaryLevelData iworlddataserver, ResourceKey<Level> resourcekey, LevelStem worlddimension, ChunkProgressListener worldloadlistener, boolean flag, long i, List<CustomSpawner> list, boolean flag1, org.bukkit.World.Environment env, org.bukkit.generator.ChunkGenerator gen, org.bukkit.generator.BiomeProvider biomeProvider) {
          // Holder holder = worlddimension.typeHolder(); // CraftBukkit - decompile error
          // Objects.requireNonNull(minecraftserver); // CraftBukkit - decompile error
@@ -385,7 +385,7 @@ index 9704b6420a15fbed8970ca3adac21bf2aaa3766d..6b1487c35dcad8b83c13f09106cce04f
          this.convertable = convertable_conversionsession;
          this.uuid = WorldUUID.getUUID(convertable_conversionsession.levelDirectory.path().toFile());
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index d6f1cbea24de82ada6083749f079401dbcca1ced..455f67ea6b972f312469c93f1578b5b093af5a66 100644
+index f1105edce8484cac39d8fb33a42c9ed8d44fe5c0..f2fc6cbea76ec31fe96743a0a83ce886f59600fd 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 @@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
@@ -452,19 +452,6 @@ index d5d0116e49aa9cc5ace6d2e13eba4dceb68a5bbd..fbee98f461746cdce51df95b0fdf87a3
          @Override
          public void restart() {
              org.spigotmc.RestartCommand.restart();
-diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index b3f5b7e5ea44174bf2769e9b80d4e21f9438b77f..e598cd619830ba6a0ae5b2eee5939e0dd6f16e9a 100644
---- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-+++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-@@ -430,7 +430,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
- 
-     @Override
-     public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
--        return new wtf.etil.mirai.MiraiVersionFetcher(); // Mirai // Suki - branding changes // TODO Make Suki
-+        return new dev.etil.mirai.MiraiVersionFetcher(); // Mirai // Suki - branding changes // TODO Make Suki
-     }
- 
-     @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
 index 8e06bc11fb28baee3407bbfe9d7b3689d6f85ff2..ce1190a6b0fb1e4f00e0d573edd42e2456c7e1e2 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java

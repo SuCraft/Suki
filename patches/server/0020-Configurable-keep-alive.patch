@@ -5,7 +5,7 @@ Subject: [PATCH] Configurable keep-alive
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 6cf26a45cd1fde21d4587c82604a2df5e6487139..c7f4d86f028b6f3c5e6ef251f41a1d092d2e32ec 100644
+index f7b9ece0a9ccaff03d89c751c2a1a28b72212f5b..5ce24e4dac8ebbbd4e3f6d5bcffef4bf30129204 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -7,7 +7,6 @@ import com.mojang.brigadier.StringReader;
@@ -42,7 +42,7 @@ index 6cf26a45cd1fde21d4587c82604a2df5e6487139..c7f4d86f028b6f3c5e6ef251f41a1d09
                  this.keepAlivePending = true;
                  this.keepAliveTime = currentTime;
                  this.keepAliveChallenge = currentTime;
-@@ -3673,11 +3672,16 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3674,11 +3673,16 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
              this.player.latency = (this.player.latency * 3 + i) / 4;
              this.keepAlivePending = false;
          } else if (!this.isSingleplayerOwner()) {

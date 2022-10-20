@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: MartijnMuijsers <martijnmuijsers@live.nl>
 Date: Mon, 19 Sep 2022 22:49:15 +0200
-Subject: [PATCH] Suki branding changes
+Subject: [PATCH] Suki branding changes and imports
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
@@ -61,6 +61,74 @@ index d0a342ce8a5cc1a12ecab7969187166fe3597708..2ac40f0cb02c3e933f6204c936c62fda
                  .variable(LineReader.HISTORY_FILE, java.nio.file.Paths.get(".console_history"))
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
+diff --git a/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java b/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java
+index 4a6b624df834217d7305ba42cab78fdf320ec64c..d48f57f30b65d2c87805d16f4bec9865ef96c5cc 100644
+--- a/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java
++++ b/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java
+@@ -113,8 +113,10 @@ public class ArgumentTypeInfos {
+         register(registry, "entity_summon", EntitySummonArgument.class, SingletonArgumentInfo.contextFree(EntitySummonArgument::id));
+         register(registry, "dimension", DimensionArgument.class, SingletonArgumentInfo.contextFree(DimensionArgument::dimension));
+         register(registry, "time", TimeArgument.class, SingletonArgumentInfo.contextFree(TimeArgument::time));
+-        register(registry, "resource_or_tag", fixClassType(ResourceOrTagLocationArgument.class), new ResourceOrTagLocationArgument.Info());
+-        register(registry, "resource", fixClassType(ResourceKeyArgument.class), new ResourceKeyArgument.Info());
++        // Suki start - Suki imports decompilation fixes
++        register(registry, "resource_or_tag", fixClassType(ResourceOrTagLocationArgument.class), new ResourceOrTagLocationArgument.Info<>());
++        register(registry, "resource", fixClassType(ResourceKeyArgument.class), new ResourceKeyArgument.Info<>());
++        // Suki end - Suki imports decompilation fixes
+         register(registry, "template_mirror", TemplateMirrorArgument.class, SingletonArgumentInfo.contextFree(TemplateMirrorArgument::templateMirror));
+         register(registry, "template_rotation", TemplateRotationArgument.class, SingletonArgumentInfo.contextFree(TemplateRotationArgument::templateRotation));
+         if (SharedConstants.IS_RUNNING_IN_IDE) {
+@@ -126,7 +128,7 @@ public class ArgumentTypeInfos {
+     }
+ 
+     private static <T extends ArgumentType<?>> Class<T> fixClassType(Class<? super T> clazz) {
+-        return clazz;
++        return (Class<T>) clazz; // Suki - Suki imports decompilation fixes
+     }
+ 
+     public static boolean isClassRecognized(Class<?> clazz) {
+@@ -138,7 +140,7 @@ public class ArgumentTypeInfos {
+         if (argumentTypeInfo == null) {
+             throw new IllegalArgumentException(String.format(Locale.ROOT, "Unrecognized argument type %s (%s)", argumentType, argumentType.getClass()));
+         } else {
+-            return argumentTypeInfo;
++            return (ArgumentTypeInfo<A, ?>) argumentTypeInfo; // Suki - Suki imports decompilation fixes
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java
+index 07d96cca04c9658291eea91e7b0a7f5a3fc9882e..a93a32f36f140edf71602cb9d0ac32b09c60dfae 100644
+--- a/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java
++++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java
+@@ -8,6 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
+ import net.minecraft.network.protocol.Packet;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.world.item.crafting.Recipe;
++import net.minecraft.world.item.crafting.RecipeSerializer;
+ 
+ public class ClientboundUpdateRecipesPacket implements Packet<ClientGamePacketListener> {
+     private final List<Recipe<?>> recipes;
+@@ -45,6 +46,6 @@ public class ClientboundUpdateRecipesPacket implements Packet<ClientGamePacketLi
+     public static <T extends Recipe<?>> void toNetwork(FriendlyByteBuf buf, T recipe) {
+         buf.writeResourceLocation(Registry.RECIPE_SERIALIZER.getKey(recipe.getSerializer()));
+         buf.writeResourceLocation(recipe.getId());
+-        recipe.getSerializer().toNetwork(buf, recipe);
++        ((RecipeSerializer<T>) recipe.getSerializer()).toNetwork(buf, recipe); // Suki - Suki imports decompilation fixes
+     }
+ }
+diff --git a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
+index 177306cc9c6092a9da9c4889ff9e7ca620a5ec8f..631d26a5cf33f2c6d076cfda617810bac7e7a0ba 100644
+--- a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
++++ b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
+@@ -6,8 +6,6 @@ import net.minecraft.world.entity.HumanoidArm;
+ import net.minecraft.world.entity.player.ChatVisiblity;
+ 
+ public record ServerboundClientInformationPacket(String language, int viewDistance, ChatVisiblity chatVisibility, boolean chatColors, int modelCustomisation, HumanoidArm mainHand, boolean textFilteringEnabled, boolean allowsListing) implements Packet<ServerGamePacketListener> {
+-    public final String language;
+-    public final int viewDistance;
+     public static final int MAX_LANGUAGE_LENGTH = 16;
+ 
+     public ServerboundClientInformationPacket(FriendlyByteBuf buf) {
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
 index 3c528e612e9ed17e8c58bbef6c26471cc3411a7a..1be2129db92fde50885c53b830cc2c285509b501 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
@@ -83,6 +151,72 @@ index 3c528e612e9ed17e8c58bbef6c26471cc3411a7a..1be2129db92fde50885c53b830cc2c28
      }
  
      public SystemReport fillSystemReport(SystemReport details) {
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+index bbe39f0fab243c763ee9c9a0629d17bdb167cd72..1f8e6671882be5f0982cd26ff6279d9058f270be 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+@@ -1919,23 +1919,25 @@ public class ServerPlayer extends Player {
+     public String locale = null; // CraftBukkit - add, lowercase // Paper - default to null
+     public java.util.Locale adventure$locale = java.util.Locale.US; // Paper
+     public void updateOptions(ServerboundClientInformationPacket packet) {
+-        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), packet.language, packet.viewDistance, com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT).callEvent(); // Paper - settings event
++        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), packet.language(), packet.viewDistance(), com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT).callEvent(); // Paper - settings event // Suki - Suki imports decompilation fixes
+         // CraftBukkit start
+         if (getMainArm() != packet.mainHand()) {
+             PlayerChangedMainHandEvent event = new PlayerChangedMainHandEvent(this.getBukkitEntity(), getMainArm() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT);
+             this.server.server.getPluginManager().callEvent(event);
+         }
+-        if (this.locale == null || !this.locale.equals(packet.language)) { // Paper - check for null
+-            PlayerLocaleChangeEvent event = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packet.language);
++        // Suki start - Suki imports decompilation fixes
++        if (this.locale == null || !this.locale.equals(packet.language())) { // Paper - check for null
++            PlayerLocaleChangeEvent event = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packet.language());
++            // Suki end - Suki imports decompilation fixes
+             this.server.server.getPluginManager().callEvent(event);
+-            this.server.server.getPluginManager().callEvent(new com.destroystokyo.paper.event.player.PlayerLocaleChangeEvent(this.getBukkitEntity(), this.locale, packet.language)); // Paper
++            this.server.server.getPluginManager().callEvent(new com.destroystokyo.paper.event.player.PlayerLocaleChangeEvent(this.getBukkitEntity(), this.locale, packet.language())); // Paper // Suki - Suki imports decompilation fixes
+         }
+-        this.locale = packet.language;
++        this.locale = packet.language(); // Suki - Suki imports decompilation fixes
+         // Paper start
+         this.adventure$locale = net.kyori.adventure.translation.Translator.parseLocale(this.locale);
+         this.connection.connection.channel.attr(PaperAdventure.LOCALE_ATTRIBUTE).set(this.adventure$locale);
+         // Paper end
+-        this.clientViewDistance = packet.viewDistance;
++        this.clientViewDistance = packet.viewDistance(); // Suki - Suki imports decompilation fixes
+         // CraftBukkit end
+         this.chatVisibility = packet.chatVisibility();
+         this.canChatColor = packet.chatColors();
+diff --git a/src/main/java/net/minecraft/world/level/block/Blocks.java b/src/main/java/net/minecraft/world/level/block/Blocks.java
+index 5dc3605fed7fb2ff8cc6c965d1bf99c462e0b14a..12574808574bedeb3875be9afaa383502146dc28 100644
+--- a/src/main/java/net/minecraft/world/level/block/Blocks.java
++++ b/src/main/java/net/minecraft/world/level/block/Blocks.java
+@@ -1091,7 +1091,7 @@ public class Blocks {
+     }
+ 
+     private static Boolean ocelotOrParrot(BlockState state, BlockGetter world, BlockPos pos, EntityType<?> type) {
+-        return (boolean)type == EntityType.OCELOT || type == EntityType.PARROT;
++        return type == EntityType.OCELOT || type == EntityType.PARROT; // Suki - Suki imports decompilation fixes
+     }
+ 
+     private static BedBlock bed(DyeColor color) {
+diff --git a/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java b/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java
+index 2bfb9ff77839e9ed91c9c48ad34abb46361c04b7..d1ed9e4b65abf441b6eb0507db393d535fc0fd3b 100644
+--- a/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java
++++ b/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java
+@@ -49,8 +49,10 @@ public class EnchantRandomlyFunction extends LootItemConditionalFunction {
+         Enchantment enchantment;
+         if (this.enchantments.isEmpty()) {
+             boolean bl = stack.is(Items.BOOK);
+-            List<Enchantment> list = Registry.ENCHANTMENT.stream().filter(Enchantment::isDiscoverable).filter((enchantment) -> {
+-                return bl || enchantment.canEnchant(stack);
++            // Suki start - Suki imports decompilation fixes
++            List<Enchantment> list = Registry.ENCHANTMENT.stream().filter(Enchantment::isDiscoverable).filter((registeredDiscoverableEnchantment) -> {
++                return bl || registeredDiscoverableEnchantment.canEnchant(stack);
++            // Suki end - Suki imports decompilation fixes
+             }).collect(Collectors.toList());
+             if (list.isEmpty()) {
+                 LOGGER.warn("Couldn't find a compatible enchantment for {}", (Object)stack);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 index cc9c5eecc4ef1d5dc4e814ad89a40a34f4d48a69..d5d0116e49aa9cc5ace6d2e13eba4dceb68a5bbd 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
@@ -106,7 +240,7 @@ index cc9c5eecc4ef1d5dc4e814ad89a40a34f4d48a69..d5d0116e49aa9cc5ace6d2e13eba4dce
      }
      // Yatopia end
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index 402927770de3d9df4a75c8eac31c0ac801477164..b3f5b7e5ea44174bf2769e9b80d4e21f9438b77f 100644
+index 402927770de3d9df4a75c8eac31c0ac801477164..e598cd619830ba6a0ae5b2eee5939e0dd6f16e9a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 @@ -430,7 +430,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
@@ -114,7 +248,7 @@ index 402927770de3d9df4a75c8eac31c0ac801477164..b3f5b7e5ea44174bf2769e9b80d4e21f
      @Override
      public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
 -        return new dev.etil.mirai.MiraiVersionFetcher(); // Mirai
-+        return new wtf.etil.mirai.MiraiVersionFetcher(); // Mirai // Suki - branding changes // TODO Make Suki
++        return new dev.etil.mirai.MiraiVersionFetcher(); // Mirai // Suki - branding changes // TODO Make Suki
      }
  
      @Override
