@@ -5,7 +5,7 @@ Subject: [PATCH] Configurable move checks
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 16b6e97c060f17b9a2d3bbfe770e0e2a9ecec92c..dbeede666d22c589a1439cf1a736931131211cfd 100644
+index ee0ca0f13a143cece813d7082dfa197cdefdaf6c..438c4a2c8d11fd86627649d71080212c28197c94 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -668,9 +668,13 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
@@ -86,7 +86,7 @@ index 5d162f59fc5ef9adf7fa762b137bbcfca745d9c5..36f7fdd1835afa2b4ee634aebc767447
  
      public static double movedTooQuicklyMultiplier;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index bce220fb349f3a0b28e5f200c594d637e3fa0b34..ba00e5a2009241bd06b9699e241e47450b79298a 100644
+index 86305671fea5b36324075045355e3ba2be56ab77..c1199c71fc0889658c50086d0686231490d63a72 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -39,6 +39,30 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
@@ -121,7 +121,7 @@ index bce220fb349f3a0b28e5f200c594d637e3fa0b34..ba00e5a2009241bd06b9699e241e4745
  
      // Suki end - less console logs
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index e51b87d7c9215d5ae1e6e3cb0b3177d3507aa046..08bb0b03e0afa1e1cc576db03c63beb4b59f96c0 100644
+index ddb5f2e00f375810748c53cc13dd6c6d0a44c81c..238f74e9770b81a473600dbb6db8a417e4d4d5b2 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -104,4 +104,32 @@ public class SukiWorldConfiguration extends ConfigurationPart {

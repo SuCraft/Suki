@@ -27,7 +27,7 @@ index d2b4654a9095a678bbc9e004af969cf54da0fcab..1479e70c23ae1201af1807cbab080a0f
          });
          this.rotation = Rotation.valueOf(nbt.getString("rotation"));
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 3a6da322461e4e49c288a084168cf451bcba3a4e..7d88230180caba09a175b6aab2ec9285bc2ecac7 100644
+index 52c18610bf67338521cce134f5676b1c9899fb2a..e6ec0d67e85395a69cd10b450c1703fc6ebcb99d 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -35,6 +35,8 @@ public class SukiGlobalConfiguration extends ConfigurationPart {

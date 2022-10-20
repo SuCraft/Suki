@@ -26,7 +26,7 @@ index 28ddab1121e314e82bf764fd89f36714bd7445f8..c4da2200bb7a62ec86081cf839cb0d0f
  
          record ConstantFunction(net.minecraft.network.chat.Component component) implements Function<Audience, net.minecraft.network.chat.Component> {
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index bded25d3d87ee8c6e90874275e9d1ab3fd65a26b..b211fbdda02b824b98061f8fc498e0ae6b6baa2e 100644
+index 790b25582f4fe78a681c0bf8281892e7545af1d6..7161da05bd145b934aee90ec906ccea1edb50935 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -120,6 +120,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
@@ -47,7 +47,7 @@ index bded25d3d87ee8c6e90874275e9d1ab3fd65a26b..b211fbdda02b824b98061f8fc498e0ae
          boolean flag1 = message.isFullyFiltered();
          boolean flag2 = false;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 7cbe234799dae5bc0123b19d1a34b5103638bbb9..fbeb85151885069cfb95fcffe4f25a920a4aa2f7 100644
+index 66a9af55e7c26bfd989c9142866d72193ab83792..08191dd20eb5346f0bcc3550d756183f4b1d7de7 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -27,11 +27,12 @@ public class SukiGlobalConfiguration extends ConfigurationPart {

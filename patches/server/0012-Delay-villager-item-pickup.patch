@@ -25,7 +25,7 @@ index 098253e92bd95159de93fbbdf95daee341fc5752..9b153475bf32af92648829a401e4e582
          org.bukkit.event.entity.EntityDropItemEvent event = new org.bukkit.event.entity.EntityDropItemEvent(entity.getBukkitEntity(), (org.bukkit.entity.Item) entityitem.getBukkitEntity());
          entityitem.level.getCraftServer().getPluginManager().callEvent(event);
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index e44d895fff8288752187253889f45b0bff1a0644..9d8834c73e834153e7fcc0bf50fc4a9d0abfb88c 100644
+index db7a67bd11540e4fc1f59c820101b71ee0015d3a..c7e6ee9427ddc424e3d02fc17ec5c418f11c42fe 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -50,7 +50,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
