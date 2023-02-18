@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Sat, 18 Feb 2023 21:37:19 +0100
+Subject: [PATCH] Set Suki permissions root
+
+License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
+index 9ae9eff03fa9b240ed736eaa97fee0da7168c41d..9b21b9d2ab3324f193da7ac3c9323aa5d6d317d6 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
+@@ -6,6 +6,7 @@ import org.bukkit.util.permissions.DefaultPermissions;
+ public final class CraftDefaultPermissions {
+     private static final String ROOT = "minecraft";
+     public static final String GALE_ROOT = "gale"; // Gale - set Gale permissions root
++    public static final String SUKI_ROOT = "suki"; // Suki - set Suki permissions root
+ 
+     public static final String writeBooks = GALE_ROOT + ".writebooks"; // Gale - Pufferfish - make book writing configurable
+ 
