@@ -1,0 +1,71 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Sat, 18 Feb 2023 23:33:04 +0100
+Subject: [PATCH] Non-sitting pet inactivity immunity
+
+License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/org/spigotmc/ActivationRange.java b/src/main/java/org/spigotmc/ActivationRange.java
+index 2bff2b6cff78f1ad4cbc6abbc1a37464f543ccb7..e93d12e9f4a577e468dfe2b6d2070bed22b83d81 100644
+--- a/src/main/java/org/spigotmc/ActivationRange.java
++++ b/src/main/java/org/spigotmc/ActivationRange.java
+@@ -3,13 +3,7 @@ package org.spigotmc;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.server.MinecraftServer;
+ import net.minecraft.server.level.ServerChunkCache;
+-import net.minecraft.world.entity.Entity;
+-import net.minecraft.world.entity.ExperienceOrb;
+-import net.minecraft.world.entity.FlyingMob;
+-import net.minecraft.world.entity.LightningBolt;
+-import net.minecraft.world.entity.LivingEntity;
+-import net.minecraft.world.entity.Mob;
+-import net.minecraft.world.entity.PathfinderMob;
++import net.minecraft.world.entity.*;
+ import net.minecraft.world.entity.ai.Brain;
+ import net.minecraft.world.entity.ambient.AmbientCreature;
+ import net.minecraft.world.entity.animal.Animal;
+@@ -385,6 +379,13 @@ public class ActivationRange
+         if (entity instanceof Mob && ((Mob)entity).getLeashHolder() instanceof Player) {
+             return true;
+         }
++        // Suki start - non-sitting pet inactivity immunity
++        if (entity.level.sukiConfig().gameplayMechanics.nonSittingPetsImmuneFromInactive && entity instanceof TamableAnimal tamableAnimal) {
++            if (tamableAnimal.getOwnerUUID() != null && !tamableAnimal.isOrderedToSit()) {
++                return true;
++            }
++        }
++        // Suki end - non-sitting pet inactivity immunity
+         // Paper end
+ 
+         boolean isActive = entity.activatedTick >= MinecraftServer.currentTick;
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 1c5aa2aa083cb66347a1507e0ff0613062ecb565..826537422959db83c06c0cd9ff61cb22e2b8bffe 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -30,10 +30,21 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+     @Setting(Configuration.VERSION_FIELD)
+     public int version = CURRENT_VERSION;
+ 
+-    public SmallOptimizations smallOptimizations;
+-    public class SmallOptimizations extends ConfigurationPart {
+-
+-        public int dummyValue = 0;
++    public GameplayMechanics gameplayMechanics;
++    public class GameplayMechanics extends ConfigurationPart {
++
++        // Suki start - non-sitting pet inactivity immunity
++        /**
++         * If true, non-sitting pets are immune from being ticked as an inactive entity,
++         * and will always be regarded as active.
++         * This prevents some instances of pets not teleporting with their owner.
++         * <ul>
++         *     <li><i>Default</i>: true</li>
++         *     <li><i>Vanilla</i>: false</li>
++         * </ul>
++         */
++        public boolean nonSittingPetsImmuneFromInactive = true;
++        // Suki end - non-sitting pet inactivity immunity
+ 
+     }
+ 
