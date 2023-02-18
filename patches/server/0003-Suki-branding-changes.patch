@@ -1,0 +1,142 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Sat, 18 Feb 2023 21:01:53 +0100
+Subject: [PATCH] Suki branding changes
+
+License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index a42fe43e94439bbf9aaa2dc1e5fbfbc2a0784a4c..1414c00c8b46ca804fb0e40201b61be6b75fcf8a 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -79,7 +79,7 @@ tasks.jar {
+         attributes(
+             "Main-Class" to "org.bukkit.craftbukkit.Main",
+             "Implementation-Title" to "CraftBukkit",
+-            "Implementation-Version" to "git-Gale-$implementationVersion", // Gale - branding changes
++            "Implementation-Version" to "git-Suki-$implementationVersion", // Gale - branding changes // Suki - branding changes
+             "Implementation-Vendor" to date, // Paper
+             "Specification-Title" to "Bukkit",
+             "Specification-Version" to project.version,
+diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
+index a83a1dc5a3ecc3780e12721bb3022867d80b34d4..93d03b9624b805d25f41a802c64b3ff28495a800 100644
+--- a/src/main/java/com/destroystokyo/paper/Metrics.java
++++ b/src/main/java/com/destroystokyo/paper/Metrics.java
+@@ -603,15 +603,15 @@ public class Metrics {
+ 
+                 metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
+                 metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : "offline"));
+-                final String galeVersion; // Gale - branding changes
++                final String sukiVersion; // Gale - branding changes // Suki - branding changes
+                 final String implVersion = org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion();
+                 if (implVersion != null) {
+                     final String buildOrHash = implVersion.substring(implVersion.lastIndexOf('-') + 1);
+-                    galeVersion = "git-Gale-%s-%s".formatted(Bukkit.getServer().getMinecraftVersion(), buildOrHash); // Gale - branding changes - metrics
++                    sukiVersion = "git-Suki-%s-%s".formatted(Bukkit.getServer().getMinecraftVersion(), buildOrHash); // Gale - branding changes - metrics // Suki - branding changes
+                 } else {
+-                    galeVersion = "unknown"; // Gale - branding changes
++                    sukiVersion = "unknown"; // Gale - branding changes // Suki - branding changes
+                 }
+-                metrics.addCustomChart(new Metrics.SimplePie("gale_version", () -> galeVersion)); // Gale - branding changes - metrics
++                metrics.addCustomChart(new Metrics.SimplePie("gale_version", () -> sukiVersion)); // Gale - branding changes - metrics // Suki - branding changes*
+ 
+                 metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+                     Map<String, Map<String, Integer>> map = new HashMap<>();
+diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
+index e45e6b44b2a8f2cdae6e0048a812b92126aa17ca..f06c48c48e0ba61db7e86756d3802f8ad555d76a 100644
+--- a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
++++ b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
+@@ -17,7 +17,7 @@ public final class PaperConsole extends SimpleTerminalConsole {
+     @Override
+     protected LineReader buildReader(LineReaderBuilder builder) {
+         builder
+-                .appName("Gale") // Gale - branding changes
++                .appName("Suki") // Gale - branding changes // Suki - branding changes
+                 .variable(LineReader.HISTORY_FILE, java.nio.file.Paths.get(".console_history"))
+                 .completer(new ConsoleCommandCompleter(this.server))
+                 .option(LineReader.Option.COMPLETE_IN_WORD, true);
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index eb951c9fda85d9620d3038a3db22d578db45e878..991a9dd8c3aae27877e64b46e476de5c208735b6 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1627,7 +1627,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+     @DontObfuscate
+     public String getServerModName() {
+-        return "Gale"; // Gale - branding changes - Gale > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
++        return "Suki"; // Suki - branding changes - Suki > // Gale - branding changes - Gale > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
+     }
+ 
+     public SystemReport fillSystemReport(SystemReport details) {
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index dc5020580d1a26f1fcb31af2fd272e5d8bcaa480..42b1b68e090b907b9ecece12192fe7fe26690bb1 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -266,7 +266,7 @@ import javax.annotation.Nullable; // Paper
+ import javax.annotation.Nonnull; // Paper
+ 
+ public final class CraftServer implements Server {
+-    private final String serverName = "Gale"; // Paper // Gale - branding changes
++    private final String serverName = "Suki"; // Paper // Gale - branding changes // Suki - branding changes
+     private final String serverVersion;
+     private final String bukkitVersion = Versioning.getBukkitVersion();
+     private final Logger logger = Logger.getLogger("Minecraft");
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+index 6d7e14ac2f28cff95c6995a7fc06956cd5c1bd25..4c9156cdc5128062940cb9c3eeed05435c5af343 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+@@ -462,7 +462,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+ 
+     @Override
+     public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
+-        return new org.galemc.gale.version.GaleVersionFetcher(); // Gale - branding changes - version fetcher
++        return new org.sucraft.suki.version.SukiVersionFetcher(); // Gale - branding changes - version fetcher // Suki - branding changes
+     }
+ 
+     @Override
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index 0b5979723bb30f9011ac64c36d894aa41713ec9b..1eac42b508242c9fa1a2a378473faf4214b81cd7 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -11,7 +11,7 @@ public final class Versioning {
+     public static String getBukkitVersion() {
+         String result = "Unknown-Version";
+ 
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.galemc.gale/gale-api/pom.properties"); // Gale - branding changes
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.sucraft.suki/suki-api/pom.properties"); // Gale - branding changes // Suki - branding changes
+         Properties properties = new Properties();
+ 
+         if (stream != null) {
+diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/spigotmc/WatchdogThread.java
+index 832f1ee4fb11c981bd109510eb908d7c7ef91bd4..4318e4ea9eef804f8db9315ff34d8b9c6ae9f935 100644
+--- a/src/main/java/org/spigotmc/WatchdogThread.java
++++ b/src/main/java/org/spigotmc/WatchdogThread.java
+@@ -169,7 +169,7 @@ public final class WatchdogThread extends io.papermc.paper.util.TickThread // Pa
+                 log.log( Level.SEVERE, "\t If this is the case, consider increasing timeout-time in spigot.yml but note that this will replace the crash with LARGE lag spikes" );
+                 log.log( Level.SEVERE, "If you are unsure or think this is a Gale bug, please report this to https://github.com/GaleMC/Gale/issues - and if you think this is a Paper bug, please report this to https://github.com/PaperMC/Paper/issues" ); // Gale - branding changes
+                 log.log( Level.SEVERE, "Be sure to include ALL relevant console errors and Minecraft crash reports" );
+-                log.log( Level.SEVERE, "Gale version: " + Bukkit.getServer().getVersion() ); // Gale - branding changes
++                log.log( Level.SEVERE, "Suki version: " + Bukkit.getServer().getVersion() ); // Gale - branding changes // Suki - branding changes
+                 //
+                 if ( net.minecraft.world.level.Level.lastPhysicsProblem != null )
+                 {
+diff --git a/src/main/java/org/sucraft/suki/version/SukiVersionFetcher.java b/src/main/java/org/sucraft/suki/version/SukiVersionFetcher.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..cefc0f8c29ff39a72de5d869f7e1fd711b003c75
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/version/SukiVersionFetcher.java
+@@ -0,0 +1,13 @@
++// Suki - branding changes - version fetcher
++
++package org.sucraft.suki.version;
++
++import org.galemc.gale.version.AbstractPaperVersionFetcher;
++
++public class SukiVersionFetcher extends AbstractPaperVersionFetcher {
++
++    public SukiVersionFetcher() {
++        super("ver/1.19.3", "https://github.com/SuCraft/Suki", "Suki", "SuCraft", "SuCraft", "Suki");
++    }
++
++}
