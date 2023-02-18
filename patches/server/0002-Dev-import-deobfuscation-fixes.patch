@@ -1,0 +1,138 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: MartijnMuijsers <martijnmuijsers@live.nl>
+Date: Mon, 19 Sep 2022 22:49:15 +0200
+Subject: [PATCH] Dev import deobfuscation fixes
+
+License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java b/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java
+index d5aa51482a67cb87fc7e7cb94c0bb8713a193759..1b3c64097c24b0b39d9f2ca42ab50c3509228d65 100644
+--- a/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java
++++ b/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java
+@@ -111,10 +111,12 @@ public class ArgumentTypeInfos {
+         register(registry, "dimension", DimensionArgument.class, SingletonArgumentInfo.contextFree(DimensionArgument::dimension));
+         register(registry, "gamemode", GameModeArgument.class, SingletonArgumentInfo.contextFree(GameModeArgument::gameMode));
+         register(registry, "time", TimeArgument.class, SingletonArgumentInfo.contextFree(TimeArgument::time));
+-        register(registry, "resource_or_tag", fixClassType(ResourceOrTagArgument.class), new ResourceOrTagArgument.Info());
+-        register(registry, "resource_or_tag_key", fixClassType(ResourceOrTagKeyArgument.class), new ResourceOrTagKeyArgument.Info());
+-        register(registry, "resource", fixClassType(ResourceArgument.class), new ResourceArgument.Info());
+-        register(registry, "resource_key", fixClassType(ResourceKeyArgument.class), new ResourceKeyArgument.Info());
++        // Suki start - dev import deobfuscation fixes
++        register(registry, "resource_or_tag", fixClassType(ResourceOrTagArgument.class), new ResourceOrTagArgument.Info<>());
++        register(registry, "resource_or_tag_key", fixClassType(ResourceOrTagKeyArgument.class), new ResourceOrTagKeyArgument.Info<>());
++        register(registry, "resource", fixClassType(ResourceArgument.class), new ResourceArgument.Info<>());
++        register(registry, "resource_key", fixClassType(ResourceKeyArgument.class), new ResourceKeyArgument.Info<>());
++        // Suki end - dev import deobfuscation fixes
+         register(registry, "template_mirror", TemplateMirrorArgument.class, SingletonArgumentInfo.contextFree(TemplateMirrorArgument::templateMirror));
+         register(registry, "template_rotation", TemplateRotationArgument.class, SingletonArgumentInfo.contextFree(TemplateRotationArgument::templateRotation));
+         if (SharedConstants.IS_RUNNING_IN_IDE) {
+@@ -126,7 +128,7 @@ public class ArgumentTypeInfos {
+     }
+ 
+     private static <T extends ArgumentType<?>> Class<T> fixClassType(Class<? super T> clazz) {
+-        return clazz;
++        return (Class<T>) clazz; // Suki - dev import deobfuscation fixes
+     }
+ 
+     public static boolean isClassRecognized(Class<?> clazz) {
+@@ -138,7 +140,7 @@ public class ArgumentTypeInfos {
+         if (argumentTypeInfo == null) {
+             throw new IllegalArgumentException(String.format(Locale.ROOT, "Unrecognized argument type %s (%s)", argumentType, argumentType.getClass()));
+         } else {
+-            return argumentTypeInfo;
++            return (ArgumentTypeInfo<A, ?>) argumentTypeInfo; // Suki - dev import deobfuscation fixes
+         }
+     }
+ 
+diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java
+index a7564a2dfce361a62b14a0bd2a77b122eaaebca3..b8aa2fc1616df49e0f14c8a460e0e75f46fd042a 100644
+--- a/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java
++++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket.java
+@@ -45,6 +45,6 @@ public class ClientboundUpdateRecipesPacket implements Packet<ClientGamePacketLi
+     public static <T extends Recipe<?>> void toNetwork(FriendlyByteBuf buf, T recipe) {
+         buf.writeResourceLocation(BuiltInRegistries.RECIPE_SERIALIZER.getKey(recipe.getSerializer()));
+         buf.writeResourceLocation(recipe.getId());
+-        recipe.getSerializer().toNetwork(buf, recipe);
++        ((net.minecraft.world.item.crafting.RecipeSerializer<T>) recipe.getSerializer()).toNetwork(buf, recipe); // Suki - dev import deobfuscation fixes
+     }
+ }
+diff --git a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
+index 177306cc9c6092a9da9c4889ff9e7ca620a5ec8f..631d26a5cf33f2c6d076cfda617810bac7e7a0ba 100644
+--- a/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
++++ b/src/main/java/net/minecraft/network/protocol/game/ServerboundClientInformationPacket.java
+@@ -6,8 +6,6 @@ import net.minecraft.world.entity.HumanoidArm;
+ import net.minecraft.world.entity.player.ChatVisiblity;
+ 
+ public record ServerboundClientInformationPacket(String language, int viewDistance, ChatVisiblity chatVisibility, boolean chatColors, int modelCustomisation, HumanoidArm mainHand, boolean textFilteringEnabled, boolean allowsListing) implements Packet<ServerGamePacketListener> {
+-    public final String language;
+-    public final int viewDistance;
+     public static final int MAX_LANGUAGE_LENGTH = 16;
+ 
+     public ServerboundClientInformationPacket(FriendlyByteBuf buf) {
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+index 82dec221441ad4b76af0aebf788af801a275be64..e57d69588826fa9248a8ea392989dbad6790f0fc 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
+@@ -1967,23 +1967,25 @@ public class ServerPlayer extends Player {
+     public String locale = null; // CraftBukkit - add, lowercase // Paper - default to null
+     public java.util.Locale adventure$locale = java.util.Locale.US; // Paper
+     public void updateOptions(ServerboundClientInformationPacket packet) {
+-        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), getClientOptionMap(packet.language, packet.viewDistance, com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT, packet.allowsListing(), packet.textFilteringEnabled())).callEvent(); // Paper - settings event
++        new com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent(getBukkitEntity(), getClientOptionMap(packet.language(), packet.viewDistance(), com.destroystokyo.paper.ClientOption.ChatVisibility.valueOf(packet.chatVisibility().name()), packet.chatColors(), new com.destroystokyo.paper.PaperSkinParts(packet.modelCustomisation()), packet.mainHand() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT, packet.allowsListing(), packet.textFilteringEnabled())).callEvent(); // Paper - settings event // Suki - dev import deobfuscation fixes
+         // CraftBukkit start
+         if (getMainArm() != packet.mainHand()) {
+             PlayerChangedMainHandEvent event = new PlayerChangedMainHandEvent(this.getBukkitEntity(), getMainArm() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT);
+             this.server.server.getPluginManager().callEvent(event);
+         }
+-        if (this.locale == null || !this.locale.equals(packet.language)) { // Paper - check for null
+-            PlayerLocaleChangeEvent event = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packet.language);
++        // Suki start - dev import deobfuscation fixes
++        if (this.locale == null || !this.locale.equals(packet.language())) { // Paper - check for null
++            PlayerLocaleChangeEvent event = new PlayerLocaleChangeEvent(this.getBukkitEntity(), packet.language());
++            // Suki end - dev import deobfuscation fixes
+             this.server.server.getPluginManager().callEvent(event);
+-            this.server.server.getPluginManager().callEvent(new com.destroystokyo.paper.event.player.PlayerLocaleChangeEvent(this.getBukkitEntity(), this.locale, packet.language)); // Paper
++            this.server.server.getPluginManager().callEvent(new com.destroystokyo.paper.event.player.PlayerLocaleChangeEvent(this.getBukkitEntity(), this.locale, packet.language())); // Paper // Suki - dev import deobfuscation fixes
+         }
+-        this.locale = packet.language;
++        this.locale = packet.language(); // Suki - dev import deobfuscation fixes
+         // Paper start
+         this.adventure$locale = net.kyori.adventure.translation.Translator.parseLocale(this.locale);
+         this.connection.connection.channel.attr(PaperAdventure.LOCALE_ATTRIBUTE).set(this.adventure$locale);
+         // Paper end
+-        this.clientViewDistance = packet.viewDistance;
++        this.clientViewDistance = packet.viewDistance(); // Suki - dev import deobfuscation fixes
+         // CraftBukkit end
+         this.chatVisibility = packet.chatVisibility();
+         this.canChatColor = packet.chatColors();
+diff --git a/src/main/java/net/minecraft/world/level/block/Blocks.java b/src/main/java/net/minecraft/world/level/block/Blocks.java
+index 42f46d338886e2892ee4219d19be4dc97f61616f..7e9481141afbb44cdb678cae36ee75771bcbe16b 100644
+--- a/src/main/java/net/minecraft/world/level/block/Blocks.java
++++ b/src/main/java/net/minecraft/world/level/block/Blocks.java
+@@ -1127,7 +1127,7 @@ public class Blocks {
+     }
+ 
+     private static Boolean ocelotOrParrot(BlockState state, BlockGetter world, BlockPos pos, EntityType<?> type) {
+-        return (boolean)type == EntityType.OCELOT || type == EntityType.PARROT;
++        return type == EntityType.OCELOT || type == EntityType.PARROT; // Suki - dev import deobfuscation fixes
+     }
+ 
+     private static BedBlock bed(DyeColor color) {
+diff --git a/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java b/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java
+index e5570b66bf0b1100554f01e2bad2e9e4e22a288c..64d7c11d8895f4630d480b8bd7b9f6c88fa6d58d 100644
+--- a/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java
++++ b/src/main/java/net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction.java
+@@ -49,8 +49,10 @@ public class EnchantRandomlyFunction extends LootItemConditionalFunction {
+         Enchantment enchantment;
+         if (this.enchantments.isEmpty()) {
+             boolean bl = stack.is(Items.BOOK);
+-            List<Enchantment> list = BuiltInRegistries.ENCHANTMENT.stream().filter(Enchantment::isDiscoverable).filter((enchantment) -> {
+-                return bl || enchantment.canEnchant(stack);
++            // Suki start - dev import deobfuscation fixes
++            List<Enchantment> list = BuiltInRegistries.ENCHANTMENT.stream().filter(Enchantment::isDiscoverable).filter((registeredDiscoverableEnchantment) -> {
++                return bl || registeredDiscoverableEnchantment.canEnchant(stack);
++            // Suki end - dev import deobfuscation fixes
+             }).collect(Collectors.toList());
+             if (list.isEmpty()) {
+                 LOGGER.warn("Couldn't find a compatible enchantment for {}", (Object)stack);
