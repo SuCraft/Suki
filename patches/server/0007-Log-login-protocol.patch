@@ -92,10 +92,10 @@ index 9b924f0793d8231244c160a5bc7ac8e1a35bad34..9f6355266c56d28b4f241ba7dd9f17f5
              this.gameProfile = gameprofile;
              this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 6fee94db151abf6861436b8535054194344e7f0a..31f42ef07d7b6871bbdf591e5d94da32ecdc2c12 100644
+index 037d7700b4cd783aa0bdcaa81683b50ae0c44809..86b3714a850a73d1482ea63ded43a9f59da78e6e 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -24,10 +24,26 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -20,10 +20,26 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
      @Setting(Configuration.VERSION_FIELD)
      public int version = CURRENT_VERSION;
  

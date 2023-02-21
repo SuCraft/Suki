@@ -1,0 +1,72 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Tue, 21 Feb 2023 21:32:05 +0100
+Subject: [PATCH] Disable keep-alive kicks
+
+License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 7f43c51c37a4056f2b4b5fe6dbd1b83492e0fffa..415bb5e1c600630d4ef79bf4faeb29d3dc4f96b9 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -413,7 +413,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         // Gale start - Purpur - send multiple keep-alive packets
+         if (GaleGlobalConfiguration.get().misc.keepalive.sendMultiple) {
+             if (elapsedTime >= 1000L) { // 1 second
+-                if (!this.processedDisconnect && this.keepAlives.size() >= KEEPALIVE_LIMIT_IN_SECONDS) {
++                if (SukiGlobalConfiguration.get().misc.keepaliveKicks.lateResponse && !this.processedDisconnect && this.keepAlives.size() >= KEEPALIVE_LIMIT_IN_SECONDS) { // Suki - disable keep-alive kicks - no disconnect on late or wrong keep-alive
+                     LOGGER.warn("{} was kicked due to keepalive timeout!", this.player.getName());
+                     disconnect(Component.translatable("disconnect.timeout"), org.bukkit.event.player.PlayerKickEvent.Cause.TIMEOUT);
+                 } else {
+@@ -425,7 +425,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         } else
+         // Gale end - Purpur - send multiple keep-alive packets
+ 
+-        if (this.keepAlivePending) {
++        if (SukiGlobalConfiguration.get().misc.keepaliveKicks.lateResponse && this.keepAlivePending) { // Suki - disable keep-alive kicks - no disconnect on late or wrong keep-alive
+             if (!this.processedDisconnect && elapsedTime >= KEEPALIVE_LIMIT) { // check keepalive limit, don't fire if already disconnected
+                 ServerGamePacketListenerImpl.LOGGER.warn("{} was kicked due to keepalive timeout!", this.player.getScoreboardName()); // more info
+                 this.disconnect(Component.translatable("disconnect.timeout", ArrayConstants.emptyObjectArray), org.bukkit.event.player.PlayerKickEvent.Cause.TIMEOUT); // Paper - kick event cause // Gale - JettPack - reduce array allocations
+@@ -3518,11 +3518,16 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+             this.player.latency = (this.player.latency * 3 + i) / 4;
+             this.keepAlivePending = false;
+         } else if (!this.isSingleplayerOwner()) {
++            // Suki start - disable keep-alive kicks - no disconnect on late or wrong keep-alive
++            // Do not disconnect when keepalive challenge is wrong
++            if (!((packet.getId() == this.keepAliveChallenge || !SukiGlobalConfiguration.get().misc.keepaliveKicks.wrongResponseId) && (this.keepAlivePending || !SukiGlobalConfiguration.get().misc.keepaliveKicks.unexpectedResponse))) {
++                // Suki end - disable keep-alive kicks - no disconnect on late or wrong keep-alive
+             // Paper start - This needs to be handled on the main thread for plugins
+             server.submit(() -> {
+             this.disconnect(Component.translatable("disconnect.timeout"), org.bukkit.event.player.PlayerKickEvent.Cause.TIMEOUT); // Paper - kick event cause
+             });
+             // Paper end
++            } // Suki - disable keep-alive kicks - no disconnect on late or wrong keep-alive
+         }
+ 
+     }
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index 87d7591d0abba77afc4a87f746e26500f1ea9550..7cab8863b883970d805aa41b89f7ac35dd86a198 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -52,4 +52,20 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+ 
+     }
+ 
++    public Misc misc;
++    public class Misc extends ConfigurationPart {
++
++        // Suki start - disable keep-alive kicks
++        public KeepaliveKicks keepaliveKicks;
++        public class KeepaliveKicks extends ConfigurationPart {
++
++            public boolean lateResponse = true;
++            public boolean wrongResponseId = true;
++            public boolean unexpectedResponse = true;
++
++        }
++        // Suki end - disable keep-alive kicks
++
++    }
++
+ }

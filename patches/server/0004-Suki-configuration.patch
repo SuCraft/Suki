@@ -654,21 +654,17 @@ index 0000000000000000000000000000000000000000..2f4c14731c38e814a2afcb9d35276f78
 +}
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..6fee94db151abf6861436b8535054194344e7f0a
+index 0000000000000000000000000000000000000000..037d7700b4cd783aa0bdcaa81683b50ae0c44809
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-@@ -0,0 +1,34 @@
+@@ -0,0 +1,30 @@
 +// Suki - Suki configuration
 +
 +package org.sucraft.suki.configuration;
 +
 +import io.papermc.paper.configuration.Configuration;
 +import io.papermc.paper.configuration.ConfigurationPart;
-+import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
 +import org.spongepowered.configurate.objectmapping.meta.Setting;
-+
-+import java.util.Locale;
-+import java.util.function.Consumer;
 +
 +@SuppressWarnings({"CanBeFinal", "FieldCanBeLocal", "FieldMayBeFinal", "NotNullFieldNotInitialized", "InnerClassMayBeStatic"})
 +public class SukiGlobalConfiguration extends ConfigurationPart {
