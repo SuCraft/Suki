@@ -88,7 +88,7 @@ index e000da425ba28330d1edcce3948d2becb39d2bd3..7f43c51c37a4056f2b4b5fe6dbd1b834
          // Paper end - do not accept invalid information
          this.player.updateOptions(packet);
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index 31f42ef07d7b6871bbdf591e5d94da32ecdc2c12..e278b89b050603936de407770d08ecb43252a7ca 100644
+index 31f42ef07d7b6871bbdf591e5d94da32ecdc2c12..02d56ee042d4f7044df7f27b6baa92711c72985a 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -27,6 +27,8 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
@@ -100,12 +100,11 @@ index 31f42ef07d7b6871bbdf591e5d94da32ecdc2c12..e278b89b050603936de407770d08ecb4
          // Suki start - log login protocol
          public LoginProtocol loginProtocol;
  
-@@ -47,4 +49,12 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+@@ -47,4 +49,11 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
  
      }
  
 +    public ViewDistance viewDistance;
-+
 +    public class ViewDistance extends ConfigurationPart {
 +
 +        public boolean allowInvalidClientViewDistance = false; // Suki start - allow invalid client view distance
