@@ -1,0 +1,127 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Tue, 21 Feb 2023 21:05:10 +0100
+Subject: [PATCH] Log login protocol
+
+License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java
+index 8e68d1373a519cc12bf83de6aadcb24cbbd34af6..1b4a3b24001776023efba7d386a1b1eba89a4589 100644
+--- a/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java
+@@ -1,5 +1,6 @@
+ package net.minecraft.server.network;
+ 
++import com.mojang.logging.LogUtils;
+ import it.unimi.dsi.fastutil.objects.Object2LongMap;
+ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+ import net.minecraft.SharedConstants;
+@@ -10,6 +11,8 @@ import net.minecraft.network.protocol.handshake.ClientIntentionPacket;
+ import net.minecraft.network.protocol.handshake.ServerHandshakePacketListener;
+ import net.minecraft.network.protocol.login.ClientboundLoginDisconnectPacket;
+ import net.minecraft.server.MinecraftServer;
++import org.slf4j.Logger;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ 
+ // CraftBukkit start
+ import java.net.InetAddress;
+@@ -32,6 +35,7 @@ public class ServerHandshakePacketListenerImpl implements ServerHandshakePacketL
+     private final MinecraftServer server;
+     private final Connection connection;
+     private static final boolean BYPASS_HOSTCHECK = Boolean.getBoolean("Paper.bypassHostCheck"); // Paper
++    private static final Logger LOGGER = LogUtils.getLogger(); // Suki - log login protocol - log handshakes
+ 
+     public ServerHandshakePacketListenerImpl(MinecraftServer server, Connection connection) {
+         this.server = server;
+@@ -44,6 +48,11 @@ public class ServerHandshakePacketListenerImpl implements ServerHandshakePacketL
+         switch (packet.getIntention()) {
+             case LOGIN:
+                 this.connection.setProtocol(ConnectionProtocol.LOGIN);
++                // Suki start - log login protocol - log handshakes
++                if (SukiGlobalConfiguration.get().consoleLogs.loginProtocol.packets.handshake) {
++                    ServerHandshakePacketListenerImpl.LOGGER.info("Received handshake packet from '" + this.connection.getRemoteAddress() + "': host name = '" + packet.getHostName() + "', port = " + packet.getPort() + ", protocol version = " + packet.getProtocolVersion());
++                }
++                // Suki end - log login protocol - log handshakes
+                 // CraftBukkit start - Connection throttle
+                 try {
+                     if (!(this.connection.channel.localAddress() instanceof io.netty.channel.unix.DomainSocketAddress)) { // Paper - the connection throttle is useless when you have a Unix domain socket
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index 9b924f0793d8231244c160a5bc7ac8e1a35bad34..9f6355266c56d28b4f241ba7dd9f17f56b44ffb2 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -9,6 +9,7 @@ import java.net.InetAddress;
+ import java.net.InetSocketAddress;
+ import java.net.SocketAddress;
+ import java.security.PrivateKey;
++import java.util.Optional;
+ import java.util.UUID;
+ import java.util.concurrent.atomic.AtomicInteger;
+ import javax.annotation.Nullable;
+@@ -44,6 +45,7 @@ import org.slf4j.Logger;
+ import org.bukkit.craftbukkit.util.Waitable;
+ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+ import org.bukkit.event.player.PlayerPreLoginEvent;
++import org.sucraft.suki.configuration.SukiGlobalConfiguration;
+ // CraftBukkit end
+ 
+ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener, TickablePacketListener {
+@@ -170,6 +172,11 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+         } else {
+             this.state = ServerLoginPacketListenerImpl.State.ACCEPTED;
+             if (this.server.getCompressionThreshold() >= 0 && !this.connection.isMemoryConnection()) {
++                // Suki start - log login protocol - log Set Compression packets
++                if (SukiGlobalConfiguration.get().consoleLogs.loginProtocol.packets.setCompression) {
++                    ServerLoginPacketListenerImpl.LOGGER.info("Sent set compression packet to '" + this.connection.getRemoteAddress() + "' (with player = '" + s.getName() + "'): compression threshold = " + this.server.getCompressionThreshold());
++                }
++                // Suki end - log login protocol - log Set Compression packets
+                 this.connection.send(new ClientboundLoginCompressionPacket(this.server.getCompressionThreshold()), PacketSendListener.thenRun(() -> {
+                     this.connection.setupCompression(this.server.getCompressionThreshold(), true);
+                 }));
+@@ -255,6 +262,12 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+         // Paper end - validate usernames
+         GameProfile gameprofile = this.server.getSingleplayerProfile();
+ 
++        // Suki start - log login protocol - log Login Start packets
++        if (SukiGlobalConfiguration.get().consoleLogs.loginProtocol.packets.loginStart) {
++            ServerLoginPacketListenerImpl.LOGGER.info("Received login start packet from '" + this.connection.getRemoteAddress() + "': name = " + Optional.ofNullable(packet.name()).map(name -> "'" + name + "'").orElse("(none)") + ", UUID = " + Optional.ofNullable(packet.profileId()).flatMap($ -> $).map(UUID::toString).orElse("(none)"));
++        }
++        // Suki end - log login protocol - log Login Start packets
++
+         if (gameprofile != null && packet.name().equalsIgnoreCase(gameprofile.getName())) {
+             this.gameProfile = gameprofile;
+             this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+index 6fee94db151abf6861436b8535054194344e7f0a..31f42ef07d7b6871bbdf591e5d94da32ecdc2c12 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
+@@ -24,10 +24,26 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
+     @Setting(Configuration.VERSION_FIELD)
+     public int version = CURRENT_VERSION;
+ 
+-    public SmallOptimizations smallOptimizations;
+-    public class SmallOptimizations extends ConfigurationPart {
++    public ConsoleLogs consoleLogs;
++    public class ConsoleLogs extends ConfigurationPart {
+ 
+-        public int dummyValue = 0;
++        // Suki start - log login protocol
++        public LoginProtocol loginProtocol;
++
++        public class LoginProtocol extends ConfigurationPart {
++
++            public Packets packets;
++
++            public class Packets extends ConfigurationPart {
++
++                public boolean handshake = false; // Suki - login protocol - log handshakes to console
++                public boolean loginStart = false; // Suki - login protocol - log Login Start packets to console
++                public boolean setCompression = false; // Suki - login protocol - log Set Compression packets to console
++
++            }
++
++        }
++        // Suki end log login protocol
+ 
+     }
+ 
