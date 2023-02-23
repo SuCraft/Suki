@@ -1,0 +1,253 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Thu, 23 Feb 2023 20:12:09 +0100
+Subject: [PATCH] Place items directly in head slot
+
+License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index 87499e82e80a8b7d6d8ca6eeaa1819b74fcf1665..4b0867a625bc5098210347c2b3f0cbabaebd0c02 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -121,6 +121,8 @@ import net.minecraft.world.phys.EntityHitResult;
+ import net.minecraft.world.phys.HitResult;
+ import net.minecraft.world.phys.Vec3;
+ import net.minecraft.world.scores.PlayerTeam;
++import org.bukkit.craftbukkit.util.permissions.CraftDefaultPermissions;
++import org.bukkit.permissions.Permissible;
+ import org.slf4j.Logger;
+ 
+ // CraftBukkit start
+@@ -4390,15 +4392,22 @@ public abstract class LivingEntity extends Entity {
+         }
+     }
+ 
+-    public static EquipmentSlot getEquipmentSlotForItem(ItemStack stack) {
++
++    public static EquipmentSlot getEquipmentSlotForItem(ItemStack stack, @Nullable Permissible target) { // Suki - place items directly in head slot
+         Item item = stack.getItem();
+ 
++        // Suki start - place items directly in head slot
++        // Makes it so players can place banners into the head slot, and will place banners into the head slot instantly when shift-clicking
++        if (target != null && target.hasPermission(CraftDefaultPermissions.putBannersOnHead) && stack.is(ItemTags.BANNERS)) {
++            return EquipmentSlot.HEAD;
++        }
++        // Suki end - place items directly in head slot
+         return !stack.is(Items.CARVED_PUMPKIN) && (!(item instanceof BlockItem) || !(((BlockItem) item).getBlock() instanceof AbstractSkullBlock)) ? (item instanceof ArmorItem ? ((ArmorItem) item).getSlot() : (stack.is(Items.ELYTRA) ? EquipmentSlot.CHEST : (stack.is(Items.SHIELD) ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND))) : EquipmentSlot.HEAD;
+     }
+ 
+     private static SlotAccess createEquipmentSlotAccess(LivingEntity entity, EquipmentSlot slot) {
+         return slot != EquipmentSlot.HEAD && slot != EquipmentSlot.MAINHAND && slot != EquipmentSlot.OFFHAND ? SlotAccess.forEquipmentSlot(entity, slot, (itemstack) -> {
+-            return itemstack.isEmpty() || Mob.getEquipmentSlotForItem(itemstack) == slot;
++            return itemstack.isEmpty() || Mob.getEquipmentSlotForItem(itemstack, entity.getBukkitEntity()) == slot; // Suki - place items directly in head slot
+         }) : SlotAccess.forEquipmentSlot(entity, slot);
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
+index 27fc50571305132c86497fcb1d5b1bb514610a4e..ab5dfc581e39082a162f8cfb1c9c45d0ec964b00 100644
+--- a/src/main/java/net/minecraft/world/entity/Mob.java
++++ b/src/main/java/net/minecraft/world/entity/Mob.java
+@@ -683,7 +683,7 @@ public abstract class Mob extends LivingEntity {
+ 
+     public ItemStack equipItemIfPossible(ItemStack itemstack, ItemEntity entityitem) {
+         // CraftBukkit end
+-        EquipmentSlot enumitemslot = this.getEquipmentSlotForItemStack(itemstack);
++        EquipmentSlot enumitemslot = getEquipmentSlotForItem(itemstack, this.getBukkitEntity()); // Suki - place items directly in head slot
+         ItemStack itemstack1 = this.getItemBySlot(enumitemslot);
+         boolean flag = this.canReplaceCurrentItem(itemstack, itemstack1);
+ 
+@@ -1232,7 +1232,7 @@ public abstract class Mob extends LivingEntity {
+ 
+     @Override
+     public boolean canTakeItem(ItemStack stack) {
+-        EquipmentSlot enumitemslot = getEquipmentSlotForItem(stack);
++        EquipmentSlot enumitemslot = getEquipmentSlotForItem(stack, this.getBukkitEntity()); // Suki - place items directly in head slot
+ 
+         return this.getItemBySlot(enumitemslot).isEmpty() && this.canPickUpLoot();
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Dolphin.java b/src/main/java/net/minecraft/world/entity/animal/Dolphin.java
+index 3f100d847fbce6db5b625e99c4f3694576237372..e4a2af7e1f6882b4f1135d56f7bac5a503781d35 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Dolphin.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Dolphin.java
+@@ -226,7 +226,7 @@ public class Dolphin extends WaterAnimal {
+ 
+     @Override
+     public boolean canTakeItem(ItemStack stack) {
+-        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, this.getBukkitEntity()); // Suki - place items directly in head slot
+ 
+         return !this.getItemBySlot(enumitemslot).isEmpty() ? false : enumitemslot == EquipmentSlot.MAINHAND && super.canTakeItem(stack);
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Fox.java b/src/main/java/net/minecraft/world/entity/animal/Fox.java
+index bc2b98c9f34ad2b289f5da91d704bd836edec8c1..f3c5324b0f83fea6c128a3a357a0afe5cd2f276d 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Fox.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Fox.java
+@@ -488,7 +488,7 @@ public class Fox extends Animal implements VariantHolder<Fox.Type> {
+ 
+     @Override
+     public boolean canTakeItem(ItemStack stack) {
+-        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, this.getBukkitEntity()); // Suki - place items directly in head slot
+ 
+         return !this.getItemBySlot(enumitemslot).isEmpty() ? false : enumitemslot == EquipmentSlot.MAINHAND && super.canTakeItem(stack);
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/animal/Panda.java b/src/main/java/net/minecraft/world/entity/animal/Panda.java
+index 9c1e02c3a990cd0f8bba1c84c170b438278c02a7..60006ae007be5cd8dcc82fb03cb426604593a95d 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/Panda.java
++++ b/src/main/java/net/minecraft/world/entity/animal/Panda.java
+@@ -110,7 +110,7 @@ public class Panda extends Animal {
+ 
+     @Override
+     public boolean canTakeItem(ItemStack stack) {
+-        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, this.getBukkitEntity()); // Suki - place items directly in head slot
+ 
+         return !this.getItemBySlot(enumitemslot).isEmpty() ? false : enumitemslot == EquipmentSlot.MAINHAND && super.canTakeItem(stack);
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
+index b136cdc13d94bc34c998a1986e0c93525356ac5c..a16bb9d8d38b1941e1f0075bc0c2abdde6509e1b 100644
+--- a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
++++ b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
+@@ -201,7 +201,7 @@ public class ArmorStand extends LivingEntity {
+ 
+     @Override
+     public boolean canTakeItem(ItemStack stack) {
+-        net.minecraft.world.entity.EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
++        net.minecraft.world.entity.EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, this.getBukkitEntity()); // Suki - place items directly in head slot
+ 
+         return this.getItemBySlot(enumitemslot).isEmpty() && !this.isDisabled(enumitemslot);
+     }
+@@ -374,7 +374,7 @@ public class ArmorStand extends LivingEntity {
+             } else if (player.level.isClientSide) {
+                 return InteractionResult.CONSUME;
+             } else {
+-                net.minecraft.world.entity.EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack);
++                net.minecraft.world.entity.EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack, this.getBukkitEntity()); // Suki - place items directly in head slot
+ 
+                 if (itemstack.isEmpty()) {
+                     net.minecraft.world.entity.EquipmentSlot enumitemslot1 = this.getClickedSlot(hitPos);
+diff --git a/src/main/java/net/minecraft/world/entity/monster/piglin/Piglin.java b/src/main/java/net/minecraft/world/entity/monster/piglin/Piglin.java
+index a2246ab400545284cb65c292012eaf8bb3376ad7..01751d4062f1096cfd80a108ffd58e69b321b912 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/piglin/Piglin.java
++++ b/src/main/java/net/minecraft/world/entity/monster/piglin/Piglin.java
+@@ -410,7 +410,7 @@ public class Piglin extends AbstractPiglin implements CrossbowAttackMob, Invento
+     }
+ 
+     protected boolean canReplaceCurrentItem(ItemStack stack) {
+-        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, this.getBukkitEntity()); // Suki - place items directly in head slot
+         ItemStack itemstack1 = this.getItemBySlot(enumitemslot);
+ 
+         return this.canReplaceCurrentItem(stack, itemstack1);
+diff --git a/src/main/java/net/minecraft/world/entity/player/Player.java b/src/main/java/net/minecraft/world/entity/player/Player.java
+index 8123f6dade5e64f6f8d9e567402636b8e297abe0..bc00e79a101a6ead2b03af7e7f158a39e3737665 100644
+--- a/src/main/java/net/minecraft/world/entity/player/Player.java
++++ b/src/main/java/net/minecraft/world/entity/player/Player.java
+@@ -2264,7 +2264,7 @@ public abstract class Player extends LivingEntity {
+ 
+     @Override
+     public boolean canTakeItem(ItemStack stack) {
+-        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack);
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(stack, this.getBukkitEntity()); // Suki - place items directly in head slot
+ 
+         return this.getItemBySlot(enumitemslot).isEmpty();
+     }
+diff --git a/src/main/java/net/minecraft/world/inventory/InventoryMenu.java b/src/main/java/net/minecraft/world/inventory/InventoryMenu.java
+index 150701f965006f1c7dc9d801ca0ab0add927d143..54f625ef4bf93b8e4d4d14cba901e7d9f02dd741 100644
+--- a/src/main/java/net/minecraft/world/inventory/InventoryMenu.java
++++ b/src/main/java/net/minecraft/world/inventory/InventoryMenu.java
+@@ -14,6 +14,7 @@ import net.minecraft.world.item.crafting.Recipe;
+ import net.minecraft.world.item.enchantment.EnchantmentHelper;
+ import org.bukkit.craftbukkit.inventory.CraftInventoryCrafting;
+ import org.bukkit.craftbukkit.inventory.CraftInventoryView;
++import org.bukkit.craftbukkit.util.permissions.CraftDefaultPermissions;
+ // CraftBukkit end
+ 
+ public class InventoryMenu extends RecipeBookMenu<CraftingContainer> {
+@@ -89,7 +90,13 @@ public class InventoryMenu extends RecipeBookMenu<CraftingContainer> {
+ 
+                 @Override
+                 public boolean mayPlace(ItemStack stack) {
+-                    return enumitemslot == Mob.getEquipmentSlotForItem(stack);
++                    // Suki start - place items directly in head slot
++                    // Makes it so some players can place banners into the head slot, and will place banners into the head slot instantly when shift-clicking
++                    if (enumitemslot == EquipmentSlot.HEAD && owner.getBukkitEntity().hasPermission(CraftDefaultPermissions.putAllBlocksAndItemsOnHead)) {
++                        return true;
++                    }
++                    return enumitemslot == Mob.getEquipmentSlotForItem(stack, owner.getBukkitEntity());
++                    // Suki end - place items directly in head slot
+                 }
+ 
+                 @Override
+@@ -172,7 +179,7 @@ public class InventoryMenu extends RecipeBookMenu<CraftingContainer> {
+             ItemStack itemstack1 = slot1.getItem();
+ 
+             itemstack = itemstack1.copy();
+-            EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack);
++            EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack, player.getBukkitEntity()); // Suki - place items directly in head slot
+ 
+             if (slot == 0) {
+                 if (!this.moveItemStackTo(itemstack1, 9, 45, true)) {
+diff --git a/src/main/java/net/minecraft/world/item/ArmorItem.java b/src/main/java/net/minecraft/world/item/ArmorItem.java
+index 9c8604376228c02f8bbd9a15673fbdf5097e7cb2..9df03f6c381f93bdc2e3186b6ac0f6dd03b153cc 100644
+--- a/src/main/java/net/minecraft/world/item/ArmorItem.java
++++ b/src/main/java/net/minecraft/world/item/ArmorItem.java
+@@ -55,7 +55,7 @@ public class ArmorItem extends Item implements Wearable {
+             return false;
+         } else {
+             LivingEntity entityliving = (LivingEntity) list.get(0);
+-            EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(armor);
++            EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(armor, entityliving.getBukkitEntity()); // Suki - place items directly in head slot
+             ItemStack itemstack1 = armor.copyWithCount(1); // Paper - shrink below and single item in event
+             // CraftBukkit start
+             Level world = pointer.getLevel();
+@@ -137,7 +137,7 @@ public class ArmorItem extends Item implements Wearable {
+     @Override
+     public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+         ItemStack itemstack = user.getItemInHand(hand);
+-        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack);
++        EquipmentSlot enumitemslot = Mob.getEquipmentSlotForItem(itemstack, user.getBukkitEntity()); // Suki - place items directly in head slot
+         ItemStack itemstack1 = user.getItemBySlot(enumitemslot);
+ 
+         if (itemstack1.isEmpty()) {
+diff --git a/src/main/java/net/minecraft/world/item/ElytraItem.java b/src/main/java/net/minecraft/world/item/ElytraItem.java
+index 42f79d418ec4e2dbeac9a217d9dc144cda2ef714..a2003b03a118a4069e9de20e72ce7b4a57859a31 100644
+--- a/src/main/java/net/minecraft/world/item/ElytraItem.java
++++ b/src/main/java/net/minecraft/world/item/ElytraItem.java
+@@ -30,7 +30,7 @@ public class ElytraItem extends Item implements Wearable {
+     @Override
+     public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+         ItemStack itemStack = user.getItemInHand(hand);
+-        EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(itemStack);
++        EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(itemStack, user.getBukkitEntity()); // Suki - place items directly in head slot
+         ItemStack itemStack2 = user.getItemBySlot(equipmentSlot);
+         if (itemStack2.isEmpty()) {
+             user.setItemSlot(equipmentSlot, itemStack.copy());
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
+index 9b21b9d2ab3324f193da7ac3c9323aa5d6d317d6..b9620f7a407eea6742d76843a71643dfa32e4725 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/permissions/CraftDefaultPermissions.java
+@@ -10,6 +10,11 @@ public final class CraftDefaultPermissions {
+ 
+     public static final String writeBooks = GALE_ROOT + ".writebooks"; // Gale - Pufferfish - make book writing configurable
+ 
++    // Suki start - place items directly in head slot
++    public static Permission putBannersOnHead;
++    public static Permission putAllBlocksAndItemsOnHead;
++    // Suki end - place items directly in head slot
++
+     private CraftDefaultPermissions() {}
+ 
+     public static void registerCorePermissions() {
+@@ -23,6 +28,10 @@ public final class CraftDefaultPermissions {
+         DefaultPermissions.registerPermission(CraftDefaultPermissions.ROOT + ".commandblock", "Gives the user the ability to use command blocks.", org.bukkit.permissions.PermissionDefault.OP, parent); // Paper
+         // Spigot end
+         DefaultPermissions.registerPermission(writeBooks, "Gives the user the ability to write books even when writing books is disabled in the Gale configuration", org.bukkit.permissions.PermissionDefault.OP); // Gale - Pufferfish - make book writing configurable
++        // Suki start - place items directly in head slot
++        putBannersOnHead = DefaultPermissions.registerPermission(CraftDefaultPermissions.SUKI_ROOT + ".itemsonhead.banner", "Gives the user the ability to put banners into their head armor slot", org.bukkit.permissions.PermissionDefault.FALSE, parent);
++        putAllBlocksAndItemsOnHead = DefaultPermissions.registerPermission(CraftDefaultPermissions.SUKI_ROOT + ".itemsonhead.all", "Gives the user the ability to put any block or item into their head armor slot", org.bukkit.permissions.PermissionDefault.FALSE, parent);
++        // Suki end - place items directly in head slot
+         parent.recalculatePermissibles();
+     }
+ }
