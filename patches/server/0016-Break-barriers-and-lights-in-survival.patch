@@ -1,0 +1,52 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Fri, 24 Feb 2023 17:20:12 +0100
+Subject: [PATCH] Break barriers and lights in survival
+
+License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
+index dec34261e35b2829e5f5506e86dcc86c681eaddd..504e59e1e96f4ad90f1ee6ad968828aba9404f47 100644
+--- a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
++++ b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
+@@ -230,6 +230,18 @@ public class ServerPlayerGameMode {
+                         }
+                         if (isUsingSurvivalDebugStick) {
+                             canCreativeDestroy = true;
++                            // Suki start - survival barrier blocks, survival light blocks
++                        } else {
++                            // Check for breaking barrier
++                            if (player.level.sukiConfig().gameplayMechanics.breakBlocksInSurvival.barrierIfHoldingBarrier && player.getItemInHand(InteractionHand.MAIN_HAND).is(Items.BARRIER) && this.level.getBlockState(pos).is(Blocks.BARRIER)) {
++                                canCreativeDestroy = true;
++                            } else {
++                                // Check for breaking light
++                                if (player.level.sukiConfig().gameplayMechanics.breakBlocksInSurvival.lightIfHoldingLight && player.getItemInHand(InteractionHand.MAIN_HAND).is(Items.LIGHT) && this.level.getBlockState(pos).is(Blocks.LIGHT)) {
++                                    canCreativeDestroy = true;
++                                }
++                            }
++                            // Suki end - survival barrier blocks, survival light blocks
+                         }
+                     }
+                 }
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 5b4c217bc30f9ac0f2f6584f391299a804ffc8a8..18e17e2054be1d363fa12d712b6b3fd0d97de1f4 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -60,6 +60,16 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+         }
+         // Suki end - all nether bricks count as fortress
+ 
++        // Suki start - breakable barrier blocks, breakable light blocks
++        public BreakBlocksInSurvival breakBlocksInSurvival;
++        public class BreakBlocksInSurvival extends ConfigurationPart {
++
++            public boolean barrierIfHoldingBarrier = false;
++            public boolean lightIfHoldingLight = false;
++
++        }
++        // Suki end - breakable barrier blocks, breakable light blocks
++
+     }
+ 
+     public Misc misc;

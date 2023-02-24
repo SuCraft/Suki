@@ -362,7 +362,7 @@ index b9620f7a407eea6742d76843a71643dfa32e4725..bb22d21c7d0da917adcfed51031c9091
          // Spigot end
          DefaultPermissions.registerPermission(writeBooks, "Gives the user the ability to write books even when writing books is disabled in the Gale configuration", org.bukkit.permissions.PermissionDefault.OP); // Gale - Pufferfish - make book writing configurable
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
-index a75becd46d3bbf56bfa90a3a4911754989df124b..830734ffba90a68e61506d17e97ef45a86bf2cab 100644
+index a75becd46d3bbf56bfa90a3a4911754989df124b..4c166bc573082cde7a8b540d37179baae9a884d8 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiGlobalConfiguration.java
 @@ -52,6 +52,23 @@ public class SukiGlobalConfiguration extends ConfigurationPart {
@@ -383,7 +383,7 @@ index a75becd46d3bbf56bfa90a3a4911754989df124b..830734ffba90a68e61506d17e97ef45a
 +
 +        }
 +        // Suki end - survival debug stick
-+        
++
 +    }
 +
      public Misc misc;
