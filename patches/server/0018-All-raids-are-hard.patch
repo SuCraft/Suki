@@ -1,0 +1,95 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Fri, 24 Feb 2023 19:26:36 +0100
+Subject: [PATCH] All raids are hard
+
+License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/world/entity/raid/Raid.java b/src/main/java/net/minecraft/world/entity/raid/Raid.java
+index 7a7e87954868c3eb267d3255652d67d34f7b04d2..4576b9791a5efbdeeeea822ae9e405bd85ba7f6c 100644
+--- a/src/main/java/net/minecraft/world/entity/raid/Raid.java
++++ b/src/main/java/net/minecraft/world/entity/raid/Raid.java
+@@ -119,7 +119,7 @@ public class Raid {
+         this.raidCooldownTicks = 300;
+         this.raidEvent.setProgress(0.0F);
+         this.center = pos;
+-        this.numGroups = this.getNumGroups(world.getDifficulty());
++        this.numGroups = this.getNumGroups(this.getDifficulty()); // Suki - raids are always hard
+         this.status = Raid.RaidStatus.ONGOING;
+     }
+ 
+@@ -151,6 +151,28 @@ public class Raid {
+ 
+     }
+ 
++    // Suki start - raids are always hard
++    public Difficulty getDifficulty() {
++        Difficulty levelDifficulty = this.level.getDifficulty();
++        return (levelDifficulty != Difficulty.PEACEFUL && this.level.sukiConfig().gameplayMechanics.difficultyChanges.raidsAreAlwaysHard) ? Difficulty.HARD : levelDifficulty;
++    }
++
++    public DifficultyInstance getLocalDifficulty(BlockPos pos) {
++        if (!this.level.sukiConfig().gameplayMechanics.difficultyChanges.raidsAreAlwaysHard) {
++            // Use the regular method
++            return this.level.getCurrentDifficultyAt(pos);
++        }
++        // This is based on Level.getCurrentlyDifficultyAt(BlockPos), but replaces the level's difficulty by this raid's difficulty
++        long i = 0L;
++        float f = 0.0F;
++        if (this.level.hasChunkAt(pos)) {
++            f = this.level.getMoonBrightness();
++            i = this.level.getChunkAt(pos).getInhabitedTime();
++        }
++        return new DifficultyInstance(this.getDifficulty(), this.level.getDayTime(), i, f);
++    }
++    // Suki end - raids are always hard
++
+     public boolean isOver() {
+         return this.isVictory() || this.isLoss();
+     }
+@@ -556,7 +578,7 @@ public class Raid {
+         int i = this.groupsSpawned + 1;
+ 
+         this.totalHealth = 0.0F;
+-        DifficultyInstance difficultydamagescaler = this.level.getCurrentDifficultyAt(pos);
++        DifficultyInstance difficultydamagescaler = this.getLocalDifficulty(pos); // Suki - raids are always hard
+         boolean flag1 = this.shouldSpawnBonusGroup();
+         Raid.RaiderType[] araid_wave = Raid.RaiderType.VALUES;
+         int j = araid_wave.length;
+@@ -635,7 +657,7 @@ public class Raid {
+             raider.setTicksOutsideRaid(0);
+             if (!existing && pos != null) {
+                 raider.setPos((double) pos.getX() + 0.5D, (double) pos.getY() + 1.0D, (double) pos.getZ() + 0.5D);
+-                raider.finalizeSpawn(this.level, this.level.getCurrentDifficultyAt(pos), MobSpawnType.EVENT, (SpawnGroupData) null, (CompoundTag) null);
++                raider.finalizeSpawn(this.level, this.getLocalDifficulty(pos), MobSpawnType.EVENT, (SpawnGroupData) null, (CompoundTag) null); // Suki - raids are always hard
+                 raider.applyRaidBuffs(wave, false);
+                 raider.setOnGround(true);
+                 this.level.addFreshEntityWithPassengers(raider, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.RAID); // CraftBukkit
+@@ -815,6 +837,11 @@ public class Raid {
+ 
+     private int getPotentialBonusSpawns(Raid.RaiderType member, RandomSource random, int wave, DifficultyInstance localDifficulty, boolean extra) {
+         Difficulty enumdifficulty = localDifficulty.getDifficulty();
++        // Suki start - raids are always hard
++        if (enumdifficulty != Difficulty.PEACEFUL && this.level.sukiConfig().gameplayMechanics.difficultyChanges.raidsAreAlwaysHard) {
++            enumdifficulty = Difficulty.HARD;
++        }
++        // Suki end - raids are always hard
+         boolean flag1 = enumdifficulty == Difficulty.EASY;
+         boolean flag2 = enumdifficulty == Difficulty.NORMAL;
+         int j;
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 57de5958cef473b6d1f54baea4a14d052c6416d5..5c9e70c9789191bbd24a3c6660aafa1da9c74942 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -73,8 +73,9 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+         // Suki start - difficulty changes
+         public DifficultyChanges difficultyChanges;
+         public class DifficultyChanges extends ConfigurationPart {
+-            
++
+             public boolean zombieReinforcementsOnAllDifficulties = false; // Suki - zombies can call for reinforcements on all difficulties
++            public boolean raidsAreAlwaysHard = false; // Suki - raids are always hard
+ 
+         }
+         // Suki end - difficulty changes
