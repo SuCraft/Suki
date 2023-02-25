@@ -1,0 +1,159 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Sat, 25 Feb 2023 17:30:57 +0100
+Subject: [PATCH] Chunk position utilities
+
+License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
+index bc46479fd0622a90fd98ac88f92b2840a22a2d04..4b363039e3044eb26b28aab5a8d37f563c773994 100644
+--- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
++++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
+@@ -68,7 +68,7 @@ public class ChunkHolder {
+     private boolean resendLight;
+     // Paper - rewrite chunk system
+ 
+-    private final ChunkMap chunkMap; // Paper
++    public final ChunkMap chunkMap; // Paper // Suki - chunks sorted by distance utilities - private -> public
+     // Paper start - no-tick view distance
+     public final LevelChunk getSendingChunk() {
+         // it's important that we use getChunkAtIfLoadedImmediately to mirror the chunk sending logic used
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index ce197df36b3746dbd511287ecd78e46eaec3d5e0..ba868bca27766f8ae58877e597e4c7939425df41 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -614,6 +614,24 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {
+         this.eyeHeight = this.getEyeHeight(net.minecraft.world.entity.Pose.STANDING, this.dimensions);
+     }
+ 
++    // Suki start - utility functions for getting the entity's chunk
++    public int getChunkX() {
++        return this.getBlockX() >> 4;
++    }
++
++    public int getChunkZ() {
++        return this.getBlockZ() >> 4;
++    }
++
++    public ChunkPos getChunkPos() {
++        return new ChunkPos(this.getBlockX() >> 4, this.getBlockZ() >> 4);
++    }
++
++    public long getChunkPosLongKey() {
++        return ChunkPos.asLong(this.getBlockX() >> 4, this.getBlockZ() >> 4);
++    }
++    // Suki end - utility functions for getting the entity's chunk
++
+     public boolean isColliding(BlockPos pos, BlockState state) {
+         VoxelShape voxelshape = state.getCollisionShape(this.level, pos, CollisionContext.of(this));
+         VoxelShape voxelshape1 = voxelshape.move((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
+diff --git a/src/main/java/org/sucraft/suki/util/ChunkDistanceUtils.java b/src/main/java/org/sucraft/suki/util/ChunkDistanceUtils.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..642631341c062b6acb0565231b4b89b9b8a66f1f
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/util/ChunkDistanceUtils.java
+@@ -0,0 +1,103 @@
++// Suki - chunk distance utilities
++
++package org.sucraft.suki.util;
++
++import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
++import it.unimi.dsi.fastutil.Pair;
++import net.minecraft.server.level.ChunkHolder;
++import net.minecraft.world.entity.Entity;
++import net.minecraft.world.level.ChunkPos;
++
++import java.util.Comparator;
++import java.util.function.BiConsumer;
++import java.util.stream.Stream;
++
++/**
++ * A utility class that provides methods related to distance to chunks.
++ *
++ * @author Martijn Muijsers under AGPL-3.0
++ */
++public final class ChunkDistanceUtils {
++
++    private ChunkDistanceUtils() {}
++
++    public static void evaluateChunksInSpiral(int initialX, int initialZ, int inclusiveDistance, BiConsumer<Integer, Integer> consumer) {
++        int x = initialX;
++        int z = initialZ;
++        // All inclusive
++        int minX = initialX - inclusiveDistance;
++        int minZ = initialZ - inclusiveDistance;
++        int maxX = initialX + inclusiveDistance;
++        int maxZ = initialZ + inclusiveDistance;
++        int dx = 0;
++        int dz = 1;
++        int t = 1;
++        int ct = 0;
++        while (true) {
++            if (x < minX || x > maxX || z < minZ || z > maxZ) {
++                break;
++            }
++            consumer.accept(x, z);
++            x += dx;
++            z += dz;
++            ct++;
++            if (ct == t) {
++                ct = 0;
++                if (dz > 0) {
++                    dx = 1;
++                    dz = 0;
++                } else if (dx > 0) {
++                    dx = 0;
++                    dz = -1;
++                    t++;
++                } else if (dz < 0) {
++                    dx = -1;
++                    dz = 0;
++                } else {
++                    dx = 0;
++                    dz = 1;
++                    t++;
++                }
++            }
++        }
++    }
++
++    public static Stream<ChunkHolder> getChunkHoldersSortedBySquaredPythagoreanDistanceToClosestPlayer(Stream<ChunkHolder> chunkHolders) {
++        return chunkHolders
++            .map(holder -> new ObjectObjectImmutablePair<>(holder, holder.chunkMap.level.players()
++                .stream()
++                .map(player -> getSquaredPythagoreanDistance(player, holder.getPos()))
++                .min(Long::compare)
++                .orElse(0L) // Happens in case there are no players in the world
++            ))
++            .sorted(Comparator.comparingLong(Pair::second))
++            .map(Pair::first);
++    }
++
++    public static int getChessboardDistance(Entity entity, ChunkPos chunk) {
++        return Math.max(Math.abs(entity.getChunkX() - chunk.x), Math.abs(entity.getChunkZ() - chunk.z));
++    }
++
++    public static int getChessboardDistance(Entity entity, long chunkKey) {
++        return getChessboardDistance(entity, new ChunkPos(chunkKey));
++    }
++
++    public static long getSquaredPythagoreanDistance(Entity entity, ChunkPos chunk) {
++        long dx = entity.getChunkX() - chunk.x;
++        long dz = entity.getChunkZ() - chunk.z;
++        return dx * dx + dz * dz;
++    }
++
++    public static long getSquaredPythagoreanDistance(Entity entity, long chunkKey) {
++        return getSquaredPythagoreanDistance(entity, new ChunkPos(chunkKey));
++    }
++
++    public static double getPythagoreanDistance(Entity entity, ChunkPos chunkPos) {
++        return Math.sqrt(getSquaredPythagoreanDistance(entity, chunkPos));
++    }
++
++    public static double getPythagoreanDistance(Entity entity, long chunkKey) {
++        return getPythagoreanDistance(entity, new ChunkPos(chunkKey));
++    }
++
++}

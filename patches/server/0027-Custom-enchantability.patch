@@ -6,18 +6,6 @@ Subject: [PATCH] Custom enchantability
 License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
-diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-index 66512a1385b7b907763a82bdb52661c3b0821ba7..493f737f2499bda2848baa8088102103110beacc 100644
---- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-+++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
-@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.Packet;
- import net.minecraft.network.protocol.game.ServerboundPlaceRecipePacket;
- import org.bukkit.Bukkit;
- import org.checkerframework.checker.nullness.qual.Nullable;
-+import org.checkerframework.checker.units.qual.A;
- import org.spongepowered.configurate.objectmapping.ConfigSerializable;
- import org.spongepowered.configurate.objectmapping.meta.Comment;
- import org.spongepowered.configurate.objectmapping.meta.Required;
 diff --git a/src/main/java/net/minecraft/server/commands/EnchantCommand.java b/src/main/java/net/minecraft/server/commands/EnchantCommand.java
 index e639c0ec642910e66b1d68ae0b9208ef58d91fce..87c04efd209f3703e446c056516d037230cfdf04 100644
 --- a/src/main/java/net/minecraft/server/commands/EnchantCommand.java
