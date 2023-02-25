@@ -1,0 +1,21 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Sat, 18 Feb 2023 19:47:20 +0100
+Subject: [PATCH] Suki project setup
+
+License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index ef633f7d1d48f8c2447c7d191f31ec646d641dca..a42fe43e94439bbf9aaa2dc1e5fbfbc2a0784a4c 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -9,7 +9,7 @@ plugins {
+ dependencies {
+     // Gale start - project setup
+     // Depend on own API
+-    implementation(project(":gale-api"))
++    implementation(project(":suki-api")) // Suki - project setup
+     // Depend on Paper MojangAPI
+     implementation("io.papermc.paper:paper-mojangapi:1.19.3-R0.1-SNAPSHOT") {
+         exclude("io.papermc.paper", "paper-api")

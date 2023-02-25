@@ -1,10 +1,10 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven("https://papermc.io/repo/repository/maven-public/")
+        maven("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
-rootProject.name = "suki"
+rootProject.name = "suki" // Gale - build changes // Suki - build changes
 
-include("suki-api", "suki-server")
+include("suki-api", "suki-server") // Gale - build changes // Suki - build changes
