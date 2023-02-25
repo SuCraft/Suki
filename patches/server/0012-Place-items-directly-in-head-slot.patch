@@ -45,7 +45,7 @@ index 87499e82e80a8b7d6d8ca6eeaa1819b74fcf1665..4b0867a625bc5098210347c2b3f0cbab
      }
  
 diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
-index 27fc50571305132c86497fcb1d5b1bb514610a4e..ab5dfc581e39082a162f8cfb1c9c45d0ec964b00 100644
+index 27fc50571305132c86497fcb1d5b1bb514610a4e..daa0b10c866d9578e7197f95208550adc8651e59 100644
 --- a/src/main/java/net/minecraft/world/entity/Mob.java
 +++ b/src/main/java/net/minecraft/world/entity/Mob.java
 @@ -683,7 +683,7 @@ public abstract class Mob extends LivingEntity {
@@ -57,6 +57,15 @@ index 27fc50571305132c86497fcb1d5b1bb514610a4e..ab5dfc581e39082a162f8cfb1c9c45d0
          ItemStack itemstack1 = this.getItemBySlot(enumitemslot);
          boolean flag = this.canReplaceCurrentItem(itemstack, itemstack1);
  
+@@ -717,7 +717,7 @@ public abstract class Mob extends LivingEntity {
+     }
+ 
+     private EquipmentSlot getEquipmentSlotForItemStack(ItemStack stack) {
+-        EquipmentSlot enumitemslot = getEquipmentSlotForItem(stack);
++        EquipmentSlot enumitemslot = getEquipmentSlotForItem(stack, this.getBukkitEntity()); // Suki - place items directly in head slot
+         boolean flag = this.getItemBySlot(enumitemslot).isEmpty();
+ 
+         return enumitemslot.isArmor() && !flag ? EquipmentSlot.MAINHAND : enumitemslot;
 @@ -1232,7 +1232,7 @@ public abstract class Mob extends LivingEntity {
  
      @Override

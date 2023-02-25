@@ -366,6 +366,22 @@ index 42b1b68e090b907b9ecece12192fe7fe26690bb1..d7558e44e66f654c577ce71c9a3a2fba
          getCommandMap().getKnownCommands().keySet().removeIf(removals::contains);
          File file = getCommandsConfigFile();
          try {
+diff --git a/src/main/java/org/galemc/gale/command/subcommands/ReloadCommand.java b/src/main/java/org/galemc/gale/command/subcommands/ReloadCommand.java
+index c6ca5d3cf7e709f59f68ccd28db378e9e6303fdd..99deec0de3c0227414822da1730f6c49f2073853 100644
+--- a/src/main/java/org/galemc/gale/command/subcommands/ReloadCommand.java
++++ b/src/main/java/org/galemc/gale/command/subcommands/ReloadCommand.java
+@@ -38,9 +38,10 @@ public final class ReloadCommand extends PermissionedGaleSubcommand {
+ 
+         MinecraftServer server = ((CraftServer) sender.getServer()).getServer();
+         server.galeConfigurations.reloadConfigs(server);
++        server.sukiConfigurations.reloadConfigs(server); // Suki - Suki configuration - include in /gale reload
+         server.server.reloadCount++;
+ 
+-        Command.broadcastCommandMessage(sender, text("Gale config reload complete.", GREEN));
++        Command.broadcastCommandMessage(sender, text("Gale and Suki config reload complete.", GREEN)); // Suki - Suki configuration - include in /gale reload
+     }
+ 
+ }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiConfigurations.java b/src/main/java/org/sucraft/suki/configuration/SukiConfigurations.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..2f4c14731c38e814a2afcb9d35276f780776db93
