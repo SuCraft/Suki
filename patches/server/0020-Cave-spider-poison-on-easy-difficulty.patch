@@ -20,10 +20,10 @@ index d980b906d9206560741576fa4153c57212f307a0..b1d1b2c6c756bae5bad553dded0f2268
                  } else if (this.level.getDifficulty() == Difficulty.HARD) {
                      b0 = 15;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 5c9e70c9789191bbd24a3c6660aafa1da9c74942..efcc8ae3493e827d4a8c8e538024d55424e9f92c 100644
+index b0fd6acb5e774044981ce212a93671dee1758e83..8a742a158e166ac40cd190704463b3718e7589d3 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -76,6 +76,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -93,6 +93,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
  
              public boolean zombieReinforcementsOnAllDifficulties = false; // Suki - zombies can call for reinforcements on all difficulties
              public boolean raidsAreAlwaysHard = false; // Suki - raids are always hard

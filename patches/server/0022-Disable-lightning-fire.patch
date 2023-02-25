@@ -20,10 +20,10 @@ index 0142aff35dea5bf5aff55e3293fb2d173c97e677..65294692d2ff6e53d50e604f08e1f380
              BlockState iblockdata = BaseFireBlock.getState(this.level, blockposition);
  
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 8f5b07ce2fe1d40b11b544ade6cad95abc9d2c52..917daace7ccc79283857d354702a925580d433be 100644
+index 3ca4e28652a2bfd283f6fd7a23504f454facf224..e6a4ada1f3cbde87891cb68da1831bd6fe3209c6 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -78,6 +78,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -95,6 +95,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
              public boolean raidsAreAlwaysHard = false; // Suki - raids are always hard
              public boolean caveSpidersHavePoisonOnEasyDifficulty = false; // Suki - cave spiders have poison on easy difficulty
              public boolean witherEffectFromWitherSkullsOnEasyDifficulty = false; // Suki - wither effect from wither skulls on easy difficulty

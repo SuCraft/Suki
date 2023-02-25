@@ -20,10 +20,10 @@ index d786b8b8c9d478504f74e65c3bc7ed3e9884d003..ba2d1d8a0ad1da437fd0ab4c7f61c892
              }
          }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 324c7b902cb87452a3164bd1e3b12ef536f811b2..fbed305893c25942cd1c8d0ef599a5f651f89177 100644
+index 84021c87e3ec039f3cf4abde6e0a4987f9714139..921503cf536a2f3c6b887b3588db8a1d80429dbf 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -79,6 +79,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -96,6 +96,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
              public boolean caveSpidersHavePoisonOnEasyDifficulty = false; // Suki - cave spiders have poison on easy difficulty
              public boolean witherEffectFromWitherSkullsOnEasyDifficulty = false; // Suki - wither effect from wither skulls on easy difficulty
              public boolean lightningSpawnsFire = true; // Suki - configurable lightning fire

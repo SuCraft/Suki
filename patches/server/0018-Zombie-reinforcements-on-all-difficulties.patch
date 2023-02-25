@@ -20,10 +20,10 @@ index 9976205537cfe228735687f1e9c52c74ac025690..5127791c85f2b68d070dfec8aa633bb9
                  int j = Mth.floor(this.getY());
                  int k = Mth.floor(this.getZ());
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 18e17e2054be1d363fa12d712b6b3fd0d97de1f4..57de5958cef473b6d1f54baea4a14d052c6416d5 100644
+index e873e2e089ec9910e3b25dd9a5823bd1e5ccfe87..3c3736e7583fd24b3c6df0b7786bdde350c1188a 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -70,6 +70,15 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -87,6 +87,15 @@ public class SukiWorldConfiguration extends ConfigurationPart {
          }
          // Suki end - breakable barrier blocks, breakable light blocks
  

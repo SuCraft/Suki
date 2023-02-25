@@ -35,12 +35,12 @@ index b781c849737225c00f1dd8d45a6d08cebc000263..8a0ab062c40c7f9a8662017fc766604f
      public MobType getMobType() {
          return MobType.UNDEAD;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index ef033d490722ef47ce6f1ccdf656df2495116091..92ee3afd796692599df07631bc57443d14979525 100644
+index 6d3117cd69d0fc346fd473ed8eb83c422fc96c22..b3508f0b1dede733a50c2b5506c345f47e3f9dd1 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -46,6 +46,13 @@ public class SukiWorldConfiguration extends ConfigurationPart {
-         public boolean nonSittingPetsImmuneFromInactive = true;
-         // Suki end - non-sitting pet inactivity immunity
+@@ -63,6 +63,13 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+         public double wakeUpDurationStandardDeviationRatio = 0.2;
+         // Suki end - variable entity wake-up duration
  
 +        // Suki start - never despawn entities due to distance
 +        public NeverDespawnEntitiesDueToDistance neverDespawnEntitiesDueToDistance;
