@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Fri, 24 Feb 2023 19:31:03 +0100
+Subject: [PATCH] Wither skull effect on easy difficulty
+
+License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
+index 9665095240a370983878350aed41badacfb6f261..6b29dead96942bd5c13cefcc551801a737655977 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
+@@ -74,7 +74,7 @@ public class WitherSkull extends AbstractHurtingProjectile {
+             if (flag && entity instanceof LivingEntity) {
+                 byte b0 = 0;
+ 
+-                if (this.level.getDifficulty() == Difficulty.NORMAL) {
++                if (this.level.getDifficulty() == Difficulty.NORMAL || (this.level.getDifficulty() == Difficulty.EASY && this.level.sukiConfig().gameplayMechanics.difficultyChanges.witherEffectFromWitherSkullsOnEasyDifficulty)) { // Suki - wither effect from wither skulls on easy difficulty
+                     b0 = 10;
+                 } else if (this.level.getDifficulty() == Difficulty.HARD) {
+                     b0 = 40;
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index efcc8ae3493e827d4a8c8e538024d55424e9f92c..8f5b07ce2fe1d40b11b544ade6cad95abc9d2c52 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -77,6 +77,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+             public boolean zombieReinforcementsOnAllDifficulties = false; // Suki - zombies can call for reinforcements on all difficulties
+             public boolean raidsAreAlwaysHard = false; // Suki - raids are always hard
+             public boolean caveSpidersHavePoisonOnEasyDifficulty = false; // Suki - cave spiders have poison on easy difficulty
++            public boolean witherEffectFromWitherSkullsOnEasyDifficulty = false; // Suki - wither effect from wither skulls on easy difficulty
+ 
+         }
+         // Suki end - difficulty changes
