@@ -3,7 +3,7 @@ From: Martijn Muijsers <martijnmuijsers@live.nl>
 Date: Thu, 23 Feb 2023 20:12:09 +0100
 Subject: [PATCH] Place items directly in head slot
 
-License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
+License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java

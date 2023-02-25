@@ -1,0 +1,168 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Sat, 25 Feb 2023 11:47:47 +0100
+Subject: [PATCH] Configurable villager reputation changes
+
+License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/world/entity/npc/Villager.java b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+index 825cdb927925a35a53e399ee647ea0738e67a5c9..747e62cb834fb6b094c2a2599e050fac7cc7c1de 100644
+--- a/src/main/java/net/minecraft/world/entity/npc/Villager.java
++++ b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+@@ -1013,19 +1013,77 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+             if (level.paperConfig().fixes.fixCuringZombieVillagerDiscountExploit) {
+                 final GossipContainer.EntityGossips playerReputation = this.getGossips().gossips.get(entity.getUUID());
+                 if (playerReputation != null) {
++                    if (level.sukiConfig().gameplayMechanics.difficultyChanges.villagerReputationChanges.cured.majorPositive > 0) { // Suki - configurable villager reputation changes
+                     playerReputation.remove(GossipType.MAJOR_POSITIVE);
++                        // Suki start - configurable villager reputation changes
++                    }
++                    if (level.sukiConfig().gameplayMechanics.difficultyChanges.villagerReputationChanges.cured.minorPositive > 0) {
++                        // Suki end - configurable villager reputation changes
+                     playerReputation.remove(GossipType.MINOR_POSITIVE);
++                    } // Suki - configurable villager reputation changes
+                 }
+             }
+             // Paper end
+-            this.gossips.add(entity.getUUID(), GossipType.MAJOR_POSITIVE, 20);
+-            this.gossips.add(entity.getUUID(), GossipType.MINOR_POSITIVE, 25);
++            // Suki start - configurable villager reputation changes
++            int majorPositiveIncrease = level.sukiConfig().gameplayMechanics.difficultyChanges.villagerReputationChanges.cured.majorPositive;
++            if (majorPositiveIncrease < 0) {
++                majorPositiveIncrease = 20;
++            }
++            if (majorPositiveIncrease > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MAJOR_POSITIVE, majorPositiveIncrease);
++            }
++            int minorPositiveIncrease = level.sukiConfig().gameplayMechanics.difficultyChanges.villagerReputationChanges.cured.minorPositive;
++            if (minorPositiveIncrease < 0) {
++                minorPositiveIncrease = 25;
++            }
++            if (minorPositiveIncrease > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MINOR_POSITIVE, minorPositiveIncrease);
++            }
++            // Suki end - configurable villager reputation changes
+         } else if (interaction == ReputationEventType.TRADE) {
+-            this.gossips.add(entity.getUUID(), GossipType.TRADING, 2);
++            // Suki start - configurable villager reputation changes
++            int tradingIncrease = level.sukiConfig().gameplayMechanics.difficultyChanges.villagerReputationChanges.trade.trading;
++            if (tradingIncrease < 0) {
++                tradingIncrease = 2;
++            }
++            if (tradingIncrease > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.TRADING, tradingIncrease);
++            }
++            // Suki end - configurable villager reputation changes
+         } else if (interaction == ReputationEventType.VILLAGER_HURT) {
+-            this.gossips.add(entity.getUUID(), GossipType.MINOR_NEGATIVE, 25);
++            // Suki start - configurable villager reputation changes
++            int majorNegativeIncrease = level.sukiConfig().gameplayMechanics.difficultyChanges.villagerReputationChanges.villagerHurt.majorNegative;
++            if (majorNegativeIncrease < 0) {
++                majorNegativeIncrease = 0;
++            }
++            if (majorNegativeIncrease > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MAJOR_NEGATIVE, majorNegativeIncrease);
++            }
++            int minorNegativeIncrease = level.sukiConfig().gameplayMechanics.difficultyChanges.villagerReputationChanges.villagerHurt.minorNegative;
++            if (minorNegativeIncrease < 0) {
++                minorNegativeIncrease = 25;
++            }
++            if (minorNegativeIncrease > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MINOR_NEGATIVE, minorNegativeIncrease);
++            }
++            // Suki end - configurable villager reputation changes
+         } else if (interaction == ReputationEventType.VILLAGER_KILLED) {
+-            this.gossips.add(entity.getUUID(), GossipType.MAJOR_NEGATIVE, 25);
++            // Suki start - configurable villager reputation changes
++            int majorNegativeIncrease = level.sukiConfig().gameplayMechanics.difficultyChanges.villagerReputationChanges.villagerKilled.majorNegative;
++            if (majorNegativeIncrease < 0) {
++                majorNegativeIncrease = 25;
++            }
++            if (majorNegativeIncrease > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MAJOR_NEGATIVE, majorNegativeIncrease);
++            }
++            int minorNegativeIncrease = level.sukiConfig().gameplayMechanics.difficultyChanges.villagerReputationChanges.villagerKilled.minorNegative;
++            if (minorNegativeIncrease < 0) {
++                minorNegativeIncrease = 0;
++            }
++            if (minorNegativeIncrease > 0) {
++                this.gossips.add(entity.getUUID(), GossipType.MINOR_NEGATIVE, minorNegativeIncrease);
++            }
++            // Suki end - configurable villager reputation changes
+         }
+ 
+     }
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index fbed305893c25942cd1c8d0ef599a5f651f89177..ea66c3c730707f669a8ded793d6134f143fe39f6 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -88,6 +88,68 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+             public float minimumHealthAfterStarving = -1f;
+             // Suki end - minimum health after starving
+ 
++            // Suki start - configurable villager reputation changes
++            public VillagerReputationChanges villagerReputationChanges;
++            public class VillagerReputationChanges extends ConfigurationPart {
++
++                public Cured cured;
++                public class Cured extends ConfigurationPart {
++
++                    /**
++                     * Any value < 0 defers to the vanilla value.
++                     */
++                    public int majorPositive = -1;
++
++                    /**
++                     * Any value < 0 defers to the vanilla value.
++                     */
++                    public int minorPositive = -1;
++
++                }
++
++                public Trade trade;
++                public class Trade extends ConfigurationPart {
++
++                    /**
++                     * Any value < 0 defers to the vanilla value.
++                     */
++                    public int trading = -1;
++
++                }
++
++                public VillagerHurt villagerHurt;
++                public class VillagerHurt extends ConfigurationPart {
++
++                    /**
++                     * Any value < 0 defers to the vanilla value.
++                     */
++                    public int majorNegative = -1;
++
++                    /**
++                     * Any value < 0 defers to the vanilla value.
++                     */
++                    public int minorNegative = -1;
++
++                }
++
++                public VillagerKilled villagerKilled;
++                public class VillagerKilled extends ConfigurationPart {
++
++                    /**
++                     * Any value < 0 defers to the vanilla value.
++                     */
++                    public int majorNegative = -1;
++
++                    /**
++                     * Any value < 0 defers to the vanilla value.
++                     */
++                    public int minorNegative = -1;
++
++                }
++
++            }
++            // Suki end - configurable villager reputation changes
++
+         }
+         // Suki end - difficulty changes
+ 
