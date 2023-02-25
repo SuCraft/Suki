@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Fri, 24 Feb 2023 19:29:13 +0100
+Subject: [PATCH] Cave spider poison on easy difficulty
+
+License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java b/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java
+index d980b906d9206560741576fa4153c57212f307a0..b1d1b2c6c756bae5bad553dded0f226831744e99 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java
++++ b/src/main/java/net/minecraft/world/entity/monster/CaveSpider.java
+@@ -34,7 +34,7 @@ public class CaveSpider extends Spider {
+             if (target instanceof LivingEntity) {
+                 byte b0 = 0;
+ 
+-                if (this.level.getDifficulty() == Difficulty.NORMAL) {
++                if (this.level.getDifficulty() == Difficulty.NORMAL || (this.level.getDifficulty() == Difficulty.EASY && this.level.sukiConfig().gameplayMechanics.difficultyChanges.caveSpidersHavePoisonOnEasyDifficulty)) { // Suki - cave spiders have poison on easy difficulty
+                     b0 = 7;
+                 } else if (this.level.getDifficulty() == Difficulty.HARD) {
+                     b0 = 15;
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 5c9e70c9789191bbd24a3c6660aafa1da9c74942..efcc8ae3493e827d4a8c8e538024d55424e9f92c 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -76,6 +76,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+ 
+             public boolean zombieReinforcementsOnAllDifficulties = false; // Suki - zombies can call for reinforcements on all difficulties
+             public boolean raidsAreAlwaysHard = false; // Suki - raids are always hard
++            public boolean caveSpidersHavePoisonOnEasyDifficulty = false; // Suki - cave spiders have poison on easy difficulty
+ 
+         }
+         // Suki end - difficulty changes
