@@ -1,0 +1,121 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Sat, 25 Feb 2023 11:48:12 +0100
+Subject: [PATCH] Players share villager gossips
+
+License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/target/DefendVillageTargetGoal.java b/src/main/java/net/minecraft/world/entity/ai/goal/target/DefendVillageTargetGoal.java
+index b6172cd6cadefa205c6b561ca2f4b88b1603f9ef..375c3d0dc3e8e8aab3b74ac0a87dac97059a9ec0 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/goal/target/DefendVillageTargetGoal.java
++++ b/src/main/java/net/minecraft/world/entity/ai/goal/target/DefendVillageTargetGoal.java
+@@ -39,7 +39,7 @@ public class DefendVillageTargetGoal extends TargetGoal {
+ 
+             while (iterator1.hasNext()) {
+                 Player entityhuman = (Player) iterator1.next();
+-                int i = entityvillager.getPlayerReputation(entityhuman);
++                int i = entityvillager.getPlayerReputation(entityhuman, false); // Suki - players share gossips
+ 
+                 if (i <= -100) {
+                     this.potentialTarget = entityhuman;
+diff --git a/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java b/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java
+index 097007c1c25ba55d9916fc820dd1d1149d81f6f4..c229a5510ba4a58583bd7428fba243ebc30c277d 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java
++++ b/src/main/java/net/minecraft/world/entity/ai/gossip/GossipContainer.java
+@@ -18,6 +18,7 @@ import java.util.List;
+ import java.util.Map;
+ import java.util.Set;
+ import java.util.UUID;
++import java.util.function.BiPredicate;
+ import java.util.function.DoublePredicate;
+ import java.util.function.Predicate;
+ import java.util.stream.Stream;
+@@ -25,6 +26,7 @@ import net.minecraft.core.UUIDUtil;
+ import net.minecraft.util.ExtraCodecs;
+ import net.minecraft.util.RandomSource;
+ import net.minecraft.util.VisibleForDebug;
++import org.jetbrains.annotations.Nullable;
+ import org.slf4j.Logger;
+ 
+ public class GossipContainer {
+@@ -118,7 +120,24 @@ public class GossipContainer {
+         });
+     }
+ 
+-    public int getReputation(UUID target, Predicate<GossipType> gossipTypeFilter) {
++    // Suki start - players share gossips
++    public int getReputation(UUID target, Predicate<GossipType> gossipTypeFilter, @Nullable BiPredicate<UUID, GossipType> canUseGossipFromPlayer) {
++        if (canUseGossipFromPlayer != null) {
++            // Based on EntityGossips.weightedValue
++            int weight = 0;
++            for (GossipType gossipType : GossipType.values()) {
++                if (gossipTypeFilter.test(gossipType)) {
++                    for (Map.Entry<UUID, EntityGossips> gossipsEntry : this.gossips.entrySet()) {
++                        if (canUseGossipFromPlayer.test(gossipsEntry.getKey(), gossipType)) {
++                            int weightedValue = gossipsEntry.getValue().entries.getInt(gossipType) * gossipType.weight;
++                            weight += weightedValue; // Using sum instead of max to stack curing events from different players
++                        }
++                    }
++                }
++            }
++            return weight;
++        }
++        // Suki end - players share gossips
+         GossipContainer.EntityGossips entityGossips = this.gossips.get(target);
+         return entityGossips != null ? entityGossips.weightedValue(gossipTypeFilter) : 0;
+     }
+diff --git a/src/main/java/net/minecraft/world/entity/npc/Villager.java b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+index 747e62cb834fb6b094c2a2599e050fac7cc7c1de..63de9392f9be7c6e0d9681bc17314de7ae41041f 100644
+--- a/src/main/java/net/minecraft/world/entity/npc/Villager.java
++++ b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+@@ -482,7 +482,7 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+     }
+ 
+     private void updateSpecialPrices(Player player) {
+-        int i = this.getPlayerReputation(player);
++        int i = this.getPlayerReputation(player, true); // Suki - players share gossips
+ 
+         if (i != 0) {
+             Iterator iterator = this.getOffers().iterator();
+@@ -758,10 +758,15 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+         }
+     }
+ 
+-    public int getPlayerReputation(Player player) {
++    public int getPlayerReputation(Player player, boolean checkSharedGossips) { // Suki - players share gossips
+         return this.gossips.getReputation(player.getUUID(), (reputationtype) -> {
+             return true;
+-        });
++            // Suki start - players share gossips
++        }, checkSharedGossips ? ((otherPlayerUUID, gossipType) ->
++            ((gossipType == GossipType.MAJOR_POSITIVE || gossipType == GossipType.MINOR_POSITIVE) && this.level.sukiConfig().gameplayMechanics.difficultyChanges.playersShareVillagerGossips.positive.always) ||
++                otherPlayerUUID.equals(player.getUUID())
++        ) : null);
++        // Suki end - players share gossips
+     }
+ 
+     private void digestFood(int amount) {
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index ea66c3c730707f669a8ded793d6134f143fe39f6..adf09ba6c9e26afb2dce3ea87a8c9d76148db207 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -150,6 +150,18 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+             }
+             // Suki end - configurable villager reputation changes
+ 
++            // Suki start - players share gossips
++            public PlayersShareVillagerGossips playersShareVillagerGossips;
++            public class PlayersShareVillagerGossips extends ConfigurationPart {
++
++                public Positive positive;
++                public class Positive extends ConfigurationPart {
++                    public boolean always = false;
++                }
++
++            }
++            // Suki end - players share gossips
++
+         }
+         // Suki end - difficulty changes
+ 
