@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Sat, 25 Feb 2023 11:16:13 +0100
+Subject: [PATCH] Disable lightning fire
+
+License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
+Suki - https://github.com/SuCraft/Suki
+
+diff --git a/src/main/java/net/minecraft/world/entity/LightningBolt.java b/src/main/java/net/minecraft/world/entity/LightningBolt.java
+index 0142aff35dea5bf5aff55e3293fb2d173c97e677..65294692d2ff6e53d50e604f08e1f380f9df8fdb 100644
+--- a/src/main/java/net/minecraft/world/entity/LightningBolt.java
++++ b/src/main/java/net/minecraft/world/entity/LightningBolt.java
+@@ -162,7 +162,7 @@ public class LightningBolt extends Entity {
+     }
+ 
+     private void spawnFire(int spreadAttempts) {
+-        if (!this.visualOnly && !this.level.isClientSide && this.level.getGameRules().getBoolean(GameRules.RULE_DOFIRETICK)) {
++        if (this.level.sukiConfig().gameplayMechanics.difficultyChanges.lightningSpawnsFire && !this.visualOnly && !this.level.isClientSide && this.level.getGameRules().getBoolean(GameRules.RULE_DOFIRETICK)) { // Suki - configurable lightning fire
+             BlockPos blockposition = this.blockPosition();
+             BlockState iblockdata = BaseFireBlock.getState(this.level, blockposition);
+ 
+diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+index 8f5b07ce2fe1d40b11b544ade6cad95abc9d2c52..917daace7ccc79283857d354702a925580d433be 100644
+--- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
++++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
+@@ -78,6 +78,7 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+             public boolean raidsAreAlwaysHard = false; // Suki - raids are always hard
+             public boolean caveSpidersHavePoisonOnEasyDifficulty = false; // Suki - cave spiders have poison on easy difficulty
+             public boolean witherEffectFromWitherSkullsOnEasyDifficulty = false; // Suki - wither effect from wither skulls on easy difficulty
++            public boolean lightningSpawnsFire = true; // Suki - configurable lightning fire
+ 
+         }
+         // Suki end - difficulty changes
