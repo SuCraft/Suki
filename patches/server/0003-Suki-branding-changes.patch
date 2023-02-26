@@ -20,7 +20,7 @@ index a42fe43e94439bbf9aaa2dc1e5fbfbc2a0784a4c..1414c00c8b46ca804fb0e40201b61be6
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
 diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
-index a83a1dc5a3ecc3780e12721bb3022867d80b34d4..93d03b9624b805d25f41a802c64b3ff28495a800 100644
+index a83a1dc5a3ecc3780e12721bb3022867d80b34d4..0505b0f9e10fde35f0e3e7a67091c68c4e4b11f3 100644
 --- a/src/main/java/com/destroystokyo/paper/Metrics.java
 +++ b/src/main/java/com/destroystokyo/paper/Metrics.java
 @@ -603,15 +603,15 @@ public class Metrics {
@@ -39,7 +39,7 @@ index a83a1dc5a3ecc3780e12721bb3022867d80b34d4..93d03b9624b805d25f41a802c64b3ff2
 +                    sukiVersion = "unknown"; // Gale - branding changes // Suki - branding changes
                  }
 -                metrics.addCustomChart(new Metrics.SimplePie("gale_version", () -> galeVersion)); // Gale - branding changes - metrics
-+                metrics.addCustomChart(new Metrics.SimplePie("gale_version", () -> sukiVersion)); // Gale - branding changes - metrics // Suki - branding changes*
++                metrics.addCustomChart(new Metrics.SimplePie("gale_version", () -> sukiVersion)); // Gale - branding changes - metrics // Suki - branding changes
  
                  metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
                      Map<String, Map<String, Integer>> map = new HashMap<>();
