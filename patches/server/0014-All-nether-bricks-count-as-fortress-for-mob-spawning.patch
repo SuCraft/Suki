@@ -42,10 +42,10 @@ index 969933ff94a1ae5a36d0550cd10d9e9803813136..f9a5068353374ab29df2e7066a0d0dc2
  
              return structure == null ? false : structureAccessor.getStructureAt(pos, structure).isValid();
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index b3508f0b1dede733a50c2b5506c345f47e3f9dd1..ecdc081b3778e511c51db013787ce6e60ef97a79 100644
+index 92ee3afd796692599df07631bc57443d14979525..5b4c217bc30f9ac0f2f6584f391299a804ffc8a8 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -70,6 +70,13 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -53,6 +53,13 @@ public class SukiWorldConfiguration extends ConfigurationPart {
          }
          // Suki end - never despawn entities due to distance
  

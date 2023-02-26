@@ -94,10 +94,10 @@ index 825cdb927925a35a53e399ee647ea0738e67a5c9..747e62cb834fb6b094c2a2599e050fac
  
      }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 921503cf536a2f3c6b887b3588db8a1d80429dbf..d121b50ef7d40f87ba06caab61821b5f3093076c 100644
+index fbed305893c25942cd1c8d0ef599a5f651f89177..ea66c3c730707f669a8ded793d6134f143fe39f6 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -105,6 +105,68 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -88,6 +88,68 @@ public class SukiWorldConfiguration extends ConfigurationPart {
              public float minimumHealthAfterStarving = -1f;
              // Suki end - minimum health after starving
  

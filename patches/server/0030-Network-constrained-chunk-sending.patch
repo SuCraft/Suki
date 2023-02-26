@@ -469,10 +469,10 @@ index d5c1727bf81c7f00d1cb0bf78b7c7b4fc1905754..4210fb79a1b0131c16ef05540940314d
  
  }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index b055a89daebe468374b8da58010e232fc2cedbd1..fb020e39b49b9bfc2a6b6eec579998a7693da7bd 100644
+index 34e94e553cc0e95e746bf7359ae613d0833578de..4843696600afc426d5f9c59febaca8abd759dd9f 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -212,6 +212,22 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -195,6 +195,22 @@ public class SukiWorldConfiguration extends ConfigurationPart {
          public boolean relocateCorruptedChunks = true;
          // Suki end - do not relocate corrupted chunks
  

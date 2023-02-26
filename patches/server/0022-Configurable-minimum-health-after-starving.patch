@@ -20,10 +20,10 @@ index 2934b6de1f1fb914a532ee20184df99d1acd8e65..ce1aa547245e62f9e512f58d3776b593
                  }
  
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index e6a4ada1f3cbde87891cb68da1831bd6fe3209c6..84021c87e3ec039f3cf4abde6e0a4987f9714139 100644
+index 917daace7ccc79283857d354702a925580d433be..324c7b902cb87452a3164bd1e3b12ef536f811b2 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -97,6 +97,13 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -80,6 +80,13 @@ public class SukiWorldConfiguration extends ConfigurationPart {
              public boolean witherEffectFromWitherSkullsOnEasyDifficulty = false; // Suki - wither effect from wither skulls on easy difficulty
              public boolean lightningSpawnsFire = true; // Suki - configurable lightning fire
  

@@ -2045,7 +2045,7 @@ index fbde70feef055b757717ea60f99e3856d780569a..d5c1727bf81c7f00d1cb0bf78b7c7b4f
  
      public GameplayMechanics gameplayMechanics;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index ced2d6354c19d2502fe657e74a0f02d12626d660..b055a89daebe468374b8da58010e232fc2cedbd1 100644
+index 9d5214ad2092e0c2fee79e1177af3ea66ef35058..34e94e553cc0e95e746bf7359ae613d0833578de 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 @@ -7,6 +7,9 @@ import io.papermc.paper.configuration.Configuration;
@@ -2058,7 +2058,7 @@ index ced2d6354c19d2502fe657e74a0f02d12626d660..b055a89daebe468374b8da58010e232f
  import org.slf4j.Logger;
  import org.spigotmc.SpigotWorldConfig;
  import org.spongepowered.configurate.objectmapping.meta.Setting;
-@@ -211,4 +214,156 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -194,4 +197,156 @@ public class SukiWorldConfiguration extends ConfigurationPart {
  
      }
  

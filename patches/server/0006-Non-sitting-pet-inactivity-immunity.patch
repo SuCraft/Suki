@@ -7,7 +7,7 @@ License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/org/spigotmc/ActivationRange.java b/src/main/java/org/spigotmc/ActivationRange.java
-index 2bff2b6cff78f1ad4cbc6abbc1a37464f543ccb7..e93d12e9f4a577e468dfe2b6d2070bed22b83d81 100644
+index 8a6bc6d4dc5825e0d125ce3853bd3d7714ac113f..b94c618510318e48c5c8e06ba416e894352751a4 100644
 --- a/src/main/java/org/spigotmc/ActivationRange.java
 +++ b/src/main/java/org/spigotmc/ActivationRange.java
 @@ -3,13 +3,7 @@ package org.spigotmc;
@@ -25,7 +25,7 @@ index 2bff2b6cff78f1ad4cbc6abbc1a37464f543ccb7..e93d12e9f4a577e468dfe2b6d2070bed
  import net.minecraft.world.entity.ai.Brain;
  import net.minecraft.world.entity.ambient.AmbientCreature;
  import net.minecraft.world.entity.animal.Animal;
-@@ -385,6 +379,13 @@ public class ActivationRange
+@@ -399,6 +393,13 @@ public class ActivationRange
          if (entity instanceof Mob && ((Mob)entity).getLeashHolder() instanceof Player) {
              return true;
          }

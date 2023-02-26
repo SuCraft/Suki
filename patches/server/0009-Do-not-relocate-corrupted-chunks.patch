@@ -34,10 +34,10 @@ index d4c4d37bcef14e392739d9aae9e20b7d69b05c12..647e18bc788aa0d86b2ecefc93eb5066
  
          UpgradeData chunkconverter = nbt.contains("UpgradeData", 10) ? new UpgradeData(nbt.getCompound("UpgradeData"), world) : UpgradeData.EMPTY;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 95c6637944df8423ebc34bd0843e46e47ca6838d..6d3117cd69d0fc346fd473ed8eb83c422fc96c22 100644
+index 826537422959db83c06c0cd9ff61cb22e2b8bffe..ef033d490722ef47ce6f1ccdf656df2495116091 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -65,4 +65,21 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -48,4 +48,21 @@ public class SukiWorldConfiguration extends ConfigurationPart {
  
      }
  

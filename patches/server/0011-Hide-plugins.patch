@@ -7,7 +7,7 @@ License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index d7558e44e66f654c577ce71c9a3a2fba9471dba1..7ee756bc0fee8076b026c607e47651d78d60b90d 100644
+index 8739310ecbc3c0020847a8bc5e0226d316467089..f50935d0a59d46e4fb99d06a65d2e26b5f0c440a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -19,6 +19,7 @@ import com.mojang.serialization.Lifecycle;

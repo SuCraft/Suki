@@ -30,10 +30,10 @@ index dec34261e35b2829e5f5506e86dcc86c681eaddd..504e59e1e96f4ad90f1ee6ad968828ab
                      }
                  }
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index ecdc081b3778e511c51db013787ce6e60ef97a79..e873e2e089ec9910e3b25dd9a5823bd1e5ccfe87 100644
+index 5b4c217bc30f9ac0f2f6584f391299a804ffc8a8..18e17e2054be1d363fa12d712b6b3fd0d97de1f4 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -77,6 +77,16 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -60,6 +60,16 @@ public class SukiWorldConfiguration extends ConfigurationPart {
          }
          // Suki end - all nether bricks count as fortress
  

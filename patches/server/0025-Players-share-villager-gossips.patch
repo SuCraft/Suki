@@ -97,10 +97,10 @@ index 747e62cb834fb6b094c2a2599e050fac7cc7c1de..63de9392f9be7c6e0d9681bc17314de7
  
      private void digestFood(int amount) {
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index d121b50ef7d40f87ba06caab61821b5f3093076c..e3b5c9d35077a9b554e7c491297b64d69cc27f20 100644
+index ea66c3c730707f669a8ded793d6134f143fe39f6..adf09ba6c9e26afb2dce3ea87a8c9d76148db207 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -167,6 +167,18 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -150,6 +150,18 @@ public class SukiWorldConfiguration extends ConfigurationPart {
              }
              // Suki end - configurable villager reputation changes
  

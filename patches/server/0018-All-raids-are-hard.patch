@@ -79,10 +79,10 @@ index 7a7e87954868c3eb267d3255652d67d34f7b04d2..4576b9791a5efbdeeeea822ae9e405bd
          boolean flag2 = enumdifficulty == Difficulty.NORMAL;
          int j;
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-index 3c3736e7583fd24b3c6df0b7786bdde350c1188a..b0fd6acb5e774044981ce212a93671dee1758e83 100644
+index 57de5958cef473b6d1f54baea4a14d052c6416d5..5c9e70c9789191bbd24a3c6660aafa1da9c74942 100644
 --- a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
 +++ b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java
-@@ -90,8 +90,9 @@ public class SukiWorldConfiguration extends ConfigurationPart {
+@@ -73,8 +73,9 @@ public class SukiWorldConfiguration extends ConfigurationPart {
          // Suki start - difficulty changes
          public DifficultyChanges difficultyChanges;
          public class DifficultyChanges extends ConfigurationPart {
