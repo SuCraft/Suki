@@ -88,79 +88,6 @@ index 991a9dd8c3aae27877e64b46e476de5c208735b6..ffb4e14118daaabab4436b5a14b0dd6f
      }
      // CraftBukkit end
  
-@@ -751,27 +754,27 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
-         // CraftBukkit end
-         if (worldserver.getWorld().getKeepSpawnInMemory()) { // Paper
- 
--        MinecraftServer.LOGGER.info("Preparing start region for dimension {}", worldserver.dimension().location());
--        BlockPos blockposition = worldserver.getSharedSpawnPos();
-+            MinecraftServer.LOGGER.info("Preparing start region for dimension {}", worldserver.dimension().location());
-+            BlockPos blockposition = worldserver.getSharedSpawnPos();
- 
--        worldloadlistener.updateSpawnPos(new ChunkPos(blockposition));
--        //ChunkProviderServer chunkproviderserver = worldserver.getChunkProvider(); // Paper - move up
-+            worldloadlistener.updateSpawnPos(new ChunkPos(blockposition));
-+            //ChunkProviderServer chunkproviderserver = worldserver.getChunkProvider(); // Paper - move up
- 
--        chunkproviderserver.getLightEngine().setTaskPerBatch(500);
--        this.nextTickTime = Util.getMillis();
--        // Paper start - configurable spawn reason
--        int radiusBlocks = worldserver.paperConfig().spawn.keepSpawnLoadedRange * 16;
--        int radiusChunks = radiusBlocks / 16 + ((radiusBlocks & 15) != 0 ? 1 : 0);
--        int totalChunks = ((radiusChunks) * 2 + 1);
--        totalChunks *= totalChunks;
--        worldloadlistener.setChunkRadius(radiusBlocks / 16);
--
--        worldserver.addTicketsForSpawn(radiusBlocks, blockposition);
--        // Paper end
-+            chunkproviderserver.getLightEngine().setTaskPerBatch(500);
-+            this.nextTickTime = Util.getMillis();
-+            // Paper start - configurable spawn reason
-+            int radiusBlocks = worldserver.paperConfig().spawn.keepSpawnLoadedRange * 16;
-+            int radiusChunks = radiusBlocks / 16 + ((radiusBlocks & 15) != 0 ? 1 : 0);
-+            int totalChunks = ((radiusChunks) * 2 + 1);
-+            totalChunks *= totalChunks;
-+            worldloadlistener.setChunkRadius(radiusBlocks / 16);
-+
-+            worldserver.addTicketsForSpawn(radiusBlocks, blockposition);
-+            // Paper end
- 
--        // this.nextTickTime = SystemUtils.getMillis() + 10L;
--        this.executeModerately();
--        // Iterator iterator = this.levels.values().iterator();
-+            // this.nextTickTime = SystemUtils.getMillis() + 10L;
-+            this.executeModerately();
-+            // Iterator iterator = this.levels.values().iterator();
-         }
- 
-         if (true) {
-@@ -1134,7 +1137,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
-                     long j = i / 50L;
- 
-                     if (this.server.getWarnOnOverload()) // CraftBukkit
--                    MinecraftServer.LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", i, j);
-+                        MinecraftServer.LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", i, j);
-                     this.nextTickTime += j * 50L;
-                     this.lastOverloadWarning = this.nextTickTime;
-                 }
-@@ -1627,7 +1630,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
- 
-     @DontObfuscate
-     public String getServerModName() {
--        return "Suki"; // Suki - branding changes - Suki > // Gale - branding changes - Gale > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
-+        return "Gale"; // Gale - branding changes - Gale > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
-     }
- 
-     public SystemReport fillSystemReport(SystemReport details) {
-@@ -2508,7 +2511,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
- 
-     // CraftBukkit start
-     public final java.util.concurrent.ExecutorService chatExecutor = java.util.concurrent.Executors.newCachedThreadPool(
--            new com.google.common.util.concurrent.ThreadFactoryBuilder().setDaemon(true).setNameFormat("Async Chat Thread - #%d").setUncaughtExceptionHandler(new net.minecraft.DefaultUncaughtExceptionHandlerWithName(net.minecraft.server.MinecraftServer.LOGGER)).build()); // Paper
-+        new com.google.common.util.concurrent.ThreadFactoryBuilder().setDaemon(true).setNameFormat("Async Chat Thread - #%d").setUncaughtExceptionHandler(new net.minecraft.DefaultUncaughtExceptionHandlerWithName(net.minecraft.server.MinecraftServer.LOGGER)).build()); // Paper
- 
-     public ChatDecorator getChatDecorator() {
-         // Paper start - moved to ChatPreviewProcessor
 diff --git a/src/main/java/net/minecraft/server/Services.java b/src/main/java/net/minecraft/server/Services.java
 index b445d4562304fec912131ee32c4e0f894f44a928..049ef0aeb14a65d9d04809166eec0d253fce1479 100644
 --- a/src/main/java/net/minecraft/server/Services.java
@@ -275,15 +202,6 @@ diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/ja
 index 42b1b68e090b907b9ecece12192fe7fe26690bb1..d7558e44e66f654c577ce71c9a3a2fba9471dba1 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -266,7 +266,7 @@ import javax.annotation.Nullable; // Paper
- import javax.annotation.Nonnull; // Paper
- 
- public final class CraftServer implements Server {
--    private final String serverName = "Suki"; // Paper // Gale - branding changes // Suki - branding changes
-+    private final String serverName = "Gale"; // Paper // Gale - branding changes
-     private final String serverVersion;
-     private final String bukkitVersion = Versioning.getBukkitVersion();
-     private final Logger logger = Logger.getLogger("Minecraft");
 @@ -987,6 +987,7 @@ public final class CraftServer implements Server {
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
          this.console.paperConfigurations.reloadConfigs(this.console);
@@ -292,54 +210,6 @@ index 42b1b68e090b907b9ecece12192fe7fe26690bb1..d7558e44e66f654c577ce71c9a3a2fba
          for (ServerLevel world : this.console.getAllLevels()) {
              // world.serverLevelData.setDifficulty(config.difficulty); // Paper - per level difficulty
              world.setSpawnSettings(world.serverLevelData.getDifficulty() != Difficulty.PEACEFUL && config.spawnMonsters, config.spawnAnimals); // Paper - per level difficulty (from MinecraftServer#setDifficulty(ServerLevel, Difficulty, boolean))
-@@ -1284,7 +1285,7 @@ public final class CraftServer implements Server {
-         }
- 
-         ServerLevel internal = (ServerLevel) new ServerLevel(this.console, console.executor, worldSession, worlddata, worldKey, worlddimension, this.getServer().progressListenerFactory.create(11),
--                worlddata.isDebugWorld(), j, creator.environment() == Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator, biomeProvider);
-+            worlddata.isDebugWorld(), j, creator.environment() == Environment.NORMAL ? list : ImmutableList.of(), true, creator.environment(), generator, biomeProvider);
- 
-         if (!(this.worlds.containsKey(name.toLowerCase(java.util.Locale.ENGLISH)))) {
-             return null;
-@@ -1969,11 +1970,11 @@ public final class CraftServer implements Server {
-         Validate.notNull(type, "Type cannot be null");
- 
-         switch (type) {
--        case IP:
--            return new CraftIpBanList(this.playerList.getIpBans());
--        case NAME:
--        default:
--            return new CraftProfileBanList(this.playerList.getBans());
-+            case IP:
-+                return new CraftIpBanList(this.playerList.getIpBans());
-+            case NAME:
-+            default:
-+                return new CraftProfileBanList(this.playerList.getBans());
-         }
-     }
- 
-@@ -2670,7 +2671,7 @@ public final class CraftServer implements Server {
-                 Preconditions.checkArgument(clazz == org.bukkit.GameEvent.class);
-                 net.minecraft.core.Registry<net.minecraft.world.level.gameevent.GameEvent> gameEvents = net.minecraft.core.registries.BuiltInRegistries.GAME_EVENT;
-                 return gameEvents.getTags().map(pair -> (org.bukkit.Tag<T>) new io.papermc.paper.CraftGameEventTag(gameEvents, pair.getFirst())).collect(ImmutableList.toImmutableList());
--            // Paper end
-+                // Paper end
-             }
-             default -> throw new IllegalArgumentException();
-         }
-@@ -2729,9 +2730,9 @@ public final class CraftServer implements Server {
-     @Override
-     public double[] getTPS() {
-         return new double[] {
--                net.minecraft.server.MinecraftServer.getServer().tps1.getAverage(),
--                net.minecraft.server.MinecraftServer.getServer().tps5.getAverage(),
--                net.minecraft.server.MinecraftServer.getServer().tps15.getAverage()
-+            net.minecraft.server.MinecraftServer.getServer().tps1.getAverage(),
-+            net.minecraft.server.MinecraftServer.getServer().tps5.getAverage(),
-+            net.minecraft.server.MinecraftServer.getServer().tps15.getAverage()
-         };
-     }
- 
 @@ -2809,6 +2810,14 @@ public final class CraftServer implements Server {
          }
          // Gale end - Gale configuration - API
@@ -355,17 +225,6 @@ index 42b1b68e090b907b9ecece12192fe7fe26690bb1..d7558e44e66f654c577ce71c9a3a2fba
          @Override
          public void restart() {
              org.spigotmc.RestartCommand.restart();
-@@ -2894,8 +2903,8 @@ public final class CraftServer implements Server {
-     @Override
-     public boolean reloadCommandAliases() {
-         Set<String> removals = getCommandAliases().keySet().stream()
--                .map(key -> key.toLowerCase(java.util.Locale.ENGLISH))
--                .collect(java.util.stream.Collectors.toSet());
-+            .map(key -> key.toLowerCase(java.util.Locale.ENGLISH))
-+            .collect(java.util.stream.Collectors.toSet());
-         getCommandMap().getKnownCommands().keySet().removeIf(removals::contains);
-         File file = getCommandsConfigFile();
-         try {
 diff --git a/src/main/java/org/galemc/gale/command/subcommands/ReloadCommand.java b/src/main/java/org/galemc/gale/command/subcommands/ReloadCommand.java
 index c6ca5d3cf7e709f59f68ccd28db378e9e6303fdd..99deec0de3c0227414822da1730f6c49f2073853 100644
 --- a/src/main/java/org/galemc/gale/command/subcommands/ReloadCommand.java
