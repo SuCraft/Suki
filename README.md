@@ -9,7 +9,7 @@
 
 ## About
 
-Suki is a [Gale](https://github.com/GaleMC/Gale) server fork for SuCraft, a survival server since August 2011. 
+Suki is a [Gale](https://github.com/GaleMC/Gale) server fork for SuCraft, a survival server since August 2011.
 
 ## Building from source
 
