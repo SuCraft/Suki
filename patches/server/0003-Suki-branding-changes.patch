@@ -123,7 +123,7 @@ index 832f1ee4fb11c981bd109510eb908d7c7ef91bd4..4318e4ea9eef804f8db9315ff34d8b9c
                  {
 diff --git a/src/main/java/org/sucraft/suki/version/SukiVersionFetcher.java b/src/main/java/org/sucraft/suki/version/SukiVersionFetcher.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..cefc0f8c29ff39a72de5d869f7e1fd711b003c75
+index 0000000000000000000000000000000000000000..c994f336a93e7ca592bd7bcde9caf38e9466d519
 --- /dev/null
 +++ b/src/main/java/org/sucraft/suki/version/SukiVersionFetcher.java
 @@ -0,0 +1,13 @@
@@ -136,7 +136,7 @@ index 0000000000000000000000000000000000000000..cefc0f8c29ff39a72de5d869f7e1fd71
 +public class SukiVersionFetcher extends AbstractPaperVersionFetcher {
 +
 +    public SukiVersionFetcher() {
-+        super("ver/1.19.3", "https://github.com/SuCraft/Suki", "Suki", "SuCraft", "SuCraft", "Suki");
++        super("ver/1.19.4", "https://github.com/SuCraft/Suki", "Suki", "SuCraft", "SuCraft", "Suki");
 +    }
 +
 +}
