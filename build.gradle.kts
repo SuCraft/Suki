@@ -51,7 +51,7 @@ subprojects {
 }
 
 paperweight {
-    serverProject.set(project(":suki-server")) // Gale - build changes // Suki - build changes
+    serverProject.set(project(":suki-server")) // Suki - build changes
 
     remapRepo.set(paperMavenPublicUrl)
     decompileRepo.set(paperMavenPublicUrl)
