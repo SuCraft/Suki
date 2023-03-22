@@ -148,10 +148,10 @@ index 345c6e49ba306b081ffb741703aa91b7fc9c2bca..364cc7695cd079a14993f753f8bfc8a9
              this.player.level.timings.playerChunkLoaderUpdateDecideWhetherToRecalculate.startTiming(); try { // Suki - per-player view distance
              if (
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index fc9fef4694bd05210abf8654de928e3c09a4caf2..33c12ce83333f0d09f0eb2ebe996a1945e7ae079 100644
+index 7a0316146dffd696ec75a4c21beb41e0afbda30d..a1a51987d0ed46349fe284ecfdf38ee9e76ead75 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -180,6 +180,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
+@@ -186,6 +186,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
  import org.bukkit.event.player.PlayerTeleportEvent;
  import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
  import org.bukkit.inventory.MainHand;
@@ -159,7 +159,7 @@ index fc9fef4694bd05210abf8654de928e3c09a4caf2..33c12ce83333f0d09f0eb2ebe996a194
  import org.sucraft.suki.configuration.SukiGlobalConfiguration;
  import org.jetbrains.annotations.NotNull;
  // CraftBukkit end
-@@ -535,6 +536,8 @@ public class ServerPlayer extends Player {
+@@ -541,6 +542,8 @@ public class ServerPlayer extends Player {
      public final com.destroystokyo.paper.util.PooledHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> cachedSingleMobDistanceMap;
      // Paper end
  
@@ -168,7 +168,7 @@ index fc9fef4694bd05210abf8654de928e3c09a4caf2..33c12ce83333f0d09f0eb2ebe996a194
      // CraftBukkit start
      public String displayName;
      public net.kyori.adventure.text.Component adventure$displayName; // Paper
-@@ -655,6 +658,7 @@ public class ServerPlayer extends Player {
+@@ -661,6 +664,7 @@ public class ServerPlayer extends Player {
          this.bukkitPickUpLoot = true;
          this.maxHealthCache = this.getMaxHealth();
          this.cachedSingleMobDistanceMap = new com.destroystokyo.paper.util.PooledHashSets.PooledObjectLinkedOpenHashSet<>(this); // Paper
@@ -176,7 +176,7 @@ index fc9fef4694bd05210abf8654de928e3c09a4caf2..33c12ce83333f0d09f0eb2ebe996a194
      }
  
      // Yes, this doesn't match Vanilla, but it's the best we can do for now.
-@@ -2550,6 +2554,7 @@ public class ServerPlayer extends Player {
+@@ -2536,6 +2540,7 @@ public class ServerPlayer extends Player {
              }
              // Paper end
          }
@@ -185,10 +185,10 @@ index fc9fef4694bd05210abf8654de928e3c09a4caf2..33c12ce83333f0d09f0eb2ebe996a194
  
      public void untrackChunk(ChunkPos chunkPos, boolean concernsTracking) {
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 415bb5e1c600630d4ef79bf4faeb29d3dc4f96b9..7f11c9e0ab7902d42f381cbedd36cb84f8ae74ec 100644
+index 9ba5e86cfb84bd48e0035debfbbe119124ee24d6..b366e9edb9170881433d23a762e592a8f0c4f832 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -3501,12 +3501,14 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3515,12 +3515,14 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
  
      @Override
      public void handleKeepAlive(ServerboundKeepAlivePacket packet) {
@@ -203,7 +203,7 @@ index 415bb5e1c600630d4ef79bf4faeb29d3dc4f96b9..7f11c9e0ab7902d42f381cbedd36cb84
                  this.keepAlives.clear(); // We got a valid response, let's roll with it and forget the rest
              }
          } else
-@@ -3516,6 +3518,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3530,6 +3532,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
              int i = (int) (Util.getMillis() - this.keepAliveTime);
  
              this.player.latency = (this.player.latency * 3 + i) / 4;

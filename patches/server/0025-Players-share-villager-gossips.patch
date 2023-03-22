@@ -66,10 +66,10 @@ index 097007c1c25ba55d9916fc820dd1d1149d81f6f4..c229a5510ba4a58583bd7428fba243eb
          return entityGossips != null ? entityGossips.weightedValue(gossipTypeFilter) : 0;
      }
 diff --git a/src/main/java/net/minecraft/world/entity/npc/Villager.java b/src/main/java/net/minecraft/world/entity/npc/Villager.java
-index 747e62cb834fb6b094c2a2599e050fac7cc7c1de..63de9392f9be7c6e0d9681bc17314de7ae41041f 100644
+index e7846177b54646ee14ac504f8795b2ead43f2894..81639b27d516e695e94b704d03d56d50dbdc7833 100644
 --- a/src/main/java/net/minecraft/world/entity/npc/Villager.java
 +++ b/src/main/java/net/minecraft/world/entity/npc/Villager.java
-@@ -482,7 +482,7 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+@@ -494,7 +494,7 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
      }
  
      private void updateSpecialPrices(Player player) {
@@ -78,7 +78,7 @@ index 747e62cb834fb6b094c2a2599e050fac7cc7c1de..63de9392f9be7c6e0d9681bc17314de7
  
          if (i != 0) {
              Iterator iterator = this.getOffers().iterator();
-@@ -758,10 +758,15 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+@@ -770,10 +770,15 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
          }
      }
  

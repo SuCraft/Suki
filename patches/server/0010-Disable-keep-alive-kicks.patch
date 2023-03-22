@@ -7,10 +7,10 @@ License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 7f43c51c37a4056f2b4b5fe6dbd1b83492e0fffa..415bb5e1c600630d4ef79bf4faeb29d3dc4f96b9 100644
+index f997e3e7fc424db886a02b4e759f35ad283e5907..9ba5e86cfb84bd48e0035debfbbe119124ee24d6 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -413,7 +413,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -415,7 +415,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          // Gale start - Purpur - send multiple keep-alive packets
          if (GaleGlobalConfiguration.get().misc.keepalive.sendMultiple) {
              if (elapsedTime >= 1000L) { // 1 second
@@ -19,7 +19,7 @@ index 7f43c51c37a4056f2b4b5fe6dbd1b83492e0fffa..415bb5e1c600630d4ef79bf4faeb29d3
                      LOGGER.warn("{} was kicked due to keepalive timeout!", this.player.getName());
                      disconnect(Component.translatable("disconnect.timeout"), org.bukkit.event.player.PlayerKickEvent.Cause.TIMEOUT);
                  } else {
-@@ -425,7 +425,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -427,7 +427,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          } else
          // Gale end - Purpur - send multiple keep-alive packets
  
@@ -28,7 +28,7 @@ index 7f43c51c37a4056f2b4b5fe6dbd1b83492e0fffa..415bb5e1c600630d4ef79bf4faeb29d3
              if (!this.processedDisconnect && elapsedTime >= KEEPALIVE_LIMIT) { // check keepalive limit, don't fire if already disconnected
                  ServerGamePacketListenerImpl.LOGGER.warn("{} was kicked due to keepalive timeout!", this.player.getScoreboardName()); // more info
                  this.disconnect(Component.translatable("disconnect.timeout", ArrayConstants.emptyObjectArray), org.bukkit.event.player.PlayerKickEvent.Cause.TIMEOUT); // Paper - kick event cause // Gale - JettPack - reduce array allocations
-@@ -3518,11 +3518,16 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3532,11 +3532,16 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
              this.player.latency = (this.player.latency * 3 + i) / 4;
              this.keepAlivePending = false;
          } else if (!this.isSingleplayerOwner()) {

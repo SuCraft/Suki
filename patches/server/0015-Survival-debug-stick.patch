@@ -7,10 +7,10 @@ License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/net/minecraft/core/Direction.java b/src/main/java/net/minecraft/core/Direction.java
-index c1172ba542bc07e0c780a50d5b4ce26ac04c1720..180f7a75b7a4236e73e8541bbcb0bfb5181c0852 100644
+index 82bce6109d59cba30178a446f0ff129da6f3692f..d129df4f0168df3942a65dab7f29e17ad1ea1c69 100644
 --- a/src/main/java/net/minecraft/core/Direction.java
 +++ b/src/main/java/net/minecraft/core/Direction.java
-@@ -633,7 +633,7 @@ public enum Direction implements StringRepresentable {
+@@ -636,7 +636,7 @@ public enum Direction implements StringRepresentable {
          HORIZONTAL(new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST}, new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Z}),
          VERTICAL(new Direction[]{Direction.UP, Direction.DOWN}, new Direction.Axis[]{Direction.Axis.Y});
  
@@ -20,7 +20,7 @@ index c1172ba542bc07e0c780a50d5b4ce26ac04c1720..180f7a75b7a4236e73e8541bbcb0bfb5
  
          private Plane(Direction[] facingArray, Direction.Axis[] axisArray) {
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
-index 7be34e5df2b6d33c1d7943c9c0b6fd065b010c34..dec34261e35b2829e5f5506e86dcc86c681eaddd 100644
+index adb72105dc98c9052ced2288362f58aa9f298237..ea29591458a27858c8bafd51cb5afdebdf8fa9cc 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayerGameMode.java
 @@ -16,6 +16,7 @@ import net.minecraft.world.MenuProvider;

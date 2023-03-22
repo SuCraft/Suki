@@ -34,10 +34,10 @@ index aa04d7df70d99402c91e920fd693d7d4fb655786..cba29644bda12b5630efbf3b28c69107
  
      // Spigot start
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index 6acdd0c9a6ea65b06ad5dad4758efb64884daaf3..51f68a6963a88d55043471582ae9232865b7c620 100644
+index 15c57f3e4e1c023e0f3168ce03dd770f006cf27b..768f34ea937b58f1e9126e19489213830c345bfe 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -2413,20 +2413,32 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -2439,20 +2439,32 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
       */
      public void setAffectsSpawning(boolean affects);
  
@@ -74,7 +74,7 @@ index 6acdd0c9a6ea65b06ad5dad4758efb64884daaf3..51f68a6963a88d55043471582ae92328
      public void setViewDistance(int viewDistance);
  
      /**
-@@ -2442,48 +2454,88 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -2468,48 +2480,88 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
       * @param simulationDistance the player's new simulation distance
       */
      public void setSimulationDistance(int simulationDistance);

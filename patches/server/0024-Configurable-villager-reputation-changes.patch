@@ -7,10 +7,10 @@ License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/net/minecraft/world/entity/npc/Villager.java b/src/main/java/net/minecraft/world/entity/npc/Villager.java
-index 825cdb927925a35a53e399ee647ea0738e67a5c9..747e62cb834fb6b094c2a2599e050fac7cc7c1de 100644
+index 583f8bbb242305bf1bf825e254209108fd323ad4..e7846177b54646ee14ac504f8795b2ead43f2894 100644
 --- a/src/main/java/net/minecraft/world/entity/npc/Villager.java
 +++ b/src/main/java/net/minecraft/world/entity/npc/Villager.java
-@@ -1013,19 +1013,77 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+@@ -1025,19 +1025,77 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
              if (level.paperConfig().fixes.fixCuringZombieVillagerDiscountExploit) {
                  final GossipContainer.EntityGossips playerReputation = this.getGossips().gossips.get(entity.getUUID());
                  if (playerReputation != null) {

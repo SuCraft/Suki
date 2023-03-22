@@ -7,7 +7,7 @@ License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java
-index 8e68d1373a519cc12bf83de6aadcb24cbbd34af6..1b4a3b24001776023efba7d386a1b1eba89a4589 100644
+index f3bbfb472b9be083dd1f1a317b90dda5c3c4f851..869e2572fa34af9eb661ee3de4dce81df00eae2f 100644
 --- a/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerHandshakePacketListenerImpl.java
 @@ -1,5 +1,6 @@
@@ -17,16 +17,16 @@ index 8e68d1373a519cc12bf83de6aadcb24cbbd34af6..1b4a3b24001776023efba7d386a1b1eb
  import it.unimi.dsi.fastutil.objects.Object2LongMap;
  import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
  import net.minecraft.SharedConstants;
-@@ -10,6 +11,8 @@ import net.minecraft.network.protocol.handshake.ClientIntentionPacket;
- import net.minecraft.network.protocol.handshake.ServerHandshakePacketListener;
+@@ -11,6 +12,8 @@ import net.minecraft.network.protocol.handshake.ServerHandshakePacketListener;
  import net.minecraft.network.protocol.login.ClientboundLoginDisconnectPacket;
+ import net.minecraft.network.protocol.status.ServerStatus;
  import net.minecraft.server.MinecraftServer;
 +import org.slf4j.Logger;
 +import org.sucraft.suki.configuration.SukiGlobalConfiguration;
  
  // CraftBukkit start
  import java.net.InetAddress;
-@@ -32,6 +35,7 @@ public class ServerHandshakePacketListenerImpl implements ServerHandshakePacketL
+@@ -33,6 +36,7 @@ public class ServerHandshakePacketListenerImpl implements ServerHandshakePacketL
      private final MinecraftServer server;
      private final Connection connection;
      private static final boolean BYPASS_HOSTCHECK = Boolean.getBoolean("Paper.bypassHostCheck"); // Paper
@@ -34,7 +34,7 @@ index 8e68d1373a519cc12bf83de6aadcb24cbbd34af6..1b4a3b24001776023efba7d386a1b1eb
  
      public ServerHandshakePacketListenerImpl(MinecraftServer server, Connection connection) {
          this.server = server;
-@@ -44,6 +48,11 @@ public class ServerHandshakePacketListenerImpl implements ServerHandshakePacketL
+@@ -45,6 +49,11 @@ public class ServerHandshakePacketListenerImpl implements ServerHandshakePacketL
          switch (packet.getIntention()) {
              case LOGIN:
                  this.connection.setProtocol(ConnectionProtocol.LOGIN);
@@ -47,7 +47,7 @@ index 8e68d1373a519cc12bf83de6aadcb24cbbd34af6..1b4a3b24001776023efba7d386a1b1eb
                  try {
                      if (!(this.connection.channel.localAddress() instanceof io.netty.channel.unix.DomainSocketAddress)) { // Paper - the connection throttle is useless when you have a Unix domain socket
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index 9b924f0793d8231244c160a5bc7ac8e1a35bad34..9f6355266c56d28b4f241ba7dd9f17f56b44ffb2 100644
+index 5b7c12db86be64433c65e31e3ecc0b444b0ddf48..e82bbd36da5259f51cbe1bc3b346816a79725f21 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 @@ -9,6 +9,7 @@ import java.net.InetAddress;

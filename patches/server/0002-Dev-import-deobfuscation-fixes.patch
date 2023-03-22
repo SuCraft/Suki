@@ -7,13 +7,13 @@ License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java b/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java
-index d5aa51482a67cb87fc7e7cb94c0bb8713a193759..1b3c64097c24b0b39d9f2ca42ab50c3509228d65 100644
+index 7dd1c710267db2b299442ca4be33046328d18091..23d2392dd329f8a38d307916af305a5d16ec0996 100644
 --- a/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java
 +++ b/src/main/java/net/minecraft/commands/synchronization/ArgumentTypeInfos.java
-@@ -111,10 +111,12 @@ public class ArgumentTypeInfos {
+@@ -112,10 +112,12 @@ public class ArgumentTypeInfos {
          register(registry, "dimension", DimensionArgument.class, SingletonArgumentInfo.contextFree(DimensionArgument::dimension));
          register(registry, "gamemode", GameModeArgument.class, SingletonArgumentInfo.contextFree(GameModeArgument::gameMode));
-         register(registry, "time", TimeArgument.class, SingletonArgumentInfo.contextFree(TimeArgument::time));
+         register(registry, "time", TimeArgument.class, new TimeArgument.Info());
 -        register(registry, "resource_or_tag", fixClassType(ResourceOrTagArgument.class), new ResourceOrTagArgument.Info());
 -        register(registry, "resource_or_tag_key", fixClassType(ResourceOrTagKeyArgument.class), new ResourceOrTagKeyArgument.Info());
 -        register(registry, "resource", fixClassType(ResourceArgument.class), new ResourceArgument.Info());
@@ -26,8 +26,8 @@ index d5aa51482a67cb87fc7e7cb94c0bb8713a193759..1b3c64097c24b0b39d9f2ca42ab50c35
 +        // Suki end - dev import deobfuscation fixes
          register(registry, "template_mirror", TemplateMirrorArgument.class, SingletonArgumentInfo.contextFree(TemplateMirrorArgument::templateMirror));
          register(registry, "template_rotation", TemplateRotationArgument.class, SingletonArgumentInfo.contextFree(TemplateRotationArgument::templateRotation));
-         if (SharedConstants.IS_RUNNING_IN_IDE) {
-@@ -126,7 +128,7 @@ public class ArgumentTypeInfos {
+         register(registry, "heightmap", HeightmapTypeArgument.class, SingletonArgumentInfo.contextFree(HeightmapTypeArgument::heightmap));
+@@ -128,7 +130,7 @@ public class ArgumentTypeInfos {
      }
  
      private static <T extends ArgumentType<?>> Class<T> fixClassType(Class<? super T> clazz) {
@@ -36,7 +36,7 @@ index d5aa51482a67cb87fc7e7cb94c0bb8713a193759..1b3c64097c24b0b39d9f2ca42ab50c35
      }
  
      public static boolean isClassRecognized(Class<?> clazz) {
-@@ -138,7 +140,7 @@ public class ArgumentTypeInfos {
+@@ -140,7 +142,7 @@ public class ArgumentTypeInfos {
          if (argumentTypeInfo == null) {
              throw new IllegalArgumentException(String.format(Locale.ROOT, "Unrecognized argument type %s (%s)", argumentType, argumentType.getClass()));
          } else {
@@ -71,10 +71,10 @@ index 177306cc9c6092a9da9c4889ff9e7ca620a5ec8f..631d26a5cf33f2c6d076cfda617810ba
  
      public ServerboundClientInformationPacket(FriendlyByteBuf buf) {
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index 82dec221441ad4b76af0aebf788af801a275be64..e57d69588826fa9248a8ea392989dbad6790f0fc 100644
+index aee10fe735b4ccbafbd92908890989b6b8b3685d..2d30fb8406eeb07b49d1b1bd3c225bb5e7cb28fd 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -1967,23 +1967,25 @@ public class ServerPlayer extends Player {
+@@ -1974,23 +1974,25 @@ public class ServerPlayer extends Player {
      public String locale = null; // CraftBukkit - add, lowercase // Paper - default to null
      public java.util.Locale adventure$locale = java.util.Locale.US; // Paper
      public void updateOptions(ServerboundClientInformationPacket packet) {
@@ -107,10 +107,10 @@ index 82dec221441ad4b76af0aebf788af801a275be64..e57d69588826fa9248a8ea392989dbad
          this.chatVisibility = packet.chatVisibility();
          this.canChatColor = packet.chatColors();
 diff --git a/src/main/java/net/minecraft/world/level/block/Blocks.java b/src/main/java/net/minecraft/world/level/block/Blocks.java
-index 42f46d338886e2892ee4219d19be4dc97f61616f..7e9481141afbb44cdb678cae36ee75771bcbe16b 100644
+index f148c7d2954cc17377d0da4af03ea2c1c9397a52..ad346eced4887589068538c1c6a08248f951a79d 100644
 --- a/src/main/java/net/minecraft/world/level/block/Blocks.java
 +++ b/src/main/java/net/minecraft/world/level/block/Blocks.java
-@@ -1127,7 +1127,7 @@ public class Blocks {
+@@ -1153,7 +1153,7 @@ public class Blocks {
      }
  
      private static Boolean ocelotOrParrot(BlockState state, BlockGetter world, BlockPos pos, EntityType<?> type) {

@@ -7,7 +7,7 @@ License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/net/minecraft/server/level/ChunkHolder.java b/src/main/java/net/minecraft/server/level/ChunkHolder.java
-index bc46479fd0622a90fd98ac88f92b2840a22a2d04..4b363039e3044eb26b28aab5a8d37f563c773994 100644
+index 904fcdeb7937d36208cc9a8d5eca9ef3a5b2cd9e..153b4489770d646ba5d6cd4a07b2d23bfee3dbaa 100644
 --- a/src/main/java/net/minecraft/server/level/ChunkHolder.java
 +++ b/src/main/java/net/minecraft/server/level/ChunkHolder.java
 @@ -68,7 +68,7 @@ public class ChunkHolder {
@@ -20,10 +20,10 @@ index bc46479fd0622a90fd98ac88f92b2840a22a2d04..4b363039e3044eb26b28aab5a8d37f56
      public final LevelChunk getSendingChunk() {
          // it's important that we use getChunkAtIfLoadedImmediately to mirror the chunk sending logic used
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index ce197df36b3746dbd511287ecd78e46eaec3d5e0..ba868bca27766f8ae58877e597e4c7939425df41 100644
+index 697fad59a6ab4fb41aac65979b42d8ed4b4c8c21..19204585fc7650b2f3a759e340772f6ec38142fe 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
-@@ -614,6 +614,24 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {
+@@ -615,6 +615,24 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {
          this.eyeHeight = this.getEyeHeight(net.minecraft.world.entity.Pose.STANDING, this.dimensions);
      }
  

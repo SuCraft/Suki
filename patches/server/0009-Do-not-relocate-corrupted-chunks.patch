@@ -7,10 +7,10 @@ License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java b/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
-index d4c4d37bcef14e392739d9aae9e20b7d69b05c12..647e18bc788aa0d86b2ecefc93eb506658d150d6 100644
+index 0ec80b83a99bfdb1f985045d98a81905a8a5a3ac..a8e231a49eb51d807ab1359d7e37be83eb705614 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
-@@ -32,6 +32,7 @@ import net.minecraft.nbt.NbtOps;
+@@ -32,6 +32,7 @@ import net.minecraft.nbt.NbtUtils;
  import net.minecraft.nbt.ShortTag;
  import net.minecraft.nbt.Tag;
  import net.minecraft.resources.ResourceLocation;

@@ -34,10 +34,10 @@ index 631d26a5cf33f2c6d076cfda617810bac7e7a0ba..0566c2d406c0bfc39b90214004f6546a
          this(buf.readUtf(16), buf.readByte(), buf.readEnum(ChatVisiblity.class), buf.readBoolean(), buf.readUnsignedByte(), buf.readEnum(HumanoidArm.class), buf.readBoolean(), buf.readBoolean());
      }
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-index e57d69588826fa9248a8ea392989dbad6790f0fc..7dc034e4e093a6b91d39e089f72ebb469e0d023b 100644
+index 2d30fb8406eeb07b49d1b1bd3c225bb5e7cb28fd..985ae9a73a2301e1f369c1dfaccb9c4fb0587075 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
 +++ b/src/main/java/net/minecraft/server/level/ServerPlayer.java
-@@ -1967,7 +1967,7 @@ public class ServerPlayer extends Player {
+@@ -1974,7 +1974,7 @@ public class ServerPlayer extends Player {
      public String locale = null; // CraftBukkit - add, lowercase // Paper - default to null
      public java.util.Locale adventure$locale = java.util.Locale.US; // Paper
      public void updateOptions(ServerboundClientInformationPacket packet) {
@@ -46,7 +46,7 @@ index e57d69588826fa9248a8ea392989dbad6790f0fc..7dc034e4e093a6b91d39e089f72ebb46
          // CraftBukkit start
          if (getMainArm() != packet.mainHand()) {
              PlayerChangedMainHandEvent event = new PlayerChangedMainHandEvent(this.getBukkitEntity(), getMainArm() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT);
-@@ -1985,7 +1985,7 @@ public class ServerPlayer extends Player {
+@@ -1992,7 +1992,7 @@ public class ServerPlayer extends Player {
          this.adventure$locale = net.kyori.adventure.translation.Translator.parseLocale(this.locale);
          this.connection.connection.channel.attr(PaperAdventure.LOCALE_ATTRIBUTE).set(this.adventure$locale);
          // Paper end
@@ -56,10 +56,10 @@ index e57d69588826fa9248a8ea392989dbad6790f0fc..7dc034e4e093a6b91d39e089f72ebb46
          this.chatVisibility = packet.chatVisibility();
          this.canChatColor = packet.chatColors();
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index e000da425ba28330d1edcce3948d2becb39d2bd3..7f43c51c37a4056f2b4b5fe6dbd1b83492e0fffa 100644
+index 25a8d3a1302c36f46eb3e0f9a5a532a329165fd7..f997e3e7fc424db886a02b4e759f35ad283e5907 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -244,6 +244,7 @@ import org.bukkit.inventory.CraftingInventory;
+@@ -246,6 +246,7 @@ import org.bukkit.inventory.CraftingInventory;
  import org.bukkit.inventory.EquipmentSlot;
  import org.bukkit.inventory.InventoryView;
  import org.bukkit.inventory.SmithingInventory;
@@ -67,7 +67,7 @@ index e000da425ba28330d1edcce3948d2becb39d2bd3..7f43c51c37a4056f2b4b5fe6dbd1b834
  // CraftBukkit end
  
  public class ServerGamePacketListenerImpl implements ServerPlayerConnection, TickablePacketListener, ServerGamePacketListener {
-@@ -3547,9 +3548,19 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+@@ -3561,9 +3562,19 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
          PacketUtils.ensureRunningOnSameThread(packet, this, this.player.getLevel());
          // Paper start - do not accept invalid information
          if (packet.viewDistance() < 0) {

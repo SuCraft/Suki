@@ -7,16 +7,19 @@ License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/net/minecraft/world/food/FoodData.java b/src/main/java/net/minecraft/world/food/FoodData.java
-index 2934b6de1f1fb914a532ee20184df99d1acd8e65..ce1aa547245e62f9e512f58d3776b593c427047f 100644
+index 4a2dcf9bd83dd3fdff43483f887f4f58dc4715cd..12369f0418246f947f9ff7d4e8c66a8ec93cf70a 100644
 --- a/src/main/java/net/minecraft/world/food/FoodData.java
 +++ b/src/main/java/net/minecraft/world/food/FoodData.java
-@@ -100,7 +100,7 @@ public class FoodData {
+@@ -99,7 +99,10 @@ public class FoodData {
          } else if (this.foodLevel <= 0) {
              ++this.tickTimer;
              if (this.tickTimer >= this.starvationRate) { // CraftBukkit - add regen rate manipulation
 -                if (player.getHealth() > 10.0F || enumdifficulty == Difficulty.HARD || player.getHealth() > 1.0F && enumdifficulty == Difficulty.NORMAL) {
-+                if ((player.level.sukiConfig().gameplayMechanics.difficultyChanges.minimumHealthAfterStarving < 0.0F || player.getHealth() > player.level.sukiConfig().gameplayMechanics.difficultyChanges.minimumHealthAfterStarving) && (player.getHealth() > 10.0F || enumdifficulty == Difficulty.HARD || player.getHealth() > 1.0F && enumdifficulty == Difficulty.NORMAL)) { // Suki - minimum health after starving
-                     player.hurt(DamageSource.STARVE, 1.0F);
++                // Suki start - minimum health after starving
++                var minimumHealthAfterStarving = player.level.sukiConfig().gameplayMechanics.difficultyChanges.minimumHealthAfterStarving;
++                if ((minimumHealthAfterStarving < 0.0F || player.getHealth() > minimumHealthAfterStarving) && (player.getHealth() > 10.0F || enumdifficulty == Difficulty.HARD || player.getHealth() > 1.0F && enumdifficulty == Difficulty.NORMAL)) {
++                    // Suki end - minimum health after starving
+                     player.hurt(player.damageSources().starve(), 1.0F);
                  }
  
 diff --git a/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java b/src/main/java/org/sucraft/suki/configuration/SukiWorldConfiguration.java

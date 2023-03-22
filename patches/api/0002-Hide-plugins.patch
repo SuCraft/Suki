@@ -24,10 +24,10 @@ index 401ae80838bc4ecacdbb7796cc053251b4f0eb96..32a53b93d3e642f1c9a22a17419c4d24
       * Gets a view of all currently logged in players. This {@linkplain
       * Collections#unmodifiableCollection(Collection) view} is a reused
 diff --git a/src/main/java/org/bukkit/command/defaults/PluginsCommand.java b/src/main/java/org/bukkit/command/defaults/PluginsCommand.java
-index 1aa58c59e1e8738bbdc77752885ff3b18b29de42..2be0fa60b70571b61c13193f3034c71ac889e662 100644
+index bcb576a4271b1ec7b1cfe6f83cf161b7d89ed2e5..755c0c59c2218ae0cb83fa4584a530ef1b56ece0 100644
 --- a/src/main/java/org/bukkit/command/defaults/PluginsCommand.java
 +++ b/src/main/java/org/bukkit/command/defaults/PluginsCommand.java
-@@ -25,7 +25,7 @@ public class PluginsCommand extends BukkitCommand {
+@@ -22,7 +22,7 @@ public class PluginsCommand extends BukkitCommand {
      public boolean execute(@NotNull CommandSender sender, @NotNull String currentAlias, @NotNull String[] args) {
          if (!testPermission(sender)) return true;
  
@@ -36,23 +36,19 @@ index 1aa58c59e1e8738bbdc77752885ff3b18b29de42..2be0fa60b70571b61c13193f3034c71a
          return true;
      }
  
-@@ -36,7 +36,7 @@ public class PluginsCommand extends BukkitCommand {
+@@ -33,24 +33,38 @@ public class PluginsCommand extends BukkitCommand {
      }
  
      @NotNull
 -    private String getPluginList() {
 +    private String getPluginList(@NotNull CommandSender sender) { // Suki - hide plugins
-         // Paper start
-         TreeMap<String, Plugin> plugins = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
- 
-@@ -45,7 +45,14 @@ public class PluginsCommand extends BukkitCommand {
-         }
- 
          StringBuilder pluginList = new StringBuilder();
+         Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
+ 
 +        int numberOfListedPlugins = 0; // Suki - hide plugins
-         for (Map.Entry<String, Plugin> entry : plugins.entrySet()) {
+         for (Plugin plugin : plugins) {
 +            // Suki start - hide plugins
-+            if (!entry.getValue().canBeSeenBy(sender)) {
++            if (!plugin.canBeSeenBy(sender)) {
 +                continue;
 +            }
 +            numberOfListedPlugins++;
@@ -60,24 +56,28 @@ index 1aa58c59e1e8738bbdc77752885ff3b18b29de42..2be0fa60b70571b61c13193f3034c71a
              if (pluginList.length() > 0) {
                  pluginList.append(ChatColor.WHITE);
                  pluginList.append(", ");
-@@ -56,7 +63,7 @@ public class PluginsCommand extends BukkitCommand {
-             pluginList.append(plugin.isEnabled() ? ChatColor.GREEN : ChatColor.RED);
-             // Paper start - Add an asterisk to legacy plugins (so admins are aware)
-             String pluginName = plugin.getDescription().getName();
--            if (org.bukkit.UnsafeValues.isLegacyPlugin(plugin)) {
-+            if (Bukkit.getServer().getShowLegacyPluginAsterisk() && org.bukkit.UnsafeValues.isLegacyPlugin(plugin)) { // Suki - hide plugins
-                 pluginName += "*";
              }
-             pluginList.append(pluginName);
-@@ -67,7 +74,7 @@ public class PluginsCommand extends BukkitCommand {
+ 
+             pluginList.append(plugin.isEnabled() ? ChatColor.GREEN : ChatColor.RED);
+-            pluginList.append(plugin.getDescription().getName());
++            // Suki start - Paper - add an asterisk to legacy plugins
++            String pluginName = plugin.getDescription().getName();
++            if (Bukkit.getServer().getShowLegacyPluginAsterisk() && org.bukkit.UnsafeValues.isLegacyPlugin(plugin)) { // Suki - hide plugins - configurable legacy asterisk
++                pluginName += "*";
++            }
++            pluginList.append(pluginName);
++            // Suki end - Paper - add an asterisk to legacy plugins
+ 
+             if (plugin.getDescription().getProvides().size() > 0) {
+                 pluginList.append(" (").append(String.join(", ", plugin.getDescription().getProvides())).append(")");
              }
          }
  
--        return "(" + plugins.size() + "): " + pluginList.toString();
+-        return "(" + plugins.length + "): " + pluginList.toString();
 +        return "(" + numberOfListedPlugins + "): " + pluginList.toString(); // Suki - hide plugins
-         // Paper end
++        // Paper end
      }
- 
+ }
 diff --git a/src/main/java/org/bukkit/command/defaults/VersionCommand.java b/src/main/java/org/bukkit/command/defaults/VersionCommand.java
 index e40f017f87d6b6b4770501b106c76dc69ec69abb..fb3668edd4d2fe76c95504ccd2c89b087e32bb7f 100644
 --- a/src/main/java/org/bukkit/command/defaults/VersionCommand.java
@@ -110,7 +110,7 @@ index e40f017f87d6b6b4770501b106c76dc69ec69abb..fb3668edd4d2fe76c95504ccd2c89b08
                  }
              }
 diff --git a/src/main/java/org/bukkit/plugin/Plugin.java b/src/main/java/org/bukkit/plugin/Plugin.java
-index cdf496598839380e073d7ccd89af473e9a702f00..b9f6bfc6389fc626aab8f08fe57e5a15fd42b1d3 100644
+index 4eb639fbb46a0848be207149ea433455550fae1c..bda2034d6e19efd3adb433b36ecc4feb1b22ed48 100644
 --- a/src/main/java/org/bukkit/plugin/Plugin.java
 +++ b/src/main/java/org/bukkit/plugin/Plugin.java
 @@ -4,10 +4,12 @@ import java.io.File;
@@ -126,7 +126,7 @@ index cdf496598839380e073d7ccd89af473e9a702f00..b9f6bfc6389fc626aab8f08fe57e5a15
  import org.jetbrains.annotations.NotNull;
  import org.jetbrains.annotations.Nullable;
  
-@@ -213,4 +215,12 @@ public interface Plugin extends TabExecutor {
+@@ -224,4 +226,12 @@ public interface Plugin extends TabExecutor {
       */
      @NotNull
      public String getName();
@@ -140,7 +140,7 @@ index cdf496598839380e073d7ccd89af473e9a702f00..b9f6bfc6389fc626aab8f08fe57e5a15
 +    // Suki end - hide plugins
  }
 diff --git a/src/main/java/org/bukkit/plugin/PluginBase.java b/src/main/java/org/bukkit/plugin/PluginBase.java
-index 94f8ceb965cecb5669a84a0ec61c0f706c2a2673..aa50e21a82408f07611cecb94618557368e438cf 100644
+index e773db6da357ad210eb24d4c389af2dc84ce450a..e98b4ece2ff69f2bb611fb71a990c04c5e9d3367 100644
 --- a/src/main/java/org/bukkit/plugin/PluginBase.java
 +++ b/src/main/java/org/bukkit/plugin/PluginBase.java
 @@ -1,6 +1,10 @@
@@ -156,7 +156,7 @@ index 94f8ceb965cecb5669a84a0ec61c0f706c2a2673..aa50e21a82408f07611cecb946185573
   * Represents a base {@link Plugin}
 @@ -33,4 +37,59 @@ public abstract class PluginBase implements Plugin {
      public final String getName() {
-         return getDescription().getName();
+         return getPluginMeta().getName(); // Paper
      }
 +
 +    // Suki start - hide plugins

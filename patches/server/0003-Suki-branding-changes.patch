@@ -7,7 +7,7 @@ License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index a42fe43e94439bbf9aaa2dc1e5fbfbc2a0784a4c..1414c00c8b46ca804fb0e40201b61be6b75fcf8a 100644
+index f6953439fdd4e70d71e9b233323454b7b2898002..7ae38ae96463b1436180265d5ed6b6156df0d678 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -79,7 +79,7 @@ tasks.jar {
@@ -57,10 +57,10 @@ index e45e6b44b2a8f2cdae6e0048a812b92126aa17ca..f06c48c48e0ba61db7e86756d3802f8a
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index eb951c9fda85d9620d3038a3db22d578db45e878..991a9dd8c3aae27877e64b46e476de5c208735b6 100644
+index 1df5c36ba713134fdb8dc643ea1df66c4f818125..6657b869858e139784423754884814c2d3ab3b42 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1627,7 +1627,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1649,7 +1649,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @DontObfuscate
      public String getServerModName() {
@@ -70,10 +70,10 @@ index eb951c9fda85d9620d3038a3db22d578db45e878..991a9dd8c3aae27877e64b46e476de5c
  
      public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index dc5020580d1a26f1fcb31af2fd272e5d8bcaa480..42b1b68e090b907b9ecece12192fe7fe26690bb1 100644
+index 931fcce46f3941af772416f39229ed4abc7f8301..187c3b413a6d4e4f373808b8ab70d4b93d016fce 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -266,7 +266,7 @@ import javax.annotation.Nullable; // Paper
+@@ -261,7 +261,7 @@ import javax.annotation.Nullable; // Paper
  import javax.annotation.Nonnull; // Paper
  
  public final class CraftServer implements Server {
@@ -83,10 +83,10 @@ index dc5020580d1a26f1fcb31af2fd272e5d8bcaa480..42b1b68e090b907b9ecece12192fe7fe
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index 6d7e14ac2f28cff95c6995a7fc06956cd5c1bd25..4c9156cdc5128062940cb9c3eeed05435c5af343 100644
+index 963f81196ef0af7cf51496d92e5d1c4363398589..97aefced262b01b2663f756ad431fa580e958813 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-@@ -462,7 +462,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+@@ -464,7 +464,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
  
      @Override
      public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {

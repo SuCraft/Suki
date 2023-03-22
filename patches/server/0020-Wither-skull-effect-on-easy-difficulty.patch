@@ -7,11 +7,11 @@ License: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 Suki - https://github.com/SuCraft/Suki
 
 diff --git a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
-index 9665095240a370983878350aed41badacfb6f261..6b29dead96942bd5c13cefcc551801a737655977 100644
+index 093a00e52062868b4fbf358b307513d0f599f69d..9200d23e7d9fdbc6fa486e5cf9be503975873a31 100644
 --- a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
 +++ b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
-@@ -74,7 +74,7 @@ public class WitherSkull extends AbstractHurtingProjectile {
-             if (flag && entity instanceof LivingEntity) {
+@@ -75,7 +75,7 @@ public class WitherSkull extends AbstractHurtingProjectile {
+                 entityliving = (LivingEntity) entity;
                  byte b0 = 0;
  
 -                if (this.level.getDifficulty() == Difficulty.NORMAL) {
