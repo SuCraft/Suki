@@ -73,7 +73,7 @@ index 7078bb109a6763d021d3cd002e094cc4ca9b35da..6af7bd59cf3bd8db29cb7a0b8196f187
  
      public class Messages extends ConfigurationPart {
 diff --git a/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoPacket.java b/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoPacket.java
-index 46ae5d40c26264e6b0ca253afa65b7846e6e5e6d..1bfb794a5780d649dc1bb5d6172f4b629614cb3d 100644
+index 46ae5d40c26264e6b0ca253afa65b7846e6e5e6d..a22e8fd00dcdb638a0903712ac7772d32ddce174 100644
 --- a/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoPacket.java
 +++ b/src/main/java/net/minecraft/network/protocol/game/ClientboundPlayerInfoPacket.java
 @@ -6,6 +6,8 @@ import com.mojang.authlib.GameProfile;
@@ -85,21 +85,19 @@ index 46ae5d40c26264e6b0ca253afa65b7846e6e5e6d..1bfb794a5780d649dc1bb5d6172f4b62
  import net.minecraft.network.FriendlyByteBuf;
  import net.minecraft.network.chat.Component;
  import net.minecraft.network.protocol.Packet;
-@@ -87,7 +89,7 @@ public class ClientboundPlayerInfoPacket implements Packet<ClientGamePacketListe
-             @Override
+@@ -88,6 +90,7 @@ public class ClientboundPlayerInfoPacket implements Packet<ClientGamePacketListe
              protected void write(FriendlyByteBuf buf, ClientboundPlayerInfoPacket.PlayerUpdate entry) {
                  buf.writeGameProfile(entry.getProfile());
--                buf.writeVarInt(entry.getGameMode().getId());
-+                buf.writeVarInt(GlobalConfiguration.get().hideGameModes.replace(entry.getGameMode()).getId()); // Suki - hide game modes
+                 buf.writeVarInt(entry.getGameMode().getId());
++//                buf.writeVarInt(GlobalConfiguration.get().hideGameModes.replace(entry.getGameMode()).getId()); // Suki - hide game modes
                  buf.writeVarInt(entry.getLatency());
                  buf.writeNullable(entry.getDisplayName(), FriendlyByteBuf::writeComponent);
                  buf.writeNullable(entry.getProfilePublicKey(), (buf2, publicKeyData) -> {
-@@ -106,7 +108,7 @@ public class ClientboundPlayerInfoPacket implements Packet<ClientGamePacketListe
-             @Override
+@@ -107,6 +110,7 @@ public class ClientboundPlayerInfoPacket implements Packet<ClientGamePacketListe
              protected void write(FriendlyByteBuf buf, ClientboundPlayerInfoPacket.PlayerUpdate entry) {
                  buf.writeUUID(entry.getProfile().getId());
--                buf.writeVarInt(entry.getGameMode().getId());
-+                buf.writeVarInt(GlobalConfiguration.get().hideGameModes.replace(entry.getGameMode()).getId()); // Suki - hide game modes
+                 buf.writeVarInt(entry.getGameMode().getId());
++//                buf.writeVarInt(GlobalConfiguration.get().hideGameModes.replace(entry.getGameMode()).getId()); // Suki - hide game modes
              }
          },
          UPDATE_LATENCY {
