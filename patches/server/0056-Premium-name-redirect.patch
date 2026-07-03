@@ -1,0 +1,247 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Martijn Muijsers <martijnmuijsers@live.nl>
+Date: Fri, 3 Jul 2026 21:56:06 +0200
+Subject: [PATCH] Premium name redirect
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index 0cfc83b7e674af0508f2f25413a48e773f0e775d..f0f463c14bb6246c149ff89f0a701afa1d4ee3c1 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -48,6 +48,8 @@ import org.slf4j.Logger;
+ import org.bukkit.craftbukkit.util.Waitable;
+ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+ import org.bukkit.event.player.PlayerPreLoginEvent;
++import org.sucraft.suki.playeruuid.PremiumIdentityRegistry;
++import org.sucraft.suki.playeruuid.PremiumLookup;
+ // CraftBukkit end
+ 
+ public class ServerLoginPacketListenerImpl implements TickablePacketListener, ServerLoginPacketListener {
+@@ -149,6 +151,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+     // Spigot start
+     public void initUUID()
+     {
++        if (this.gameProfile != null && this.gameProfile.getId() != null) return; // Suki - premium name redirect
+         UUID uuid;
+         if ( connection.spoofedUUID != null )
+         {
+@@ -307,6 +310,31 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+         }
+         // Suki end - login protocol - log Login Start packets to console
+ 
++        // Suki start - premium name redirect
++        GameProfile redirectedProfile = null;
++        if (this.profilePublicKeyData != null) {
++            String name = packet.name();
++            ServerLoginPacketListenerImpl.LOGGER.info("Received premium hello packet with name " + name);
++            while (true) {
++                UUID uuid = PremiumLookup.lookupPremiumUUID(name);
++                if (uuid != null) {
++                    synchronized (PremiumIdentityRegistry.class) {
++                        if (PremiumIdentityRegistry.hasDefinitive(uuid)) {
++                            String replacementName = PremiumIdentityRegistry.getDefinitiveName(uuid);
++                            UUID replacementUUID = PremiumIdentityRegistry.computeOfflineUUID(replacementName);
++                            ServerLoginPacketListenerImpl.LOGGER.info("For premium player " + name + " got online UUID " + uuid + " which is originally known as " + replacementName + " with offline UUID " + replacementUUID);
++                            redirectedProfile = new GameProfile(replacementUUID, replacementName);
++                        } else {
++                            ServerLoginPacketListenerImpl.LOGGER.info("For premium player " + name + " got online UUID " + uuid + " which was not originally known yet");
++                            PremiumIdentityRegistry.addDefinitive(uuid, name);
++                        }
++                    }
++                    break;
++                }
++            }
++        }
++        // Suki end - premium name redirect
++
+         if (gameprofile != null && packet.name().equalsIgnoreCase(gameprofile.getName())) {
+             this.gameProfile = gameprofile;
+             this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
+@@ -315,7 +343,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+             //noinspection ConstantConditions
+             this.connection.lastReceivedLoginStartUUID = Optional.ofNullable(packet.profileId()).flatMap($ -> $).orElse(null);
+             // Suki end - login protocol - client-provided UUID API
+-            this.gameProfile = new GameProfile((UUID) null, packet.name());
++            this.gameProfile = redirectedProfile != null ? redirectedProfile : new GameProfile((UUID) null, packet.name()); // Suki - premium name redirect
+             if (this.server.usesAuthentication() && !this.connection.isMemoryConnection()) {
+                 this.state = ServerLoginPacketListenerImpl.State.KEY;
+                 this.connection.send(new ClientboundHelloPacket("", this.server.getKeyPair().getPublic().getEncoded(), this.nonce));
+@@ -397,7 +425,6 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+                 GameProfile gameprofile = ServerLoginPacketListenerImpl.this.gameProfile;
+ 
+                 try {
+-                    ServerLoginPacketListenerImpl.this.gameProfile = ServerLoginPacketListenerImpl.this.server.getSessionService().hasJoinedServer(new GameProfile((UUID) null, gameprofile.getName()), s, this.getAddress());
+                     if (ServerLoginPacketListenerImpl.this.gameProfile != null) {
+                         // CraftBukkit start - fire PlayerPreLoginEvent
+                         if (!ServerLoginPacketListenerImpl.this.connection.isConnected()) {
+diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
+index 1df624553abba8a3498bb962a1c29b85e184da5e..3972f693b7259598a1effaf0007f911ddb5e1981 100644
+--- a/src/main/java/net/minecraft/server/players/PlayerList.java
++++ b/src/main/java/net/minecraft/server/players/PlayerList.java
+@@ -360,6 +360,7 @@ public abstract class PlayerList {
+ 
+     private void postChunkLoadJoin(ServerPlayer player, ServerLevel worldserver1, Connection networkmanager, ServerGamePacketListenerImpl playerconnection, CompoundTag nbttagcompound, String s1, String s) {
+         pendingPlayers.remove(player.getUUID(), player);
++        LOGGER.info("Player with name " + player.getName().getString() + " and UUID " + player.getUUID() + " is joining world"); // Suki - premium name redirect
+         if (!networkmanager.isConnected()) {
+             return;
+         }
+diff --git a/src/main/java/org/sucraft/suki/playeruuid/PremiumIdentityRegistry.java b/src/main/java/org/sucraft/suki/playeruuid/PremiumIdentityRegistry.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..4e727e656be81b2a4d8e84b756b5fc1f5cbf61f2
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/playeruuid/PremiumIdentityRegistry.java
+@@ -0,0 +1,80 @@
++package org.sucraft.suki.playeruuid;
++
++import com.mojang.logging.LogUtils;
++import org.slf4j.Logger;
++
++import java.io.*;
++import java.nio.charset.StandardCharsets;
++import java.nio.file.*;
++import java.util.*;
++
++public final class PremiumIdentityRegistry {
++
++    private PremiumIdentityRegistry() {
++        throw new UnsupportedOperationException();
++    }
++
++    private static final Logger LOGGER = LogUtils.getLogger();
++
++    private static final Map<UUID, String> definitiveNames = new HashMap<>();
++
++    private static final Path storageFile = Path.of("premium_identity_registry.txt");
++
++    static {
++        loadExisting();
++        LOGGER.info("Loaded " + definitiveNames.size() + " premium identity registry entries");
++    }
++
++    private static void loadExisting() {
++        if (!Files.exists(storageFile)) return;
++
++        try (BufferedReader br = Files.newBufferedReader(storageFile, StandardCharsets.UTF_8)) {
++            String line;
++            while ((line = br.readLine()) != null) {
++                // Format: premiumUUID;originalName
++                String[] parts = line.split(";", 2);
++                if (parts.length == 2) {
++                    UUID premium = UUID.fromString(parts[0]);
++                    definitiveNames.put(premium, parts[1]);
++                }
++            }
++        } catch (IOException e) {
++            throw new RuntimeException("Failed to load premium identity registry", e);
++        }
++    }
++
++    private static void append(UUID premiumUUID, String originalName) {
++        try (BufferedWriter bw = Files.newBufferedWriter(storageFile,
++            StandardCharsets.UTF_8,
++            StandardOpenOption.CREATE,
++            StandardOpenOption.APPEND)) {
++
++            bw.write(premiumUUID.toString() + ";" + originalName);
++            bw.newLine();
++
++            LOGGER.info("Successfully appended a premium identity registry entry: " + premiumUUID + " -> " + originalName);
++        } catch (IOException e) {
++            throw new RuntimeException("Failed to append premium identity registry", e);
++        }
++    }
++
++    // --- Public API ---
++
++    public static boolean hasDefinitive(UUID premiumUUID) {
++        return definitiveNames.containsKey(premiumUUID);
++    }
++
++    public static String getDefinitiveName(UUID premiumUUID) {
++        return definitiveNames.get(premiumUUID);
++    }
++
++    public static void addDefinitive(UUID premiumUUID, String name) {
++        definitiveNames.put(premiumUUID, name);
++        append(premiumUUID, name);
++    }
++
++    public static UUID computeOfflineUUID(String name) {
++        return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
++    }
++
++}
+diff --git a/src/main/java/org/sucraft/suki/playeruuid/PremiumLookup.java b/src/main/java/org/sucraft/suki/playeruuid/PremiumLookup.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..0fafa29a78975ff7a5ff0e3e74afb01deb24e44d
+--- /dev/null
++++ b/src/main/java/org/sucraft/suki/playeruuid/PremiumLookup.java
+@@ -0,0 +1,67 @@
++package org.sucraft.suki.playeruuid;
++
++import com.google.gson.JsonObject;
++import com.google.gson.JsonParser;
++import com.mojang.logging.LogUtils;
++import org.jetbrains.annotations.Nullable;
++import org.slf4j.Logger;
++
++import java.io.InputStreamReader;
++import java.net.HttpURLConnection;
++import java.net.URL;
++import java.util.HashMap;
++import java.util.Map;
++import java.util.UUID;
++
++public final class PremiumLookup {
++
++    private PremiumLookup() {
++        throw new UnsupportedOperationException();
++    }
++
++    private static final Logger LOGGER = LogUtils.getLogger();
++
++    private static final Map<String, UUID> cache = new HashMap<>();
++
++    /**
++     * Looks up the Mojang premium UUID for a given username.
++     * Returns null if the username is not premium or lookup fails.
++     */
++    public static @Nullable UUID lookupPremiumUUID(String name) {
++        return cache.computeIfAbsent(name, username -> {
++            LOGGER.info("Looking up online UUID for name " + username);
++            try {
++                URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
++                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
++                connection.setConnectTimeout(20_000);
++                connection.setReadTimeout(20_000);
++
++                if (connection.getResponseCode() != 200) {
++                    return null; // username not found or not premium
++                }
++
++                JsonObject json = JsonParser.parseReader(
++                    new InputStreamReader(connection.getInputStream())
++                ).getAsJsonObject();
++
++                String id = json.get("id").getAsString(); // UUID without dashes
++
++                // Insert dashes into Mojang's raw UUID format
++                String dashed =
++                    id.substring(0, 8) + "-" +
++                        id.substring(8, 12) + "-" +
++                        id.substring(12, 16) + "-" +
++                        id.substring(16, 20) + "-" +
++                        id.substring(20);
++
++                UUID uuid = UUID.fromString(dashed);
++                LOGGER.info("Got online UUID " + uuid + " for name " + username);
++                return uuid;
++
++            } catch (Exception e) {
++                return null; // network error or invalid response
++            }
++        });
++    }
++
++}
