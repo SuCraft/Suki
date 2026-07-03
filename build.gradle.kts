@@ -4,11 +4,12 @@ plugins {
     java
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2" apply false
-    id("io.papermc.paperweight.patcher") version "1.3.9-SNAPSHOT"
+    id("io.papermc.paperweight.patcher") version "1.5.0"
 }
 
 repositories {
     mavenCentral()
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.papermc.io/repository/maven-public/") {
         content { onlyForConfigurations("paperclip") }
     }
@@ -62,7 +63,7 @@ paperweight {
     decompileRepo.set("https://maven.quiltmc.org/")
 
     useStandardUpstream("mirai") {
-        url.set(github("etil2jz", "Mirai"))
+        url.set(github("MartijnMuijsers", "Mirai"))
         ref.set(providers.gradleProperty("miraiRef"))
 
         withStandardPatcher {
