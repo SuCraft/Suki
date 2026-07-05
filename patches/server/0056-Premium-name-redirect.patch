@@ -5,7 +5,7 @@ Subject: [PATCH] Premium name redirect
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
-index 0cfc83b7e674af0508f2f25413a48e773f0e775d..f0f463c14bb6246c149ff89f0a701afa1d4ee3c1 100644
+index 0cfc83b7e674af0508f2f25413a48e773f0e775d..f1566ee12ae5146d4c3fda53a57b4d65175d62f4 100644
 --- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
 @@ -48,6 +48,8 @@ import org.slf4j.Logger;
@@ -25,7 +25,7 @@ index 0cfc83b7e674af0508f2f25413a48e773f0e775d..f0f463c14bb6246c149ff89f0a701afa
          UUID uuid;
          if ( connection.spoofedUUID != null )
          {
-@@ -307,6 +310,31 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -307,6 +310,41 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
          }
          // Suki end - login protocol - log Login Start packets to console
  
@@ -34,7 +34,8 @@ index 0cfc83b7e674af0508f2f25413a48e773f0e775d..f0f463c14bb6246c149ff89f0a701afa
 +        if (this.profilePublicKeyData != null) {
 +            String name = packet.name();
 +            ServerLoginPacketListenerImpl.LOGGER.info("Received premium hello packet with name " + name);
-+            while (true) {
++            boolean gotUUID = false;
++            for (int i = 0; i < 5; i++) {
 +                UUID uuid = PremiumLookup.lookupPremiumUUID(name);
 +                if (uuid != null) {
 +                    synchronized (PremiumIdentityRegistry.class) {
@@ -48,8 +49,17 @@ index 0cfc83b7e674af0508f2f25413a48e773f0e775d..f0f463c14bb6246c149ff89f0a701afa
 +                            PremiumIdentityRegistry.addDefinitive(uuid, name);
 +                        }
 +                    }
++                    gotUUID = true;
 +                    break;
 +                }
++                try {
++                    Thread.sleep(3000);
++                } catch (InterruptedException ignored) {
++                }
++            }
++            if (!gotUUID) {
++                ServerLoginPacketListenerImpl.this.disconnect("Internal error while joining, please try again. If this keeps happening, contact @martijnmuijsers on Discord!");
++                return;
 +            }
 +        }
 +        // Suki end - premium name redirect
@@ -57,7 +67,7 @@ index 0cfc83b7e674af0508f2f25413a48e773f0e775d..f0f463c14bb6246c149ff89f0a701afa
          if (gameprofile != null && packet.name().equalsIgnoreCase(gameprofile.getName())) {
              this.gameProfile = gameprofile;
              this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
-@@ -315,7 +343,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -315,7 +353,7 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
              //noinspection ConstantConditions
              this.connection.lastReceivedLoginStartUUID = Optional.ofNullable(packet.profileId()).flatMap($ -> $).orElse(null);
              // Suki end - login protocol - client-provided UUID API
@@ -66,7 +76,7 @@ index 0cfc83b7e674af0508f2f25413a48e773f0e775d..f0f463c14bb6246c149ff89f0a701afa
              if (this.server.usesAuthentication() && !this.connection.isMemoryConnection()) {
                  this.state = ServerLoginPacketListenerImpl.State.KEY;
                  this.connection.send(new ClientboundHelloPacket("", this.server.getKeyPair().getPublic().getEncoded(), this.nonce));
-@@ -397,7 +425,6 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
+@@ -397,7 +435,6 @@ public class ServerLoginPacketListenerImpl implements TickablePacketListener, Se
                  GameProfile gameprofile = ServerLoginPacketListenerImpl.this.gameProfile;
  
                  try {
